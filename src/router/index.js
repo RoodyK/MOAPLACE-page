@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
-// import SameView from '../views/join/OfTheSameView.vue'
+import SameView from '../views/join/OfTheSameView.vue'
 
 const routes = [
   {
@@ -14,11 +14,11 @@ const routes = [
     name: 'login',
     component: LoginView
   },
-  // {
-  //   path: '/users/same',
-  //   name: 'same',
-  //   component: SameView
-  // }
+  {
+    path: '/users/same',
+    name: 'same',
+    component: SameView
+  }
 ]
 
 const router = createRouter({
