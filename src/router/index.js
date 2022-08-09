@@ -7,6 +7,11 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  {
+    path: '/moa/boardMain',
+    name: 'boardMain',
+    component: () => import('@/views/board/BoardMainView.vue')
+  }
 ]
 
 const router = createRouter({
