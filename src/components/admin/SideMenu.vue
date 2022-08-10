@@ -61,6 +61,13 @@ export default {
           {
             name: '회원관리',
             href: '/',
+            isActive: false,
+            subMenu:[
+              {
+                name:'회원정보',
+                href:'/'
+              }
+            ]
           },
           {
             name: '공연관리',
@@ -203,15 +210,27 @@ export default {
         .menu{
           font-size: 14px;
           margin-bottom: 16px;
+          // height: 0px;
+          display: none;
+          visibility: none;
+          transition: all 0.5s;
         }
       }
       &::-webkit-scrollbar {
           display: none;
       }
-      .nav > li.active .slide-button{
-        background: url(@/assets/admin/up-arrow.png);
-        background-size: 100%;
+      .nav > li.active {
+        .slide-button{
+          background: url(@/assets/admin/up-arrow.png);
+          background-size: 100%;
+        }
+        .menu{
+          height: auto;
+          display: block;
+          visibility: visible;
+        }
       }
+      
       .menu .active > a{
         color:#D67747
       }
