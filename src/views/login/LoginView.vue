@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="login-page">
     <div class="inner">
 
       <div class="title">
@@ -69,13 +69,13 @@ export default {
 <style lang="scss" scoped>
 @import '../../scss/common.scss';
 
-section {
+.login-page {
   .inner {
-    width: 500px;
+    width: 1100px;
     display : flex; 
     flex-direction: column;
     position: relative;
-    margin: auto;
+    margin: 0 auto;
     .title {
       font-size : 24px;
       margin-bottom: 20px;
@@ -88,7 +88,7 @@ section {
         margin-bottom: 20px;
       }
       input {
-        width: 350px;
+        width: 400px;
         height: 60px;
         border-radius: 10px;
         padding: 5px;
@@ -98,8 +98,8 @@ section {
         outline: 2px solid $brown;
       }
       .login-btn {
-        width: 350px;
-        height: 50px;
+        width: 400px;
+        height: 60px;
         font-size: 24px;
         border-radius: 10px;
         background-color: rgba($brown, .8);
@@ -118,7 +118,7 @@ section {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
-      font-size: 20px;
+      font-size: 18px;
       .search {
         margin-right: 15px;
         a {
@@ -138,7 +138,7 @@ section {
       }
     }
     .kakao-login img, .google-login img {
-      width: 350px;
+      width: 400px;
       height: 70px;
     }
     .kakao-login {
