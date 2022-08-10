@@ -11,7 +11,7 @@
             현재 보유 적립금
           </p>
           <p class="text-end">
-            <span class="fs-3 brown text-end">5,000</span>원
+            <span class="fs-3 text-end">5,000</span>원
           </p>
         </div>
         <div class="bot">
@@ -73,30 +73,32 @@
                     </div>
                   </td>
                   <td>
-                    <div class="info">
-                      <div class="img"></div>
-                      <div class="txt">
-                        <p class="fs-5 fw-bold">Title</p>
-                        <table>
-                          <tr>
-                            <th>장소</th>
-                            <td>공연장1</td>
-                          </tr>
-                          <tr>
-                            <th>날짜</th>
-                            <td>2022.08.09</td>
-                          </tr>
-                          <tr>
-                            <th>회차</th>
-                            <td>1회차 14:00</td>
-                          </tr>
-                          <tr>
-                            <th>좌석</th>
-                            <td>R석 A01,S석 ...</td>
-                          </tr>
-                        </table>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table>
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </td>
                   <td class="text-center">250,000원</td>
                   <td class="text-center end">입금완료</td>
@@ -127,12 +129,14 @@
                     </div>
                   </td>
                   <td>
-                    <div class="info">
-                      <div class="txt">
-                        <p class="fs-5 fw-bold">Title</p>
-                        <p>2022.08.09 12:00 ~ 14:00</p>
+                    <a href="">
+                      <div class="info">
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <p>2022.08.09 12:00 ~ 14:00</p>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                   </td>
                   <td class="text-center end">신청완료</td>
                 </tr>
@@ -154,21 +158,24 @@ export default {
 <style lang="scss">
 @import '../../scss/common.scss';
 
-.fs-7 {
-  font-size: 0.8em;
-}
-.black {
-  color: $black;
-}
-.brown {
-  color: $brown;
-}
 #wrap {
   display: flex;
   justify-content: center;
   width: 100%;
-  background-color: whitesmoke;
-  background: rgba(130, 109, 94, 0.2);
+  background-color: rgb(249, 249, 249);
+  a {
+    color: $black;
+    text-decoration:none;
+  }
+  .fs-7 {
+    font-size: 0.8em;
+  }
+  .black {
+    color: $black;
+  }
+  .brown {
+    color: $brown;
+  }
   #box {
     display: flex;
     justify-content: center;
@@ -178,7 +185,7 @@ export default {
       width: 300px;
       height: 100%;
       background-color: white;
-      border: 2px solid #CCCCCC;
+      border: 2px solid #dbe2e8;
       margin-right: 30px;
       padding: 30px 20px;
       .top {
@@ -186,11 +193,13 @@ export default {
       }
       .mid {
         background-color: whitesmoke;
-        background: rgba(130, 109, 94, 0.1);
-        border: 2px solid rgba(130, 109, 94, 0.3);;
+        border: 2px solid #dbe2e8;
         padding: 15px;
         p {
           margin: 0;
+        }
+        span {
+          color: #D67747;
         }
       }
       .bot {
@@ -213,15 +222,16 @@ export default {
       width: 100%;
       height: 100%;
       background-color: white;
-      border: 2px solid #CCCCCC;
+      border: 2px solid #dbe2e8;
       padding: 30px;
       .mybtn {
-        color: rgba(130, 109, 94, 0.8);
-        border-color: rgba(130, 109, 94, 0.8);
+        color: $brown;
+        border-color: $brown;
+        background-color: white;
       }
       .mybtn:hover {
         color: white;
-        background: rgba(130, 109, 94, 0.8);
+        background: $brown;
       }
       .title {
         display: flex;
@@ -231,20 +241,29 @@ export default {
       }
       .table {
         th.col {
-          background-color: #CCCCCC;
-          background: rgba(130, 109, 94, 0.5);
+          background-color: $brown;
+          color: white;
+        }
+        tbody {
+          td:hover {
+            background-color: rgb(249, 249, 249);
+          }
         }
         td {
-          background-color: whitesmoke;
-          background: rgba(130, 109, 94, 0.2);
+          background-color: white;
           .info {
             display: flex;
             margin: 20px 20px;
-            .img {
+            .img1 {
               background-color: gray;
-              background: rgba(130, 109, 94, 0.8);
               width: 110px;
               height: 150px;
+              margin-right: 20px;
+            }
+            .img2 {
+              background-color: gray;
+              width: 55px;
+              height: 75px;
               margin-right: 20px;
             }
             .txt {
@@ -261,10 +280,11 @@ export default {
       }
       .myborder {
         th{
-          border-right: 2px solid #eee;
+          border-right: 1px solid #eee;
         }
         td{
-          border-right: 2px solid #eee;
+          border-right: 1px solid #dbe2e8;
+          border-bottom: 1px solid #dbe2e8;
         }
         .end{
           border-right: 0px;
@@ -274,6 +294,10 @@ export default {
         vertical-align : middle;
       }
     }
+  }
+  #mypaging {
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
