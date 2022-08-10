@@ -55,9 +55,8 @@ export default {
     .title {
       text-align: center;
       margin-bottom: 40px;
-      
       span {
-        font-size: 1.6rem;
+        font-size: 2rem;
         font-weight: 700;
         letter-spacing: 3px;
       }
