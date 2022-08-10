@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import MainView from '../views/moaplace/MainView.vue'
 
 const routes = [
   {
@@ -7,6 +8,11 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  {
+    path: '/moa/moaplace/info',
+    name: 'MainView',
+    component: MainView
+  }
 ]
 
 const router = createRouter({
