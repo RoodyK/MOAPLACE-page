@@ -214,7 +214,9 @@
   height: 1420px;
   background: url(@/assets/moaplace/logo.png) no-repeat right bottom;
 }
-
+.m11 .con:nth-child(odd) {
+  background: #f1f1f1;
+}
 .m00 .con {
   position: relative;
   width: 100%;
