@@ -7,6 +7,11 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  {
+    path: '/moa/showlist',
+    name: 'showlist',
+    component: () => import('../views/show/ShowListView.vue')
+  }
 ]
 
 const router = createRouter({
