@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="same">
     <div class="inner">
       <div class="title">
         <span>MOA PLACE</span>
@@ -47,7 +47,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/scss/common.scss';
 
-section {
+.same {
   .inner {
     width: 1100px;
     margin: 0 auto;
@@ -69,18 +69,18 @@ section {
       margin-bottom: 40px;
       .box {
         font-size: 1.4rem;
-        width: 200px;
+        width: 180px;
         height: 60px;
         margin-right: 80px;
         display:flex;
         justify-content: center;
         align-items: center;
-        border-radius: 15px;
         border: 3px solid #777;
         box-sizing: border-box;
         position: relative;
         &.active {
           background-color: $brown;
+          color: #fff;
         }
         &:last-child {
           margin-right: 0;
@@ -88,9 +88,9 @@ section {
       }
     }
     .line {
-      width: 750px;
+      width: 700px;
       height: 3px;
-      margin: 0 auto 60px;
+      margin: 0 auto 100px;
       background-color: #000;
       position: relative;
       .step {
@@ -117,13 +117,12 @@ section {
     }
 
     .agree {
-      width: 800px;
+      width: 700px;
       margin: 0 auto 60px;
       letter-spacing: 1px;
       .check {
         display: flex;
         margin-bottom: 15px;
-        padding: 5px;
         input {
           margin-right: 10px;
           position: relative;
@@ -146,19 +145,26 @@ section {
     }
 
     .btn {
+      width: 700px;
       display: flex;
-      justify-content: center;
+      margin: 0 auto;
+      padding: 0;
       button {
-        width: 350px;
+        width: 100%;
         height: 65px;
-        border-radius: 20px;
         font-size: 1.5rem;
-        transition: .5s;
+        border: none;
         &:first-child {
-          margin-right: 50px;
+          margin-right: 15px;
+          background-color: #b1b1b1;
+          color: #fff;
+        }
+        &:last-child {
+          background-color: $brown;
+          color: #fff;
         }
         &:hover {
-          background-color: $brown;
+          opacity: .9;
         }
       }
     }
