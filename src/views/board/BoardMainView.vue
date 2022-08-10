@@ -7,8 +7,8 @@
 
     <div class="container">
       <button class="btn"><img src="../../assets/board/faq.png"><br>자주묻는질문(FAQ)</button>
-      <button class="btn"><img src="../../assets/board/qna.png"><br>1:1문의글(QNA)</button>
-      <button class="btn"><img src="../../assets/board/myqna.png"><br>나의 문의글 확인</button>
+      <button class="btn" @click="$router.push({name:'qnaInsert'})"><img src="../../assets/board/qna.png"><br>1:1문의글(QNA)</button>
+      <button class="btn" @click="$router.push({name:'qnaList'})"><img src="../../assets/board/myqna.png" style="padding-left:30px;"><br>나의 문의글 확인</button>
     </div>
 
   </div>
@@ -40,27 +40,26 @@
   display: flex;
   justify-content: center;
     
-  .btn {
-  margin: 10px;
-  width: 300px;
-  height: 300px;
-  border: 1px solid lightgray;
-  display: flex;
-  flex-direction: column;
-  justify-content:center;
-  align-items: center;
-  font-weight: bold;
-  color:$black;
+    .btn {
+    margin: 10px;
+    width: 300px;
+    height: 300px;
+    border: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    font-weight: bold;
+    color:$black;
 
-    &:hover {
-    background-color: gold;
+      &:hover {
+      background-color: gold;
 
-      img{
-        transform: scale(1.1);
+        img{
+          transform: scale(1.1);
+        }
       }
     }
-    
-  }
   }
 }
 </style>
