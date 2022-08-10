@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MypageView from '../views/users/MypageView.vue'
+import PerformanceView from '../views/users/PerformanceView.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/users/mypage',
     name: 'mypage',
     component: MypageView
+  },
+  {
+    path: '/users/performance',
+    name: 'performance',
+    component: PerformanceView
   }
 ]
 
