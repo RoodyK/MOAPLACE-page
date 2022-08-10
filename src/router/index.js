@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import SameView from '../views/join/OfTheSameView.vue'
+import JoinMainView from '../views/join/JoinMainView.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/users/same',
     name: 'same',
     component: SameView
+  },
+  {
+    path: '/users/join',
+    name: 'join',
+    component: JoinMainView
   }
 ]
 
