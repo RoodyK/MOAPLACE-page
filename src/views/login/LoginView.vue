@@ -71,13 +71,13 @@ export default {
 
 section {
   .inner {
-    width: 400px;
+    width: 500px;
     display : flex; 
     flex-direction: column;
     position: relative;
     margin: auto;
     .title {
-      font-size : 1.4rem;
+      font-size : 24px;
       margin-bottom: 20px;
       text-align: center;
     }
@@ -88,8 +88,8 @@ section {
         margin-bottom: 20px;
       }
       input {
-        width: 300px;
-        height: 45px;
+        width: 350px;
+        height: 60px;
         border-radius: 10px;
         padding: 5px;
         
@@ -98,8 +98,9 @@ section {
         outline: 2px solid $brown;
       }
       .login-btn {
-        width: 300px;
-        height: 45px;
+        width: 350px;
+        height: 50px;
+        font-size: 24px;
         border-radius: 10px;
         background-color: rgba($brown, .8);
         margin-bottom: 10px;
@@ -117,6 +118,7 @@ section {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
+      font-size: 20px;
       .search {
         margin-right: 15px;
         a {
@@ -136,8 +138,8 @@ section {
       }
     }
     .kakao-login img, .google-login img {
-      width: 300px;
-      height: 60px;
+      width: 350px;
+      height: 70px;
     }
     .kakao-login {
       margin-bottom: 20px;
