@@ -125,7 +125,7 @@ export default {
       text-align: center;
       margin-bottom: 40px;
       span {
-        font-size: 1.6rem;
+        font-size: 2rem;
         font-weight: 700;
         letter-spacing: 3px;
       }
@@ -192,10 +192,11 @@ export default {
         width: 700px;
         display: flex;
         flex-direction: column;
-        margin: 0 auto;
+        margin: auto;
         > div {
           margin-bottom: 20px;
           border-bottom: 1px solid rgba($brown, .3);
+          position: relative;
           .help {
             position: relative;
             left: 25%;
@@ -229,6 +230,9 @@ export default {
             border: none;
             background-color: $brown;
             color: #fff;
+            position: absolute;
+            top: 0;
+            right: 0;
           }
         }
         .gender {
@@ -251,6 +255,12 @@ export default {
           button {
             width: 30%;
             height: 60px;
+            border: none;
+            background-color: $brown;
+            color: #fff;
+            position: absolute;
+            top: 0;
+            right: 0;
           }
           input#address {
             position: absolute;
@@ -271,7 +281,7 @@ export default {
           button {
             width: 100%;
             height: 65px;
-            font-size: 1.5rem;
+            font-size: 24px;
             border: none;
             &:first-child {
               margin-right: 15px;

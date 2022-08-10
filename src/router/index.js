@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import SameView from '../views/join/OfTheSameView.vue'
 import JoinMainView from '../views/join/JoinMainView.vue'
+import JoinSuccessView from '@/views/join/JoinSuccessView.vue'
 
 const routes = [
   {
@@ -16,14 +17,19 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/users/same',
+    path: '/join/same',
     name: 'same',
     component: SameView
   },
   {
-    path: '/users/join',
+    path: '/join/main',
     name: 'join',
     component: JoinMainView
+  },
+  {
+    path: '/join/success',
+    name: 'joinSuccess',
+    component: JoinSuccessView
   }
 ]
 
