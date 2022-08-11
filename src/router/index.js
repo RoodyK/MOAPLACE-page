@@ -11,6 +11,11 @@ const routes = [
     path: '/moa/showlist',
     name: 'showlist',
     component: () => import('../views/show/ShowListView.vue')
+  },
+  {
+    path: '/moa/showdetail',
+    name: 'showdetail',
+    component: () => import('../views/show/ShowDetailView.vue')
   }
 ]
 
