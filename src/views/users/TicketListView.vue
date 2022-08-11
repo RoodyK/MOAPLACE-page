@@ -20,10 +20,10 @@
               <a class="nav-link" href="#">마이페이지</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-current="page" href="#">내 관심 공연</a>
+              <a class="nav-link" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">예매내역</a>
+              <a class="nav-link active fw-bold" aria-current="page" href="#">예매내역</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">대관내역</a>
@@ -48,47 +48,152 @@
       </div>
       <!-- 내역 -->
       <div class="rounded right">
-        <!-- 관심공연 목록 -->
-        <div id="mylist">
+        <div>
           <div class="title">
-            <span class="fs-5 fw-bold">내 관심 공연</span>
-            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">1건</span>의 관심공연이 등록되어 있습니다.</span>
+            <span class="fs-5 fw-bold">전체 예매내역</span>
+          </div>
+          <div class="datenav fs-7">
+            <span class="">기간선택</span>
+            <table>
+              <tr>
+                <td class="datebtn select"><a href="">1주일</a></td>
+                <td class="datebtn"><a href="">1개월</a></td>
+                <td class="datebtn"><a href="">3개월</a></td>
+                <td class="datebtn"><a href="">6개월</a></td>
+              </tr>
+            </table>
+            <div>
+              <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
+              <button class="btn mybtn resultbtn">조회</button>
+            </div>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">번호</th>
+                  <th class="col col-md-1">예매번호</th>
                   <th class="col col-md-2">공연정보</th>
-                  <th class="col col-md-1">분류</th>
-                  <th class="col col-md-1 end">삭제</th>
+                  <th class="col col-md-1">결제금액</th>
+                  <th class="col col-md-1 end">결제상태</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
-                <tr>
+                <tr class="mytr">
                   <td>
                     <div class="text-center">
-                      <span>1</span>
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
                     </div>
                   </td>
                   <td>
                     <a href="">
                       <div class="info">
-                        <div class="img2"></div>
+                        <div class="img1"></div>
                         <div class="txt">
                           <p class="fs-5 fw-bold">Title</p>
                           <table>
                             <tr>
-                              <th>기간</th>
-                              <td>2022.08.10 ~ 2022.09.20</td>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
                             </tr>
                           </table>
                         </div>
                       </div>
                     </a>
                   </td>
-                  <td class="text-center">뮤지컬</td>
-                  <td class="text-center end"><button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">삭제</button></td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center end">입금완료</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table>
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center end">입금완료</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table>
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center end">입금완료</td>
                 </tr>
               </tbody>
             </table>
@@ -127,7 +232,22 @@
 
 <script>
 export default {
-  name: 'PerformanceView'
+  name: 'TicketListView',
+  data() {
+    return{
+      startdate: '',
+      enddate: ''
+    }
+  },
+  created(){
+    const current = new Date();
+    const date = current.getFullYear()+'-'+('0'+(current.getMonth()+1)).slice(-2)+'-'+('0'+current.getDate()).slice(-2);
+    const weekdate = current.getFullYear()+'-'+('0'+(current.getMonth()+1)).slice(-2)+'-'+('0'+(current.getDate()-7)).slice(-2);
+    this.enddate = date;
+    // console.log(this.enddate);
+    this.startdate = weekdate;
+    // console.log(this.startdate);
+  }
 }
 </script>
 

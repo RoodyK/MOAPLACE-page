@@ -155,7 +155,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../scss/common.scss';
 
 #wrap {
@@ -183,7 +183,7 @@ export default {
     margin: 50px;
     .left {
       width: 300px;
-      height: 100%;
+      height: 600px;
       background-color: white;
       border: 2px solid #dbe2e8;
       margin-right: 30px;
@@ -211,6 +211,7 @@ export default {
           }
           a:hover {
             color: $brown;
+            opacity: 50%;
           }
           .active {
               color: $brown;
@@ -238,6 +239,31 @@ export default {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
+      }
+      .datenav {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        height: 70px;
+        margin: 30px 0px;
+        .mydate {
+          padding: 5px;
+        }
+        .datebtn {
+          padding: 5px 20px;
+          border: 1px solid gray;
+          background-color: white;
+        }
+        .select {
+          background-color: $brown;
+          a {
+            color: white;
+          }
+        }
+        .resultbtn {
+          margin-left: 10px;
+          font-size: 1em;
+        }
       }
       .table {
         th.col {
@@ -293,11 +319,28 @@ export default {
       .ticket-table {
         vertical-align : middle;
       }
+      .datenav {
+        background-color: rgb(249, 249, 249);
+      }
     }
   }
   #mypaging {
     display: flex;
     justify-content: center;
+    .select {
+      font-weight: bold;
+    }
+    li {
+      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+      a:hover {
+        color: $brown;
+        opacity: 50%;
+      }
+    }
   }
 }
 </style>
