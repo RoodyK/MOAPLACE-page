@@ -1,8 +1,7 @@
 <template>
   <nav>
-    <RouterLink to="/">Home</RouterLink>
+    <RouterView/>
   </nav>
-  <RouterView/>
 </template>
 
 <style>
