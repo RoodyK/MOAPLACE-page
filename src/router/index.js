@@ -10,6 +10,16 @@ const routes = [
     path:'/moa/calendar',
     name:'ShowCalendar',
     component: ()=> import('@/views/calendar/Calendar.vue')
+  },
+  {
+    path: '/moa/showlist',
+    name: 'showlist',
+    component: () => import('../views/show/ShowListView.vue')
+  },
+  {
+    path: '/moa/showdetail',
+    name: 'showdetail',
+    component: () => import('../views/show/ShowDetailView.vue')
   }
 ]
 
