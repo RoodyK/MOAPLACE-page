@@ -60,13 +60,14 @@
   display:flex;
   flex-direction: column;
   width: $width;
-  padding: 80px;
   color: $black;
+  padding-top: 50px;
   margin: auto;
 
   .info {
     width: 100%;
-    border: 1px solid lightgray;
+    color: #333333d4;
+    border: 1px solid #33333330;
 
     p {
     font-weight: bold;
@@ -130,15 +131,16 @@
     display: flex;
     justify-content: flex-end;
     margin: 15px;
+    margin-bottom: 50px;
 
-    button {
+    .update {
       background-color: $brown;
       width:160px;
       height:50px;
       border: none;
       margin: 3px;
       color:white;
-      border-radius: 5px 5px;
+      transition: all 0.3s;
 
       &:hover {
         border: 1px solid $brown;
@@ -146,14 +148,32 @@
         color:$brown;
       }
     }
+
+    .delete {
+      background-color:rgb(170 161 161);
+      width:100px;
+      height:50px;
+      border: none;
+      margin: 3px;
+      color:white;
+      transition: all 0.3s;
+
+      &:hover {
+        border: 1px solid $brown;
+        background-color: white;
+        color:$brown;
+      }
+    }
+
     .list{
       width:100px;
       height:50px;
       margin: 3px;
-      border-radius: 5px 5px;
       border: 1px solid $brown;
       background-color: white;
       color:$brown;
+      transition: all 0.3s;
+
 
       &:hover {
         background-color:$brown;

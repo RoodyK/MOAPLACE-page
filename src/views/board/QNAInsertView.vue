@@ -13,44 +13,47 @@
 
     <hr class="line">
 
-    <div class="forms">
     <form>
-      <div class="item">
-      문의구분
-      <select>
-        <option value=""> 분류 선택 </option>  
-        <option name="qna_sort" value="공연">공연</option>
-        <option name="qna_sort" value="대관">대관</option>
-        <option name="qna_sort" value="예매">예매</option>
-        <option name="qna_sort" value="관람">관람</option>
-        <option name="qna_sort" value="회원">회원</option>
-        <option name="qna_sort" value="기타">기타</option>
-      </select>
+    <div class="forms">
 
-      문의자
-      <input type="text" name="name" placeholder="이름">
+      <div class="headerBox">
+        <div class="sortBox">
+          <label>문의구분</label><br>
+          <select>
+            <option value=""> 분류 선택 </option>  
+            <option name="qna_sort" value="공연">공연 문의</option>
+            <option name="qna_sort" value="대관">대관 문의</option>
+            <option name="qna_sort" value="예매">예매 문의</option>
+            <option name="qna_sort" value="관람">관람 문의</option>
+            <option name="qna_sort" value="회원">회원 문의</option>
+            <option name="qna_sort" value="기타">기타 문의</option>
+          </select>
+        </div>
 
-      문의일
-      <input type="text" name="regdate" v-bind:value="calcDate" readonly="readonly"><br>
+        <div class="nameBox">
+          <label>작성자</label><br>
+          <input type="text" name="name" placeholder="문의자 이름">
+        </div>
       </div>
 
-      <hr class="line2">
-
-      제목<br>
-      <input type="text" name=""><br>
-
-      <hr class="line2">
+      <div class="titleBox">
+        <label>제목</label>
+        <input type="text" name="" placeholder="문의글 제목"><br>
+      </div>
       
-      내용<br>
-      <textarea></textarea><br>
+      <div class="contentBox">
+        <label>내용</label>
+        <textarea placeholder="문의하실 내용을 작성해주세요."></textarea>
+      </div>
 
       <div class="btnGroup">
-      <button type="submit" class="insert" @click.prevent="">문의글 등록</button>
-      <button class="cancle" @click="$router.push({name:'boardMain'})"> 취소 </button>
+        <button type="submit" class="insert" @click.prevent="">문의글 등록</button>
+        <button class="cancle" @click="$router.push({name:'boardMain'})"> 취소 </button>
       </div>
     
-    </form>
     </div>
+    </form>
+
   </div>
 </template>
 
@@ -63,19 +66,21 @@
   flex-direction: column;
   justify-content:center;
   align-items: center;
-  padding: 80px;
   color: $black;
+  padding-top: 50px;
   margin: auto;
 
   .info {
-    margin: 30px;
+    margin: 40px;
     text-align: center;
+    color: #333333d4;
   }
 
   .info2 {
     width: 100%;
-    border: 1px solid lightgray;
-    margin: 10px;
+    color: #333333d4;
+    border: 1px solid #33333330;
+    margin: 20px;
 
     p {
     font-weight: bold;
@@ -91,29 +96,36 @@
   .line {
     width: 100%;
     border: 2px solid $brown;
-    margin: 30px;
-  }
-
-  .line2 {
-    color: white; 
-    margin: 15px;  
+    margin: 25px;
   }
 
   .forms {
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    width:1100px;
+    margin-bottom: 50px;
 
-    .item{
-      select {
-        width: 230px;
-        height: 40px;
-        border: 1px solid lightgray;
+    label {
+      padding-top: 20px;
+    }
+
+    .headerBox{
+      display:flex;
+      justify-content: space-between;
+
+      .sortBox{
+        width: 28%;
+
+        select {
+          width:100%;
+          height: 40px;
+          border: 1px solid lightgray; 
+        }
       }
-      input {
-        width: 265px;
-        height: 40px;
-        border: 1px solid lightgray;
+
+      .nameBox {
+        width:70%;
+        input {
+          width: 100%;
+        }
       }
     }
 
@@ -137,10 +149,10 @@
         width:160px;
         height:50px;
         margin: 3px;
-        border-radius: 5px 5px;
         border: none;
         background-color: $brown;
         color:white;
+        transition: all 0.3s;
 
         &:hover {
           border: 1px solid $brown;
@@ -153,10 +165,10 @@
         width:100px;
         height:50px;
         margin: 3px;
-        border-radius: 5px 5px;
         border: 1px solid $brown;
         background-color: white;
         color:$brown;
+        transition: all 0.3s;
 
         &:hover {
           background-color:$brown;
