@@ -23,7 +23,7 @@
               <a class="nav-link" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-cur="page" href="#">예매내역</a>
+              <a class="nav-link active fw-bold" aria-current="page" href="#">예매내역</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">대관내역</a>
@@ -50,107 +50,63 @@
       <div class="rounded right">
         <div>
           <div class="title">
-            <span class="fs-5 fw-bold">전체 예매내역</span>
-          </div>
-          <div class="datenav fs-7">
-            <span class="">기간선택</span>
-            <table>
-              <tr>
-                <td class="datebtn select"><a href="">1주일</a></td>
-                <td class="datebtn"><a href="">1개월</a></td>
-                <td class="datebtn"><a href="">3개월</a></td>
-                <td class="datebtn"><a href="">6개월</a></td>
-              </tr>
-            </table>
-            <div>
-              <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
-              <button class="btn mybtn resultbtn">조회</button>
-            </div>
+            <span class="fs-5 fw-bold">대관내역</span>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">예매번호</th>
-                  <th class="col col-md-2">공연정보</th>
-                  <th class="col col-md-1">결제금액</th>
-                  <th class="col col-md-1">결제상태</th>
-                  <th class="col col-md-1 end">상세보기</th>
+                  <th class="col end" colspan="2">공연장2</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
-                <tr class="mytr">
-                  <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
-                    <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
-                        <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
-                  </td>
+                <tr>
+                  <th class="col-md-2 text-center descth">대관신청자</th>
+                  <td class="desctd">강아지</td>
                 </tr>
-                
+                <tr>
+                  <th class="col-md-2 text-center descth">신청일자</th>
+                  <td class="desctd">2022.08.09</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">대관일자</th>
+                  <td class="desctd">2022.08.09 12:00 ~ 14:00</td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <!-- 페이징 -->
-        <div id="mypaging">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Previous">
-                  <span aria-hidden="true">
-                    &laquo;
-                  </span>
-                </a>
-              </li>
-              <li class="page-item select"><a class="page-link" href="">1</a></li>
-              <li class="page-item"><a class="page-link" href="">2</a></li>
-              <li class="page-item"><a class="page-link" href="">3</a></li>
-              <li class="page-item"><a class="page-link" href="">4</a></li>
-              <li class="page-item"><a class="page-link" href="">5</a></li>
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Next">
-                  <span aria-hidden="true">
-                    &raquo;
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+        <div>
+          <div class="title">
+            <span class="fs-5 fw-bold">결제내역</span>
+          </div>
+          <div>
+            <table class="table table-borderless myborder ticket-table">
+              <tbody class="fs-7">
+                <tr>
+                  <th class="col-md-2 text-center descth">결제일</th>
+                  <td class="desctd">2022.08.01</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">결제금액</th>
+                  <td class="desctd">유선안내</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">결제수단</th>
+                  <td class="desctd">무통장입금</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">결제상태</th>
+                  <td class="desctd">신청완료</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="text-center btnmargin">
+          <p class="fs-7 brown">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
+          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">대관취소</button>
+          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">이전으로</button>
         </div>
       </div>
     </div>
@@ -159,22 +115,7 @@
 
 <script>
 export default {
-  name: 'TicketListView',
-  data() {
-    return{
-      startdate: '',
-      enddate: ''
-    }
-  },
-  created(){
-    const cur = new Date();
-    const date = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-    const weekdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
-    this.enddate = date;
-    // console.log(this.enddate);
-    this.startdate = weekdate;
-    // console.log(this.startdate);
-  }
+  name: 'RentalDetailView',
 }
 </script>
 
@@ -248,14 +189,30 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
+      .btnmargin {
+        margin-top: 30px;
+      }
       .mybtn {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        padding: 5px 50px;
+        &:hover {
+          color: white;
+          background: $brown;
+        }
       }
-      .mybtn:hover {
+      .mybtn2 {
         color: white;
-        background: $brown;
+        border-color: $brown;
+        background-color: $brown;
+        padding: 5px 50px;
+        margin-left: 20px;
+        &:hover {
+          color: $brown;
+          background: white;
+          border-color: $brown;
+        }
       }
       .title {
         display: flex;
@@ -334,6 +291,13 @@ export default {
         td{
           border-right: 1px solid #dbe2e8;
           border-bottom: 1px solid #dbe2e8;
+        }
+        .descth {
+          border: 1px solid #dbe2e8;
+          background-color: rgb(249, 249, 249);
+        }
+        .desctd {
+          border: 1px solid #dbe2e8;
         }
         .end{
           border-right: 0px;

@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import MypageView from '../views/users/MypageView.vue'
 import PerformanceView from '../views/users/PerformanceView.vue'
 import TicketListView from '../views/users/TicketListView.vue'
+import TicketDetailView from '../views/users/TicketDetailView.vue'
+import RentalListView from '../views/users/RentalListView.vue'
+import RentalDetailView from '../views/users/RentalDetailView.vue'
 
 const routes = [
   {
@@ -24,6 +27,21 @@ const routes = [
     path: '/users/ticket/list',
     name: 'myticketlist',
     component: TicketListView
+  },
+  {
+    path: '/users/ticket/detail',
+    name: 'myticketdetail',
+    component: TicketDetailView
+  },
+  {
+    path: '/users/rental/list',
+    name: 'myrentallist',
+    component: RentalListView
+  },
+  {
+    path: '/users/rental/detail',
+    name: 'myrentaldetail',
+    component: RentalDetailView
   }
 ]
 
