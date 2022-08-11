@@ -4,52 +4,56 @@
         <main id="main">
             <div class="inner">
                 <h2 class="title">대관관리 - 월간일정</h2>
-                <div>
-                    <v-sheet tile="tile" height="54" class="d-flex">
-                        <v-btn icon="icon" class="ma-2" @click="$refs.calendar.prev()">
-                            <i class="material-icons">navigate_before</i>
-                        </v-btn>
-                        <v-select
-                            v-model="type"
-                            :items="types"
-                            dense="dense"
-                            outlined="outlined"
-                            hide-details="hide-details"
-                            class="ma-2"
-                            label="type"></v-select>
-                        <v-select
-                            v-model="mode"
-                            :items="modes"
-                            dense="dense"
-                            outlined="outlined"
-                            hide-details="hide-details"
-                            label="event-overlap-mode"
-                            class="ma-2"></v-select>
-                        <v-select
-                            v-model="weekday"
-                            :items="weekdays"
-                            dense="dense"
-                            outlined="outlined"
-                            hide-details="hide-details"
-                            label="weekdays"
-                            class="ma-2"></v-select>
-                        <v-spacer></v-spacer>
-                        <v-btn icon="icon" class="ma-2" @click="$refs.calendar.next()">
-                            <i class="material-icons">navigate_next</i>
-                        </v-btn>
-                    </v-sheet>
-                    <v-sheet height="600">
-                        <v-calendar
-                            ref="calendar"
-                            v-model="value"
-                            :weekdays="weekday"
-                            :type="type"
-                            :events="events"
-                            :event-overlap-mode="mode"
-                            :event-overlap-threshold="30"
-                            :event-color="getEventColor"
-                            @change="getEvents"></v-calendar>
-                    </v-sheet>
+                <div class="calendar">
+                    <div class="calendar-top">
+                        <select class="years" v-model="currentYear">
+                            <option
+                                v-for="year in years"
+                                :key="year"
+                                :value="year">
+                                {{year}}
+                            </option>
+                        </select>
+                        년
+                        <select class="months"  v-model="currentMonth">
+                            <option
+                                v-for="month in months"
+                                :key="month"
+                                :value="month">
+                                {{month}}
+                            </option>
+                        </select>
+                        월
+                        <div class="btn-box">
+                            <button class="month-btn material-icons">
+                                navigate_before
+                            </button>
+                            <button class="month-btn material-icons">
+                                navigate_next
+                            </button>
+                        </div>
+                    </div>
+                    <div class="calendar-main">
+                        <div class="days">
+                            <div
+                                v-for="weekName in weekNames"
+                                :key="weekName">
+                                {{weekName}}
+                            </div>
+                        </div>
+                        <div class="dates">
+                            <div 
+                                class="cal-row"
+                                v-for="(row, index) in currentCalendar"
+                                :key="index">
+                                <div
+                                    v-for="(day, index2) in row"
+                                    :key="index2">
+                                    {{day}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -63,69 +67,97 @@
             SideMenu
         },
         data: () => ({
-            type: 'month',
-            types: [
-                'month', 'week', 'day', '4day'
-            ],
-            mode: 'stack',
-            modes: [
-                'stack', 'column'
-            ],
-            weekday: [0,1,2,3,4,5,6],
-            weekdays: [
-                {
-                    text: 'Sun - Sat',
-                    value: [0,1,2,3,4,5,6]
-                }, {
-                    text: 'Mon - Sun',
-                    value: [1,2,3,4,5,6,0]
-                }, {
-                    text: 'Mon - Fri',
-                    value: [1, 2, 3, 4, 5]
-                }, {
-                    text: 'Mon, Wed, Fri',
-                    value: [1, 3, 5]
-                }
-            ],
-            value: '',
-            events: [],
-            colors: ['blue','indigo','deep-purple','cyan','green','orange','grey darken-1'],
-            names: ['Meeting', 'Holiday','PTO','Travel','Event','Birthday','Conference','Party']
+            years:[2020,2021,2022,2023,2024],
+            months:[1,2,3,4,5,6,7,8,9,10,11,12],
+            weekNames:['일','월','화','수','목','금','토'],
+            rootYear:2020,
+            rootDayOfWeekIndex : 4, //2000년 1월 1일 = 토요일
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth()+1,
+            currentDay: new Date().getDate(),
+            currentMonthStartWeekIndex: null,
+            currentCalendar:[],
+            endOfDay : null,
+            memoDatas: [],
         }),
+        mounted(){
+            this.init();
+        },
         methods: {
-            getEvents({start, end}) {
-                const events = []
-                const min = new Date(`${start.date}T00:00:00`)
-                const max = new Date(`${end.date}T23:59:59`)
-                const days = (max.getTime() - min.getTime()) / 86400000
-                const eventCount = this.rnd(days, days + 20)
-                for (let i = 0; i < eventCount; i++) {
-                    const allDay = this.rnd(0, 3) === 0
-                    const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-                    const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-                    const secondTimestamp = this.rnd(
-                        2,
-                        allDay
-                            ? 288
-                            : 8
-                    ) * 900000
-                    const second = new Date(first.getTime() + secondTimestamp)
-                    events.push({
-                        name: this.names[this.rnd(0, this.names.length - 1)],
-                        start: first,
-                        end: second,
-                        color: this.colors[this.rnd(0, this.colors.length - 1)],
-                        timed: !allDay
-                    })
-                }
-                this.events = events
-            },
-            getEventColor(event) {
-                return event.color
-            },
-            rnd(a, b) {
-                return Math.floor((b - a + 1) * Math.random()) + a
-            }
+                init(){
+                    this.currentMonthStartWeekIndex = this.getStartWeek(this.currentYear, this.currentMonth);
+                    this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
+                    this.initCalendar();
+                },
+                initCalendar(){
+                    this.currentCalendar = [];
+                    let day=1;
+                    for(let i=0; i<6; i++){
+                    let calendarRow = [];
+                    for(let j=0; j<7; j++){
+                        if(i==0 && j<this.currentMonthStartWeekIndex){
+                        calendarRow.push("");
+                        }
+                        else if(day<=this.endOfDay){
+                        calendarRow.push(day);
+                        day++;
+                        }
+                        else{
+                        calendarRow.push("");
+                        }
+                    }
+                    this.currentCalendar.push(calendarRow);
+                    }
+                },
+                getEndOfDay(year, month){
+                    switch(month){
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                        case 8:
+                        case 10:
+                        case 12:
+                            return 31;
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11:
+                            return 30;
+                        case 2:
+                            if( (year%4 == 0) && (year%100 != 0) || (year%400 == 0) ){
+                            return 29;   
+                            }
+                            else{
+                                return 28;
+                            }
+                        default:
+                            console.log("unknown month " + month);
+                            return 0;
+                    }
+                },
+                getStartWeek(targetYear, targetMonth){
+                    let year = this.rootYear;
+                    let month = 1;
+                    let sumOfDay = this.rootDayOfWeekIndex;
+                    for(;;){ //while(true)은 webpack compiled with 1 error발생
+                        if(targetYear > year){
+                            for(let i=0; i<12; i++){
+                                sumOfDay += this.getEndOfDay(year, month+i);
+                            }
+                            year++;
+                        }
+                        else if(targetYear == year){
+                            if(targetMonth > month){
+                                sumOfDay += this.getEndOfDay(year, month);
+                                month++;
+                            }
+                            else if(targetMonth == month){
+                                return (sumOfDay) % 7;
+                            }
+                        }
+                    }
+                },
         }
     }
 </script>
