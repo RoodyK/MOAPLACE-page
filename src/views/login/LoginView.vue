@@ -3,7 +3,7 @@
     <div class="inner">
 
       <div class="title">
-        <span><strong>MOA PLACE</strong> 회원 로그인</span>
+        <h2><strong>MOA PLACE</strong> 회원 로그인</h2>
       </div>
       <from @enter.prevent>
         <div class="login">
@@ -50,15 +50,15 @@ export default {
       searches: [
         {
           name: '아이디 찾기',
-          href: '/user/findid'
+          href: '/login/findid'
         },
         {
           name: '비밀번호 찾기',
-          href: '/users/findpwd'
+          href: '/login/findpwd'
         },
         {
           name: '회원가입',
-          href: '/join'
+          href: '/join/same'
         }
       ]
     }
@@ -77,9 +77,11 @@ export default {
     position: relative;
     margin: 0 auto;
     .title {
-      font-size : 24px;
-      margin-bottom: 20px;
-      text-align: center;
+      h2 {
+        font-size : 30px;
+        margin: 20px 0;
+        text-align: center;
+      }
     }
     
     .login {
@@ -89,17 +91,18 @@ export default {
       }
       input {
         width: 400px;
-        height: 60px;
+        height: 70px;
         border-radius: 10px;
         padding: 5px;
-        
+        font-size: 23px;
+        padding: 10px;
       }
       input:focus {
         outline: 2px solid $brown;
       }
       .login-btn {
         width: 400px;
-        height: 60px;
+        height: 70px;
         font-size: 24px;
         border-radius: 10px;
         background-color: rgba($brown, .8);
@@ -139,7 +142,8 @@ export default {
     }
     .kakao-login img, .google-login img {
       width: 400px;
-      height: 70px;
+      height: 80px;
+      
     }
     .kakao-login {
       margin-bottom: 20px;

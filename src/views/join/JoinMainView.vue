@@ -10,13 +10,13 @@
         <div class="box active">정보입력</div>
         <div class="box">가입완료</div>
       </div>
-      
+
       <div class="line">
         <div class="step"></div>
         <div class="step"></div>
         <div class="step"></div>
       </div>
-      
+
       <form action="">
         <div class="join">
           <div class="id">
@@ -30,7 +30,7 @@
             <div class="pwdHelp help">asdasdasd</div>
           </div>
           <div class="confirmPwd">
-            <label for="confirmInput">비밀번호확인</label>
+            <label for="confirmInput">비밀번호 확인</label>
             <input type="text" class="confirmPwdInput" id="confirmInput">
             <div class="confirmPwdHelp help">asdasdasd</div>
           </div>
@@ -74,7 +74,7 @@
             <button>취소</button>
             <button>회원가입</button>
           </div>
-          
+
         </div>
       </form>
     </div>
@@ -83,222 +83,254 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
+  export default {
+    data() {
+      return {
 
-    }
-  },
-  methods: {
-    execDaumPostcode() {
-      new window.daum.Postcode({
-        oncomplete: function(data) {
-          var addr = ''; // 주소 변수
-          
-          if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+      }
+    },
+    methods: {
+      execDaumPostcode() {
+        new window.daum.Postcode({
+          oncomplete: function (data) {
+            var addr = ''; // 주소 변수
+
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
               addr = data.roadAddress;
-          } else { // 사용자가 지번 주소를 선택했을 경우(J)
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
               addr = data.jibunAddress;
-          }
+            }
 
-          // 우편번호와 주소 정보를 해당 필드에 넣는다.
-          document.getElementById('postcode').value = data.zonecode;
-          document.getElementById("address").value = addr;
-          // 커서를 상세주소 필드로 이동한다.
-          document.getElementById("detailAddress").focus();
-        }
-      }).open();
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('postcode').value = data.zonecode;
+            document.getElementById("address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("detailAddress").focus();
+          }
+        }).open();
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-@import '@/scss/common.scss';
+  @import '@/scss/common.scss';
 
-.join-all {
-  .inner {
-    width: 1100px;
-    margin: 0 auto;
-    position: relative;
-    .title {
-      text-align: center;
-      margin-bottom: 40px;
-      span {
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: 3px;
-      }
-    }
-    .regist {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
-      .box {
-        font-size: 1.4rem;
-        width: 180px;
-        height: 60px;
-        margin-right: 80px;
-        display:flex;
-        justify-content: center;
-        align-items: center;
-        border: 3px solid #777;
-        box-sizing: border-box;
-        position: relative;
-        &.active {
-          background-color: $brown;
-          color: #fff;
-        }
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
-    .line {
-      width: 700px;
-      height: 3px;
-      margin: 0 auto 100px;
-      background-color: #000;
+  .join-all {
+    .inner {
+      width: 1100px;
+      margin: 0 auto;
       position: relative;
-      .step {
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        border-radius: 50%;
-        border:2px solid $brown;
-        background-color: #fff;
-        &:nth-child(1) {
-          top:-10px;
-          left: 80px;
-        }
-        &:nth-child(2) {
-          top:-10px;
-          left: calc(50% - 10px);
-          background-color: $brown;
-        }
-        &:nth-child(3) {
-          top: -10px;
-          right: 80px;
+
+      .title {
+        text-align: center;
+        margin-bottom: 40px;
+
+        span {
+          font-size: 2rem;
+          font-weight: 700;
+          letter-spacing: 3px;
         }
       }
-    }
-    form {
-      input {
-        &:focus {
-          outline: 2px solid $brown;
-        }
-      }
-      .join {
-        width: 700px;
+
+      .regist {
         display: flex;
-        flex-direction: column;
-        margin: auto;
-        > div {
-          margin-bottom: 20px;
-          border-bottom: 1px solid rgba($brown, .3);
-          position: relative;
-          .help {
-            position: relative;
-            left: 25%;
-            color: #FF0000;
-            margin-bottom: 10px;
-          }
-          &:last-child{
-            border: none;
-          }
-        }
-        label {
-          width: 25%;
-          font-size: 24px;
-        }
-        input[type="text"], input[type="password"] {
-          width: 75%;
+        justify-content: center;
+        margin-bottom: 40px;
+
+        .box {
+          font-size: 1.4rem;
+          width: 180px;
           height: 60px;
-          font-size: 24px;
-          padding: 10px;
-          color: #333;
-          margin-bottom: 3px
-        }
-        .email {
-          input {
-            width: 50%;
-            margin-right: 13px;
-          }
-          button {
-            width :23%;
-            height: 60px;
-            border: none;
-            background-color: $brown;
-            color: #fff;
-            position: absolute;
-            top: 0;
-            right: 0;
-          }
-        }
-        .gender {
-          input {
-            margin-right: 20px;
-            width: 15px;
-            height: 15px;
-            outline: none;
-          }
-        }
-        .address {
+          margin-right: 80px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: 3px solid #777;
+          box-sizing: border-box;
           position: relative;
-          height: 250px;
-          border: none;
-          #postcode {
-            width: 35%;
-            margin-right: 70px;
-            margin-bottom: 10px;
-          }
-          button {
-            width: 30%;
-            height: 60px;
-            border: none;
+
+          &.active {
             background-color: $brown;
             color: #fff;
-            position: absolute;
-            top: 0;
-            right: 0;
           }
-          input#address {
-            position: absolute;
-            right: 0;
-            top: 70px;
-          }
-          #detailAddress {
-            position: absolute;
-            right: 0;
-            top: 140px;
+
+          &:last-child {
+            margin-right: 0;
           }
         }
-        .join-btn {
+      }
+
+      .line {
+        width: 700px;
+        height: 3px;
+        margin: 0 auto 100px;
+        background-color: #000;
+        position: relative;
+
+        .step {
+          width: 20px;
+          height: 20px;
+          position: absolute;
+          border-radius: 50%;
+          border: 2px solid $brown;
+          background-color: #fff;
+
+          &:nth-child(1) {
+            top: -10px;
+            left: 80px;
+          }
+
+          &:nth-child(2) {
+            top: -10px;
+            left: calc(50% - 10px);
+            background-color: $brown;
+          }
+
+          &:nth-child(3) {
+            top: -10px;
+            right: 80px;
+          }
+        }
+      }
+
+      form {
+        input {
+          &:focus {
+            outline: 2px solid $brown;
+          }
+        }
+
+        .join {
           width: 700px;
           display: flex;
-          margin: 0 auto 100px;
-          padding: 0;
-          button {
-            width: 100%;
-            height: 65px;
-            font-size: 24px;
-            border: none;
-            &:first-child {
-              margin-right: 15px;
-              background-color: #b1b1b1;
-              color: #fff;
+          flex-direction: column;
+          margin: auto;
+
+          >div {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba($brown, .3);
+            position: relative;
+
+            .help {
+              position: relative;
+              left: 25%;
+              color: #FF0000;
+              margin-bottom: 10px;
             }
+
             &:last-child {
+              border: none;
+            }
+          }
+
+          label {
+            width: 25%;
+            font-size: 24px;
+          }
+
+          input[type="text"],
+          input[type="password"] {
+            width: 75%;
+            height: 60px;
+            font-size: 24px;
+            padding: 10px;
+            color: #333;
+            margin-bottom: 3px
+          }
+
+          .email {
+            input {
+              width: 50%;
+              margin-right: 13px;
+            }
+
+            button {
+              width: 23%;
+              height: 60px;
+              border: none;
               background-color: $brown;
               color: #fff;
+              position: absolute;
+              top: 0;
+              right: 0;
             }
-            &:hover {
-              opacity: .9;
+          }
+
+          .gender {
+            input {
+              margin-right: 20px;
+              width: 15px;
+              height: 15px;
+              outline: none;
+            }
+          }
+
+          .address {
+            position: relative;
+            height: 250px;
+            border: none;
+
+            #postcode {
+              width: 35%;
+              margin-right: 70px;
+              margin-bottom: 10px;
+            }
+
+            button {
+              width: 30%;
+              height: 60px;
+              border: none;
+              background-color: $brown;
+              color: #fff;
+              position: absolute;
+              top: 0;
+              right: 0;
+            }
+
+            input#address {
+              position: absolute;
+              right: 0;
+              top: 70px;
+            }
+
+            #detailAddress {
+              position: absolute;
+              right: 0;
+              top: 140px;
+            }
+          }
+
+          .join-btn {
+            width: 700px;
+            display: flex;
+            margin: 0 auto 100px;
+            padding: 0;
+
+            button {
+              width: 100%;
+              height: 65px;
+              font-size: 24px;
+              border: none;
+
+              &:first-child {
+                margin-right: 15px;
+                background-color: #b1b1b1;
+                color: #fff;
+              }
+
+              &:last-child {
+                background-color: $brown;
+                color: #fff;
+              }
+
+              &:hover {
+                opacity: .9;
+              }
             }
           }
         }
       }
     }
   }
-}
 </style>
