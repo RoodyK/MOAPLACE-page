@@ -32,7 +32,11 @@ const routes = [
     name: 'qnaUpdate',
     component: () => import('@/views/board/QNAUpdateView.vue')
   },
-
+  {
+    path: '/moa/faq',
+    name: 'faq',
+    component: () => import('@/views/board/FAQView.vue')
+  }
 ]
 
 const router = createRouter({

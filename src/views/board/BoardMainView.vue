@@ -6,7 +6,7 @@
     <p> 자주묻는질문(FAQ)을 먼저 확인하시면 보다 빠르게 궁금한 점을 해결할 수 있습니다. </p>
 
     <div class="container">
-      <button class="btn"><img src="../../assets/board/faq.png"><br>자주묻는질문(FAQ)</button>
+      <button class="btn" @click="$router.push({name:'faq'})"><img src="../../assets/board/faq.png"><br>자주묻는질문(FAQ)</button>
       <button class="btn" @click="$router.push({name:'qnaInsert'})"><img src="../../assets/board/qna.png"><br>1:1문의글(QNA)</button>
       <button class="btn" @click="$router.push({name:'qnaList'})"><img src="../../assets/board/myqna.png" style="padding-left:30px;"><br>나의 문의글 확인</button>
     </div>

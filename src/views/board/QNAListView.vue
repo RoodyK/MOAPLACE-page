@@ -21,6 +21,7 @@
       <th>작성일</th>
     </tr>
     </thead>
+    <tbody>
     <tr>
       <td>3</td>
       <td><RouterLink to="/moa/qna/detail" class="router"> 관련 문의 </RouterLink></td>
@@ -39,7 +40,35 @@
       <td>답변완료</td>
       <td>2022-08-09</td>
     </tr>
+    </tbody>
   </table>
+
+  <!-- 페이징 -->
+  <div id="mypaging">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="" aria-label="Previous">
+            <span aria-hidden="true">
+              &laquo;
+            </span>
+          </a>
+          </li>
+            <li class="page-item"><a class="page-link" href="">1</a></li>
+            <li class="page-item"><a class="page-link" href="">2</a></li>
+            <li class="page-item"><a class="page-link" href="">3</a></li>
+            <li class="page-item"><a class="page-link" href="">4</a></li>
+            <li class="page-item"><a class="page-link" href="">5</a></li>
+            <li class="page-item">
+          <a class="page-link" href="" aria-label="Next">
+            <span aria-hidden="true">
+            &raquo;
+            </span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 
   <div class="btnGroup">
     <button class="insert" @click="$router.push({name:'qnaInsert'})">문의하기</button>
@@ -53,15 +82,16 @@
 
 .app {
   display:flex;
-  flex-direction: column;
+  flex-direction:column;
   width: $width;
-  padding: 80px;
   color: $black;
+  padding-top: 50px;
   margin: auto;
 
   .info {
     width: 100%;
-    border: 1px solid lightgray;
+    color: #333333d4;
+    border: 1px solid #33333330;
 
     p {
     font-weight: bold;
@@ -82,7 +112,6 @@
   .total {
     display: flex;
     justify-content: flex-end;
-    margin: 10px;
     color: gray;
 
     .cnt{
@@ -100,12 +129,19 @@
     thead {
       border-top:2px solid $black;
       border-bottom: 1px solid $black;
-      font-size:small;
     }
 
     tr {
       height: 50px;
       border-bottom: 1px dotted lightgray;
+    }
+
+    tbody{
+      tr{
+        &:hover {
+          background-color: rgb(249,249,249);
+        }
+      }
     }
 
     .router{
@@ -117,20 +153,32 @@
       }
     }
   }
+
+  #mypaging{
+    display: flex;
+    justify-content: center;
+    margin-top:15px;
+
+    ul,li,a,span {
+      color: $black;
+      border:none;
+    }
+  }
   
   .btnGroup{
     display: flex;
     justify-content: flex-end;
-    margin: 15px;
+    margin: 10px;
+    margin-bottom: 30px;
 
     .insert {
       width:160px;
       height:50px;
       margin: 3px;
-      border-radius: 5px 5px;
       border: none;
       background-color: $brown;
       color:white;
+      transition: all 0.3s;
 
       &:hover {
         border: 1px solid $brown;
