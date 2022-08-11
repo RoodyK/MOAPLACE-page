@@ -3,7 +3,8 @@
     <nav>
       <RouterLink to="/">Home</RouterLink> |
       <RouterLink to="/moa/moaplace/info">MOAPLACE 소개</RouterLink> |
-      <RouterLink to="/moa/moaplace/guide">MOAPLACE 홀 안내</RouterLink>
+      <RouterLink to="/moa/moaplace/guide">MOAPLACE 홀 안내</RouterLink> |
+      <RouterLink to="/moa/moaplace/navi">MOAPLACE 오시는 길 안내</RouterLink>
     </nav>
 
     <RouterView />

@@ -4,6 +4,7 @@ import moaplaceMainView from '../views/moaplace/MainView.vue'
 import moaplaceInfoView from '../views/moaplace/InfoView.vue'
 import moaplaceInfoView2 from '../views/moaplace/InfoView2.vue'
 import moaplaceInfoView3 from '../views/moaplace/InfoView3.vue'
+import moaplaceNaviView from '../views/moaplace/NaviView.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/moa/moaplace/guide3',
     name: 'moaplaceInfoView3',
     component: moaplaceInfoView3
+  },
+  {
+    path: '/moa/moaplace/navi',
+    name: 'moaplaceNaviView',
+    component: moaplaceNaviView
   }
 
 ]
