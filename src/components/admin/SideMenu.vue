@@ -159,6 +159,7 @@ export default {
     padding: 32px 0;
     background: $black;
     color: rgba(#fff, 0.5);
+    user-select:none;
     .nav-top{
       font-size: 14px;
       padding-bottom: 32px;
