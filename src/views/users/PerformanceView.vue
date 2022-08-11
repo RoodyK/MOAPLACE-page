@@ -17,10 +17,10 @@
         <div class="bot">
           <ul class="nav flex-column fs-6">
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-current="page" href="#">마이페이지</a>
+              <a class="nav-link" href="#">마이페이지</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">내 관심 공연</a>
+              <a class="nav-link active fw-bold" aria-current="page" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">예매내역</a>
@@ -87,7 +87,7 @@
                       </div>
                     </a>
                   </td>
-                  <td class="text-center">250,000원</td>
+                  <td class="text-center">뮤지컬</td>
                   <td class="text-center end"><button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">삭제</button></td>
                 </tr>
               </tbody>
@@ -105,7 +105,7 @@
                   </span>
                 </a>
               </li>
-              <li class="page-item"><a class="page-link" href="">1</a></li>
+              <li class="page-item select"><a class="page-link" href="">1</a></li>
               <li class="page-item"><a class="page-link" href="">2</a></li>
               <li class="page-item"><a class="page-link" href="">3</a></li>
               <li class="page-item"><a class="page-link" href="">4</a></li>
@@ -131,7 +131,192 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../scss/common.scss';
 
+#wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: rgb(249, 249, 249);
+  a {
+    color: $black;
+    text-decoration:none;
+  }
+  .fs-7 {
+    font-size: 0.8em;
+  }
+  .black {
+    color: $black;
+  }
+  .brown {
+    color: $brown;
+  }
+  #box {
+    display: flex;
+    justify-content: center;
+    width: $width;
+    margin: 50px;
+    .left {
+      width: 300px;
+      height: 600px;
+      background-color: white;
+      border: 2px solid #dbe2e8;
+      margin-right: 30px;
+      padding: 30px 20px;
+      .top {
+        margin-bottom: 10px;
+      }
+      .mid {
+        background-color: whitesmoke;
+        border: 2px solid #dbe2e8;
+        padding: 15px;
+        p {
+          margin: 0;
+        }
+        span {
+          color: #D67747;
+        }
+      }
+      .bot {
+        margin: 10px 0px;
+        ul li {
+          border-bottom: 1px solid #CCCCCC;
+          a {
+            color: $black;
+          }
+          a:hover {
+            color: $brown;
+            opacity: 50%;
+          }
+          .active {
+              color: $brown;
+          }
+        }
+      }
+    }
+    .right {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border: 2px solid #dbe2e8;
+      padding: 30px;
+      .mybtn {
+        color: $brown;
+        border-color: $brown;
+        background-color: white;
+      }
+      .mybtn:hover {
+        color: white;
+        background: $brown;
+      }
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .datenav {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        height: 70px;
+        margin: 30px 0px;
+        .mydate {
+          padding: 5px;
+        }
+        .datebtn {
+          padding: 5px 20px;
+          border: 1px solid gray;
+          background-color: white;
+        }
+        .select {
+          background-color: $brown;
+          a {
+            color: white;
+          }
+        }
+        .resultbtn {
+          margin-left: 10px;
+          font-size: 1em;
+        }
+      }
+      .table {
+        th.col {
+          background-color: $brown;
+          color: white;
+        }
+        tbody {
+          td:hover {
+            background-color: rgb(249, 249, 249);
+          }
+        }
+        td {
+          background-color: white;
+          .info {
+            display: flex;
+            margin: 20px 20px;
+            .img1 {
+              background-color: gray;
+              width: 110px;
+              height: 150px;
+              margin-right: 20px;
+            }
+            .img2 {
+              background-color: gray;
+              width: 55px;
+              height: 75px;
+              margin-right: 20px;
+            }
+            .txt {
+              p {
+                margin: 0px;
+              }
+              table td,th {
+                border: 0px;
+                background-color: transparent;
+              }
+            }
+          }
+        }
+      }
+      .myborder {
+        th{
+          border-right: 1px solid #eee;
+        }
+        td{
+          border-right: 1px solid #dbe2e8;
+          border-bottom: 1px solid #dbe2e8;
+        }
+        .end{
+          border-right: 0px;
+        }
+      }
+      .ticket-table {
+        vertical-align : middle;
+      }
+      .datenav {
+        background-color: rgb(249, 249, 249);
+      }
+    }
+  }
+  #mypaging {
+    display: flex;
+    justify-content: center;
+    .select {
+      font-weight: bold;
+    }
+    li {
+      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+      a:hover {
+        color: $brown;
+        opacity: 50%;
+      }
+    }
+  }
+}
 </style>
