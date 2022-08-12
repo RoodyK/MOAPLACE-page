@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import RentalListView from '@/views/admin/Rental/RentalList.vue'
 import RentalDetailView from '@/views/admin/Rental/RentalDetail.vue'
 import RentalCalendarView from '@/views/admin/Rental/RentalCalendar.vue'
+import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
 import TmpView from '@/views/admin/Rental/Temp.vue'
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
     name: 'tmp',
     component: TmpView
   },
+  {
+    path: '/moa/admin/hall/list',
+    name: 'adminHallInfoList',
+    component: AdminHallInfoList
+  }
 ]
 
 const router = createRouter({
