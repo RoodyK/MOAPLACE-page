@@ -40,6 +40,12 @@
             <button>이메일 인증</button>
             <div class="confirmPwdHelp help">asdasdasd</div>
           </div>
+          <div class="authentication">
+            <label for="authenticationInput">인증번호</label>
+            <input type="text" class="authenticationInput" id="authenticationInput">
+            <button>인증번호 확인</button>
+            <div class="authenticationHelp help">asdasdasd</div>
+          </div>
           <div class="name">
             <label for="nameInput">이름</label>
             <input type="text" class="nameInput" id="nameInput">
@@ -207,7 +213,7 @@
           flex-direction: column;
           margin: auto;
 
-          >div {
+          > div {
             margin-bottom: 20px;
             border-bottom: 1px solid rgba($brown, .3);
             position: relative;
@@ -239,7 +245,7 @@
             margin-bottom: 3px
           }
 
-          .email {
+          .email, .authentication {
             input {
               width: 50%;
               margin-right: 13px;
