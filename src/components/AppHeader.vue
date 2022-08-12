@@ -1,5 +1,5 @@
 <template>
-    <header id="header">
+    <header id="header" :class="{'white-thema': isMain}">
         <div class="gnb">
             <h1 class="logo">
                 <RouterLink
@@ -23,48 +23,39 @@
                     <li
                         v-for="menu in navigations"
                         :key="menu.name"
-                        @mouseenter="showMenu">
+                        @mouseenter="isActive = true">
                         <RouterLink
                             :to="menu.href">
                             {{menu.name}}
                         </RouterLink>
                     </li>
                 </ul>
-                <transition name="slide">
-                       <div class="submenu-wrap" @mouseleave="undoShowMenu" v-show="isShow">
-                            <ul class="submenu">
+                
+                <div class="submenu-wrap" :class="{on:isActive}" @mouseleave="isActive = false">
+                    <ul class="submenu">
+                        <li
+                            v-for="menu in navigations"
+                            :key="menu.name">
+                            <RouterLink
+                                :to="menu.href">
+                                {{menu.name}}
+                            </RouterLink>
+                            <ul>
                                 <li
-                                    v-for="menu in navigations"
-                                    :key="menu.name">
+                                    v-for="submenu in menu.submenus"
+                                    :key="submenu.name">   
                                     <RouterLink
-                                        :to="menu.href">
-                                        {{menu.name}}
+                                        :to="submenu.href">
+                                        {{submenu.name}}
                                     </RouterLink>
-                                    <ul>
-                                        <li
-                                            v-for="submenu in menu.submenus"
-                                            :key="submenu.name">   
-                                            <RouterLink
-                                                :to="submenu.href">
-                                                {{submenu.name}}
-                                            </RouterLink>
-                                        </li>
-                                    </ul>
                                 </li>
                             </ul>
-                        </div> 
-                </transition>
+                        </li>
+                    </ul>
+                </div> 
             </nav>
         </div>
-        <transition name="slide"
-            @enter="enter"
-            @after-enter="leave"
-            @before-leave="enter"
-            @after-leave="leave"
-            >
-        <!-- <transition> -->
-            <div :class="bgClass" v-show="isShow"></div>
-        </transition>
+        <div class="nav-bg" :class="{on: isActive}"></div>
     </header>
 </template>
 <script>
@@ -75,7 +66,8 @@ export default {
     return{
         logo: 'logo-white',
         bgClass:'nav-bg',
-        isShow: false,
+        isActive: false,
+        isMain:false,
         // 경로 임시 입력(변경필요*)
         navigations :[
             {
@@ -133,19 +125,24 @@ export default {
         ]
     }    
   },
+  mounted(){
+    window.scrollTo(0,0);
+    window.addEventListener('scroll', this.onScroll);
+  },
   methods:{
-    showMenu(){
-        this.isShow = true;
-    },
-    undoShowMenu(){
-        this.isShow=false;
-    },
-    enter() {
-        this.bgClass = 'nav-bg on';
-    },
-
-    leave() {
-        this.bgClass = 'nav-bg';
+    onScroll(){
+        //현재 스크롤 위치 가져오기
+        let currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        if(currentScrollPosition < 0){
+            return;
+        }
+        //헤더가 안보이기 시작할때부터 적용
+        this.isMain = currentScrollPosition > 121;
+        if(this.isMain){
+            this.logo = 'logo-black'
+        }else{
+            this.logo = 'logo-white'
+        }
     }
   }
 }
@@ -161,7 +158,7 @@ export default {
     $brown : #826D5E;
 
     header#header{
-        position: absolute;//스크롤이 메인슬라이드를 벗어나면 fixed
+        position: fixed;
         z-index: 9999;
 
         width: 100%;
@@ -170,6 +167,7 @@ export default {
         background: rgba(black, 0.2);
         border-bottom: 1px solid $border-color;
         color: #fff;
+        transition: all 0.5s;
         a{
             color: #fff;
         }
@@ -240,7 +238,12 @@ export default {
                     top: 100%;
                     left: 0;
                     z-index: 99;
-
+                    height: 0;
+                    overflow: hidden;
+                    transition: all 0.5s;
+                    &.on{
+                        height:253px;
+                    }
                     .submenu{
                         width: $width;
                         margin: 0 auto;
@@ -293,35 +296,46 @@ export default {
         }
         .nav-bg{
             width: 100%;
-            height: 320px;
+            height: 0px;
             background: rgba(#f1f1f1, 0.9) no-repeat right bottom;
             background-image: url(@/assets/default/nav_bg.png);
-            // transition: all 0.5s;
+            
+            box-sizing: border-box;
+            transition: all 0.5s;
 
             position: absolute;
-            top: 120px;
+            top: 121px;
             left: 0;
             z-index: 9;
 
             &.on{
                 display: block;
                 height: 320px;
+                box-shadow: rgba($black, 0.1) 5px 5px 5px;
             }
         }
-        
+        // 스크롤 아래로 이동하면 적용되는 css
+        &.white-thema{
+            background: rgba(#fff, 0.97);
+            border-color:rgba($black, 0.5);
+            color: $black;
+            a{
+                color: $black;
+            }
+            .gnb{
+                border-color:rgba($black, 0.5);
+                .logo{
+                    border-color:rgba($black, 0.5);
+                }
+                nav{
+                    .top-menu{
+                        border-color:rgba($black, 0.5);
+                    }
+                }
+            }
+            .nav-bg{
+                background-color: rgba(#fff, 0.97);;
+            }
+        }
     }
-    
-    .slide-enter-active{
-        transition: all .5s;
-    }
-    .slide-enter {
-        // height: 0;
-        opacity: 0;
-    }
-    .slide-enter-to {
-        opacity: 1;
-    }
-    
-
-    
 </style>
