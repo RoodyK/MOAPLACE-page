@@ -24,13 +24,25 @@
     </div>
     <hr>
     <div id=nav>
-      <div id=present class="click">상세보기</div>
-      <div class="click" onclick="location.href='/moa/showreview;">관람평</div>
+      <div class="click">상세보기</div>
+      <div id=present class="click">관람평</div>
       <div class="click">취소 및 환불 안내</div>
     </div>
     <div id="datail">
-      <img src="../../assets/detail1.jpg">
-      <img src="../../assets/detail2.jpg">
+      <h4>(웃는남자)에 대한 1개의 리뷰가 있어요!</h4>
+      <div id="write">
+        <img src="../../assets/star5.png">
+        <div id="cont">
+          <textarea cols="110" rows="7" placeholder="감상평을 남겨주세요. 공연과 상관없는 내용은 양관에 의해 제재를 받을수 있습니다.">
+            <span>0/1000</span>
+          </textarea>
+          <button>관람평 등록</button>
+        </div>
+      </div>
+      <div id="review">
+        <img src="../../assets/star5.png">
+        나이가 무색할 정도의 탐 크루즈의 피지컬, 연기, 액션이 멋졌습니다. 1편의 이야기를 세심하고 적절하게 엮어서 새로운 스토리를 잘 만들었어요.
+      </div>
     </div>
   </div>
 </template>
@@ -47,9 +59,11 @@ export default {
     width: $width;
     margin: 0 auto;
   }
-  h4{
-    color: $black;
-    text-align: center;
+  #title{
+    h4{
+      color: $black;
+      text-align: center;
+    }
   }
   hr{
     height: 3px;
@@ -89,12 +103,6 @@ export default {
     color: $brown;
     border-bottom: 3px solid $brown;
   }
-  #datail{
-    text-align: center;
-    img{
-      margin-top: 50px;
-    }
-  }
   span{
     font-weight: bold;
   }
@@ -106,5 +114,37 @@ export default {
     margin-left: 30px;
     font-size: 20px;
     line-height: 50px;
+  }
+  #datail{
+    text-align: center;
+    margin-bottom: 20px;
+    img{
+      margin-right: 750px;
+    }
+    h4{
+      text-align: left;
+      margin-left: 50px;
+      margin-top: 120px;
+    }
+  }
+  #write{
+    margin-top: 50px;
+    background-color: silver;
+    button{
+      position: absolute;
+      margin-top: 65px;
+      color: white;
+      background-color: $black;
+      height: 50px;
+      width: 130px;
+    }
+    textarea{
+      margin-right: 50px;
+    }
+  }
+  #review{
+    margin-top: 30px;
+    background-color: silver;
+    float: left;
   }
 </style>
