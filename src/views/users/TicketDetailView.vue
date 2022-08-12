@@ -126,7 +126,7 @@
 
 <script>
 export default {
-  name: 'MyTicketDetailView',
+  name: 'MyTicketDetailView'
 }
 </script>
 

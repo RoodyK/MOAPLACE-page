@@ -8,6 +8,8 @@ import MyRentalListView from '../views/users/RentalListView.vue'
 import MyRentalDetailView from '../views/users/RentalDetailView.vue'
 import MyReviewListView from '../views/users/ReviewListView.vue'
 import MyQNAListView from '../views/users/QNAListView.vue'
+import MyInfoEditView from '../views/users/InfoEditView.vue'
+import WithdrawalView from '../views/users/WithdrawalView.vue'
 
 const routes = [
   {
@@ -54,6 +56,16 @@ const routes = [
     path: '/users/qna/list',
     name: 'myqnalist',
     component: MyQNAListView
+  },
+  {
+    path: '/users/info/edit',
+    name: 'myinfoedit',
+    component: MyInfoEditView
+  },
+  {
+    path: '/users/withdrawal',
+    name: 'withdrawal',
+    component: WithdrawalView
   }
 ]
 
