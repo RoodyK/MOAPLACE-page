@@ -90,7 +90,7 @@ const routes = [
     path: '/moa/moaplace/news/insert',
     name: 'adminNewsInsert',
     component: AdminNewsInsert
-  }
+  },
 
 ]
 
