@@ -129,6 +129,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/common.scss";
+$brown: #826d5e;
 .m00 {
   width: 100%;
   position: relative;
@@ -179,7 +181,7 @@ export default {
 }
 .m14 .txt_box {
   float: left;
-  background: #015152;
+  background: $brown;
   background-size: 100%;
   box-sizing: border-box;
   width: calc(100% - 750px);
@@ -201,10 +203,10 @@ ul {
   padding-right: 2rem;
 }
 .m14 .txt_box ul li:first-child {
-  background: url(@/assets/moaplace/m14_icon1.png) no-repeat top left;
+  background: url(@/assets/moaplace/location.png) no-repeat top left;
 }
 .m14 .txt_box ul li:last-child {
-  background: url(@/assets/moaplace/m14_icon2.png) no-repeat top left;
+  background: url(@/assets/moaplace/phone-call.png) no-repeat top left;
 }
 .m14 .txt_box ul li {
   padding-left: 55px;
@@ -223,7 +225,7 @@ ul {
   font-weight: 500;
 }
 .m14 .table2 {
-  border-top: 2px solid #015152;
+  border-top: 2px solid $black;
 }
 .m00 .table {
   width: 100%;
@@ -277,7 +279,7 @@ th {
 .m14 .table2 .td .txt {
   display: inline-block;
   margin-right: 10px;
-  color: #015152;
+  color: $brown;
 }
 
 .m00 .table .td .txt {
