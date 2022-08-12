@@ -5,6 +5,9 @@ import moaplaceInfoView from '../views/moaplace/InfoView.vue'
 import moaplaceInfoView2 from '../views/moaplace/InfoView2.vue'
 import moaplaceInfoView3 from '../views/moaplace/InfoView3.vue'
 import moaplaceNaviView from '../views/moaplace/NaviView.vue'
+import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
+import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
+import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 
 const routes = [
   {
@@ -36,6 +39,21 @@ const routes = [
     path: '/moa/moaplace/navi',
     name: 'moaplaceNaviView',
     component: moaplaceNaviView
+  },
+  {
+    path: '/moa/moaplace/news',
+    name: 'moaplaceMoaNews',
+    component: moaplaceMoaNews
+  },
+  {
+    path: '/moa/moaplace/news/detail',
+    name: 'moaplaceMoaDetail',
+    component: moaplaceMoaDetail
+  },
+  {
+    path: '/moa/moaplace/news/update',
+    name: 'moaplaceMoaUpdate',
+    component: moaplaceMoaUpdate
   }
 
 ]
