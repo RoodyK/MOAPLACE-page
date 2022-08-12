@@ -6,32 +6,18 @@
                 <h2 class="title">대관관리 - 월간일정</h2>
                 <div class="calendar">
                     <div class="calendar-top">
-                        <select class="years" v-model="currentYear">
-                            <option
-                                v-for="year in years"
-                                :key="year"
-                                :value="year">
-                                {{year}}
-                            </option>
-                        </select>
-                        년
-                        <select class="months"  v-model="currentMonth">
-                            <option
-                                v-for="month in months"
-                                :key="month"
-                                :value="month">
-                                {{month}}
-                            </option>
-                        </select>
-                        월
-                        <div class="btn-box">
-                            <button class="month-btn material-icons">
-                                navigate_before
-                            </button>
-                            <button class="month-btn material-icons">
-                                navigate_next
-                            </button>
-                        </div>
+                        <span>
+                            {{currentYear}}년
+                        </span>
+                        <span>
+                            {{currentMonth}}월
+                        </span>
+                        <button class="month-btn material-icons prev-btn" @click="onClickPrev(currentMonth)">
+                            navigate_before
+                        </button>
+                        <button class="month-btn material-icons next-btn" @click="onClickNext(currentMonth)">
+                            navigate_next
+                        </button>
                     </div>
                     <div class="calendar-main">
                         <div class="days">
@@ -45,11 +31,27 @@
                             <div 
                                 class="cal-row"
                                 v-for="(row, index) in currentCalendar"
-                                :key="index">
+                                :key="index"
+                                ref="calRow">
                                 <div
                                     v-for="(day, index2) in row"
-                                    :key="index2">
-                                    {{day}}
+                                    :key="index2"
+                                    :class="{empty: day ==''}">
+                                    <span v-if="isToday(currentYear, currentMonth, day)" class="round">
+                                        {{day}}
+                                    </span>
+                                    <span v-else>
+                                        {{day}}
+                                    </span>
+                                    <ul>
+                                        <li v-for="(item, index) in getSchedules(currentYear, currentMonth, day)" :key="index">
+                                          <routerLink
+                                            to="#">
+                                            <span>{{ item.time }}</span>
+                                            <span>{{ item.title }}</span>
+                                          </routerLink>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -62,15 +64,14 @@
 
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
+
     export default {
         components: {
             SideMenu
         },
         data: () => ({
-            years:[2020,2021,2022,2023,2024],
-            months:[1,2,3,4,5,6,7,8,9,10,11,12],
             weekNames:['일','월','화','수','목','금','토'],
-            rootYear:2020,
+            rootYear:1904,
             rootDayOfWeekIndex : 4, //2000년 1월 1일 = 토요일
             currentYear: new Date().getFullYear(),
             currentMonth: new Date().getMonth()+1,
@@ -79,9 +80,46 @@
             currentCalendar:[],
             endOfDay : null,
             memoDatas: [],
+            schedules:[
+                {   
+                    year: 2022,
+                    month: 1,
+                    schedule:[
+                        {day: 1, time: '09:00', title: '전국 노래자랑'},
+                        {day: 1, time: '10:00', title: '전국 노래자랑'},
+                        {day: 1, time: '09:00', title: '전국 노래자랑'},
+                    ]
+                },
+                {
+                    year:2022,
+                    month: 8, 
+                    schedule: [
+                        {day: 11, time: '09:00', title:'우리 고양이 귀여워'},
+                        {day: 12, time: '09:00', title:'웃는남자'},
+                        {day: 15, time: '14:00', title:'광복절특사'},
+                        {day: 15, time: '16:00', title:'광복절특사'},
+                    ]
+                },
+                {
+                    year:2022,
+                    month: 7, 
+                    schedule: [
+                        {day: 11, time: '09:00', title:'우리 고양이 귀여워'},
+                    ]
+                },
+                {
+                    year:2022,
+                    month: 8, 
+                    schedule: [
+                        {day: 5, time: '09:00', title:'우리 고양이 귀여워'},
+                        {day: 20, time: '09:00', title:'자바의 정석'},
+                    ]
+                },
+            ]
         }),
         mounted(){
             this.init();
+            console.log(this.currentCalendar);
         },
         methods: {
                 init(){
@@ -93,20 +131,20 @@
                     this.currentCalendar = [];
                     let day=1;
                     for(let i=0; i<6; i++){
-                    let calendarRow = [];
-                    for(let j=0; j<7; j++){
-                        if(i==0 && j<this.currentMonthStartWeekIndex){
-                        calendarRow.push("");
+                        let calendarRow = [];
+                        for(let j=0; j<7; j++){
+                            if(i==0 && j< this.currentMonthStartWeekIndex+1){
+                                calendarRow.push("");
+                            }
+                            else if(day<=this.endOfDay){
+                                calendarRow.push(day);
+                                day++;
+                            }
+                            else{
+                                calendarRow.push("");
+                            }
                         }
-                        else if(day<=this.endOfDay){
-                        calendarRow.push(day);
-                        day++;
-                        }
-                        else{
-                        calendarRow.push("");
-                        }
-                    }
-                    this.currentCalendar.push(calendarRow);
+                        this.currentCalendar.push(calendarRow);
                     }
                 },
                 getEndOfDay(year, month){
@@ -158,6 +196,46 @@
                         }
                     }
                 },
+                onClickPrev(month){
+                    month--;
+                    if(month<=0){
+                        this.currentMonth = 12;
+                        this.currentYear -= 1;
+                    }
+                    else{
+                     this.currentMonth -= 1;
+                    }
+                    this.init();
+                },
+                onClickNext(month){
+                    month++;
+                    if(month>12){
+                        this.currentMonth = 1;
+                        this.currentYear += 1;
+                    }
+                    else{
+                        this.currentMonth += 1;
+                    }
+                    this.init();
+                },
+                isToday(year, month, day){
+                    let date = new Date();
+                    return year == date.getFullYear() && month == date.getMonth()+1 && day == date.getDate(); 
+                },
+                getSchedules(year, month, day){
+                    let list = [];
+                    for(let i = 0; i < this.schedules.length; i++) {
+                    if(this.schedules[i].year == year && this.schedules[i].month == month) {
+                        this.schedules[i].schedule.forEach(item => {
+                        if(item.day == day){
+                            list.push({day: item.day, time:item.time, title:item.title});
+                        }
+                        });
+                    }
+                    }
+                    // console.log(list);
+                    return list;
+                }
         }
     }
 </script>
@@ -173,6 +251,7 @@
         padding: 0;
         margin: 0;
         list-style: none;
+        text-decoration: none;
     }
     // 관리자 페이지 레이아웃 관련 시작------------------
     #wrap {
@@ -199,78 +278,126 @@
             }
             // 관리자 페이지 레이아웃 관련 끝------------------
 
-            .state-box {
-                width: 100%;
-                border: 1px solid rgba($black, 0.5);
-                padding: 8px 16px;
-                span {
-                    border-right: 1px solid rgba($black, 0.5);
-                    padding-right: 16px;
-                    margin-right: 16px;
+            .calendar{
+                padding-top: 16px;
+                .calendar-top{
+                    width: 185px;
+                    position: relative;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-size: 18px;
+                    text-align: center;
                     font-weight: bold;
-                }
-                select {
-                    padding: 4px;
-                }
-            }
-            .info-box {
-                margin: 32px 0;
-                h3 {
-                    font-size: 20px;
-                    margin-bottom: 16px;
-                }
-                div {
-                    border-top: 1px solid $black;
-                    padding-top: 16px;
-                    table {
-                        border-collapse: collapse;
-                        width: 100%;
-                        border-top: 1px solid rgba($black,0.3);
-                        border-width: 1px 0;
-
-                        tr {
-                            td,
-                            th {
-                                padding: 8px 16px;
-                                border-bottom: 1px solid rgba($black, 0.3);
+                    span{
+                        &:first-child{
+                            margin-right: 16px;
+                        }
+                        select{
+                            border: none;
+                            font-weight: bold;
+                            &:focus{
+                                outline: none;
                             }
-                            th {
-                                width: 15%;
-                                background: #eee;
-                                text-align: center;
-                            }
-
+                        }
+                    }
+                    .month-btn{
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        border: none;
+                        padding: 4px;
+                        border-radius: 50%;
+                        background: transparent;
+                        font-size: 20px;
+                        transition: all 0.3s;
+                        &.prev-btn{
+                            left: -32px;
+                        }
+                        &.next-btn{
+                            right: -32px;
+                        }
+                        &:hover{
+                            background: #ddd;
                         }
                     }
                 }
-
-            }
-            .answer-box {
-                margin-bottom: 32px;
-                h3 {
-                    font-size: 20px;
-                    margin-bottom: 16px;
-                }
-                textarea {
-                    width: 100%;
-                    border-color: rgba($black, 0.3);
-                    padding: 16px;
-                }
-            }
-            .btn-box {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                button {
-                    width: calc((100% - 16px) /2);
-                    padding: 12px 0;
-                    border: none;
-                    &:last-child {
-                        background-color: $brown;
+                .calendar-main{
+                    .days{
+                        display: flex;
+                        border-width: 1px 0;
+                        margin-top: 16px;
+                        background: $black;
                         color: #fff;
+                        div{
+                            width: calc(100% / 7);
+                            padding: 8px 0;
+                            text-align: center;
+                            font-weight: bold;
+                            border-right: 1px solid rgba($black, 0.5);
+                            &:first-child{
+                                color: #ff5872;
+                            }
+                            &:last-child{
+                                border: none;
+                                color: #73bdff;
+                            }
+                        }
+                    }
+                    .dates{
+                        display: flex;
+                        flex-flow: column;
+                        .cal-row{
+                            display: flex;
+                            flex-flow: row;
+                            border-bottom: 1px solid rgba($black, 0.5);
+                            div{
+                                width: calc(100% / 7);
+                                border-right: 1px solid rgba($black, 0.5);
+                                min-height: 150px;
+                                font-weight: bold;
+                                padding: 8px;
+                                &.empty{
+                                    background: #f3f3f3;
+                                }
+                                &:last-child{
+                                    border: none;
+                                    color: #2c88d9;
+                                }
+                                .round{
+                                    padding: 4px;
+                                    border-radius: 50%;
+                                    background: #ff8e55;
+                                }
+                                ul{
+                                  margin-top:8px;
+                                  li{
+                                    a{
+                                      font-size: 14px;
+                                      display: flex;
+                                      color: lighten($black, 10%);
+                                      transition: all 0.3s;
+                                      &:hover{
+                                        color:#ff8e55;
+                                      }
+                                      span{
+                                        &:first-child{
+                                          padding-right: 8px;
+                                        }
+                                        &:last-child{
+                                          overflow: hidden;
+                                          white-space: nowrap;
+                                          text-overflow: ellipsis;
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                            }
+                        }
                     }
                 }
             }
+            
         }
 
     }
