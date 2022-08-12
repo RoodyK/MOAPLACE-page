@@ -7,9 +7,9 @@
 
                 <div class="titleBox">
                     <span>공연번호</span>
-                    <input type="text" v-model="list[0].num">
+                    <input type="text" v-model="list[0].num" readonly>
                     <span>공연명</span>
-                    <input type="text" v-model="list[0].title">
+                    <input type="text" v-model="list[0].title" readonly>
                 </div>
 
                 <div class="hallInfo">
@@ -154,6 +154,9 @@
                             margin-right: 16px;
                             border: none;
                             width: 56px;
+                            &:focus{
+                              outline: none;
+                            }
                             &:nth-child(4) {
                                 width: calc(100%/1.4);
                             }

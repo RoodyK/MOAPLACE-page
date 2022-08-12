@@ -185,7 +185,7 @@
                     }
                     select {
                         position: absolute;
-                        top: 8px;
+                        top: 10px;
                         right: 288px;
                         border-right: 1px solid #ddd;
                     }
@@ -210,7 +210,6 @@
                         height: 40px;
                         position: unset;
                         margin-left: 16px;
-
                     }
                 }
                 .list {
