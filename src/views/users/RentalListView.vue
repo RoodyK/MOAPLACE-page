@@ -99,6 +99,48 @@
                     <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
                   </td>
                 </tr>
+                <tr>
+                  <td>
+                    <div class="text-center">
+                      <span>2022-08-09</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">공연장2</p>
+                          <p>2022.08.09 12:00 ~ 14:00</p>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">신청완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="text-center">
+                      <span>2022-08-09</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">공연장2</p>
+                          <p>2022.08.09 12:00 ~ 14:00</p>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">신청완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -136,7 +178,7 @@
 
 <script>
 export default {
-  name: 'RentalListView',
+  name: 'MyRentalListView',
   data() {
     return{
       startdate: '',

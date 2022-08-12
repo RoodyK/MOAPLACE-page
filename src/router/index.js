@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MypageView from '../views/users/MypageView.vue'
-import PerformanceView from '../views/users/PerformanceView.vue'
-import TicketListView from '../views/users/TicketListView.vue'
-import TicketDetailView from '../views/users/TicketDetailView.vue'
-import RentalListView from '../views/users/RentalListView.vue'
-import RentalDetailView from '../views/users/RentalDetailView.vue'
+import MyPerformanceView from '../views/users/PerformanceView.vue'
+import MyTicketListView from '../views/users/TicketListView.vue'
+import MyTicketDetailView from '../views/users/TicketDetailView.vue'
+import MyRentalListView from '../views/users/RentalListView.vue'
+import MyRentalDetailView from '../views/users/RentalDetailView.vue'
+import MyReviewListView from '../views/users/ReviewListView.vue'
 
 const routes = [
   {
@@ -21,27 +22,32 @@ const routes = [
   {
     path: '/users/performance',
     name: 'myperformance',
-    component: PerformanceView
+    component: MyPerformanceView
   },
   {
     path: '/users/ticket/list',
     name: 'myticketlist',
-    component: TicketListView
+    component: MyTicketListView
   },
   {
     path: '/users/ticket/detail',
     name: 'myticketdetail',
-    component: TicketDetailView
+    component: MyTicketDetailView
   },
   {
     path: '/users/rental/list',
     name: 'myrentallist',
-    component: RentalListView
+    component: MyRentalListView
   },
   {
     path: '/users/rental/detail',
     name: 'myrentaldetail',
-    component: RentalDetailView
+    component: MyRentalDetailView
+  },
+  {
+    path: '/users/review/list',
+    name: 'myreviewlist',
+    component: MyReviewListView
   }
 ]
 

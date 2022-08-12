@@ -23,10 +23,10 @@
               <a class="nav-link" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-current="page" href="#">예매내역</a>
+              <a class="nav-link" href="#">예매내역</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">대관내역</a>
+              <a class="nav-link active fw-bold" aria-current="page" href="#">대관내역</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">관람 후기</a>
@@ -115,7 +115,7 @@
 
 <script>
 export default {
-  name: 'RentalDetailView',
+  name: 'MyRentalDetailView',
 }
 </script>
 

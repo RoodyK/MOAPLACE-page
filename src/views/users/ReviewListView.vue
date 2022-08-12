@@ -23,13 +23,13 @@
               <a class="nav-link" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-cur="page" href="#">예매내역</a>
+              <a class="nav-link" href="#">예매내역</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">대관내역</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">관람 후기</a>
+              <a class="nav-link active fw-bold" aria-cur="page" href="#">관람 후기</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">1:1 문의</a>
@@ -50,159 +50,60 @@
       <div class="rounded right">
         <div>
           <div class="title">
-            <span class="fs-5 fw-bold">전체 예매내역</span>
+            <span class="fs-5 fw-bold">관람 후기</span>
           </div>
-          <div class="datenav fs-7">
-            <span class="">기간선택</span>
-            <table>
-              <tr>
-                <td class="datebtn select"><a href="">1주일</a></td>
-                <td class="datebtn"><a href="">1개월</a></td>
-                <td class="datebtn"><a href="">3개월</a></td>
-                <td class="datebtn"><a href="">6개월</a></td>
-              </tr>
-            </table>
-            <div>
-              <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
-              <button class="btn mybtn resultbtn">조회</button>
-            </div>
+          <div class="titledesc">
+            <p class="desctxt fs-7">
+              <span class="fw-bold">고객님의 관람후기 내역입니다.</span>
+              <br>
+              <span class="fs-8">
+                운영 규정에 어긋난다고 판단되는 게시글은 사전 통보없이 블라인드 처리될 수 있습니다.<br>
+                특히 티켓 매매 및 양도의 글은 발견 즉시 임의 삭제되며 전화번호, 이메일 등의 개인정보는 악용될 우려가 있으므로 게시를 삼가 주시기 바랍니다.<br>
+                사전 경고에도 불구하고 불량 게시물을 계속적으로 게재한 게시자의 경우 계정 이용이 제한됩니다.<br>
+              </span>
+            </p>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">예매번호</th>
-                  <th class="col col-md-2">공연정보</th>
-                  <th class="col col-md-1">결제금액</th>
-                  <th class="col col-md-1">결제상태</th>
-                  <th class="col col-md-1 end">상세보기</th>
+                  <th class="col col-md-1">공연정보</th>
+                  <th class="col col-md-4 end">내용</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
                 <tr class="mytr">
                   <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
                     <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
+                      <div class="info info-sub">
+                        <div class="img3"></div>
                         <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
+                          <p class="fs-6 fw-bold">Title</p>
                         </div>
                       </div>
                     </a>
                   </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  <td class="end">
+                    <p class="brown">2022.08.12</p>
+                    <p class="fs-4 brown starpoint">★★★★★</p>
+                    <p>관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트</p>
                   </td>
                 </tr>
                 <tr class="mytr">
                   <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
                     <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
+                      <div class="info info-sub">
+                        <img src="../../assets/testposter.jpg" class="img3">
                         <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
+                          <p class="fs-6 fw-bold">화난남자</p>
                         </div>
                       </div>
                     </a>
                   </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
-                  </td>
-                </tr>
-                <tr class="mytr">
-                  <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
-                    <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
-                        <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  <td class="end">
+                    <p class="brown">2022.08.10</p>
+                    <p class="fs-4 brown starpoint">★★★★☆</p>
+                    <p>화내지 마세요</p>
                   </td>
                 </tr>
               </tbody>
@@ -242,7 +143,7 @@
 
 <script>
 export default {
-  name: 'MyTicketListView',
+  name: 'MyReviewListView',
   data() {
     return{
       startdate: '',
@@ -264,6 +165,10 @@ export default {
 <style lang="scss" scoped>
 @import '../../scss/common.scss';
 
+* {
+  margin: 0;
+}
+
 #wrap {
   display: flex;
   justify-content: center;
@@ -274,6 +179,9 @@ export default {
     text-decoration:none;
   }
   .fs-7 {
+    font-size: 0.8em;
+  }
+  .fs-8 {
     font-size: 0.8em;
   }
   .black {
@@ -331,6 +239,9 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
+      .starpoint {
+        margin-bottom: 5px;
+      }
       .mybtn {
         color: $brown;
         border-color: $brown;
@@ -344,7 +255,14 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .titledesc {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        .desctxt {
+          margin: 15px 20px;
+        }
       }
       .datenav {
         display: flex;
@@ -398,6 +316,12 @@ export default {
               height: 75px;
               margin-right: 20px;
             }
+            .img3 {
+              background-color: gray;
+              width: 80px;
+              height: 110px;
+              margin-bottom: 5px;
+            }
             .txt {
               p {
                 margin: 0px;
@@ -407,6 +331,12 @@ export default {
                 background-color: transparent;
               }
             }
+          }
+          .info-sub {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0px 10px 0px;
           }
         }
       }
