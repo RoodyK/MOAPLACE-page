@@ -121,7 +121,90 @@
                     <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
                   </td>
                 </tr>
-                
+                <tr class="mytr">
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table>
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center">입금완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
+                <tr class="mytr">
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table>
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center">입금완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -159,7 +242,7 @@
 
 <script>
 export default {
-  name: 'TicketListView',
+  name: 'MyTicketListView',
   data() {
     return{
       startdate: '',

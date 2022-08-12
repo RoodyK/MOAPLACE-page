@@ -127,7 +127,7 @@
 
 <script>
 export default {
-  name: 'PerformanceView'
+  name: 'MyPerformanceView'
 }
 </script>
 
