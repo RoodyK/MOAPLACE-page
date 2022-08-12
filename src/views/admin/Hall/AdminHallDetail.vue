@@ -18,7 +18,9 @@
                         <table>
                             <tr>
                                 <th>공연장</th>
-                                <td colspan="3">{{list[0].hall}}</td>
+                                <td>{{list[0].hall}}</td>
+                                <th>공연장르</th>
+                                <td>클래식</td>
                                 <th>공연상태</th>
                                 <td colspan="3">{{list[0].status}}</td>
                             </tr>
