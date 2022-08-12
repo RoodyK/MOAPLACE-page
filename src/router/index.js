@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
+import RentalInfoView from '../views/rental/RentalInfoView.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/moa/rental/insert',
     name: 'rentalInsert',
     component: RentalInsertView
+  },
+  {
+    path: '/moa/rental',
+    name: 'rentalInfo',
+    component: RentalInfoView
   },
 ]
 

@@ -130,6 +130,28 @@
           </div>
         </div>
         <div class="t-row">
+          <div>대관희망시간</div>
+          <div>
+            <div class="time-box">
+              <select>
+                <option>시간선택</option>
+                <option 
+                  v-for="time in times" 
+                  :key="time"
+                  :value="time">
+                  {{time}}
+                </option>
+              </select>
+              <p>
+                * 대관시간은 선택시간으로부터 6시간입니다.
+                <br>
+                * 모아플레이스 사정에 따라 시간은 변경될 수 있습니다.
+                </p>
+            </div>
+            <span>{{msg}}</span>
+          </div>
+        </div>
+        <div class="t-row">
           <div>첨부파일</div>
           <div>
             <input type="file" id="file" accept=".zip" @change="handleFileChange">
@@ -206,6 +228,21 @@
       return{
           msg: '필수 입력 사항입니다.',
           filename: '',
+          times: [
+            '09:00',
+            '10:00',
+            '11:00',
+            '12:00',
+            '13:00',
+            '14:00',
+            '15:00',
+            '16:00',
+            '17:00',
+            '18:00',
+            '19:00',
+            '20:00',
+            '21:00'
+          ],
       }
     },
     methods:{
@@ -355,7 +392,7 @@
               padding-top: 5px;
             }
 
-            .phone-box, .email-box,.file-box {
+            .phone-box, .email-box,.file-box,.time-box {
               width: 60%;
               display: flex;
               input{
@@ -371,6 +408,13 @@
                 color: $black;
                 padding-top: 8px;
                 margin: 0;
+              }
+              p{
+                font-size: 12px;
+                margin: 0 0 0 16px;
+              }
+              select{
+                padding: 0 8px;
               }
             }
             textarea{
