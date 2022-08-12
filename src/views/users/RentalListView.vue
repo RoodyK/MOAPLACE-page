@@ -52,7 +52,7 @@
           <div class="title">
             <span class="fs-5 fw-bold">전체 대관내역</span>
           </div>
-          <div class="datenav fs-7">
+          <div class="datenav fs-7 titledesc">
             <span class="">기간선택</span>
             <table>
               <tr>
@@ -282,6 +282,13 @@ export default {
         align-items: center;
         margin-bottom: 10px;
       }
+      .titledesc {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        .desctxt {
+          margin: 15px 20px;
+        }
+      }
       .datenav {
         display: flex;
         align-items: center;
@@ -360,9 +367,6 @@ export default {
       }
       .ticket-table {
         vertical-align : middle;
-      }
-      .datenav {
-        background-color: rgb(249, 249, 249);
       }
     }
   }

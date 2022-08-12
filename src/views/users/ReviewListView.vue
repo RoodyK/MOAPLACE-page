@@ -51,6 +51,7 @@
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">관람 후기</span>
+            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">2건</span>의 관람후기가 등록되어 있습니다.</span>
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
@@ -72,7 +73,7 @@
                 </tr>
               </thead>
               <tbody class="fs-7">
-                <tr class="mytr">
+                <tr>
                   <td>
                     <a href="">
                       <div class="info info-sub">
@@ -83,13 +84,13 @@
                       </div>
                     </a>
                   </td>
-                  <td class="end">
-                    <p class="brown">2022.08.12</p>
+                  <td class="reviewtxt end">
                     <p class="fs-4 brown starpoint">★★★★★</p>
                     <p>관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트</p>
+                    <p class="brown reviewdate">2022.08.10</p>
                   </td>
                 </tr>
-                <tr class="mytr">
+                <tr>
                   <td>
                     <a href="">
                       <div class="info info-sub">
@@ -100,10 +101,10 @@
                       </div>
                     </a>
                   </td>
-                  <td class="end">
-                    <p class="brown">2022.08.10</p>
+                  <td class="reviewtxt end">
                     <p class="fs-4 brown starpoint">★★★★☆</p>
                     <p>화내지 마세요</p>
+                    <p class="brown reviewdate">2022.08.10</p>
                   </td>
                 </tr>
               </tbody>
@@ -144,21 +145,6 @@
 <script>
 export default {
   name: 'MyReviewListView',
-  data() {
-    return{
-      startdate: '',
-      enddate: ''
-    }
-  },
-  created(){
-    const cur = new Date();
-    const date = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-    const weekdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
-    this.enddate = date;
-    // console.log(this.enddate);
-    this.startdate = weekdate;
-    // console.log(this.startdate);
-  }
 }
 </script>
 
@@ -239,6 +225,9 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
+      .reviewdate {
+        margin: 10px 0px;
+      }
       .starpoint {
         margin-bottom: 5px;
       }
@@ -354,6 +343,9 @@ export default {
       }
       .ticket-table {
         vertical-align : middle;
+        .reviewtxt {
+          padding: 0px 15px;
+        }
       }
       .datenav {
         background-color: rgb(249, 249, 249);
