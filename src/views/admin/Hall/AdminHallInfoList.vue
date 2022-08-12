@@ -3,7 +3,7 @@
         <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연관리</h2>
+                <h2 class="title">공연정보</h2>
                 <div class="list-top">
                     <select>
                         <option value="hall">공연장</option>
@@ -27,12 +27,10 @@
                             <p>공연날짜</p>
                             <p>공연시작일</p>
                             <p>공연종료일</p>
-                            <p>공연상태</p>
+                            <p>공연회차</p>
                             <p>공연시작시간</p>
-                            <p>러닝타임</p>
-                            <p>인터미션</p>
                             <p>잔여석/좌석수</p>
-                            <p>상연등급</p>
+                            <p>공연상태</p>
                         </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody">
                             <p>{{item.num}}</p>
@@ -41,12 +39,10 @@
                             <p>{{item.appdate}}</p>
                             <p>{{item.appdate}}</p>
                             <p>{{item.regdate}}</p>
-                            <p>{{item.status}}</p>
+                            <p>{{item.count}} 회차</p>
                             <p>{{item.opentime}}</p>
-                            <p>{{item.runningtime}}</p>
-                            <p>{{item.intermission}}</p>
                             <p>{{item.seats}}</p>
-                            <p>{{item.grade}}</p>
+                            <p>{{item.status}}</p>
                         </div>
                         <ul class="paging">
                             <li>[이전]</li>
@@ -78,9 +74,8 @@
                             regdate: '2022.08.10',
                             appdate: '2022.08.10',
                             status: '진행중',
-                            runningtime: 120,
+                            count: 1,
                             opentime: '13:30',
-                            intermission: 20,
                             seats: '77/120',
                             grade: 15
                         }, {
@@ -90,9 +85,8 @@
                             regdate: '2022.08.10',
                             appdate: '2022.08.10',
                             status: '진행중',
-                            runningtime: 120,
+                            count: 2,
                             opentime: '13:30',
-                            intermission: 20,
                             seats: '20/120',
                             grade: 15
                         }, {
@@ -102,11 +96,9 @@
                             regdate: '2022.08.10',
                             appdate: '2022.08.10',
                             status: '공연종료',
-                            runningtime: 120,
                             opentime: '13:30',
-                            intermission: 20,
+                            count: 2,
                             seats: '77/120',
-                            grade: 15
                         }, {
                             num: 0,
                             hall: '공연장1',
@@ -114,11 +106,9 @@
                             regdate: '2022.08.10',
                             appdate: '2022.08.10',
                             status: '공연종료',
-                            runningtime: 120,
                             opentime: '13:30',
-                            intermission: 20,
+                            count: 1,
                             seats: '110/120',
-                            grade: 15
                         }, {
                             num: 1,
                             hall: '공연장1',
@@ -126,11 +116,9 @@
                             regdate: '2022.08.10',
                             appdate: '2022.08.10',
                             status: '공연종료',
-                            runningtime: 120,
                             opentime: '13:30',
-                            intermission: 20,
+                            count: 1,
                             seats: '110/120',
-                            grade: 15
                         }
                     ]
                 }
@@ -185,9 +173,12 @@
                     }
                     select {
                         position: absolute;
-                        top: 10px;
+                        top: 8px;
                         right: 288px;
                         border-right: 1px solid #ddd;
+                        &:focus{
+                            outline: none;
+                        }
                     }
                     button {
                         background: transparent;
@@ -200,14 +191,18 @@
                     input {
                         width: 280px;
                         box-sizing: border-box;
+                        height: 32px;
                         padding: 4px 32px 4px 90px;
+                        &:focus{
+                            outline-color: $black;
+                        }
                     }
                     .insertBtn {
                         background-color: $black;
                         color: white;
                         font-size: 16px;
                         width: 80px;
-                        height: 40px;
+                        height: 32px;
                         position: unset;
                         margin-left: 16px;
                     }
@@ -237,7 +232,7 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /12);
+                            width: calc(100% /10);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
