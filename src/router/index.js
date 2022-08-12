@@ -7,6 +7,7 @@ import MyTicketDetailView from '../views/users/TicketDetailView.vue'
 import MyRentalListView from '../views/users/RentalListView.vue'
 import MyRentalDetailView from '../views/users/RentalDetailView.vue'
 import MyReviewListView from '../views/users/ReviewListView.vue'
+import MyQNAListView from '../views/users/QNAListView.vue'
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/users/review/list',
     name: 'myreviewlist',
     component: MyReviewListView
+  },
+  {
+    path: '/users/qna/list',
+    name: 'myqnalist',
+    component: MyQNAListView
   }
 ]
 

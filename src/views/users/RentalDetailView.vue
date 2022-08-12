@@ -52,11 +52,11 @@
           <div class="title">
             <span class="fs-5 fw-bold">대관내역</span>
           </div>
-          <div>
+          <div class="desc">
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col end" colspan="2">공연장2</th>
+                  <th class="col end" colspan="2">신청 정보</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
@@ -65,12 +65,57 @@
                   <td class="desctd">강아지</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">신청일자</th>
-                  <td class="desctd">2022.08.09</td>
+                  <th class="col-md-2 text-center descth">연락처</th>
+                  <td class="desctd">010-0000-0000</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">대관일자</th>
-                  <td class="desctd">2022.08.09 12:00 ~ 14:00</td>
+                  <th class="col-md-2 text-center descth">E-mail</th>
+                  <td class="desctd">moa@moa.com</td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="table table-borderless myborder ticket-table">
+              <thead>
+                <tr class="text-center">
+                  <th class="col end" colspan="2">공연 정보</th>
+                </tr>
+              </thead>
+              <tbody class="fs-7">
+                <tr>
+                  <th class="col-md-2 text-center descth">공연명</th>
+                  <td class="desctd">우리집 고양이가 제일 귀여워</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">공연장</th>
+                  <td class="desctd">모던홀</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">대관희망일자</th>
+                  <td class="desctd">2022-08-25</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">대관시작시간</th>
+                  <td class="desctd">09:00</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">공연장르</th>
+                  <td class="desctd">무용</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">첨부파일</th>
+                  <td class="desctd">공연계획서.zip</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">담당자</th>
+                  <td class="desctd">고양이박사님</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">담당자 연락처</th>
+                  <td class="desctd">010-0000-0000 / se@moa.com</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">기타 요청사항</th>
+                  <td class="desctd">에어컨을 시원하게 틀어주세요.</td>
                 </tr>
               </tbody>
             </table>
@@ -78,29 +123,13 @@
         </div>
         <div>
           <div class="title">
-            <span class="fs-5 fw-bold">결제내역</span>
+            <span class="fs-5 fw-bold">답변</span>
           </div>
-          <div>
-            <table class="table table-borderless myborder ticket-table">
-              <tbody class="fs-7">
-                <tr>
-                  <th class="col-md-2 text-center descth">결제일</th>
-                  <td class="desctd">2022.08.01</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">결제금액</th>
-                  <td class="desctd">유선안내</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">결제수단</th>
-                  <td class="desctd">무통장입금</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">결제상태</th>
-                  <td class="desctd">신청완료</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="titledesc">
+            <p class="desctxt fs-7">
+              공연계획서 확인했습니다. 대관시작시간은 9시로 하시죠. 돈 보내주세용 3333230293-092342 모아플레이스<br>
+              줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트
+            </p>
           </div>
         </div>
         <div class="text-center btnmargin">
@@ -218,7 +247,17 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .titledesc {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        .desctxt {
+          margin: 15px 20px;
+        }
+      }
+      .desc {
+        margin-bottom: 30px;
       }
       .datenav {
         display: flex;
@@ -305,6 +344,7 @@ export default {
       }
       .ticket-table {
         vertical-align : middle;
+        margin-bottom: 30px;
       }
       .datenav {
         background-color: rgb(249, 249, 249);

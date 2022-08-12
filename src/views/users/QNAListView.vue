@@ -29,10 +29,10 @@
               <a class="nav-link" href="#">대관내역</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-cur="page" href="#">관람 후기</a>
+              <a class="nav-link" href="#">관람 후기</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">1:1 문의</a>
+              <a class="nav-link active fw-bold" aria-cur="page" href="#">1:1 문의</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">내 정보 수정</a>
@@ -50,61 +50,49 @@
       <div class="rounded right">
         <div>
           <div class="title">
-            <span class="fs-5 fw-bold">관람 후기</span>
-            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">2건</span>의 관람후기가 등록되어 있습니다.</span>
+            <span class="fs-5 fw-bold">1:1 문의</span>
+            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">1건</span>의 문의내역이 등록되어 있습니다.</span>
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
-              <span class="fw-bold">고객님의 관람후기 내역입니다.</span>
+              <span class="fw-bold">고객님의 1:1 문의 내역입니다.</span>
               <br>
               <span class="fs-8">
-                운영 규정에 어긋난다고 판단되는 게시글은 사전 통보없이 블라인드 처리될 수 있습니다.<br>
-                특히 티켓 매매 및 양도의 글은 발견 즉시 임의 삭제되며 전화번호, 이메일 등의 개인정보는 악용될 우려가 있으므로 게시를 삼가 주시기 바랍니다.<br>
-                사전 경고에도 불구하고 불량 게시물을 계속적으로 게재한 게시자의 경우 계정 이용이 제한됩니다.<br>
+                모아플레이스에 바라는 사항이나 불편한 사항, 궁금증을 올려 주시면 성심성의껏 답변해 드리겠습니다.<br>
+                FAQ를 먼저 검색해 보세요. 자주 하는 질문을 모아 두었습니다.<br>
               </span>
             </p>
           </div>
+          <div class="btnarea">
+            <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">1:1 문의하기</button>
+          </div>
           <div>
-            <table class="table table-borderless myborder ticket-table">
+            <table class="table table-borderless myborder ticket-table qna-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">공연정보</th>
-                  <th class="col col-md-4 end">내용</th>
+                  <th class="col col-md-1">구분</th>
+                  <th class="col col-md-4">제목</th>
+                  <th class="col col-md-1">작성일</th>
+                  <th class="col col-md-1">답변일</th>
+                  <th class="col col-md-1 end">답변상태</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
                 <tr>
-                  <td>
-                    <a href="">
-                      <div class="info info-sub">
-                        <div class="img3"></div>
-                        <div class="txt">
-                          <p class="fs-6 fw-bold">Title</p>
-                        </div>
-                      </div>
-                    </a>
+                  <td class="sort">
+                    <p>공연</p>
                   </td>
-                  <td class="reviewtxt end">
-                    <p class="fs-4 brown starpoint">★★★★★</p>
-                    <p>관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트</p>
-                    <p class="brown reviewdate">2022.08.10</p>
+                  <td class="qnatitle">
+                    <p><a href="">공연은 언제 하나요?</a></p>
                   </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a href="">
-                      <div class="info info-sub">
-                        <img src="../../assets/testposter.jpg" class="img3">
-                        <div class="txt">
-                          <p class="fs-6 fw-bold">화난남자</p>
-                        </div>
-                      </div>
-                    </a>
+                  <td class="qnadate">
+                    <p>2022.08.12</p>
                   </td>
-                  <td class="reviewtxt end">
-                    <p class="fs-4 brown starpoint">★★★★☆</p>
-                    <p>화내지 마세요</p>
-                    <p class="brown reviewdate">2022.08.10</p>
+                  <td class="qnadate">
+                    <p>2022.08.12</p>
+                  </td>
+                  <td class="qnastate end">
+                    <p>답변대기</p>
                   </td>
                 </tr>
               </tbody>
@@ -144,7 +132,7 @@
 
 <script>
 export default {
-  name: 'MyReviewListView',
+  name: 'MyQNAListView',
 }
 </script>
 
@@ -225,6 +213,11 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
+      .btnarea {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+      }
       .reviewdate {
         margin: 10px 0px;
       }
@@ -248,7 +241,7 @@ export default {
       }
       .titledesc {
         border: 5px solid #eee;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         .desctxt {
           margin: 15px 20px;
         }
@@ -345,6 +338,22 @@ export default {
         vertical-align : middle;
         .reviewtxt {
           padding: 0px 15px;
+        }
+      }
+      .qna-table {
+        .sort {
+          text-align: center;
+        }
+        .qnatitle {
+          &:hover {
+            font-weight: bold;
+          }
+        }
+        .qnadate {
+          text-align: center;
+        }
+        .qnastate {
+          text-align: center;
         }
       }
       .datenav {
