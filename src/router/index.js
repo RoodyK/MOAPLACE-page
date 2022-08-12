@@ -11,6 +11,9 @@ import FAQDetailView from '@/views/admin/board/FAQDetail.vue'
 import FAQInsertView from '@/views/admin/board/FAQInsert.vue'
 import QNAListView from '@/views/admin/board/QNAList.vue'
 import QNADetailView from '@/views/admin/board/QNADetail.vue'
+import AdminNewsList from '@/views/admin/board/NewsList.vue'
+import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
+import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 
 const routes = [
   {
@@ -63,7 +66,7 @@ const routes = [
     name: 'qnaDetail',
     component: QNADetailView
   },
-
+  {
     path: '/moa/admin/show/list',
     name: 'adminHallInfoList',
     component: AdminHallInfoList
@@ -72,7 +75,23 @@ const routes = [
     path: '/moa/admin/show/detail',
     name: 'adminHallDetail',
     component: AdminHallDetail
+  },
+  {
+    path: '/moa/moaplace/news',
+    name: 'adminNewsList',
+    component: AdminNewsList
+  },
+  {
+    path: '/moa/moaplace/news/detail',
+    name: 'adminNewsDetail',
+    component: AdminNewsDetail
+  },
+  {
+    path: '/moa/moaplace/news/insert',
+    name: 'adminNewsInsert',
+    component: AdminNewsInsert
   }
+
 ]
 
 const router = createRouter({
