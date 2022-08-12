@@ -24,6 +24,7 @@
                             <p>공연번호</p>
                             <p>공연장</p>
                             <p>공연명</p>
+                            <p>공연날짜</p>
                             <p>공연시작일</p>
                             <p>공연종료일</p>
                             <p>공연상태</p>
@@ -37,6 +38,7 @@
                             <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
                             <p>{{item.title}}</p>
+                            <p>{{item.appdate}}</p>
                             <p>{{item.appdate}}</p>
                             <p>{{item.regdate}}</p>
                             <p>{{item.status}}</p>
@@ -59,7 +61,7 @@
                 </div>
             </main>
         </div>
-    </template>
+</template>
     <script>
         import SideMenu from '@/components/admin/SideMenu.vue'
         export default {
@@ -137,8 +139,6 @@
     </script>
     <style lang="scss" scoped="scoped">
         @import "@/scss/common.scss";
-        //삭제필요
-        $brown: #826D5E;
         nav {
             display: none !important;
         }
@@ -238,7 +238,7 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /11);
+                            width: calc(100% /12);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
