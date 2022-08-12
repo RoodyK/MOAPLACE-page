@@ -4,6 +4,7 @@ import RentalListView from '@/views/admin/Rental/RentalList.vue'
 import RentalDetailView from '@/views/admin/Rental/RentalDetail.vue'
 import RentalCalendarView from '@/views/admin/Rental/RentalCalendar.vue'
 import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
+import AdminHallDetail from '@/views/admin/Hall/AdminHallDetail.vue'
 import TmpView from '@/views/admin/Rental/Temp.vue'
 
 const routes = [
@@ -33,9 +34,14 @@ const routes = [
     component: TmpView
   },
   {
-    path: '/moa/admin/hall/list',
+    path: '/moa/admin/show/list',
     name: 'adminHallInfoList',
     component: AdminHallInfoList
+  },
+  {
+    path: '/moa/admin/show/detail',
+    name: 'adminHallDetail',
+    component: AdminHallDetail
   }
 ]
 
