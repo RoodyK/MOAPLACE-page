@@ -23,7 +23,7 @@
               <a class="nav-link" href="#">내 관심 공연</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-current="page" href="#">예매내역</a>
+              <a class="nav-link" href="#">예매내역</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">대관내역</a>
@@ -35,7 +35,7 @@
               <a class="nav-link" href="#">1:1 문의</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">내 정보 수정</a>
+              <a class="nav-link active fw-bold" aria-current="page" href="#">내 정보 수정</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">로그아웃</a>
@@ -50,74 +50,92 @@
       <div class="rounded right">
         <div>
           <div class="title">
-            <span class="fs-5 fw-bold">예매내역</span>
-          </div>
-          <div>
-            <table class="table table-borderless myborder ticket-table">
-              <thead>
-                <tr class="text-center">
-                  <th class="col end" colspan="2">Title</th>
-                </tr>
-              </thead>
-              <tbody class="fs-7">
-                <tr>
-                  <th class="col-md-2 text-center descth">예매자</th>
-                  <td class="desctd">고양이</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">예매번호</th>
-                  <td class="desctd">220807-0000-0001</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">공연일</th>
-                  <td class="desctd">2022.08.09</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">회차</th>
-                  <td class="desctd">1회차 14:00</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">좌석</th>
-                  <td class="desctd">R석 A01, S석 B01</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">장소</th>
-                  <td class="desctd">공연장1</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div>
-          <div class="title">
-            <span class="fs-5 fw-bold">결제내역</span>
+            <span class="fs-5 fw-bold">내 정보 수정</span>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
               <tbody class="fs-7">
                 <tr>
-                  <th class="col-md-2 text-center descth">결제일</th>
-                  <td class="desctd">2022.08.01</td>
+                  <th class="col-md-2 text-center descth">아이디</th>
+                  <td>
+                    <input type="text" class="form-control mytxtform disform" name="id" placeholder="hotdog" disabled>
+                  </td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">결제금액</th>
-                  <td class="desctd">250,000원</td>
+                  <th class="col-md-2 text-center descth">이메일</th>
+                  <td>
+                    <input type="text" class="form-control mytxtform disform" name="email" placeholder="dog@test.com" disabled>
+                  </td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">결제수단</th>
-                  <td class="desctd">신용카드</td>
+                  <th class="col-md-2 text-center descth">이름</th>
+                  <td>
+                    <input type="text" class="form-control mytxtform" name="name" value="강아지">
+                  </td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">결제상태</th>
-                  <td class="desctd">입금완료</td>
+                  <th class="col-md-2 text-center descth">비밀번호</th>
+                  <td>
+                    <input type="password" class="form-control mytxtform" name="pwd">
+                  </td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">비밀번호 확인</th>
+                  <td>
+                    <input type="password" class="form-control mytxtform" name="pwdcheck">
+                  </td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">성별</th>
+                  <td>
+                    <div class="myradio">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="male">
+                        <label class="form-check-label" for="male">
+                          남성
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" checked>
+                        <label class="form-check-label" for="female">
+                          여성
+                        </label>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">생년월일</th>
+                  <td>
+                    <input type="text" class="form-control mytxtform" name="birth" value="1900/01/01">
+                  </td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">전화번호</th>
+                  <td>
+                    <input type="text" class="form-control mytxtform" name="phone" value="010-0000-0000">
+                  </td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">주소</th>
+                  <td>
+                    <div class="myaddr">
+                      <input type="text" class="form-control mytxtform smallform" name="addr" value="우편번호">
+                      <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">주소검색</button>
+                    </div>
+                    <div>
+                      <input type="text" class="form-control mytxtform bigform" name="addr" value="캘리포니아 로스앤젤레스">
+                      <input type="text" class="form-control mytxtform bigform" name="addr" value="말리부">
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="text-center btnmargin">
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">예매취소</button>
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">이전으로</button>
+          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">취소</button>
+          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">수정</button>
         </div>
       </div>
     </div>
@@ -126,7 +144,7 @@
 
 <script>
 export default {
-  name: 'MyTicketDetailView'
+  name: 'MyInfoEditView'
 }
 </script>
 
@@ -200,6 +218,43 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
+      .myaddr {
+        display: flex;
+        button {
+          margin-left: 10px;
+          padding: 0px 20px;
+          font-size: 1em;
+        }
+      }
+      .form-check-input {
+        margin-right: 5px;
+        &:checked {
+          background-color: $brown;
+          border-color: $brown;
+        }
+      }
+      .myradio {
+        display: flex;
+        .form-check {
+          margin-right: 20px;
+          margin-top: 4px;
+          margin-bottom: 0px;
+        }
+      }
+      .mytxtform {
+        width: 300px;
+        font-size: 1em;
+      }
+      .smallform {
+        width: 200px;
+      }
+      .bigform {
+        width: 360px;
+        margin-top: 5px;
+      }
+      .disform {
+        background-color: rgb(249, 249, 249);
+      }
       .btnmargin {
         margin-top: 30px;
       }
@@ -229,7 +284,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
       }
       .datenav {
         display: flex;
@@ -261,57 +316,20 @@ export default {
           background-color: $brown;
           color: white;
         }
-        tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
-          }
-        }
         td {
           background-color: white;
-          .info {
-            display: flex;
-            margin: 20px 20px;
-            .img1 {
-              background-color: gray;
-              width: 110px;
-              height: 150px;
-              margin-right: 20px;
-            }
-            .img2 {
-              background-color: gray;
-              width: 55px;
-              height: 75px;
-              margin-right: 20px;
-            }
-            .txt {
-              p {
-                margin: 0px;
-              }
-              table td,th {
-                border: 0px;
-                background-color: transparent;
-              }
-            }
-          }
+          padding: 10px 20px;
         }
       }
       .myborder {
         th{
-          border-right: 1px solid #eee;
-        }
-        td{
-          border-right: 1px solid #dbe2e8;
           border-bottom: 1px solid #dbe2e8;
-        }
-        .descth {
-          border: 1px solid #dbe2e8;
+          border-top: 1px solid #dbe2e8;
           background-color: rgb(249, 249, 249);
         }
-        .desctd {
-          border: 1px solid #dbe2e8;
-        }
-        .end{
-          border-right: 0px;
+        td{
+          border-bottom: 1px solid #dbe2e8;
+          border-top: 1px solid #dbe2e8;
         }
       }
       .ticket-table {
@@ -319,24 +337,6 @@ export default {
       }
       .datenav {
         background-color: rgb(249, 249, 249);
-      }
-    }
-  }
-  #mypaging {
-    display: flex;
-    justify-content: center;
-    .select {
-      font-weight: bold;
-    }
-    li {
-      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-      a:hover {
-        color: $brown;
-        opacity: 50%;
       }
     }
   }

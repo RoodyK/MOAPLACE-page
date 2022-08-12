@@ -8,7 +8,9 @@
     <RouterLink to="/users/rental/list">rentallist</RouterLink> | 
     <RouterLink to="/users/rental/detail">rentaldetail</RouterLink> | 
     <RouterLink to="/users/review/list">myreviewlist</RouterLink> | 
-    <RouterLink to="/users/qna/list">myqnalist</RouterLink>
+    <RouterLink to="/users/qna/list">myqnalist</RouterLink> | 
+    <RouterLink to="/users/info/edit">infoedit</RouterLink> | 
+    <RouterLink to="/users/withdrawal">withdrawal</RouterLink>
   </nav>
   <RouterView/>
 </template>
