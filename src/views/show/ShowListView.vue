@@ -68,7 +68,7 @@
         </table>
       </div>
     </div>
-    <div id=list>
+    <div id=list class="container">
       <div>
         <img src="../../assets/smile.jpg">
         <h6 class="play">연극</h6>
@@ -198,9 +198,12 @@ export default {
     color: #C9778B;
   }
   #list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     div{
-      float: left;
-      margin: 25px;
+      margin-top: 25px;
     }
   }
   #nav {
@@ -211,6 +214,7 @@ export default {
     }
   }
   #page{
+    margin-top: 25px;
     text-align: center;
     a{
       padding: 15px;
@@ -230,7 +234,11 @@ export default {
     height: 40px;
   }
   table{
+    margin-top: 20px;
     width: 100%;
+    td{
+      height: 50px;
+    }
   }
   #calicon, #pinicon, #micicon{
     color: $brown;

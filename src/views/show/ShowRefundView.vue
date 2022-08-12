@@ -24,13 +24,12 @@
     </div>
     <hr>
     <div id=nav>
-      <div id=present class="click">상세보기</div>
-      <div class="click" onclick="location.href='/moa/showreview;">관람평</div>
-      <div class="click">취소 및 환불 안내</div>
+      <div class="click">상세보기</div>
+      <div class="click">관람평</div>
+      <div id=present class="click">취소 및 환불 안내</div>
     </div>
     <div id="datail">
-      <img src="../../assets/detail1.jpg">
-      <img src="../../assets/detail2.jpg">
+      
     </div>
   </div>
 </template>

@@ -20,6 +20,16 @@ const routes = [
     path: '/moa/showdetail',
     name: 'showdetail',
     component: () => import('../views/show/ShowDetailView.vue')
+  },
+  {
+    path: '/moa/showreview',
+    name: 'showreview',
+    component: () => import('../views/show/ShowReviewView.vue')
+  },
+  {
+    path: '/moa/showrefund',
+    name: 'showrefund',
+    component: () => import('../views/show/ShowRefundView.vue')
   }
 ]
 
