@@ -3,13 +3,18 @@
         <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연관리 - 공연상세</h2>
+                <h2 class="title">공연정보 - 공연상세</h2>
+
+                <div class="btnUpBox">
+                  <button>삭제</button>
+                  <button>수정</button>
+                </div>
 
                 <div class="titleBox">
                     <span>공연번호</span>
-                    <input type="text" v-model="list[0].num" readonly>
+                    <input type="text" v-model="list.num" readonly>
                     <span>공연명</span>
-                    <input type="text" v-model="list[0].title" readonly>
+                    <input type="text" v-model="list.title" readonly>
                 </div>
 
                 <div class="hallInfo">
@@ -18,27 +23,27 @@
                         <table>
                             <tr>
                                 <th>공연장</th>
-                                <td>{{list[0].hall}}</td>
+                                <td>{{list.hall}}</td>
                                 <th>공연장르</th>
                                 <td>클래식</td>
                                 <th>공연상태</th>
-                                <td colspan="3">{{list[0].status}}</td>
+                                <td colspan="3">{{list.status}}</td>
                             </tr>
                             <tr>
                                 <th>공연날짜</th>
-                                <td>{{list[0].date}}</td>
+                                <td>{{list.date}}</td>
                                 <th>시작시간</th>
-                                <td>{{list[0].opentime}}</td>
+                                <td>{{list.opentime}}</td>
                                 <th>러닝타임</th>
-                                <td>{{list[0].running_time}}분</td>
+                                <td>{{list.running_time}}분</td>
                                 <th>인터미션</th>
-                                <td>{{list[0].intermission}}분</td>
+                                <td>{{list.intermission}}분</td>
                             </tr>
                             <tr>
                                 <th>공연시작일</th>
-                                <td colspan="3">{{list[0].regdate}}</td>
+                                <td colspan="3">{{list.regdate}}</td>
                                 <th>공연종료일</th>
-                                <td colspan="3">{{list[0].appdate}}</td>
+                                <td colspan="3">{{list.appdate}}</td>
                             </tr>
                             <tr>
                                 <th>공연중단시작일</th>
@@ -77,11 +82,11 @@
                 <div class="btnBox">
                     <button>이전</button>
                     <button>수정</button>
+                    <button>삭제</button>
                 </div>
-
-                    </div>
-                </main>
-            </div>
+              </div>
+          </main>
+      </div>
 </template>
         <script>
             import SideMenu from '@/components/admin/SideMenu.vue'
@@ -92,8 +97,7 @@
 
                 data() {
                     return {
-                        list: [
-                            {
+                        list:{
                                 num: 11111,
                                 title: '아무튼 엄청 긴 공연제목-아무튼 엄청 긴 공연제목',
                                 hall: '오케스트라홀',
@@ -107,7 +111,6 @@
                                 seats: '110/120',
                                 grade: 15
                             }
-                        ]
                     }
                 }
 
@@ -138,7 +141,26 @@
                             margin-bottom: 16px;
                         }
                     }
-                    // --------관리자 페이지 레이아웃 끝, 타이틀박스 시작--------
+                    // --------관리자 페이지 레이아웃 끝, 버튼박스 시작--------
+                    .btnUpBox{
+                      width: 100%;
+                      display: flex;
+                      flex-direction: row-reverse;
+                      button {
+                          width: 96px;
+                          height: 32px;
+                          padding: 4px 0;
+                          border: none;
+                          margin-bottom:16px;
+                          background-color: $black;
+                          color:white;
+                          &:last-child{
+                            margin-right: 16px;
+                          }
+                      }
+                    }
+
+                    // --------버튼박스 끝, 타이틀박스 시작 ----------------
                     .titleBox {
                         width: 100%;
                         border: 1px solid rgba($black, 0.5);
@@ -236,11 +258,15 @@
                         display: flex;
                         justify-content: space-between;
                         button {
-                            width: calc((100% - 16px) /2);
+                            width: calc((100% - 16px) /3);
                             padding: 12px 0;
                             border: none;
+                            &:nth-child(2){
+                              background-color: $black;
+                              color: #fff;
+                            }
                             &:last-child {
-                                background-color: $brown;
+                                background-color: $black;
                                 color: #fff;
                             }
                         }
