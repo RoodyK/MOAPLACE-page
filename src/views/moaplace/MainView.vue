@@ -199,6 +199,8 @@
 </template>
 
 <style lang="scss" scoped>
+@import "@/scss/common.scss";
+$brown: #826d5e;
 .main {
   margin: 0 auto;
 }
@@ -265,12 +267,12 @@
   display: block;
 }
 .m11 .con1 .img_box .item1 {
-  top: 545px;
-  left: -30px;
+  top: 555px;
+  left: -26px;
 }
 .m11 .con1 .img_box .item2 {
-  right: -25px;
-  bottom: -1070px;
+  right: -23px;
+  bottom: -1060px;
 }
 .m11 .con1 .img_box span {
   position: absolute;
@@ -278,14 +280,14 @@
   content: "";
   width: 184px;
   height: 184px;
-  background: #015152;
+  background: #bfb3a2;
   z-index: 1;
 }
 
 .m11 .con1 .txt_box {
   float: right;
   width: calc(100% - 675px);
-  border-top: 4px solid #015152;
+  border-top: 4px solid $brown;
   margin-top: 40px;
   padding: 0 0 0 85px;
   box-sizing: border-box;
@@ -398,8 +400,8 @@ ul li {
 }
 .m00 .table {
   width: 100%;
-  border-top: 4px solid #015152;
-  border-bottom: 4px solid #015152;
+  border-top: 4px solid $black;
+  border-bottom: 4px solid $black;
 }
 table {
   border-collapse: collapse;
@@ -433,7 +435,7 @@ table {
   width: 90px;
   height: 90px;
   float: left;
-  background: #015152;
+  background: $brown;
   border-radius: 50%;
   display: table;
   margin-right: 40px;
