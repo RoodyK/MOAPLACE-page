@@ -5,17 +5,7 @@
         <span>MOA PLACE</span>
       </div>
 
-      <div class="regist">
-        <div class="box active">약관동의</div>
-        <div class="box">정보입력</div>
-        <div class="box">가입완료</div>
-      </div>
-      
-      <div class="line">
-        <div class="step"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-      </div>
+      <JoinOrder order="약관동의" />
 
       <div class="agree">
         <div class="check">
@@ -35,11 +25,13 @@
 </template>
 
 <script>
-import OfTheSame from '@/components/join/TheSame.vue'
+import OfTheSame from '@/components/join/TheSame.vue';
+import JoinOrder from '@/components/join/JoinOrder.vue';
 
 export default {
   components: {
-    OfTheSame
+    OfTheSame,
+    JoinOrder
   }
 }
 </script>
@@ -59,59 +51,6 @@ export default {
         font-size: 2rem;
         font-weight: 700;
         letter-spacing: 3px;
-      }
-    }
-
-    .regist {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
-      .box {
-        font-size: 1.4rem;
-        width: 180px;
-        height: 60px;
-        margin-right: 80px;
-        display:flex;
-        justify-content: center;
-        align-items: center;
-        border: 3px solid #777;
-        box-sizing: border-box;
-        position: relative;
-        &.active {
-          background-color: $brown;
-          color: #fff;
-        }
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-    }
-    .line {
-      width: 700px;
-      height: 3px;
-      margin: 0 auto 100px;
-      background-color: #000;
-      position: relative;
-      .step {
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        border-radius: 50%;
-        border:2px solid $brown;
-        background-color: #fff;
-        &:nth-child(1) {
-          top:-10px;
-          left: 80px;
-          background-color: $brown;
-        }
-        &:nth-child(2) {
-          top:-10px;
-          left: calc(50% - 10px);
-        }
-        &:nth-child(3) {
-          top: -10px;
-          right: 80px;
-        }
       }
     }
 
