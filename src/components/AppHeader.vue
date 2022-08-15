@@ -178,7 +178,7 @@ export default {
             height: 120px;
             margin: 0 auto;
             display: flex;
-            flex-flow: row wrap;
+            flex-flow: row nowrap;
             align-items: center;
 
             border: 1px solid $border-color;
