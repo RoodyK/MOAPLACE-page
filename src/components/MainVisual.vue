@@ -95,7 +95,7 @@ export default {
                 background-repeat: no-repeat;
                 opacity: 0;
                 transform: scale(1);
-                transition: all 0.5s;
+                transition: all 1s;
                 &.on {
                     opacity: 1;
                     transform: scale(1.1);

@@ -18,7 +18,7 @@ const routes = [
     path: '/moa/tmp',
     name: 'tmp',
     component: SideExampleView
-  },
+  }
 ]
 
 const router = createRouter({
