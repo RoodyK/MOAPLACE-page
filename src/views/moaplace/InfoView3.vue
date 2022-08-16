@@ -1,0 +1,112 @@
+<template>
+  <div id="wrap">
+    <div id="container">
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/moa/moaplace/guide">MODERN HALL</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/moa/moaplace/guide2">ORCHESTRA HALL</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            href="/moa/moaplace/guide3"
+            >ART HALL</a
+          >
+        </li>
+      </ul>
+      <div class="m00 m10 m12">
+        <div class="tit_inner_wrap">
+          <p class="tit">ART HALL</p>
+          <p class="sub_tit">아트홀은 총 120석으로 되어있습니다.</p>
+        </div>
+        <div class="con con1">
+          <div class="inner_wrap">
+            <div class="hall_img">
+              <img
+                src="@/assets/moaplace/perform_main7.gif"
+                class="img"
+                alt="홀 이미지1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="seat">
+        <div class="seat_inner_wrap">
+          <p class="tit">좌석배치도</p>
+          <p class="txt">
+            모아플레이스는 모든 좌석이 동일하게 따뜻한 공간감을 느끼도록
+            설계하였습니다.
+          </p>
+        </div>
+        <div class="con con2">
+          <div class="inner_wrap">
+            <div class="seat_img">
+              <img
+                src="@/assets/moaplace/seat3.png"
+                class="img"
+                alt="의자 이미지1"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style scoped>
+#container {
+  width: 1100px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.m00 {
+  width: 100%;
+  position: relative;
+}
+.m12 .inner_wrap {
+  width: 1100px;
+  margin: 0 auto;
+}
+.tit_inner_wrap {
+  text-align: center;
+  padding: 125px 0 100px;
+}
+.tit_inner_wrap .tit {
+  font-size: 50px;
+  font-weight: 700;
+}
+.tit_inner_wrap .sub_tit {
+  font-size: 17px;
+  color: #666666;
+  margin-top: 15px;
+}
+.img {
+  width: 100%;
+}
+.con {
+  margin: 0 auto;
+}
+.seat_inner_wrap {
+  text-align: center;
+  padding: 125px 0 100px;
+}
+.seat_inner_wrap .tit {
+  font-size: 40px;
+  font-weight: 500;
+}
+.seat_inner_wrap .txt {
+  font-size: 17px;
+  color: #666666;
+  margin-top: 15px;
+}
+</style>
