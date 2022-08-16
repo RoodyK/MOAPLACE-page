@@ -3,7 +3,7 @@
     <div class="nav-top">
       <h1 class="logo">MOA Place</h1>
       <RouterLink 
-        to="/">
+        to="/moaplace.com">
         메인페이지 이동
         <img src="@/assets/admin/logout.png" alt="메인페이지로 이동" class="fa-out">
       </RouterLink>
@@ -71,50 +71,50 @@ export default {
           },
           {
             name: '공연관리',
-            href: '/',
+            href: '/moaplace.com/admin/show/list',
             isActive: false,
             subMenu:[
               {
                 name: '공연정보',
-                href:'/',
+                href:'/moaplace.com/admin/show/list',
               },
               {
                 name: '예매정보',
-                href:'/',
+                href:'/moaplace.com/admin/ticket/list',
               }
             ]
           },
           {
             name: '대관관리',
-            href: '/',
+            href: '/moaplace.com/admin/rental/list',
             isActive: false,
             subMenu:[
               {
-                name: '월간일정',
-                href:'/',
+                name: '신청내역',
+                href:'/moaplace.com/admin/rental/list',
               },
               {
-                name: '신청내역',
-                href:'/',
+                name: '월간일정',
+                href:'/moaplace.com/admin/rental/calendar',
               }
             ]
           },
           {
             name: '게시판 관리',
-            href: '/',
+            href: '/moaplace.com/moaplace/news/list',
             isActive: false,
             subMenu:[
               {
                 name: '새소식',
-                href:'/',
+                href:'/moaplace.com/moaplace/news/list',
               },
               {
                 name: '1:1문의',
-                href:'/',
+                href:'/moaplace.com/admin/qna/list',
               },
               {
                 name: 'FAQ',
-                href:'/',
+                href:'/moaplace.com/admin/faq/list',
               }
             ]
           }

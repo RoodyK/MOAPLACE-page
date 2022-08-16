@@ -1,5 +1,7 @@
 <template>
+  
   <div id="wrap">
+    <AppHeader/>
     <section>
       <div class="inner">
         <h2 class="title">대관 절차 및 비용</h2>
@@ -172,13 +174,24 @@
         <p class="etc">* 기타 문의사항은 대관자료등록담당자에게 연락 주시기 바랍니다.</p>
       </div>
     </section>
+    <AppFooter/>
   </div>
+
+  
 </template>
 <span class="material-symbols-outlined">
 
 </span>
 <script>
+ 
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+
 export default {
+  components: {
+    AppHeader,
+    AppFooter
+  },
   data(){
     return{
       processes:[

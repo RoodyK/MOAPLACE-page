@@ -1,5 +1,9 @@
 <template>
+  <AppHeader/>
+  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+
   <div class="app">
+
     <h2> 모아플레이스에 바라는 사항이나 불편한 사항, <br>
          궁금증을 올려주시면 성심성의껏 답변해 드리겠습니다. </h2>
 
@@ -11,8 +15,25 @@
       <button class="btn" @click="$router.push({name:'qnaList'})"><img src="../../assets/board/myqna.png" style="padding-left:30px;"><br>나의 문의글 확인</button>
     </div>
 
+
   </div>
+  <AppFooter/>
 </template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  }
+}
+</script>
+
 
 <style scoped lang="scss">
 @import '../../scss/common.scss';

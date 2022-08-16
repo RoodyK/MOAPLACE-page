@@ -3,7 +3,7 @@
         <div class="gnb">
             <h1 class="logo">
                 <RouterLink
-                    to="/moa">
+                    to="/moaplace.com">
                     모아플레이스
                     <img :src="require(`@/assets/default/${logo}.png`)" alt="모아플레이스 로고">
                 </RouterLink>
@@ -72,55 +72,55 @@ export default {
         navigations :[
             {
                 name: '모아플레이스',
-                href: '/',
+                href: '/moaplace.com/moaplace/info',
                 submenus:[
-                    {name: '공간소개', href: '/'},
-                    {name: '공연장정보', href: '/'},
-                    {name: '오시는길', href: '/'}, 
-                    {name: '새소식', href: '/'}, 
+                    {name: '공간소개', href: '/moaplace.com/moaplace/info'},
+                    {name: '공연장정보', href: '/moaplace.com/moaplace/guide'},
+                    {name: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
+                    {name: '새소식', href: '/moaplace.com/moaplace/news'}, 
                 ]
             },
             {
                 name: '공연/예매',
-                href: '/',
+                href: '/moaplace.com/showlist',
                 submenus:[
-                    {name: '공연목록', href: '/'},
-                    {name: '월간일정 ', href: '/'},
+                    {name: '공연목록', href: '/moaplace.com/showlist'},
+                    {name: '월간일정 ', href: '/moaplace.com/calendar'},
                 ]
             },
             {
                 name: '대관신청',
-                href: '/',
+                href: '/moaplace.com/rental',
                 submenus:[
-                    {name: '대관정보', href: '/'},
-                    {name: '대관신청 ', href: '/'},
+                    {name: '대관정보', href: '/moaplace.com/rental'},
+                    {name: '대관신청 ', href: '/moaplace.com/rental/insert'},
                 ]
             },
             {
                 name: '고객센터',
-                href: '/',
+                href: '/moaplace.com/boardMain',
                 submenus:[
-                    {name: 'FAQ', href: '/'},
-                    {name: '1:1문의', href: '/'},
+                    {name: 'FAQ', href: '/moaplace.com/faq'},
+                    {name: '1:1문의', href: '/moaplace.com/qna/list'},
                 ]
             }
         ],
         topMenu:[
             {
                 name: 'HOME',
-                href: '/',
+                href: '/moaplace.com',
             },
             {
                 name: 'LOGIN',
-                href: '/',
+                href: '/moaplace.com/users/login',
             },
             {
                 name: 'MYPAGE',
-                href: '/',
+                href: '/moaplace.com/users/mypage',
             },
             {
                 name: 'JOIN',
-                href: '/',
+                href: '/moaplace.com/join/same',
             },
         ]
     }    

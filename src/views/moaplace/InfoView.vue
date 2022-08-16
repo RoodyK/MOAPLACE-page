@@ -1,5 +1,8 @@
 <template>
+  
+
   <div id="wrap">
+    <AppHeader/>
     <div id="container">
       <ul class="nav justify-content-center">
         <li class="nav-item">
@@ -55,14 +58,26 @@
         </div>
       </div>
     </div>
+    <AppFooter/>
   </div>
+    
+  
+
 </template>
 
 <script>
-export default {};
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter
+  },
+};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #container {
   width: 1100px;
   position: relative;
