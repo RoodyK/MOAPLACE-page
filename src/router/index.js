@@ -1,15 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import MypageView from '../views/users/MypageView.vue'
-import MyPerformanceView from '../views/users/PerformanceView.vue'
-import MyTicketListView from '../views/users/TicketListView.vue'
-import MyTicketDetailView from '../views/users/TicketDetailView.vue'
-import MyRentalListView from '../views/users/RentalListView.vue'
-import MyRentalDetailView from '../views/users/RentalDetailView.vue'
-import MyReviewListView from '../views/users/ReviewListView.vue'
-import MyQNAListView from '../views/users/QNAListView.vue'
-import MyInfoEditView from '../views/users/InfoEditView.vue'
-import WithdrawalView from '../views/users/WithdrawalView.vue'
 
 const routes = [
   {
@@ -17,56 +7,6 @@ const routes = [
     name: 'home',
     component: HomeView
   },
-  {
-    path: '/users/mypage',
-    name: 'mypage',
-    component: MypageView
-  },
-  {
-    path: '/users/performance',
-    name: 'myperformance',
-    component: MyPerformanceView
-  },
-  {
-    path: '/users/ticket/list',
-    name: 'myticketlist',
-    component: MyTicketListView
-  },
-  {
-    path: '/users/ticket/detail',
-    name: 'myticketdetail',
-    component: MyTicketDetailView
-  },
-  {
-    path: '/users/rental/list',
-    name: 'myrentallist',
-    component: MyRentalListView
-  },
-  {
-    path: '/users/rental/detail',
-    name: 'myrentaldetail',
-    component: MyRentalDetailView
-  },
-  {
-    path: '/users/review/list',
-    name: 'myreviewlist',
-    component: MyReviewListView
-  },
-  {
-    path: '/users/qna/list',
-    name: 'myqnalist',
-    component: MyQNAListView
-  },
-  {
-    path: '/users/info/edit',
-    name: 'myinfoedit',
-    component: MyInfoEditView
-  },
-  {
-    path: '/users/withdrawal',
-    name: 'withdrawal',
-    component: WithdrawalView
-  }
 ]
 
 const router = createRouter({
