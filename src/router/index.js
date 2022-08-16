@@ -49,6 +49,7 @@ import QNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import PaymentView from '@/views/PaymentView.vue'
 
 const routes = [
   // 메인
@@ -56,6 +57,11 @@ const routes = [
     path: '/moaplace.com',
     name: 'moaplace',
     component: MainView
+  },
+  {
+    path: '/moaplace.com/booking/payment',
+    name: 'PaymentView',
+    component: PaymentView
   },
 
   // 로그인
