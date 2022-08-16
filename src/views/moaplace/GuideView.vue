@@ -1,32 +1,36 @@
 <template>
   <div id="wrap">
+    <AppHeader />
+    <SideVisual menu="MOA PLACE" img="moa" />
     <div id="container">
       <ul class="nav justify-content-center">
-        <li class="nav-item">
-          <a class="nav-link" href="/moa/moaplace/guide">MODERN HALL</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/moa/moaplace/guide2">ORCHESTRA HALL</a>
-        </li>
         <li class="nav-item">
           <a
             class="nav-link active"
             aria-current="page"
-            href="/moa/moaplace/guide3"
-            >ART HALL</a
+            href="/moaplace.com/moaplace/guide"
+            >MODERN HALL</a
           >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/moaplace.com/moaplace/guide2"
+            >ORCHESTRA HALL</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/moaplace.com/moaplace/guide3">ART HALL</a>
         </li>
       </ul>
       <div class="m00 m10 m12">
         <div class="tit_inner_wrap">
-          <p class="tit">ART HALL</p>
-          <p class="sub_tit">아트홀은 총 120석으로 되어있습니다.</p>
+          <p class="tit">MODERN HALL</p>
+          <p class="sub_tit">모던홀은 총 80석으로 되어있습니다.</p>
         </div>
         <div class="con con1">
           <div class="inner_wrap">
             <div class="hall_img">
               <img
-                src="@/assets/moaplace/perform_main7.gif"
+                src="@/assets/moaplace/hall1.jpg"
                 class="img"
                 alt="홀 이미지1"
               />
@@ -46,7 +50,7 @@
           <div class="inner_wrap">
             <div class="seat_img">
               <img
-                src="@/assets/moaplace/seat3.png"
+                src="@/assets/moaplace/seat1.png"
                 class="img"
                 alt="의자 이미지1"
               />
@@ -55,16 +59,27 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script>
-export default {};
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
+};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #container {
-  width: 1100px;
+  width: 100%;
   position: relative;
   overflow: hidden;
   margin: 0 auto;
@@ -96,9 +111,18 @@ export default {};
 .con {
   margin: 0 auto;
 }
+.seat_img {
+  width: 1100px;
+  margin: 0 auto;
+}
+.con2 .inner_wrap {
+  padding: 0 0 100px 0;
+}
 .seat_inner_wrap {
   text-align: center;
-  padding: 125px 0 100px;
+  padding: 80px 0 60px;
+  width: 100%;
+  margin: 0 auto;
 }
 .seat_inner_wrap .tit {
   font-size: 40px;
