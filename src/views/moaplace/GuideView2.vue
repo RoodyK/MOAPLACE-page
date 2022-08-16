@@ -1,20 +1,24 @@
 <template>
   <div id="wrap">
+    <AppHeader />
+    <SideVisual menu="MOA PLACE" img="moa" />
     <div id="container">
       <ul class="nav justify-content-center">
         <li class="nav-item">
-          <a class="nav-link" href="/moa/moaplace/guide">MODERN HALL</a>
+          <a class="nav-link" href="/moaplace.com/moaplace/guide"
+            >MODERN HALL</a
+          >
         </li>
         <li class="nav-item">
           <a
             class="nav-link active"
             aria-current="page"
-            href="/moa/moaplace/guide2"
+            href="/moaplace.com/moaplace/guide2"
             >ORCHESTRA HALL</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/moa/moaplace/guide3">ART HALL</a>
+          <a class="nav-link" href="/moaplace.com/moaplace/guide3">ART HALL</a>
         </li>
       </ul>
       <div class="m00 m10 m12">
@@ -55,16 +59,26 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script>
-export default {};
-</script>
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
 
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
+};
+</script>
 <style scoped>
 #container {
-  width: 1100px;
+  width: 100%;
   position: relative;
   overflow: hidden;
   margin: 0 auto;
@@ -96,9 +110,18 @@ export default {};
 .con {
   margin: 0 auto;
 }
+.seat_img {
+  width: 1100px;
+  margin: 0 auto;
+}
 .seat_inner_wrap {
   text-align: center;
-  padding: 125px 0 100px;
+  padding: 80px 0 60px;
+  width: 100%;
+  margin: 0 auto;
+}
+.con2 .inner_wrap {
+  padding: 0 0 100px 0;
 }
 .seat_inner_wrap .tit {
   font-size: 40px;
