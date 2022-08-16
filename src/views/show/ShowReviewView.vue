@@ -33,15 +33,20 @@
       <div id="write">
         <img src="../../assets/star5.png">
         <div id="cont">
-          <textarea cols="110" rows="7" placeholder="감상평을 남겨주세요. 공연과 상관없는 내용은 양관에 의해 제재를 받을수 있습니다.">
-            <span>0/1000</span>
-          </textarea>
+          <textarea cols="100" rows="7" placeholder="감상평을 남겨주세요. 공연과 상관없는 내용은 양관에 의해 제재를 받을수 있습니다."></textarea>
           <button>관람평 등록</button>
         </div>
       </div>
-      <div id="review">
-        <img src="../../assets/star5.png">
-        나이가 무색할 정도의 탐 크루즈의 피지컬, 연기, 액션이 멋졌습니다. 1편의 이야기를 세심하고 적절하게 엮어서 새로운 스토리를 잘 만들었어요.
+      <div id="review" class="container">
+        <div>
+          <img src="../../assets/star5.png">
+        </div>
+        <div id="con">
+          나이가 무색할 정도의 탐 크루즈의 피지컬, 연기, 액션이 멋졌습니다. 1편의 이야기를 세심하고 적절하게 엮어서 새로운 스토리를 잘 만들었어요.<br>
+          <div id="user">
+            <span id="name">John Doe</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span id="date">2022.08.14</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -116,11 +121,7 @@ export default {
     line-height: 50px;
   }
   #datail{
-    text-align: center;
     margin-bottom: 20px;
-    img{
-      margin-right: 750px;
-    }
     h4{
       text-align: left;
       margin-left: 50px;
@@ -128,8 +129,10 @@ export default {
     }
   }
   #write{
+    height: 270px;
     margin-top: 50px;
-    background-color: silver;
+    background-color: rgb(228, 220, 220);
+    text-align: center;
     button{
       position: absolute;
       margin-top: 65px;
@@ -139,12 +142,39 @@ export default {
       width: 130px;
     }
     textarea{
-      margin-right: 50px;
+      margin-right: 20px;
+    }
+    img{
+      margin-right: 830px;
+    }
+  }
+  #cont{
+    margin-right: 115px;
+    textarea{
+      resize: none;
     }
   }
   #review{
-    margin-top: 30px;
-    background-color: silver;
     float: left;
+    width: 100%;
+    margin-top: 20px;
+    background-color: rgb(228, 220, 220);
+    border: 3px solid silver;
+  }
+  #con{
+    margin-top: 20px;
+    margin-left: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    color: $black;
+  }
+  #user{
+    margin-top: 20px;
+  }
+  #name{
+    font-size: 25px;
+  }
+  #date{
+    color: rgba(104, 100, 100, 0.877);
   }
 </style>
