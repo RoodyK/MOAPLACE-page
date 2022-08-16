@@ -154,6 +154,7 @@ export default {
     position: fixed;
     top:0;
     left: 0;
+    z-index: 99999;
     width: 240px;
     height: 100vh;
     padding: 32px 0;
