@@ -15,9 +15,9 @@
     <div id=filter>
       <div class="container" id="filtertop">
         <div id="year">
-          <a href="">〈</a>
-          2022
-          <a href="">〉</a>
+          <a href="#" @click="prev">〈</a>
+          {{now_year}}
+          <a href="#" @click="next">〉</a>
         </div>
         <div>
           <label class="btn">
@@ -53,7 +53,7 @@
                 calendar_month
               </span>
               <input type="date" v-model="now_date">
-              {{now_date}}
+              {{plus_week}}
               <span id="caltext"> 2022-08-06 - 2022-08-10</span>
             </td>
             <td>
@@ -86,7 +86,7 @@
       </div>
     </div>
     <div id=list class="container">
-      <div class="show">
+      <div class="show" @mouseover="popUp">
         <div class="pop">
           <a href="">예매</a>
           <a href="">상세</a>
@@ -148,12 +148,22 @@ export default {
   name:"ShowListView",
   data(){
     return{
-      now_date:0
+      now_year:new Date().getFullYear(),
+      now_date:new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().getDate(),
+      plus_week:new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().setDate(new Date().getDate()+7),
+      plus_month:new Date().getFullYear()+"-"+(new Date().getMonth()+2)+"-"+new Date().getDate(),
+      plus_3month:new Date().getFullYear()+"-"+(new Date().getMonth()+4)+"-"+new Date().getDate()
     }
   },
   methods: {
-    getnow_date(){
-      this.now_date=new Date();
+    next(){
+      this.now_year++;
+    },
+    prev(){
+      this.now_year--;
+    },
+    popUp(){
+
     }
   }
 }
