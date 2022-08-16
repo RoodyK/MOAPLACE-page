@@ -1,7 +1,6 @@
 <template>
   <nav>
-    <RouterLink to="/">Home</RouterLink> | 
-    <RouterLink to="/moa/boardMain">고객센터</RouterLink>
+    <RouterLink to="/">Home</RouterLink>
   </nav>
   <RouterView/>
 </template>
