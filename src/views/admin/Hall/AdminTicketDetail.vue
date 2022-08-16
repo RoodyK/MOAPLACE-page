@@ -7,7 +7,6 @@
 
                 <div class="btnUpBox">
                   <button>예매취소</button>
-                  <button>예매수정</button>
                 </div>
 
                 <div class="titleBox">
@@ -81,7 +80,6 @@
 
                 <div class="btnBox">
                     <button>이전</button>
-                    <button>예매수정</button>
                     <button>예매취소</button>
                 </div>
               </div>
@@ -159,9 +157,6 @@
                           margin-bottom:16px;
                           background-color: $black;
                           color:white;
-                          &:last-child{
-                            margin-right: 16px;
-                          }
                       }
                     }
 
@@ -263,7 +258,7 @@
                         display: flex;
                         justify-content: space-between;
                         button {
-                            width: calc((100% - 16px) /3);
+                            width: calc((100% - 16px) /2);
                             padding: 12px 0;
                             border: none;
                             &:nth-child(2){
