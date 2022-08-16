@@ -1,88 +1,88 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+        <SideMenu largeCategory="공연관리" mediumCategory="예매정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연정보 - 공연상세</h2>
+                <h2 class="title">예매정보 - 예매상세</h2>
 
                 <div class="btnUpBox">
-                  <button>삭제</button>
-                  <button>수정</button>
+                  <button>예매취소</button>
+                  <button>예매수정</button>
                 </div>
 
                 <div class="titleBox">
-                    <span>공연번호</span>
+                    <span>예매번호</span>
                     <input type="text" v-model="list.num" readonly>
+                    <span>회원아이디</span>
+                    <input type="text" v-model="list.id" readonly>
                     <span>공연명</span>
                     <input type="text" v-model="list.title" readonly>
                 </div>
 
-                <div class="hallInfo">
-                    <h3>공연정보</h3>
+                <div class="ticketInfo">
+                    <h3>예매정보</h3>
                     <div>
                         <table>
                             <tr>
                                 <th>공연장</th>
-                                <td>{{list.hall}}</td>
-                                <th>공연장르</th>
-                                <td>클래식</td>
-                                <th>공연상태</th>
-                                <td colspan="3">{{list.status}}</td>
+                                <td colspan="3">{{list.hall}}</td>
                             </tr>
                             <tr>
                                 <th>공연날짜</th>
-                                <td>{{list.date}}</td>
-                                <th>시작시간</th>
-                                <td>{{list.opentime}}</td>
-                                <th>러닝타임</th>
-                                <td>{{list.running_time}}분</td>
-                                <th>인터미션</th>
-                                <td>{{list.intermission}}분</td>
+                                <td>{{list.regdate}}</td>
+                                <th>공연시작시간</th>
+                                <td>{{list.time}}</td>
                             </tr>
                             <tr>
-                                <th>공연시작일</th>
-                                <td colspan="3">{{list.regdate}}</td>
-                                <th>공연종료일</th>
-                                <td colspan="3">{{list.appdate}}</td>
+                                <th>예약좌석수</th>
+                                <td colspan="3"> 총 {{list.seats.length}} 석</td>
+
                             </tr>
-                            <tr>
-                                <th>공연중단시작일</th>
-                                <td colspan="3">2022-08-10</td>
-                                <th>공연중단종료일</th>
-                                <td colspan="3">2022-08-15</td>
-                            </tr>
-                            <tr>
-                                <th>총좌석수</th>
-                                <td>120</td>
-                                <th>잔여좌석수</th>
-                                <td>0</td>
-                                <th>상연등급</th>
-                                <td colspan="3">15세</td>
+                            <tr v-for="(l,index) in list.seats" :key="index">
+                                <th>예약좌석</th>
+                                <td>{{l.seatGrade}} {{l.seat}}</td>
+                                <th>관람분류</th>
+                                <td>{{l.age}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <div class="image">
-                    <h3>공연 이미지</h3>
+                <div class="payment">
+                    <h3>결제내역</h3>
                     <div>
                         <table>
                             <tr>
-                                <th>섬네일</th>
-                                <td><img src="https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=dfd67de4f3055521c7f754bfdc3cb5896db30ab9edb0bb8e4f449a9903cb06fb"></td>
-                               </tr>
-                               <tr>
-                               <th>상세이미지</th>
-                                <td><img src="https://www.sejongpac.or.kr/upload/2022/07/20220727_163335690_30277.jpg"></td>
+                                <th>결제일</th>
+                                <td colspan="3">{{list.paymentDate}}</td>
                             </tr>
+                            <tr>
+                                <th>예매가격</th>
+                                <td>{{list.price}}원</td>
+                                <th>사용적립금</th>
+                                <td>{{list.point}}원</td>
+                            </tr>
+                            <tr>
+                                <th>결제수단</th>
+                                <td colspan="3">{{list.payment}}</td>
+                            </tr>
+                            <tr>
+                                <th>최종결제금액</th>
+                                <td colspan="3">{{list.lastPrice}}원</td>
+                            </tr>
+                            <tr>
+                                <th>결제상태</th>
+                                <td colspan="3">{{list.paymentStatus}}</td>
+                            </tr>
+
                         </table>
                     </div>
                 </div>
 
                 <div class="btnBox">
                     <button>이전</button>
-                    <button>수정</button>
-                    <button>삭제</button>
+                    <button>예매수정</button>
+                    <button>예매취소</button>
                 </div>
               </div>
           </main>
@@ -97,19 +97,25 @@
 
                 data() {
                     return {
-                        list:{
-                                num: 11111,
-                                title: '아무튼 엄청 긴 공연제목-아무튼 엄청 긴 공연제목',
+                        thumb:'https://movie-phinf.pstatic.net/20220607_129/16545872892918GA4h_JPEG/movie_image.jpg?type=m203_290_2',
+                        list: {
+                                num: 20,
+                                id:'bee',
+                                title:'헤어질결심',
                                 hall: '오케스트라홀',
-                                status: '진행중',
-                                regdate: '2022.08.02',
-                                appdate: '2022.08.22',
-                                date: '2022.08.07',
-                                running_time: 120,
-                                opentime: '13:30',
-                                intermission: 20,
-                                seats: '110/120',
-                                grade: 15
+                                genre:'오페라',
+                                regdate:'2022-08-21',
+                                time:'13:30',
+                                seats:[
+                                    {seat:'A01',seatGrade:'S석',age:'어린이'},
+                                    {seat:'A02',seatGrade:'S석',age:'성인'}
+                                ],
+                                price:'40,000',
+                                point:'2,000',
+                                payment:'신용카드',
+                                lastPrice:'38,000',
+                                paymentStatus:'결제완료',
+                                paymentDate:'2022-08-02'
                             }
                     }
                 }
@@ -148,8 +154,7 @@
                       flex-direction: row-reverse;
                       button {
                           width: 96px;
-                          height: 32px;
-                          padding: 4px 0;
+                          height: 40px;
                           border: none;
                           margin-bottom:16px;
                           background-color: $black;
@@ -175,19 +180,19 @@
                             padding: 4px;
                             margin-right: 16px;
                             border: none;
-                            width: 56px;
+                            width: 64px;
                             &:focus{
                               outline: none;
                             }
-                            &:nth-child(4) {
-                                width: calc(100%/1.4);
+                            &:nth-child(6) {
+                                width: 400px;
                             }
                         }
                     }
                     // --------타이틀박스 끝, 공연정보테이블 시작--------
                    
                     // --------타임박스 끝, 공연정보 시작--------
-                    .hallInfo {
+                    .ticketInfo,.payment {
                         margin: 32px 0;
                         h3 {
                             font-size: 20px;

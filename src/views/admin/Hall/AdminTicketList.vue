@@ -1,14 +1,14 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+        <SideMenu largeCategory="공연관리" mediumCategory="예매정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연정보</h2>
+                <h2 class="title">예매관리</h2>
                 <div class="list-top">
                     <select>
-                        <option value="hall">공연장</option>
-                        <option value="title">공연명</option>
-                        <option value="status">공연상태</option>
+                        <option value="hall">예매번호</option>
+                        <option value="title">회원아이디</option>
+                        <option value="status">공연명</option>
                     </select>
                     <input type="text">
                         <button>
@@ -17,31 +17,26 @@
                                 search
                             </i>
                         </button>
-                        <button class="insertBtn">공연등록</button>
                     </div>
                     <div class="list">
                         <div class="t-row thead">
-                            <p>공연번호</p>
-                            <p>공연장</p>
-                            <p>공연명</p>
+                            <p>예매번호</p>
+                            <p>회원아이디</p>
+                            <p>공연제목</p>
                             <p>공연날짜</p>
-                            <p>공연시작일</p>
-                            <p>공연종료일</p>
                             <p>공연회차</p>
-                            <p>공연시작시간</p>
-                            <p>잔여석/좌석수</p>
-                            <p>공연상태</p>
+                            <p>결제금액</p>
+                            <p>결제일</p>
+                            <p>결제상태</p>
                         </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody">
                             <p>{{item.num}}</p>
-                            <p>{{item.hall}}</p>
+                            <p>{{item.id}}</p>
                             <p>{{item.title}}</p>
-                            <p>{{item.appdate}}</p>
-                            <p>{{item.appdate}}</p>
                             <p>{{item.regdate}}</p>
-                            <p>{{item.count}} 회차</p>
-                            <p>{{item.opentime}}</p>
-                            <p>{{item.seats}}</p>
+                            <p>{{item.time}} 회차</p>
+                            <p>{{item.price}}</p>
+                            <p>{{item.paidDate}}</p>
                             <p>{{item.status}}</p>
                         </div>
                         <ul class="paging">
@@ -68,57 +63,50 @@
                 return {
                     list: [
                         {
+                            num: 300,
+                            id:'bee',
+                            title:'b리사이틀',
+                            regdate:'2022-08-21',
+                            time:'3',
+                            paidDate:'2022-08-10',
+                            price:'30000',
+                            status:'입금대기',
+                        }, {
+                            num: 10045,
+                            id:'bee',
+                            title:'ee콘서트',
+                            regdate:'2022-08-21',
+                            time:'3',
+                            paidDate:'2022-08-10',
+                            price:'30000',
+                            status:'결제완료',
+                        }, {
+                            num: 500,
+                            id:'bee',
+                            title:'b리사이틀',
+                            regdate:'2022-08-21',
+                            time:'1',
+                            paidDate:'2022-08-10',
+                            price:'50000',
+                            status:'결제완료',
+                        }, {
+                            num: 20,
+                            id:'bee',
+                            title:'헤어질결심',
+                            regdate:'2022-08-21',
+                            time:'1',
+                            paidDate:'2022-08-10',
+                            price:'40000',
+                            status:'결제완료',
+                        }, {
                             num: 7,
-                            hall: '공연장1',
-                            title: '오늘메뉴',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 1,
-                            opentime: '13:30',
-                            seats: '77/120',
-                            grade: 15
-                        }, {
-                            num: 8,
-                            hall: '공연장1',
-                            title: '치킨텐더',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 2,
-                            opentime: '13:30',
-                            seats: '20/120',
-                            grade: 15
-                        }, {
-                            num: 2,
-                            hall: '공연장1',
-                            title: '꿔바로우',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 2,
-                            seats: '77/120',
-                        }, {
-                            num: 0,
-                            hall: '공연장1',
-                            title: '운동은',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
-                        }, {
-                            num: 1,
-                            hall: '공연장1',
-                            title: '언제하지',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
+                            id:'ttt',
+                            title:'v리사이틀',
+                            regdate:'2022-08-21',
+                            time:'1',
+                            paidDate:'2022-08-10',
+                            price:'30000',
+                            status:'입금대기',
                         }
                     ]
                 }
@@ -165,46 +153,36 @@
                     margin-bottom: 16px;
                     position: relative;
                     font-size: 14px;
-                    display: flex;
-                    justify-content: flex-end;
                     button,
                     select {
                         border: none;
                     }
                     select {
                         position: absolute;
-                        top: 8px;
-                        right: 288px;
+                        top: 50%;
+                        right: 184px;
+                        transform: translateY(-50%);
                         border-right: 1px solid #ddd;
                         &:focus{
                             outline: none;
                         }
+
                     }
                     button {
                         background: transparent;
                         font-size: 0;
                         position: absolute;
                         top: 4px;
-                        right: 104px;
+                        right: 5px;
                         color: rgba($black, 0.9);
                     }
                     input {
                         width: 280px;
                         box-sizing: border-box;
-                        height: 32px;
                         padding: 4px 32px 4px 90px;
                         &:focus{
                             outline-color: $black;
                         }
-                    }
-                    .insertBtn {
-                        background-color: $black;
-                        color: white;
-                        font-size: 16px;
-                        width: 80px;
-                        height: 32px;
-                        position: unset;
-                        margin-left: 16px;
                     }
                 }
                 .list {
@@ -232,7 +210,7 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /10);
+                            width: calc(100% /8);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;

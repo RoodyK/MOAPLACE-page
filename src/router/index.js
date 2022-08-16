@@ -5,6 +5,10 @@ import RentalDetailView from '@/views/admin/Rental/RentalDetail.vue'
 import RentalCalendarView from '@/views/admin/Rental/RentalCalendar.vue'
 import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
 import AdminHallDetail from '@/views/admin/Hall/AdminHallDetail.vue'
+import AdminHallInsert from '@/views/admin/Hall/AdminHallInsert.vue'
+import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
+import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
+import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import TmpView from '@/views/admin/Rental/Temp.vue'
 import FAQListView from '@/views/admin/board/FAQList.vue'
 import FAQDetailView from '@/views/admin/board/FAQDetail.vue'
@@ -77,6 +81,25 @@ const routes = [
     component: AdminHallDetail
   },
   {
+    path: '/moa/admin/show/insert',
+    name: 'adminHallInsert',
+    component: AdminHallInsert
+  },
+  {
+    path: '/moa/admin/show/update',
+    name: 'adminHallUpdate',
+    component: AdminHallUpdate
+  },
+  {
+    path: '/moa/admin/ticket/list',
+    name: 'adminTicketList',
+    component: AdminTicketList
+  },
+  {
+    path: '/moa/admin/ticket/detail',
+    name: 'adminTicketDetail',
+    component: AdminTicketDetail
+  }
     path: '/moa/moaplace/news',
     name: 'adminNewsList',
     component: AdminNewsList
