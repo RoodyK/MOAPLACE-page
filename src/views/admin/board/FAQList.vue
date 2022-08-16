@@ -21,7 +21,7 @@
                             <input type="text" class="custom-search-input" placeholder="검색어를 입력하세요."> 
                             </div>
                             <!-- 신규등록 버튼 -->
-                            <button class="newBtn" @click="$router.push({name:'faqInsert'})"> 등록하기 </button>
+                            <button class="newBtn" @click="$router.push({name:'adminFaqInsert'})"> 등록하기 </button>
                         </div>
                     </div>
 
@@ -37,7 +37,7 @@
                             <p>{{item.num}}</p>
                             <p>{{item.sort}}</p>
                             <p>{{item.title}}</p>
-                            <p><button @click="$router.push({name:'faqDetail'})">상세보기</button></p>
+                            <p><button @click="$router.push({name:'adminFaqDetail'})">상세보기</button></p>
                             <p><button>삭제</button></p>
                         </div>
                         <ul class="paging">

@@ -278,27 +278,27 @@ const routes = [
   },
   {
     path: '/moaplace.com/admin/faq/list',
-    name: 'faqList',
+    name: 'adminFaqList',
     component: FAQListView
   },
   {
     path: '/moaplace.com/admin/faq/detail',
-    name: 'faqDetail',
+    name: 'adminFaqDetail',
     component: FAQDetailView
   },
   {
     path: '/moaplace.com/admin/faq/insert',
-    name: 'faqInsert',
+    name: 'adminFaqInsert',
     component: FAQInsertView
   },
   {
     path: '/moaplace.com/admin/qna/list',
-    name: 'qnaList',
+    name: 'adminQnaList',
     component: QNAListView
   },
   {
     path: '/moaplace.com/admin/qna/detail',
-    name: 'qnaDetail',
+    name: 'adminQnaDetail',
     component: QNADetailView
   },
   {
