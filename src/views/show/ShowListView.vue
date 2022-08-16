@@ -20,11 +20,26 @@
           <a href="">〉</a>
         </div>
         <div>
-          <button class="btn">전체</button>
-          <button class="btn">이번주</button>
-          <button class="btn">다음주</button>
-          <button class="btn">1개월</button>
-          <button class="btn">3개월</button>
+          <label class="btn">
+            <input type="radio" name="period">
+            <span>전체</span>
+          </label>
+          <label class="btn">
+            <input type="radio" name="period">
+            <span>이번주</span>
+          </label>
+          <label class="btn">
+            <input type="radio" name="period">
+            <span>다음주</span>
+          </label>
+          <label class="btn">
+            <input type="radio" name="period" checked>
+            <span>1개월</span>
+          </label>
+          <label class="btn">
+            <input type="radio" name="period">
+            <span>3개월</span>
+          </label>
         </div>
         <div>
           <input type="text" id="search" placeholder="⌕ 공연명 검색">
@@ -37,6 +52,8 @@
               <span class="material-symbols-outlined" id="calicon">
                 calendar_month
               </span>
+              <input type="date" v-model="now_date">
+              {{now_date}}
               <span id="caltext"> 2022-08-06 - 2022-08-10</span>
             </td>
             <td>
@@ -69,7 +86,11 @@
       </div>
     </div>
     <div id=list class="container">
-      <div>
+      <div class="show">
+        <div class="pop">
+          <a href="">예매</a>
+          <a href="">상세</a>
+        </div>
         <img src="../../assets/smile.jpg">
         <h6 class="play">연극</h6>
         <h5>웃는남자</h5>
@@ -124,7 +145,17 @@
 
 <script>
 export default {
-  
+  name:"ShowListView",
+  data(){
+    return{
+      now_date:0
+    }
+  },
+  methods: {
+    getnow_date(){
+      this.now_date=new Date();
+    }
+  }
 }
 </script>
 
@@ -202,8 +233,25 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    position: relative;
     div{
       margin-top: 25px;
+    }
+    .show{
+      .pop{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        display: none;
+        background-color: orange;
+        border-radius: 50%;
+        left: 40px;
+        top: calc(50%);
+        &.active {
+          display: block;
+          background-color: red;
+        }
+      }
     }
   }
   #nav {
@@ -232,6 +280,7 @@ export default {
   #search{
     width: 300px;
     height: 40px;
+    margin-top: 7.5px;
   }
   table{
     margin-top: 20px;
@@ -246,5 +295,24 @@ export default {
   #caltext{
     color: $brown;
     font-size: 20px;
+  }
+  .btn {
+    input[type="radio"] {
+      display: none;
+    }
+    input[type="radio"] + span {
+      display: inline-block;
+      padding-top: 7.5px;
+      border: 1px solid $black;
+      background-color: white;
+      text-align: center;
+      cursor: pointer;
+      width: 80px;
+      height: 40px;
+    }
+    input[type="radio"]:checked + span {
+      background-color: #113a6b;
+      color: white;
+    }
   }
 </style>
