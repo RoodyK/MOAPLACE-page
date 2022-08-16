@@ -1,5 +1,8 @@
 <template>
   <section class="find-id">
+    <AppHeader />
+    <SideVisual menu="SET PASSWORD" img="cs"/>
+
     <div class="inner">
 
       <div class="title">
@@ -32,11 +35,22 @@
       </form>
 
     </div>
+
+    <AppFooter />
   </section>
 </template>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data() {
     return {
       find: [
@@ -63,7 +77,7 @@ export default {
     display : flex; 
     flex-direction: column;
     position: relative;
-    margin: 0 auto;
+    margin: 100px auto;
     .title {
       margin: 50px 0;
       text-align: center;

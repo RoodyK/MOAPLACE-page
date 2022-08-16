@@ -1,5 +1,8 @@
 <template>
   <section class="join-success">
+    <AppHeader />
+    <SideVisual menu="JOIN" img="cs"/>
+
     <div class="inner">
       <div class="title">
         <span>MOA PLACE</span>
@@ -20,15 +23,22 @@
       </div>
     </div>
     
-
+    <AppFooter />
   </section>
 </template>
 
 <script>
 import JoinOrder from "@/components/join/JoinOrder.vue"
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
   components: {
-    JoinOrder
+    JoinOrder,
+    AppHeader,
+    AppFooter,
+    SideVisual
   }
 }
 </script>
@@ -43,7 +53,7 @@ export default {
     position: relative;
     .title {
       text-align: center;
-      margin-bottom: 40px;
+      margin: 50px 0 40px;
       span {
         font-size: 2rem;
         font-weight: 700;
