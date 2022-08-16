@@ -1,91 +1,115 @@
 <template>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" /> 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />  
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />  
+  <AppHeader/>
+  <SideVisual menu="SHOW / TICKET" img="show"/>
   <div id=wrap>
-    <div id=nav>
-      <div id=present class="click">
-        공연목록
-      </div>
-      <div class="click">
-        월간일정
-      </div>
-    </div>
     <div id=filter>
-      <div class="container" id="filtertop">
+      <div class="containers" id="filtertop">
         <div id="year">
-          <a href="#" @click="prev">〈</a>
-          {{now_year}}
+          <a href="#" @click="prev">〈</a>&nbsp;
+          {{now_year}}&nbsp;
           <a href="#" @click="next">〉</a>
         </div>
         <div>
-          <label class="btn">
+          <label class="mybtn">
             <input type="radio" name="period">
             <span>전체</span>
           </label>
-          <label class="btn">
+          <label class="mybtn">
             <input type="radio" name="period">
             <span>이번주</span>
           </label>
-          <label class="btn">
+          <label class="mybtn">
             <input type="radio" name="period">
             <span>다음주</span>
           </label>
-          <label class="btn">
+          <label class="mybtn">
             <input type="radio" name="period" checked>
             <span>1개월</span>
           </label>
-          <label class="btn">
+          <label class="mybtn">
             <input type="radio" name="period">
             <span>3개월</span>
           </label>
         </div>
         <div>
-          <input type="text" id="search" placeholder="⌕ 공연명 검색">
+          <input type="text" id="search" placeholder="공연명 검색">
         </div>
       </div>
-      <div class="container">
+      <div class="containers">
         <table>
           <tr>
-            <td rowspan="2">
+            <td rowspan="2" id="calendar">
               <span class="material-symbols-outlined" id="calicon">
                 calendar_month
               </span>
-              <input type="date" v-model="now_date">
-              {{plus_week}}
               <span id="caltext"> 2022-08-06 - 2022-08-10</span>
             </td>
             <td>
-              <span class="material-symbols-outlined" id="pinicon">
-                pin_drop
-              </span>
-              <span>장소 | </span>
-              <input type="checkbox" checked> 전체
-              <input type="checkbox"> 모던홀
-              <input type="checkbox"> 오케스트라홀
-              <input type="checkbox"> 아트홀
+              <div class="category_box">
+                <div class="category_title">
+                  <span class="material-symbols-outlined" id="pinicon">
+                    pin_drop
+                  </span>
+                  장소
+                </div>
+                <div class="category_cont">
+                  <div>
+                    <input type="checkbox" checked> 전체
+                  </div>
+                  <div>
+                    <input type="checkbox"> 모던홀
+                  </div>
+                  <div>
+                    <input type="checkbox"> 오케스트라홀
+                  </div>
+                  <div>
+                    <input type="checkbox"> 아트홀
+                  </div>
+                </div>
+              </div>
+              
             </td>
           </tr>
           <tr>
             <td>
-              <span class="material-symbols-outlined" id="micicon">
-                biotech
-              </span>
-              <span>장르 | </span>
-              <input type="checkbox" checked> 전체
-              <input type="checkbox"> 연극
-              <input type="checkbox"> 뮤지컬
-              <input type="checkbox"> 대중음악
-              <input type="checkbox"> 기악
-              <input type="checkbox"> 오페라
-              <input type="checkbox"> 무용
+              <div class="category_box">
+                <div class="category_title">
+                  <span class="material-symbols-outlined" id="micicon">
+                    biotech
+                  </span>
+                  장르
+                </div>
+                <div class="category_cont">
+                  <div>
+                    <input type="checkbox" checked> 전체
+                  </div>
+                  <div>
+                    <input type="checkbox"> 연극
+                  </div>
+                  <div>
+                    <input type="checkbox"> 뮤지컬
+                  </div>
+                  <div>
+                    <input type="checkbox"> 대중음악
+                  </div>
+                  <div>
+                    <input type="checkbox"> 기악
+                  </div>
+                  <div>
+                    <input type="checkbox"> 오페라
+                  </div>
+                  <div>
+                    <input type="checkbox"> 무용
+                  </div>
+                </div>
+              </div>
             </td>
           </tr>
         </table>
       </div>
     </div>
-    <div id=list class="container">
+    <div id=list class="containers">
       <div class="show" @mouseover="popUp">
         <div class="pop">
           <a href="">예매</a>
@@ -141,11 +165,21 @@
       <a href="">다음▶</a>
     </div>
   </div>
+  <AppFooter/>
 </template>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
   name:"ShowListView",
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data(){
     return{
       now_year:new Date().getFullYear(),
@@ -174,15 +208,10 @@ export default {
   #wrap{
     width: $width;
     margin: 0 auto;
+    margin-top: 120px;
+    margin-bottom: 120px;
   }
-  .click{
-    cursor: pointer;
-  }
-  #present{
-    color: $brown;
-    border-bottom: 3px solid $brown;
-  }
-  .container{
+  .containers{
     display: flex;
     justify-content: space-between;
   }
@@ -191,7 +220,6 @@ export default {
     color: $brown;
     a{
       color: $brown;
-      margin: 20px;
     }
   }
   a{
@@ -239,6 +267,7 @@ export default {
     color: #C9778B;
   }
   #list {
+    margin-top: 25px;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -264,13 +293,6 @@ export default {
       }
     }
   }
-  #nav {
-    div{
-      float: left;
-      width: 50%;
-      text-align: center;
-    }
-  }
   #page{
     margin-top: 25px;
     text-align: center;
@@ -279,7 +301,6 @@ export default {
     }
   }
   #filter{
-    padding-top: 50px;
     button{
       color: $brown;
       background-color: white;
@@ -290,38 +311,58 @@ export default {
   #search{
     width: 300px;
     height: 40px;
-    margin-top: 7.5px;
   }
   table{
-    margin-top: 20px;
+    margin-top: 30px;
     width: 100%;
     td{
       height: 50px;
+      vertical-align: middle;
+    }
+    #calendar{
+      width: 33%;
     }
   }
   #calicon, #pinicon, #micicon{
-    color: $brown;
+    vertical-align: middle;
+  }
+  .category_box{
+    width: 100%;
+    display: flex;
+  }
+  .category_title{
+      border-right: 2px solid $brown;
+      color: $brown;
+      margin-left: 10px;
+      padding-right: 10px;
+  }
+  .category_cont{
+    margin-left: 10px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    padding-right: 10px;
   }
   #caltext{
     color: $brown;
-    font-size: 20px;
+    font-size: 24px;
+    vertical-align: middle;
   }
-  .btn {
+  .mybtn {
+    margin-top: 10px;
     input[type="radio"] {
       display: none;
     }
     input[type="radio"] + span {
-      display: inline-block;
-      padding-top: 7.5px;
+      padding: 8px 24px;
+      margin-left: 10px;
       border: 1px solid $black;
       background-color: white;
       text-align: center;
       cursor: pointer;
-      width: 80px;
-      height: 40px;
     }
     input[type="radio"]:checked + span {
-      background-color: #113a6b;
+      background-color: $brown;
       color: white;
     }
   }
