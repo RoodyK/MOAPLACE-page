@@ -1,7 +1,7 @@
 <template>
-  
   <div id="wrap">
     <AppHeader/>
+    <SideVisual menu="RENTAL APPLICATION" img="rental"/>
     <section>
       <div class="inner">
         <h2 class="title">대관 절차 및 비용</h2>
@@ -183,14 +183,15 @@
 
 </span>
 <script>
- 
+import SideVisual from '@/components/SideVisual.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
 export default {
   components: {
     AppHeader,
-    AppFooter
+    AppFooter,
+    SideVisual
   },
   data(){
     return{

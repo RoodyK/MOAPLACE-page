@@ -198,7 +198,7 @@ export default {
                 width: calc(100% - 140px );
                 height: 100%;
                 display: flex;
-                flex-flow: column wrap;
+                flex-flow: column nowrap;
 
                 > ul{
                     display: flex;

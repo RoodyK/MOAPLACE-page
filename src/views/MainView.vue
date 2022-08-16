@@ -1,5 +1,5 @@
 <template>
-    <div id="wrap">
+    <div id="wrap" ref="wrap">
         <AppHeader/>
         <MainVisual/>
         <main class="main">
@@ -80,6 +80,7 @@
                 sec01Position: null,
                 showsec02: false,
                 sec02Position: null,
+                wrapWidth : null,
                 slides:[
                     //title: 공연제목, img : 이미지 src, link : 공연 상세보기 페이지
                     {title: '웃는남자',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=7092ee934032e328dac3abc9fd80d8856a7ff77472074eb1dad6fba65becd736', link: '/'},
@@ -111,6 +112,12 @@
             window.addEventListener('scroll', this.getScorollTop);
             this.sec01Position = this.$refs.sec01.offsetTop;
             this.sec02Position = this.$refs.sec02.offsetTop;
+            //wrap width * 스크롤이 생기지 않을정도 화면이면 미리 content들 배치하기
+            this.wrapWidth = this.$refs.wrap.clientWidth;
+            if(this.wrapWidth >=2305){
+                this.showsec01 = true;
+                this.showsec02 = true;
+            }
         },
         methods:{
             goPrev(){
@@ -144,7 +151,7 @@
                 //sec01 위치     
                 this.showsec01 = this.sec01Position - 450 <= currentScrollPosition;
                 //sec02 위치     
-                this.showsec02 = this.sec02Position - 450 <= currentScrollPosition;
+                this.showsec02 = this.sec02Position - 800 <= currentScrollPosition;
             }
         }
     }
