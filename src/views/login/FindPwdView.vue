@@ -1,5 +1,8 @@
 <template>
   <section class="find-id">
+    <AppHeader/>
+    <SideVisual menu="FIND PWD" img="cs"/>
+
     <div class="inner">
 
       <div class="title">
@@ -43,21 +46,33 @@
       </form>
 
     </div>
+
+    <AppFooter/>
   </section>
 </template>
 
 <script>
+
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data() {
     return {
       find: [
         {
           name: '아이디 찾기',
-          href: '/login/findid'
+          href: '/moaplace.com/login/findid'
         },
         {
           name: '비밀번호 찾기',
-          href: '/login/findpwd'
+          href: '/moaplace.com/login/findpwd'
         }
       ]
     }
@@ -74,7 +89,7 @@ export default {
     display : flex; 
     flex-direction: column;
     position: relative;
-    margin: 0 auto;
+    margin: 50px auto;
     .title {
       margin: 50px 0;
       text-align: center;
