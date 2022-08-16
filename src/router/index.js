@@ -10,6 +10,14 @@ import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import TmpView from '@/views/admin/Rental/Temp.vue'
+import FAQListView from '@/views/admin/board/FAQList.vue'
+import FAQDetailView from '@/views/admin/board/FAQDetail.vue'
+import FAQInsertView from '@/views/admin/board/FAQInsert.vue'
+import QNAListView from '@/views/admin/board/QNAList.vue'
+import QNADetailView from '@/views/admin/board/QNADetail.vue'
+import AdminNewsList from '@/views/admin/board/NewsList.vue'
+import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
+import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 
 const routes = [
   {
@@ -36,6 +44,31 @@ const routes = [
     path: '/tmp',
     name: 'tmp',
     component: TmpView
+  },
+  {
+    path: '/moa/admin/faq/list',
+    name: 'faqList',
+    component: FAQListView
+  },
+  {
+    path: '/moa/admin/faq/detail',
+    name: 'faqDetail',
+    component: FAQDetailView
+  },
+  {
+    path: '/moa/admin/faq/insert',
+    name: 'faqInsert',
+    component: FAQInsertView
+  },
+  {
+    path: '/moa/admin/qna/list',
+    name: 'qnaList',
+    component: QNAListView
+  },
+  {
+    path: '/moa/admin/qna/detail',
+    name: 'qnaDetail',
+    component: QNADetailView
   },
   {
     path: '/moa/admin/show/list',
@@ -67,6 +100,21 @@ const routes = [
     name: 'adminTicketDetail',
     component: AdminTicketDetail
   }
+    path: '/moa/moaplace/news',
+    name: 'adminNewsList',
+    component: AdminNewsList
+  },
+  {
+    path: '/moa/moaplace/news/detail',
+    name: 'adminNewsDetail',
+    component: AdminNewsDetail
+  },
+  {
+    path: '/moa/moaplace/news/insert',
+    name: 'adminNewsInsert',
+    component: AdminNewsInsert
+  },
+
 ]
 
 const router = createRouter({
