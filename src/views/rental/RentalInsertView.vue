@@ -1,7 +1,7 @@
 <template>
   <div id="wrap">
     <AppHeader/>
-    <SideVisual menu="RENTAL APPLICATION" img="rental"/>
+    <SideVisual menu="RENTAL APPLICATION" img="rental" title="대관신청"/>
     <div class="inner">
       <div class="noti-box">
         <h3>모아플레이스 대관 신청 준수사항</h3>

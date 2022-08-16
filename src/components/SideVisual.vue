@@ -8,6 +8,17 @@
         <div class="side-text">
             <p>{{menu}}</p>
         </div>
+        <ul class="slide-tab">
+            <li v-for="(tap, index) in tapMenu" :key="index">
+                <ul v-if="tap.name == img" class="tap">
+                    <li v-for="name in tap.taps" :key="name" :class="{on: name.title == title}">
+                        <RouterLink :to="name.href">
+                            {{name.title}}
+                        </RouterLink>
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -17,6 +28,43 @@ export default {
     props:{
         menu: String,
         img: String,
+        title: String,
+    },
+    data(){
+        return{
+            tapMenu :[
+                {
+                    name: 'moa',
+                    taps:[
+                        {title: '공간소개', href: '/moaplace.com/moaplace/info'},
+                        {title: '공연장정보', href: '/moaplace.com/moaplace/guide'},
+                        {title: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
+                        {title: '새소식', href: '/moaplace.com/moaplace/news'}, 
+                    ]
+                },
+                {
+                    name: 'show',
+                    taps:[
+                        {title: '공연목록', href: '/moaplace.com/showlist'},
+                        {title: '월간일정', href: '/moaplace.com/calendar'},
+                    ]
+                },
+                {
+                    name: 'rental',
+                    taps:[
+                        {title: '대관정보', href: '/moaplace.com/rental'},
+                        {title: '대관신청', href: '/moaplace.com/rental/insert'},
+                    ]
+                },
+                {
+                    name: 'cs',
+                    taps:[
+                        {title: 'FAQ', href: '/moaplace.com/faq'},
+                        {title: '1:1문의', href: '/moaplace.com/qna/list'},
+                    ]
+                }
+            ],
+        }
     }
 }
 </script>
@@ -64,6 +112,41 @@ export default {
                     box-shadow: 5px 5px 5px rgba($black,0.5);
                     background: #fff;
                 }
+            
+        }
+        .slide-tab{
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            color: #fff;
+            > li{
+                margin: 0 auto;
+                .tap{
+                    width: $width;
+                    margin: 0 auto;
+                    display: flex;
+                    justify-content: center;
+                    li{
+                        width: calc(100% / 4);
+                        padding: 16px 0;
+                        text-align: center;
+                        background: rgba(#000, 0.4);
+                        box-sizing: border-box;
+                        border-left: 1px solid rgba(#fff, 0.1);
+                        a{color:rgba(#fff,0.9);}
+                        &:first-child{
+                            border: none;
+                        }
+                        &.on{
+                            background: #fff;
+                            font-weight: bold;
+                            border: 1px solid #f8f8f8;
+                            a{color:$black;}
+                        }
+                    }
+                }
+            }
             
         }
     }
