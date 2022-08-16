@@ -1,11 +1,16 @@
 <template>
-  <div class="app">
-    <p class="info"> 모아플레이스에 바라는 사항이나 불편한 사항, 궁금증을 올려주시면 성심성의껏 대답해 드리겠습니다. <br>
-    <strong style="color:#D67747">자주묻는질문(FAQ)을 먼저 확인하시면 보다 빠르게 궁금한 점을 해결할 수 있습니다. </strong></p>
+  <AppHeader/>
+  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
 
-    <div class="info2">
+  <div class="app">
+
+  <h2 class="title">1:1문의</h2>
+  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+
+    <div class="info">
         <p> <img src='../../assets/board/info.png'> 작성시 주의사항 </p>
         <ul>
+            <li><strong style="color:#D67747">자주묻는질문(FAQ)을 먼저 확인하시면 보다 빠르게 궁금한 점을 해결할 수 있습니다. </strong></li>
             <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
             <li> 개인정보보호를 위하여 고객님의 주민등록번호 등의 개인정보 기재는 삼가주시기 바랍니다. </li>
         </ul>
@@ -55,6 +60,9 @@
     </form>
 
   </div>
+  
+  <AppFooter/>
+
 </template>
 
 <style scoped lang="scss">
@@ -70,22 +78,24 @@
   padding-top: 50px;
   margin: auto;
 
-  .info {
-    margin: 40px;
+  h2.title{
+    font-size: 32px;
     text-align: center;
-    color: #333333d4;
+    margin-top: 32px;
+    & + p{
+      text-align: center;
+      margin-bottom: 64px;
+    }
   }
 
-  .info2 {
+  .info {
     width: 100%;
     color: #333333d4;
     border: 1px solid #33333330;
-    margin: 20px;
 
     p {
     font-weight: bold;
     padding: 15px 0 0 20px;
-
       img {
         width: 25px;
         height: 25px;
@@ -96,12 +106,12 @@
   .line {
     width: 100%;
     border: 2px solid $brown;
-    margin: 25px;
+    margin: 32px;
   }
 
   .forms {
     width:1100px;
-    margin-bottom: 50px;
+    margin-bottom: 64px;
 
     label {
       padding-top: 20px;
@@ -181,7 +191,16 @@
 </style>
 
 <script>
-export default{
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
+export default {
+    components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data() {
     return {
       date: new Date()

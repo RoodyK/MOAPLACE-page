@@ -1,6 +1,12 @@
 <template>
+  <AppHeader/>
+  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+
   <div class="app">
   
+  <h2 class="title">1:1문의</h2>
+  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+
   <div class="info">
     <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
       <ul>
@@ -51,6 +57,9 @@
   </div>
 
   </div>
+  
+  <AppFooter/>
+
 </template>
 
 <style scoped lang="scss">
@@ -63,6 +72,16 @@
   color: $black;
   padding-top: 50px;
   margin: auto;
+
+  h2.title{
+    font-size: 32px;
+    text-align: center;
+    margin-top: 32px;
+    & + p{
+      text-align: center;
+      margin-bottom: 64px;
+    }
+  }
 
   .info {
     width: 100%;
@@ -82,7 +101,7 @@
 
   .line {
     color: white; 
-    margin: 30px;
+    margin: 32px;
   }
 
   table {
@@ -183,3 +202,17 @@
   }
 }
 </style>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
+export default {
+    components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  }
+}
+</script>

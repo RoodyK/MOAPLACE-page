@@ -80,7 +80,7 @@
                 </div>
                 
                 <div class="btn-box">
-                    <button @click="$router.push({name:'qnaList'})">이전</button>
+                    <button @click="$router.push({name:'adminQnaList'})">이전</button>
                     <button v-if="answer!=null">수정</button>
                     <button v-if="answer==null">등록</button>
                 </div>

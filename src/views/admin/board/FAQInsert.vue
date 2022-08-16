@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="btn-box">
-                    <button @click="$router.push({name:'faqList'})">이전</button>
+                    <button @click="$router.push({name:'adminFaqList'})">이전</button>
                     <button>등록</button>
                 </div>
             </div>
