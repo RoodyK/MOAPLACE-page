@@ -49,6 +49,7 @@ import QNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import MembershipView from '@/views/board/MembershipView.vue'
 
 const routes = [
   // 메인
@@ -346,6 +347,11 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+  {
+    path: '/moaplace.com/membership',
+    name: 'Membership',
+    component: MembershipView
+  }
 
 ]
 
