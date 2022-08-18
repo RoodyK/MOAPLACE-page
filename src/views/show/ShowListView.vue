@@ -10,7 +10,7 @@
           {{now_year}}&nbsp;
           <a href="#" @click="next">〉</a>
         </div>
-        <div>
+        <div class="btn_box">
           <label class="mybtn">
             <input type="radio" name="period">
             <span>전체</span>
@@ -32,8 +32,9 @@
             <span>3개월</span>
           </label>
         </div>
-        <div>
-          <input type="text" id="search" placeholder="공연명 검색">
+        <div class="search">
+          <input type="text" class="search_input" placeholder="공연명 검색">
+          <button class="search_btn"/>
         </div>
       </div>
       <div class="containers">
@@ -68,7 +69,6 @@
                   </div>
                 </div>
               </div>
-              
             </td>
           </tr>
           <tr>
@@ -109,8 +109,8 @@
         </table>
       </div>
     </div>
-    <div id=list class="containers">
-      <div class="show" @mouseover="popUp">
+    <div id=list>
+      <div class="show">
         <div class="pop">
           <a href="">예매</a>
           <a href="">상세</a>
@@ -196,9 +196,6 @@ export default {
     prev(){
       this.now_year--;
     },
-    popUp(){
-
-    }
   }
 }
 </script>
@@ -225,10 +222,6 @@ export default {
   a{
     text-decoration: none;
     color: $black;
-  }
-  img{
-    width: 225px;
-    height: 350px;
   }
   td{
     border: 1px solid $brown;
@@ -268,27 +261,28 @@ export default {
   }
   #list {
     margin-top: 25px;
-    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     position: relative;
     div{
       margin-top: 25px;
+      width: calc((100% - (24px * 3)) / 4);
     }
+    img{
+        width: 100%;
+      }
     .show{
+      position: relative;
       .pop{
         width: 100%;
         height: 100%;
         position: absolute;
         display: none;
         background-color: orange;
-        border-radius: 50%;
-        left: 40px;
-        top: calc(50%);
-        &.active {
-          display: block;
-          background-color: red;
+        &:hover {
+        display: block;
+        background-color: red;
         }
       }
     }
@@ -300,18 +294,24 @@ export default {
       padding: 15px;
     }
   }
-  #filter{
-    button{
-      color: $brown;
-      background-color: white;
-      border: 2px solid $brown;
-      width: 100px;
+  .search{
+    position: relative;
+    .search_input{
+      width: 300px;
+      height: 100%;
+      padding-right: 30px;
+      padding-left: 10px;
+    }
+    .search_btn{
+      position: absolute;
+      height: 100%;
+      width: 10%;
+      right: 0;
+      border: none;
+      background: url(@/assets/moaplace/search.png) no-repeat center;
     }
   }
-  #search{
-    width: 300px;
-    height: 40px;
-  }
+  
   table{
     margin-top: 30px;
     width: 100%;
@@ -321,6 +321,7 @@ export default {
     }
     #calendar{
       width: 33%;
+      text-align: center;
     }
   }
   #calicon, #pinicon, #micicon{
@@ -339,27 +340,33 @@ export default {
   .category_cont{
     margin-left: 10px;
     display: flex;
-    flex-grow: 1;
-    justify-content: space-between;
     padding-right: 10px;
+    div{
+      margin-right: 32px;
+      input{
+        vertical-align: middle;
+      }
+    }
   }
   #caltext{
     color: $brown;
     font-size: 24px;
     vertical-align: middle;
+    font-weight: bold;
   }
-  .mybtn {
-    margin-top: 10px;
+  
+  .btn_box{
+    display: flex;
     input[type="radio"] {
       display: none;
     }
     input[type="radio"] + span {
-      padding: 8px 24px;
-      margin-left: 10px;
+      display: inline-block;
+      padding: 8px 16px;
       border: 1px solid $black;
-      background-color: white;
       text-align: center;
       cursor: pointer;
+      margin-right: 10px;
     }
     input[type="radio"]:checked + span {
       background-color: $brown;

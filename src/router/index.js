@@ -49,6 +49,7 @@ import QNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import PaymentDone from '@/views/DoneView.vue'
 
 const routes = [
   // 메인
@@ -347,6 +348,12 @@ const routes = [
     component: AdminNewsInsert
   },
 
+  // 예매완료 페이지
+  {
+    path: '/moaplace.com/payment/done',
+    name: 'paymentDone',
+    component: PaymentDone
+  }
 ]
 
 const router = createRouter({
