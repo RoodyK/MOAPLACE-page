@@ -49,6 +49,9 @@ import QNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import MembershipView from '@/views/board/MembershipView.vue'
+import MannerView from '@/views/board/MannerView.vue'
+
 
 const routes = [
   // 메인
@@ -207,6 +210,11 @@ const routes = [
     name: 'faq',
     component: () => import('@/views/board/FAQView.vue')
   },
+  {
+    path: '/moaplace.com/manner',
+    name: 'manner',
+    component: MannerView
+  },
 
   // 마이페이지
   {
@@ -346,6 +354,11 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+  {
+    path: '/moaplace.com/membership',
+    name: 'Membership',
+    component: MembershipView
+  }
 
 ]
 
