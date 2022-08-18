@@ -1,9 +1,9 @@
 <template>
   <div class="containers">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" title="새소식"/>
+    <SideVisual menu="MOA PLACE" img="moa" title="새소식" />
     <div class="title inner_wrap">
-      <p class="tit">새소식</p>
+      <h2 class="tit">새소식</h2>
       <p class="txt">
         문화예술을 통한 즐거움과 감동을 공유하는 나눔터 모아플레이스입니다.
       </p>
@@ -92,19 +92,15 @@ $brown: #826d5e;
   margin: 0 auto;
 }
 .inner_wrap {
-  width: 1100px;
+  width: $width;
   margin: 0 auto;
 }
 .title {
   text-align: center;
-  padding: 125px 0 100px;
+  padding: 125px 0 80px;
   .tit {
     font-size: 32px;
-    font-weight: 500;
-  }
-  .txt {
-    color: #666666;
-    margin-top: 15px;
+    margin-bottom: 8px;
   }
 }
 .con {
