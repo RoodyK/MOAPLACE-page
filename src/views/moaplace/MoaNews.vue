@@ -3,7 +3,7 @@
     <AppHeader />
     <SideVisual menu="MOA PLACE" img="moa" />
     <div class="title inner_wrap">
-      <p class="tit">공지사항</p>
+      <p class="tit">새소식</p>
       <p class="txt">
         문화예술을 통한 즐거움과 감동을 공유하는 나눔터 모아플레이스입니다.
       </p>
@@ -117,24 +117,31 @@ $brown: #826d5e;
     width: 355px;
     height: 50px;
     border: 1px solid #e2e2e2;
+    position: relative;
     float: right;
     select {
-      font-size: 17px;
-      width: 95px;
       height: 100%;
-      float: left;
       border: 0;
-      padding: 10px 5px;
+      padding: 10px 16px;
     }
     input {
       margin: 0;
       height: 45px;
       border: none;
+      padding: 0 14px;
+      outline: none;
     }
     button {
-      margin-left: 20px;
       height: 100%;
       background: url(@/assets/moaplace/search.png) no-repeat center;
+      float: right;
+      padding: 0 26px 0;
+      position: absolute;
+      &:hover {
+        border: 1px solid $black;
+        background-color: white;
+        color: $black;
+      }
     }
   }
   .table {

@@ -6,43 +6,43 @@
     <div id=filter>
       <div class="containers" id="filtertop">
         <div id="year">
-          <a href="#" @click="prev">〈</a>&nbsp;
-          {{now_year}}&nbsp;
-          <a href="#" @click="next">〉</a>
+          <button @click="prev">〈</button>
+          <span>{{select_year}}</span>
+          <button @click="next">〉</button>
         </div>
-        <div>
-          <label class="mybtn">
-            <input type="radio" name="period">
-            <span>전체</span>
-          </label>
-          <label class="mybtn">
-            <input type="radio" name="period">
-            <span>이번주</span>
-          </label>
-          <label class="mybtn">
-            <input type="radio" name="period">
-            <span>다음주</span>
-          </label>
-          <label class="mybtn">
-            <input type="radio" name="period" checked>
-            <span>1개월</span>
-          </label>
-          <label class="mybtn">
-            <input type="radio" name="period">
-            <span>3개월</span>
-          </label>
-        </div>
-        <div>
-          <input type="text" id="search" placeholder="공연명 검색">
+        <div class="top_right">
+          <div class="btn_box">
+            <label class="mybtn">
+              <input type="radio" name="period">
+              <span>전체</span>
+            </label>
+            <label class="mybtn">
+              <input type="radio" name="period">
+              <span>이번주</span>
+            </label>
+            <label class="mybtn">
+              <input type="radio" name="period">
+              <span>다음주</span>
+            </label>
+            <label class="mybtn">
+              <input type="radio" name="period" checked>
+              <span>1개월</span>
+            </label>
+            <label class="mybtn">
+              <input type="radio" name="period">
+              <span>3개월</span>
+            </label>
+          </div>
+          <div class="search">
+            <input type="text" class="search_input" placeholder="공연명 검색">
+            <button class="search_btn"/>
+          </div>
         </div>
       </div>
       <div class="containers">
         <table>
           <tr>
             <td rowspan="2" id="calendar">
-              <span class="material-symbols-outlined" id="calicon">
-                calendar_month
-              </span>
               <span id="caltext"> 2022-08-06 - 2022-08-10</span>
             </td>
             <td>
@@ -68,7 +68,6 @@
                   </div>
                 </div>
               </div>
-              
             </td>
           </tr>
           <tr>
@@ -109,48 +108,92 @@
         </table>
       </div>
     </div>
-    <div id=list class="containers">
-      <div class="show" @mouseover="popUp">
-        <div class="pop">
-          <a href="">예매</a>
-          <a href="">상세</a>
+    <div id=list>
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
         </div>
-        <img src="../../assets/smile.jpg">
         <h6 class="play">연극</h6>
         <h5>웃는남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="musical">뮤지컬</h6>
         <h5>우는남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="music">대중음악</h6>
         <h5>화난남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="instrument">기악</h6>
         <h5>슬픈남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="opera">오페라</h6>
         <h5>상남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="dance">무용</h6>
         <h5>중남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="vocal">성악</h6>
         <h5>하남자</h5>
       </div>
-      <div>
-        <img src="../../assets/smile.jpg">
+      <div class="show">
+        <div class="img">
+          <div class="pop">
+            <button class="left">예매</button>
+            <button class="right">상세</button>
+          </div>
+          <img src="../../assets/smile.jpg">
+        </div>
         <h6 class="musical">뮤지컬</h6>
         <h5>그남자</h5>
       </div>
@@ -182,7 +225,7 @@ export default {
   },
   data(){
     return{
-      now_year:new Date().getFullYear(),
+      select_year:new Date().getFullYear(),
       now_date:new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().getDate(),
       plus_week:new Date().getFullYear()+"-"+(new Date().getMonth()+1)+"-"+new Date().setDate(new Date().getDate()+7),
       plus_month:new Date().getFullYear()+"-"+(new Date().getMonth()+2)+"-"+new Date().getDate(),
@@ -191,13 +234,10 @@ export default {
   },
   methods: {
     next(){
-      this.now_year++;
+      this.select_year++;
     },
     prev(){
-      this.now_year--;
-    },
-    popUp(){
-
+      this.select_year--;
     }
   }
 }
@@ -214,29 +254,37 @@ export default {
   .containers{
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
   #year{
     font-size: 30px;
     color: $brown;
-    a{
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    button{
       color: $brown;
+      border: none;
+      background-color: #fff;
+      font-size: 20px;
+    }
+    span{
+      padding: 0 24px;
     }
   }
   a{
     text-decoration: none;
     color: $black;
   }
-  img{
-    width: 225px;
-    height: 350px;
-  }
   td{
-    border: 1px solid $brown;
+    border: 1px solid rgba($black, 0.5);
   }
   h6{
     width: 70px;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 16px;
+    padding: 4px 0;
+    font-weight: bold;
   }
   .play{
     border: 1px solid #FECB65;
@@ -268,29 +316,56 @@ export default {
   }
   #list {
     margin-top: 25px;
-    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     position: relative;
-    div{
-      margin-top: 25px;
-    }
     .show{
+      margin-top: 25px;
+      width: calc((100% - (24px * 3)) / 4);
+      h5{
+        font-size: 22px;
+        font-weight: bold;
+      }
+      .img{
+        width: 100%;
+        height: 368px;
+        overflow: hidden;
+        position: relative;
+      }
       .pop{
         width: 100%;
         height: 100%;
         position: absolute;
-        display: none;
-        background-color: orange;
-        border-radius: 50%;
-        left: 40px;
-        top: calc(50%);
-        &.active {
-          display: block;
-          background-color: red;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(black, 0.6);
+        opacity: 0;
+        transition: 0.3s;
+        button {
+          padding: 24px;
+          border-radius: 50%;
+          border: 1px solid #fff;
+        }
+        &:hover {
+          opacity: 1;
+        }
+        .left{
+          background-color: #fff;
+          color: rgba(black, 0.6);;
+          margin-right: 4px;
+        }
+        .right{
+          background-color: rgba(black, 0.6);;
+          color: #fff;
+          margin-left: 4px;
         }
       }
+    }
+    img{
+        width: 100%;
     }
   }
   #page{
@@ -300,30 +375,41 @@ export default {
       padding: 15px;
     }
   }
-  #filter{
-    button{
-      color: $brown;
-      background-color: white;
-      border: 2px solid $brown;
-      width: 100px;
+  .search{
+    position: relative;
+    height: 42px;
+    .search_input{
+      width: 300px;
+      height: 100%;
+      padding-right: 30px;
+      padding-left: 10px;
+    }
+    .search_btn{
+      position: absolute;
+      height: 100%;
+      width: 10%;
+      right: 0;
+      border: none;
+      background: url(@/assets/moaplace/search.png) no-repeat center;
     }
   }
-  #search{
-    width: 300px;
-    height: 40px;
-  }
+  
   table{
     margin-top: 30px;
     width: 100%;
+    background-color: #f5f6f9;
     td{
+      border-right: 0;
       height: 50px;
       vertical-align: middle;
     }
     #calendar{
       width: 33%;
+      text-align: center;
+      border-left: 0;
     }
   }
-  #calicon, #pinicon, #micicon{
+  #pinicon, #micicon{
     vertical-align: middle;
   }
   .category_box{
@@ -335,35 +421,56 @@ export default {
       color: $brown;
       margin-left: 10px;
       padding-right: 10px;
+      font-weight: bold;
   }
   .category_cont{
-    margin-left: 10px;
+    margin-left: 16px;
     display: flex;
-    flex-grow: 1;
-    justify-content: space-between;
     padding-right: 10px;
+    div{
+      margin-right: 32px;
+      input{
+        vertical-align: middle;
+      }
+    }
   }
   #caltext{
     color: $brown;
-    font-size: 24px;
+    font-size: 20px;
     vertical-align: middle;
+    font-weight: bold;
   }
-  .mybtn {
-    margin-top: 10px;
+  
+  .btn_box{
+    display: flex;
+    margin-right: 16px;
     input[type="radio"] {
       display: none;
     }
     input[type="radio"] + span {
-      padding: 8px 24px;
-      margin-left: 10px;
+      display: inline-block;
+      padding: 8px 16px;
       border: 1px solid $black;
-      background-color: white;
+      border-width: 1px 1px 1px 0;
       text-align: center;
       cursor: pointer;
+      width: 115px;
     }
     input[type="radio"]:checked + span {
       background-color: $brown;
+      width: 115px;
       color: white;
     }
+    .mybtn{
+      &:first-child{
+        span{
+          border-left: 1px solid $black;
+        }
+      }
+    }
+  }
+  .top_right{
+    display: flex;
+    
   }
 </style>
