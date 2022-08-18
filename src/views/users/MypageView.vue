@@ -81,7 +81,7 @@
                         <div class="img1"></div>
                         <div class="txt">
                           <p class="fs-5 fw-bold">Title</p>
-                          <table>
+                          <table class="subtable">
                             <tr>
                               <th>장소</th>
                               <td>공연장1</td>
@@ -296,6 +296,7 @@ export default {
           background-color: white;
           .info {
             display: flex;
+            align-items: center;
             margin: 20px 20px;
             .img1 {
               background-color: gray;
@@ -311,12 +312,20 @@ export default {
             }
             .txt {
               p {
-                margin: 0px;
+                margin-bottom: 10px;
               }
               table td,th {
                 border: 0px;
                 background-color: transparent;
               }
+              .subtable{
+                th {
+                  font-weight: bold;
+                }
+                td {
+                  padding-left: 5px;
+                }
+              } 
             }
           }
         }
