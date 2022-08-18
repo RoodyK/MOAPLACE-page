@@ -1,14 +1,12 @@
 <template>
   <div id="wrap">
+    <AppHeader />
+    <SideVisual menu="MOA PLACE" img="moa" />
     <div class="m00 m10 m14">
       <div class="tit inner_wrap">
         <p class="main_tit">오시는길</p>
         <p class="main_txt">
-          주소 및 연락처
-          <br />
-          서울특별시 종로구 율곡로10길 105 디아망 4층 (봉익동 10-1)
-          <br />
-          070-8240-3211~3
+          문화예술을 통한 즐거움과 감동을 공유하는 나눔터 모아플레이스입니다.
         </p>
       </div>
       <div class="con con1">
@@ -85,11 +83,20 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script>
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
 export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
   data() {
     return {
       map: null,
@@ -147,14 +154,10 @@ $brown: #826d5e;
   margin: 0 auto;
 }
 .m00 .tit .main_tit {
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 500;
 }
-.m00 .tit .main_txt {
-  font-size: 17px;
-  color: #666666;
-  margin-top: 15px;
-}
+
 .m00 .con1 {
   padding: 0 0 150px 0;
 }

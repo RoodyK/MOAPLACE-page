@@ -3,7 +3,7 @@
     <div class="footer-wrap">
         <h2 class="logo">
             <RouterLink
-                to="/moa">
+                to="/moaplace.com">
                 모아플레이스
                 <img src="@/assets/default/logo-white.png" alt="모아플레이스 푸터로고">
             </RouterLink>

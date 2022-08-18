@@ -1,24 +1,26 @@
 <template>
-  <AppHeader/>
+  
   <section class="login-page">
+    <AppHeader/>
+    <SideVisual menu="LOGIN" img="cs"/>
     <div class="inner">
 
       <div class="title">
         <h2><strong>MOA PLACE</strong> 회원 로그인</h2>
       </div>
-      <from @enter.prevent>
+      <form @enter.prevent>
         <div class="login">
           <div class="id">
-            <input type="text" name="id" placeholder="아이디를 입력하세요." />
+            <input type="text" name="id" id="id" placeholder="아이디를 입력하세요." />
           </div>
 
           <div class="pwd">
-            <input type="password" name="pwd" placeholder="비밀번호를 입력하세요." />
+            <input type="password" name="pwd" id="pwd" placeholder="비밀번호를 입력하세요." autocomplete="off" />
           </div>
 
           <button type="button" class="login-btn">로그인</button>
         </div>
-      </from>
+      </form>
 
       <div class="searches">
         <div class="search"
@@ -40,34 +42,39 @@
           <img src="@/assets/login/google_login.png" alt="구글로그인">
         </button>
       </div>
+      
     </div>
+    
+    <AppFooter/>
   </section>
-  <AppFooter/>
+ 
 </template>
 
 <script>
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
 
 export default {
   components: {
     AppHeader,
-    AppFooter
+    AppFooter,
+    SideVisual
   },
   data() {
     return {
       searches: [
         {
           name: '아이디 찾기',
-          href: '/login/findid'
+          href: '/moaplace.com/login/findid'
         },
         {
           name: '비밀번호 찾기',
-          href: '/login/findpwd'
+          href: '/moaplace.com/login/findpwd'
         },
         {
           name: '회원가입',
-          href: '/join/same'
+          href: '/moaplace.com/join/same'
         }
       ]
     }
@@ -84,11 +91,12 @@ export default {
     display : flex; 
     flex-direction: column;
     position: relative;
-    margin: 0 auto;
+    margin: 50px auto 0;
+
     .title {
       h2 {
         font-size : 30px;
-        margin: 20px 0;
+        margin: 20px 0 50px;
         text-align: center;
       }
     }
@@ -142,6 +150,7 @@ export default {
         margin-right: 0;
       }
     }
+
     .kakao-login, .google-login {
       display: flex;
       justify-content: center;
@@ -149,13 +158,19 @@ export default {
         border: none;
       }
     }
-    .kakao-login img, .google-login img {
-      width: 400px;
-      height: 80px;
-      
-    }
     .kakao-login {
       margin-bottom: 20px;
+      img {
+        width: 400px;
+        height: 75px;
+      }
+    }
+    .google-login {
+      margin-bottom: 100px;
+      img {
+        width: 410px;
+        height: 80px;
+      }
     }
   }
 }
