@@ -26,6 +26,7 @@ import MypageView from '../views/users/MypageView.vue'
 import MyPerformanceView from '../views/users/PerformanceView.vue'
 import MyTicketListView from '../views/users/TicketListView.vue'
 import MyTicketDetailView from '../views/users/TicketDetailView.vue'
+import MyTicketCancleView from '../views/users/TicketCancleView.vue'
 import MyRentalListView from '../views/users/RentalListView.vue'
 import MyRentalDetailView from '../views/users/RentalDetailView.vue'
 import MyReviewListView from '../views/users/ReviewListView.vue'
@@ -228,6 +229,11 @@ const routes = [
     path: '/moaplace.com/users/ticket/detail',
     name: 'myticketdetail',
     component: MyTicketDetailView
+  },
+  {
+    path: '/moaplace.com/users/ticket/cancle',
+    name: 'myticketcancle',
+    component: MyTicketCancleView
   },
   {
     path: '/moaplace.com/users/rental/list',
