@@ -47,7 +47,7 @@
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                                 <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                             </svg>
-                        날짜를 선택해주세요</p>
+                        날짜와 회차를 선택해주세요</p>
                     </div>
                  </div>
                  <aside>
@@ -99,7 +99,7 @@ export default {
                 imgSrc:"https://img.dtryx.com/poster/2022/06/EBFBA151-CC1E-40AD-A108-990343803DF2.small.jpg",
                 title:'헤어질 결심',
                 startDate:'2022-08-01',
-                endDate:'2022-11-15',
+                endDate:'2022-09-15',
                 hall:'모던홀',
                 year:new Date().getFullYear(),
                 month:new Date().getMonth()+1,
@@ -165,13 +165,11 @@ export default {
             return date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2)
         },
         getTerm(){
-            let currentTerm = new Date(this.list.year,this.list.month,this.lastDay()).getTime()-new Date(this.list.year,this.list.month,this.list.today).getTime(); //이번달 마지막날-오늘날짜
-            let nextTerm = new Date(this.list.endDate.substr(0,4),this.list.endDate.substr(5,2),this.list.endDate.substr(8,2)).getTime()- //공연 마지막날-다음달 1일
-            new Date(this.list.year,(this.list.month+1),1).getTime();
-            return ((currentTerm+nextTerm)/(1000*60*60*24)); //이번달 기간+다음달 1일부터 공연 마지막
+            let termTo= new Date(this.list.endDate.substr(0,4),parseInt(this.list.endDate.substr(5,2))-1,this.list.endDate.substr(8,2)).getTime()-
+            new Date(this.list.year,this.list.month-1,this.list.today).getTime();
+            return (termTo/86400000); //이번달 기간+다음달 1일부터 공연 마지막
         },
         viewDate(){
-            console.log(this.getTerm())
             for(let i=this.list.today;i<=this.list.today+this.getTerm();i++){ //오늘 날짜에서 마지막 공연날까지의 일수를 더한만큼 반복 (오늘 날짜부터 i 시작)
                 this.currentMonth.push(
                     {
@@ -179,8 +177,7 @@ export default {
                         date:new Date(this.list.year,this.list.month-1,i) //날짜 구하기
                         }
                 );
-                console.log('t')
-            }           
+            }
         },
         onReady(){
             let btns=document.querySelectorAll('.selectDate button')
