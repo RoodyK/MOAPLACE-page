@@ -1,56 +1,35 @@
 <template>
+<div>
+<AppHeader/>
+<SideVisual menu="SHOW / TICKET" img="show"/>
     <div class="wrap">
-        <div class="calTab">
-            <button>일정목록</button>
-            <button @click="$router.push('/moa/calendar')">월간일정</button>
-        </div>
+        <h2 class="title">월간 일정</h2>
+        <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
         <div class="period">
             <div class="yearBox">
-                <input
-                    type="text"
-                    v-model.number="year"
-                    :change="createMonth()"
-                    readonly="readonly">
-                    <p>년</p>
-                    <div class="btnSpin">
-                        <button class="spiner" @click="upYear()">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="11"
-                                height="11"
-                                fill="currentColor"
-                                class="bi bi-chevron-up"
-                                viewBox="0 0 16 16">
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
-                            </svg>
-                        </button>
-                        <button class="spiner" @click="downYear()">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="11"
-                                height="11"
-                                fill="currentColor"
-                                class="bi bi-chevron-down"
-                                viewBox="0 0 16 16">
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <select v-model="month" :change="createMonth()">
-                    <option value="1">1월</option>
-                    <option value="2">2월</option>
-                    <option value="3">3월</option>
-                    <option value="4">4월</option>
-                    <option value="5">5월</option>
-                    <option value="6">6월</option>
-                    <option value="7">7월</option>
-                    <option value="8">8월</option>
-                    <option value="9">9월</option>
+                </div> 
+                <select v-model="year" @change="createMonth">
+                    <option value="2016">2016년</option>
+                    <option value="2017">2017년</option>
+                    <option value="2018">2018년</option>
+                    <option value="2019">2019년</option>
+                    <option value="2020">2020년</option>
+                    <option value="2021">2021년</option>
+                    <option value="2022">2022년</option>
+                    <option value="2023">2023년</option>
+                    <option value="2024">2024년</option>
+                    <option value="2025">2025년</option>
+                </select>
+                <select v-model="month" @change="createMonth">
+                    <option value="1">01월</option>
+                    <option value="2">02월</option>
+                    <option value="3">03월</option>
+                    <option value="4">04월</option>
+                    <option value="5">05월</option>
+                    <option value="6">06월</option>
+                    <option value="7">07월</option>
+                    <option value="8">08월</option>
+                    <option value="9">09월</option>
                     <option value="10">10월</option>
                     <option value="11">11월</option>
                     <option value="12">12월</option>
@@ -143,10 +122,20 @@
                     </div>
                 </div>
             </div>
-        </template>
-        <script>
+            <AppFooter/>
+        </div>
+</template>
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
             export default {
                 name: 'ShowCalendar',
+                components:{
+                    AppHeader,
+                    AppFooter,
+                    SideVisual
+                },
                 data() {
                     return {
                         calendar: '',
@@ -163,28 +152,32 @@
                 },
                 methods: {
                     prevMonth() {
+                        if (this.year < 2017 && this.month==1)return;
                         this.month--;
                         if (this.month < 1) {
                             this.year--;
                             this.month = 12;
                         }
+                        this.createMonth();
                     },
                     upYear() {
-                        if (this.year > 2025) 
-                            return;
+                        if (this.year >= 2025)return;
                         this.year++;
+                        this.createMonth();
                     },
                     downYear() {
-                        if (this.year < 2017) 
-                            return;
+                        if (this.year < 2017)return;
                         this.year--;
+                        this.createMonth();
                     },
                     nextMonth() {
+                        if (this.year >= 2025 && this.month==12)return;
                         this.month++;
                         if (this.month > 12) {
                             this.year++;
                             this.month = 1;
                         }
+                        this.createMonth();
                     },
                     lastDay() { // 달 말일 구하기
                         return new Date(this.year, this.month, 0).getDate();
@@ -265,43 +258,30 @@
             * {
                 margin: 0;
                 padding: 0;
-                top: 0;
-                left: 0;
+                left:0;
+                top:0;
             }
             .wrap::v-deep {
                 width: 1100px;
                 margin: auto;
                 position: relative;
-                .calTab {
-                    width: 100%;
-                    position: relative;
-                    button {
-                        width: 550px;
-                        height: 50px;
-                        margin: 0;
-                        padding: 0;
-                        position: relative;
-                        border: 1px solid white;
-                        &:first-child {
-                            background-color: rgba($black, 0.2);
-                            border-top: none;
-                            border-left: none;
-                            border-right: none;
-                        }
-                        &:last-child {
-                            background-color: white;
-                            border-bottom: none;
-                        }
+                margin-top: 120px;
+                margin-bottom: 120px;
+                h2.title{
+                    font-size: 32px;
+                    text-align: center;
+                    margin-bottom: 8px;
+                    & + p{
+                    text-align: center;
+                    margin-bottom: 64px;
                     }
-
                 }
                 .period {
                     width: 230px;
                     text-align: center;
                     position: relative;
-                    top: 10px;
                     vertical-align: middle;
-                    margin: 20px auto;
+                    margin: 32px auto;
                     .btn-box {
                         .moveBtn {
                             position: absolute;
@@ -326,53 +306,15 @@
                             }
                         }
                     }
-                    .yearBox {
-                        display: inline-block;
-                        width: 120px;
-                        position: relative;
-                        p {
-                            font-weight: bold;
-                            font-size: 25px;
-                            display: inline-block;
-                        }
-                        .btnSpin {
-                            position: absolute;
-                            right: 0;
-                            top: 6px;
-                            left: unset;
-                            display: flex;
-                            flex-direction: column;
-                            button {
-                                background: none;
-                                margin: -6px;
-                                border: none;
-                                svg {
-                                    margin: 0;
-                                    padding: 0;
-                                }
-                            }
-                        }
-                    }
                     select {
                         height: 30px;
                         font-weight: bold;
                         font-size: 23px;
                         border: 0;
-                        margin: 5px 5px 5px 15px;
+                        margin: 4px;
                     }
                     select:focus {
                         outline: none;
-                    }
-                    input:focus {
-                        outline: none;
-                    }
-                    input {
-                        width: 60px;
-                        height: 30px;
-                        font-weight: bold;
-                        font-size: 25px;
-                        border: 0;
-                        margin: 5px;
                     }
                 }
                 .moaList {
@@ -450,6 +392,7 @@
                             th {
                                 width: 157px;
                                 border: 1px solid gainsboro;
+                                vertical-align: middle;
                             }
                         }
                         tbody {
@@ -470,7 +413,7 @@
                                 }
                             }
                             ul {
-                                margin-top: 25px;
+                                margin-top: 40px;
                                 list-style: none;
                                 padding-left: 0;
                                 a {
