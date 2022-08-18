@@ -42,21 +42,27 @@ import AdminHallInsert from '@/views/admin/Hall/AdminHallInsert.vue'
 import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
-import FAQListView from '@/views/admin/board/FAQList.vue'
-import FAQDetailView from '@/views/admin/board/FAQDetail.vue'
-import FAQInsertView from '@/views/admin/board/FAQInsert.vue'
-import QNAListView from '@/views/admin/board/QNAList.vue'
-import QNADetailView from '@/views/admin/board/QNADetail.vue'
+import AdminFAQListView from '@/views/admin/board/FAQList.vue'
+import AdminFAQDetailView from '@/views/admin/board/FAQDetail.vue'
+import AdminFAQInsertView from '@/views/admin/board/FAQInsert.vue'
+import AdminQNAListView from '@/views/admin/board/QNAList.vue'
+import AdminQNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 import BookingSelect from '@/views/BookingSelect.vue'
+import BookingCnt from '@/views/BookingCntView.vue'
 import PaymentDone from '@/views/DoneView.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
 import PaymentView from '@/views/PaymentView.vue'
 import MembershipView from '@/views/board/MembershipView.vue'
 import MannerView from '@/views/board/MannerView.vue'
-
+import BoardMainView from '@/views/board/BoardMainView.vue'
+import FAQView from '@/views/board/FAQView.vue'
+import QNAListView from '@/views/board/QNAListView.vue'
+import QNAInsertView from '@/views/board/QNAInsertView.vue'
+import QNADetailView from '@/views/board/QNADetailView.vue'
+import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
 const routes = [
   //
@@ -200,32 +206,32 @@ const routes = [
   {
     path: '/moaplace.com/boardMain',
     name: 'boardMain',
-    component: () => import('@/views/board/BoardMainView.vue')
+    component: BoardMainView
   },
   {
     path: '/moaplace.com/qna/insert',
     name: 'qnaInsert',
-    component: () => import('@/views/board/QNAInsertView.vue')
+    component: QNAInsertView
   },
   {
     path: '/moaplace.com/qna/list',
     name: 'qnaList',
-    component: () => import('@/views/board/QNAListView.vue')
+    component: QNAListView
   },
   {
     path: '/moaplace.com/qna/detail',
     name: 'qnaDetail',
-    component: () => import('@/views/board/QNADetailView.vue')
+    component: QNADetailView
   },
   {
     path: '/moaplace.com/qna/update',
     name: 'qnaUpdate',
-    component: () => import('@/views/board/QNAUpdateView.vue')
+    component: QNAUpdateView
   },
   {
     path: '/moaplace.com/faq',
     name: 'faq',
-    component: () => import('@/views/board/FAQView.vue')
+    component: FAQView
   },
   {
     path: '/moaplace.com/manner',
@@ -309,27 +315,27 @@ const routes = [
   {
     path: '/moaplace.com/admin/faq/list',
     name: 'adminFaqList',
-    component: FAQListView
+    component: AdminFAQListView
   },
   {
     path: '/moaplace.com/admin/faq/detail',
     name: 'adminFaqDetail',
-    component: FAQDetailView
+    component: AdminFAQDetailView
   },
   {
     path: '/moaplace.com/admin/faq/insert',
     name: 'adminFaqInsert',
-    component: FAQInsertView
+    component: AdminFAQInsertView
   },
   {
     path: '/moaplace.com/admin/qna/list',
     name: 'adminQnaList',
-    component: QNAListView
+    component: AdminQNAListView
   },
   {
     path: '/moaplace.com/admin/qna/detail',
     name: 'adminQnaDetail',
-    component: QNADetailView
+    component: AdminQNADetailView
   },
   {
     path: '/moaplace.com/admin/show/list',
@@ -390,7 +396,7 @@ const routes = [
   {
     path: '/moaplace.com/booking/cnt',
     name: 'bookingCnt',
-    component: () => import('@/views/BookingCntView.vue')
+    component: BookingCnt
   },
   {
     path: '/moaplace.com/membership',
