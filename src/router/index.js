@@ -53,6 +53,8 @@ import BookingSelect from '@/views/BookingSelect.vue'
 import PaymentDone from '@/views/DoneView.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
 import PaymentView from '@/views/PaymentView.vue'
+import MembershipView from '@/views/board/MembershipView.vue'
+import MannerView from '@/views/board/MannerView.vue'
 
 
 const routes = [
@@ -224,6 +226,11 @@ const routes = [
     name: 'faq',
     component: () => import('@/views/board/FAQView.vue')
   },
+  {
+    path: '/moaplace.com/manner',
+    name: 'manner',
+    component: MannerView
+  },
 
   // 마이페이지
   {
@@ -379,6 +386,11 @@ const routes = [
     name: 'bookingCnt',
     component: () => import('@/views/BookingCntView.vue')
   },
+    path: '/moaplace.com/membership',
+    name: 'Membership',
+    component: MembershipView
+  }
+
 ]
 
 const router = createRouter({

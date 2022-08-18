@@ -8,19 +8,19 @@
       <div class="title">
         <h2><strong>MOA PLACE</strong> 회원 로그인</h2>
       </div>
-      <from @enter.prevent>
+      <form @enter.prevent>
         <div class="login">
           <div class="id">
-            <input type="text" name="id" placeholder="아이디를 입력하세요." />
+            <input type="text" name="id" id="id" placeholder="아이디를 입력하세요." />
           </div>
 
           <div class="pwd">
-            <input type="password" name="pwd" placeholder="비밀번호를 입력하세요." />
+            <input type="password" name="pwd" id="pwd" placeholder="비밀번호를 입력하세요." autocomplete="off" />
           </div>
 
           <button type="button" class="login-btn">로그인</button>
         </div>
-      </from>
+      </form>
 
       <div class="searches">
         <div class="search"
