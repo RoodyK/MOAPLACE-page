@@ -1,4 +1,7 @@
 <template>
+<div>
+  <AppHeader/>
+  <SideVisual menu="MOA PLACE" img="moa"/>
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
@@ -70,11 +73,22 @@
       </div>
     </div>
   </div>
+  <AppFooter/>
+</div>
 </template>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
-  name: 'WithdrawalView'
+  name: 'WithdrawalView',
+  components: {
+  AppHeader,
+  AppFooter,
+  SideVisual
+  }
 }
 </script>
 
