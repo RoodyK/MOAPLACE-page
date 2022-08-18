@@ -1,5 +1,7 @@
 <template>
   <div id="wrap">
+    <AppHeader/>
+    <SideVisual menu="RENTAL APPLICATION" img="rental" title="대관신청"/>
     <div class="inner">
       <div class="noti-box">
         <h3>모아플레이스 대관 신청 준수사항</h3>
@@ -219,11 +221,20 @@
           <button>신청하기</button>
       </div>
     </div>
+    <AppFooter/>
   </div>
 </template>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
   export default {
+    components:{
+        AppHeader,
+        AppFooter,
+        SideVisual
+    },
     data(){
       return{
           msg: '필수 입력 사항입니다.',
