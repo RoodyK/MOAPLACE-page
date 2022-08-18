@@ -177,13 +177,12 @@ nav {
         border: 1px solid #ccc;
         padding: 10px 50px 10px 20px;
         outline: none;
-        background-image: url(../../../assets/board/search.png);
+        background-image: url(@/assets/moaplace/search.png);
         background-position: 260px center;
         background-size: 25px 25px;
         background-repeat: no-repeat;
         padding-left: 20px;
         box-sizing: border-box;
-        outline: none;
       }
       .searchBox {
         display: flex;
