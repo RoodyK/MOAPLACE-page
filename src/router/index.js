@@ -386,6 +386,7 @@ const routes = [
     name: 'bookingCnt',
     component: () => import('@/views/BookingCntView.vue')
   },
+  {
     path: '/moaplace.com/membership',
     name: 'Membership',
     component: MembershipView
