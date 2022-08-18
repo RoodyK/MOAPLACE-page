@@ -50,13 +50,27 @@ import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 import PaymentDone from '@/views/DoneView.vue'
+import SeatSelect from '@/views/SeatSelect.vue'
+import PaymentView from '@/views/PaymentView.vue'
 
 const routes = [
+  //
+  {
+    path: '/moaplace.com/booking/seat',
+    name: 'bookinseat',
+    component: SeatSelect
+  },
+
   // 메인
   {
     path: '/moaplace.com',
     name: 'moaplace',
     component: MainView
+  },
+  {
+    path: '/moaplace.com/booking/payment',
+    name: 'PaymentView',
+    component: PaymentView
   },
 
   // 로그인
@@ -347,13 +361,17 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
-
   // 예매완료 페이지
   {
     path: '/moaplace.com/payment/done',
     name: 'paymentDone',
     component: PaymentDone
   }
+  {
+    path: '/moaplace.com/booking/cnt',
+    name: 'bookingCnt',
+    component: () => import('@/views/BookingCntView.vue')
+  },
 ]
 
 const router = createRouter({
