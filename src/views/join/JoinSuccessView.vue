@@ -1,7 +1,7 @@
 <template>
   <section class="join-success">
     <AppHeader />
-    <SideVisual menu="JOIN" img="cs"/>
+    <SideVisual menu="JOIN" img="login"/>
 
     <div class="inner">
       <div class="title">

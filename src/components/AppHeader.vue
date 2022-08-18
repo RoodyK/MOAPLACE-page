@@ -102,6 +102,8 @@ export default {
                 submenus:[
                     {name: 'FAQ', href: '/moaplace.com/faq'},
                     {name: '1:1문의', href: '/moaplace.com/qna/list'},
+                    {name: '공연예절', href: '/'},
+                    {name: '멤버십혜택', href: '/'},
                 ]
             }
         ],

@@ -1,66 +1,68 @@
 <template>
-  <AppHeader/>
-  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+  <div>
+    <AppHeader/>
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="1:1문의"/>
 
-  <div class="app">
+    <div class="app">
 
-  <h2 class="title">1:1문의</h2>
-  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <h2 class="title">1:1문의</h2>
+    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-    <div class="info">
-        <p> <img src='../../assets/board/info.png'> 작성시 주의사항 </p>
-        <ul>
-            <li><strong style="color:#D67747">자주묻는질문(FAQ)을 먼저 확인하시면 보다 빠르게 궁금한 점을 해결할 수 있습니다. </strong></li>
-            <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
-            <li> 개인정보보호를 위하여 고객님의 주민등록번호 등의 개인정보 기재는 삼가주시기 바랍니다. </li>
-        </ul>
-    </div>
-
-    <hr class="line">
-
-    <form>
-    <div class="forms">
-
-      <div class="headerBox">
-        <div class="sortBox">
-          <label>문의구분</label><br>
-          <select>
-            <option value=""> 분류 선택 </option>  
-            <option name="qna_sort" value="공연">공연 문의</option>
-            <option name="qna_sort" value="대관">대관 문의</option>
-            <option name="qna_sort" value="예매">예매 문의</option>
-            <option name="qna_sort" value="관람">관람 문의</option>
-            <option name="qna_sort" value="회원">회원 문의</option>
-            <option name="qna_sort" value="기타">기타 문의</option>
-          </select>
-        </div>
-
-        <div class="nameBox">
-          <label>작성자</label><br>
-          <input type="text" name="name" value="홍길동">
-        </div>
+      <div class="info">
+          <p> <img src='../../assets/board/info.png'> 작성시 주의사항 </p>
+          <ul>
+              <li><strong style="color:#D67747">자주묻는질문(FAQ)을 먼저 확인하시면 보다 빠르게 궁금한 점을 해결할 수 있습니다. </strong></li>
+              <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
+              <li> 개인정보보호를 위하여 고객님의 주민등록번호 등의 개인정보 기재는 삼가주시기 바랍니다. </li>
+          </ul>
       </div>
 
-      <div class="titleBox">
-        <label>제목</label>
-        <input type="text" name="" value="예매관련 문의입니다"><br>
-      </div>
+      <hr class="line">
+
+      <form>
+      <div class="forms">
+
+        <div class="headerBox">
+          <div class="sortBox">
+            <label>문의구분</label><br>
+            <select>
+              <option value=""> 분류 선택 </option>  
+              <option name="qna_sort" value="공연">공연 문의</option>
+              <option name="qna_sort" value="대관">대관 문의</option>
+              <option name="qna_sort" value="예매">예매 문의</option>
+              <option name="qna_sort" value="관람">관람 문의</option>
+              <option name="qna_sort" value="회원">회원 문의</option>
+              <option name="qna_sort" value="기타">기타 문의</option>
+            </select>
+          </div>
+
+          <div class="nameBox">
+            <label>작성자</label><br>
+            <input type="text" name="name" value="홍길동">
+          </div>
+        </div>
+
+        <div class="titleBox">
+          <label>제목</label>
+          <input type="text" name="" value="예매관련 문의입니다"><br>
+        </div>
+        
+        <div class="contentBox">
+          <label>내용</label>
+          <textarea>예매 관련 문의입니다.&#10;예매자 이름 홍길동입니다.&#10;답변 부탁드립니다.</textarea>
+        </div>
+
+        <div class="btnGroup">
+          <button type="submit" class="insert" @click.prevent="">수정하기</button>
+          <button class="cancle" @click="$router.push({name:'boardMain'})"> 취소 </button>
+        </div>
       
-      <div class="contentBox">
-        <label>내용</label>
-        <textarea>예매 관련 문의입니다.&#10;예매자 이름 홍길동입니다.&#10;답변 부탁드립니다.</textarea>
       </div>
-
-      <div class="btnGroup">
-        <button type="submit" class="insert" @click.prevent="">수정하기</button>
-        <button class="cancle" @click="$router.push({name:'boardMain'})"> 취소 </button>
-      </div>
-    
+      </form>
     </div>
-    </form>
+      
+    <AppFooter/>
   </div>
-    
-  <AppFooter/>
 
 </template>
 

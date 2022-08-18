@@ -1,7 +1,7 @@
 <template>
   <div id="wrap">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" />
+    <SideVisual menu="MOA PLACE" img="moa" title="공연장정보"/>
     <div id="container">
       <ul class="nav justify-content-center">
         <li class="nav-item">

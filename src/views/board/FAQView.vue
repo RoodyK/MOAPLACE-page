@@ -1,83 +1,85 @@
 <template>
-  <AppHeader />
-  <SideVisual menu="CUSTOMER SERVICE" img="cs" />
+  <div>
+    <AppHeader />
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="FAQ"/>
 
-  <div class="app">
-    <h2 class="title">자주 묻는 질문(FAQ)</h2>
-    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <div class="app">
+      <h2 class="title">자주 묻는 질문(FAQ)</h2>
+      <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-    <!-- 상단 메뉴 -->
-    <div class="headerBox">
-      <select>
-        <option value="">전체</option>
-        <option name="faq_sort" value="공연">공연 관련</option>
-        <option name="faq_sort" value="대관">대관 관련</option>
-        <option name="faq_sort" value="예매">예매 관련</option>
-        <option name="faq_sort" value="관람">관람 관련</option>
-        <option name="faq_sort" value="회원">회원 관련</option>
-        <option name="faq_sort" value="기타">기타</option>
-      </select>
+      <!-- 상단 메뉴 -->
+      <div class="headerBox">
+        <select>
+          <option value="">전체</option>
+          <option name="faq_sort" value="공연">공연 관련</option>
+          <option name="faq_sort" value="대관">대관 관련</option>
+          <option name="faq_sort" value="예매">예매 관련</option>
+          <option name="faq_sort" value="관람">관람 관련</option>
+          <option name="faq_sort" value="회원">회원 관련</option>
+          <option name="faq_sort" value="기타">기타</option>
+        </select>
 
-      <div class="searchBox">
-        <div class="custom-search">
-          <input
-            type="text"
-            class="custom-search-input"
-            placeholder="검색어를 입력하세요."
-          />
+        <div class="searchBox">
+          <div class="custom-search">
+            <input
+              type="text"
+              class="custom-search-input"
+              placeholder="검색어를 입력하세요."
+            />
+          </div>
+          <!-- 문의하기 버튼 -->
+          <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
+            1:1문의
+          </button>
         </div>
-        <!-- 문의하기 버튼 -->
-        <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
-          1:1문의
-        </button>
+      </div>
+
+      <!-- 메인 리스트 -->
+      <div
+        class="faq_main"
+        v-for="(item, id) in items"
+        :key="id"
+        :class="{ active: item.isActive }"
+        @click="isMatch(id)"
+      >
+        <div class="faq_title" @click="item.open = !item.open">
+          <span>{{ item.num }}</span
+          ><span>{{ item.sort }} 관련 </span
+          ><span class="title">{{ item.title }}</span>
+          <span class="arrow"><img src="../../assets/board/arrow.png" /></span>
+        </div>
+
+        <div class="faq_content" v-if="item.open">
+          {{ item.content }}
+        </div>
+      </div>
+
+      <!-- 페이징 -->
+      <div id="mypaging">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" href="" aria-label="Previous">
+                <span aria-hidden="true"> &laquo; </span>
+              </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="">1</a></li>
+            <li class="page-item"><a class="page-link" href="">2</a></li>
+            <li class="page-item"><a class="page-link" href="">3</a></li>
+            <li class="page-item"><a class="page-link" href="">4</a></li>
+            <li class="page-item"><a class="page-link" href="">5</a></li>
+            <li class="page-item">
+              <a class="page-link" href="" aria-label="Next">
+                <span aria-hidden="true"> &raquo; </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
 
-    <!-- 메인 리스트 -->
-    <div
-      class="faq_main"
-      v-for="(item, id) in items"
-      :key="id"
-      :class="{ active: item.isActive }"
-      @click="isMatch(id)"
-    >
-      <div class="faq_title" @click="item.open = !item.open">
-        <span>{{ item.num }}</span
-        ><span>{{ item.sort }} 관련 </span
-        ><span class="title">{{ item.title }}</span>
-        <span class="arrow"><img src="../../assets/board/arrow.png" /></span>
-      </div>
-
-      <div class="faq_content" v-if="item.open">
-        {{ item.content }}
-      </div>
-    </div>
-
-    <!-- 페이징 -->
-    <div id="mypaging">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="" aria-label="Previous">
-              <span aria-hidden="true"> &laquo; </span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="">1</a></li>
-          <li class="page-item"><a class="page-link" href="">2</a></li>
-          <li class="page-item"><a class="page-link" href="">3</a></li>
-          <li class="page-item"><a class="page-link" href="">4</a></li>
-          <li class="page-item"><a class="page-link" href="">5</a></li>
-          <li class="page-item">
-            <a class="page-link" href="" aria-label="Next">
-              <span aria-hidden="true"> &raquo; </span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <AppFooter />
   </div>
-
-  <AppFooter />
 </template>
 
 <style scoped lang="scss">

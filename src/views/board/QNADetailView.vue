@@ -1,64 +1,66 @@
 <template>
-  <AppHeader/>
-  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+  <div>
+    <AppHeader/>
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="1:1문의"/>
 
-  <div class="app">
-  
-  <h2 class="title">1:1문의</h2>
-  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <div class="app">
+    
+    <h2 class="title">1:1문의</h2>
+    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-  <div class="info">
-    <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
-      <ul>
-        <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
-        <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
-      </ul>
-  </div>
+    <div class="info">
+      <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
+        <ul>
+          <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
+          <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
+        </ul>
+    </div>
 
-  <hr class="line">
+    <hr class="line">
 
-  <table>
-    <thead>
-    <tr>
-      <th>[구분]<h2>Q. 문의글 제목</h2></th>
-    </tr>
-    <tr>
-      <td class="state">답변완료</td>
-    </tr>
-    <tr>
-      <td>등록일 2022-08-10</td>
-    </tr>
-    </thead>
+    <table>
+      <thead>
+      <tr>
+        <th>[구분]<h2>Q. 문의글 제목</h2></th>
+      </tr>
+      <tr>
+        <td class="state">답변완료</td>
+      </tr>
+      <tr>
+        <td>등록일 2022-08-10</td>
+      </tr>
+      </thead>
 
-    <tr>
-      <td class="content"> 예매 관련 문의입니다.<br>
-           예매자 이름 홍길동입니다. <br>
-           답변 부탁드립니다. </td>
-    </tr>
+      <tr>
+        <td class="content"> 예매 관련 문의입니다.<br>
+            예매자 이름 홍길동입니다. <br>
+            답변 부탁드립니다. </td>
+      </tr>
 
-    <tr>
-      <td>
-      <div class="answer">
-        <h2> A. 답변 제목 </h2>
-        <div class="content">
-          답변 내용입니다.<br><br>
-          감사합니다.
+      <tr>
+        <td>
+        <div class="answer">
+          <h2> A. 답변 제목 </h2>
+          <div class="content">
+            답변 내용입니다.<br><br>
+            감사합니다.
+          </div>
         </div>
-      </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
 
-  </table>
+    </table>
 
-  <div class="btnGroup">
-    <button class="update" @click="$router.push({name:'qnaUpdate'})">수정하기</button>
-    <button class="delete" @click="$router.push({name:'qnaDelete'})">삭제하기</button>
-    <button class="list" @click="$router.push({name:'qnaList'})">목록으로</button>
+    <div class="btnGroup">
+      <button class="update" @click="$router.push({name:'qnaUpdate'})">수정하기</button>
+      <button class="delete" @click="$router.push({name:'qnaDelete'})">삭제하기</button>
+      <button class="list" @click="$router.push({name:'qnaList'})">목록으로</button>
+    </div>
+
+    </div>
+    
+    <AppFooter/>
   </div>
-
-  </div>
-  
-  <AppFooter/>
 
 </template>
 

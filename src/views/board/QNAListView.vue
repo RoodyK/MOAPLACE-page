@@ -1,88 +1,90 @@
 <template>
-  <AppHeader/>
-  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+  <div>
+    <AppHeader/>
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="1:1문의"/>
 
-  <div class="app">
+    <div class="app">
 
-  <h2 class="title">1:1문의</h2>
-  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <h2 class="title">1:1문의</h2>
+    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-  <div class="info">
-    <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
-      <ul>
-        <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
-        <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
-      </ul>
-  </div>
+    <div class="info">
+      <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
+        <ul>
+          <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
+          <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
+        </ul>
+    </div>
 
-  <hr class="line">
-  <div class="total"> 현재 <p class="cnt">0건</p>의 문의글이 등록되어 있습니다. </div>
+    <hr class="line">
+    <div class="total"> 현재 <p class="cnt">0건</p>의 문의글이 등록되어 있습니다. </div>
 
-  <table>
-    <thead>
-    <tr>
-      <th>번호</th>
-      <th width="600px">제목</th>
-      <th>상태</th>
-      <th>작성일</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>3</td>
-      <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관련 문의 </RouterLink></td>
-      <td>대기중</td>
-      <td>2022-08-10</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td><RouterLink to="/moaplace.com/qna/detail" class="router">예매 관련 문의입니다 예매 관련 문의입니다 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 </RouterLink></td>
-      <td>처리중</td>
-      <td>2022-08-10</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
-      <td>답변완료</td>
-      <td>2022-08-09</td>
-    </tr>
-    </tbody>
-  </table>
+    <table>
+      <thead>
+      <tr>
+        <th>번호</th>
+        <th width="600px">제목</th>
+        <th>상태</th>
+        <th>작성일</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>3</td>
+        <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관련 문의 </RouterLink></td>
+        <td>대기중</td>
+        <td>2022-08-10</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><RouterLink to="/moaplace.com/qna/detail" class="router">예매 관련 문의입니다 예매 관련 문의입니다 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 </RouterLink></td>
+        <td>처리중</td>
+        <td>2022-08-10</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
+        <td>답변완료</td>
+        <td>2022-08-09</td>
+      </tr>
+      </tbody>
+    </table>
 
-  <!-- 페이징 -->
-  <div id="mypaging">
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        <li class="page-item">
-          <a class="page-link" href="" aria-label="Previous">
-            <span aria-hidden="true">
-              &laquo;
-            </span>
-          </a>
+    <!-- 페이징 -->
+    <div id="mypaging">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" href="" aria-label="Previous">
+              <span aria-hidden="true">
+                &laquo;
+              </span>
+            </a>
+            </li>
+              <li class="page-item"><a class="page-link" href="">1</a></li>
+              <li class="page-item"><a class="page-link" href="">2</a></li>
+              <li class="page-item"><a class="page-link" href="">3</a></li>
+              <li class="page-item"><a class="page-link" href="">4</a></li>
+              <li class="page-item"><a class="page-link" href="">5</a></li>
+              <li class="page-item">
+            <a class="page-link" href="" aria-label="Next">
+              <span aria-hidden="true">
+              &raquo;
+              </span>
+            </a>
           </li>
-            <li class="page-item"><a class="page-link" href="">1</a></li>
-            <li class="page-item"><a class="page-link" href="">2</a></li>
-            <li class="page-item"><a class="page-link" href="">3</a></li>
-            <li class="page-item"><a class="page-link" href="">4</a></li>
-            <li class="page-item"><a class="page-link" href="">5</a></li>
-            <li class="page-item">
-          <a class="page-link" href="" aria-label="Next">
-            <span aria-hidden="true">
-            &raquo;
-            </span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+        </ul>
+      </nav>
+    </div>
 
-  <div class="btnGroup">
-    <button class="insert" @click="$router.push({name:'qnaInsert'})">문의하기</button>
-  </div>
+    <div class="btnGroup">
+      <button class="insert" @click="$router.push({name:'qnaInsert'})">문의하기</button>
+    </div>
 
+    </div>
+  
+    <AppFooter/>
   </div>
- 
-  <AppFooter/>
 
 </template>
 

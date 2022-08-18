@@ -1,7 +1,7 @@
 <template>
 <div>
   <AppHeader/>
-  <SideVisual menu="MOA PLACE" img="moa"/>
+  <SideVisual menu="MY PAGE" img="mypage"/>
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->

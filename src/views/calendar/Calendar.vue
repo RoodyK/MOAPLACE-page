@@ -1,7 +1,7 @@
 <template>
 <div>
 <AppHeader/>
-<SideVisual menu="SHOW / TICKET" img="show"/>
+<SideVisual menu="SHOW / TICKET" img="show" title="월간일정"/>
     <div class="wrap">
         <h2 class="title">월간 일정</h2>
         <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
