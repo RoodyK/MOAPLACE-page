@@ -111,7 +111,6 @@
     width: 100%;
     color: #333333d4;
     border: 1px solid #33333330;
-
     p {
     font-weight: bold;
     padding: 15px 0 0 20px;
@@ -162,6 +161,17 @@
     tbody{
       td {
         vertical-align : middle;
+
+        &:nth-child(2){
+          a {
+          display: inline-block;
+          width:500px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          }
+        }
+
       }
 
       tr{
