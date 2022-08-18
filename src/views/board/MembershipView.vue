@@ -106,7 +106,7 @@ export default {
       const useHeight = getComputedStyle(document.querySelector('.use')).getPropertyValue('height');
 
       if(useHeight != "0px") {
-        document.querySelector('.benefit').style.height = '1150px';
+        document.querySelector('.benefit').style.height = '1200px';
       } 
       document.querySelector('.more').style.display = "none";
       document.querySelector('.save').style.height = "350px";
@@ -115,7 +115,7 @@ export default {
       const saveHeight = getComputedStyle(document.querySelector('.save')).getPropertyValue('height');
       
       if(saveHeight != "0px") {
-        document.querySelector('.benefit').style.height = '1150px';
+        document.querySelector('.benefit').style.height = '1200px';
       }
       document.querySelector('.more').style.display = "none";
       document.querySelector('.use').style.height = "350px";
@@ -148,7 +148,7 @@ export default {
     }
 
     .benefit {
-      height: 750px;
+      height: 760px;
       transition: .6s;
       h2 {
         font-size: 22px;
@@ -231,15 +231,15 @@ export default {
         position: relative;
         width: 140px;
         top: 24px;
-        left: 10px;
+        left: 24px;
         background-color: #fff;
         color: $brown;
         padding: 0 10px;
       }
       .point-save, .point-use {
         width: 100%;
-        border: 1px solid #ccc;
-        padding: 40px 16px 16px;
+        border: 2px solid #ccc;
+        padding: 40px 32px 30px;
         .description {
           padding: 0;
           margin: 0 0 24px;
@@ -251,9 +251,7 @@ export default {
           }
         }
       }
-
-    }
-    
+    } 
   }
 }
 
