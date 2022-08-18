@@ -3,6 +3,10 @@
   <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
   <div id="wrap">
     <div class="inner">
+      <div class="toptit">
+      <h2>공연관람예절</h2>
+      <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+      </div>
       <div class="title">
         <p class="orange fw-bold fs-5">공연관람예절 이것만은 지키자!!</p>
         <p>
@@ -104,10 +108,23 @@ p {
   .inner {
     width: 100%;
     padding: 50px 10px;
+    padding-top: 120px;
+    .toptit {
+      margin-bottom: 64px;
+      > h2 {
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      > p {
+        text-align: center;
+      }
+    }
     .title {
       border: 10px solid #eee;
       margin-bottom: 10px;
       padding: 15px 20px;
+      word-break: keep-all;
     }
     .box {
       margin: 50px 0px;
