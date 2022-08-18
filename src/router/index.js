@@ -7,10 +7,10 @@ import JoinSuccessView from '@/views/join/JoinSuccessView.vue'
 import FindIdView from '@/views/login/FindIdView.vue'
 import FindPwdView from '@/views/login/FindPwdView.vue'
 import SetNewPasswordView from '@/views/login/SetNewPasswordView.vue'
-import moaplaceMainView from '../views/moaplace/MainView.vue'
 import moaplaceInfoView from '../views/moaplace/InfoView.vue'
-import moaplaceInfoView2 from '../views/moaplace/InfoView2.vue'
-import moaplaceInfoView3 from '../views/moaplace/InfoView3.vue'
+import moaplaceGuideView from '../views/moaplace/GuideView.vue'
+import moaplaceGuideView2 from '../views/moaplace/GuideView2.vue'
+import moaplaceGuideView3 from '../views/moaplace/GuideView3.vue'
 import moaplaceNaviView from '../views/moaplace/NaviView.vue'
 import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
@@ -50,6 +50,7 @@ import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
+import PaymentView from '@/views/PaymentView.vue'
 
 const routes = [
   //
@@ -64,6 +65,11 @@ const routes = [
     path: '/moaplace.com',
     name: 'moaplace',
     component: MainView
+  },
+  {
+    path: '/moaplace.com/booking/payment',
+    name: 'PaymentView',
+    component: PaymentView
   },
 
   // 로그인
@@ -106,23 +112,23 @@ const routes = [
   // 모아 플레이스
   {
     path: '/moaplace.com/moaplace/info',
-    name: 'moaplaceMainView',
-    component: moaplaceMainView
-  },
-  {
-    path: '/moaplace.com/moaplace/guide',
     name: 'moaplaceInfoView',
     component: moaplaceInfoView
   },
   {
+    path: '/moaplace.com/moaplace/guide',
+    name: 'moaplaceGuideView',
+    component: moaplaceGuideView
+  },
+  {
     path: '/moaplace.com/moaplace/guide2',
-    name: 'moaplaceInfoView2',
-    component: moaplaceInfoView2
+    name: 'moaplaceGuideView2',
+    component: moaplaceGuideView2
   },
   {
     path: '/moaplace.com/moaplace/guide3',
-    name: 'moaplaceInfoView3',
-    component: moaplaceInfoView3
+    name: 'moaplaceGuideView3',
+    component: moaplaceGuideView3
   },
   {
     path: '/moaplace.com/moaplace/navi',
@@ -147,8 +153,8 @@ const routes = [
 
   // 공연목록
   {
-    path:'/moaplace.com/calendar',
-    name:'ShowCalendar',
+    path: '/moaplace.com/calendar',
+    name: 'ShowCalendar',
     component: moaCalender
   },
   {
@@ -286,27 +292,27 @@ const routes = [
   },
   {
     path: '/moaplace.com/admin/faq/list',
-    name: 'faqList',
+    name: 'adminFaqList',
     component: FAQListView
   },
   {
     path: '/moaplace.com/admin/faq/detail',
-    name: 'faqDetail',
+    name: 'adminFaqDetail',
     component: FAQDetailView
   },
   {
     path: '/moaplace.com/admin/faq/insert',
-    name: 'faqInsert',
+    name: 'adminFaqInsert',
     component: FAQInsertView
   },
   {
     path: '/moaplace.com/admin/qna/list',
-    name: 'qnaList',
+    name: 'adminQnaList',
     component: QNAListView
   },
   {
     path: '/moaplace.com/admin/qna/detail',
-    name: 'qnaDetail',
+    name: 'adminQnaDetail',
     component: QNADetailView
   },
   {
@@ -354,7 +360,11 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
-
+  {
+    path: '/moaplace.com/booking/cnt',
+    name: 'bookingCnt',
+    component: () => import('@/views/BookingCntView.vue')
+  },
 ]
 
 const router = createRouter({

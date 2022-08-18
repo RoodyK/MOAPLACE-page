@@ -1,5 +1,7 @@
 <template>
-  <div class="container">
+  <div class="containers">
+    <AppHeader />
+    <SideVisual menu="MOA PLACE" img="moa" />
     <div class="title inner_wrap">
       <p class="tit">공지사항</p>
       <p class="txt">
@@ -42,17 +44,28 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script>
-export default {};
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 @import "@/scss/common.scss";
 $brown: #826d5e;
-.container {
+.containers {
   width: 100%;
   margin: 0 auto;
 }

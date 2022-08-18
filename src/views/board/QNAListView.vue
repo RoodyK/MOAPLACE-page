@@ -1,6 +1,12 @@
 <template>
+  <AppHeader/>
+  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+
   <div class="app">
-  
+
+  <h2 class="title">1:1문의</h2>
+  <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+
   <div class="info">
     <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
       <ul>
@@ -24,19 +30,19 @@
     <tbody>
     <tr>
       <td>3</td>
-      <td><RouterLink to="/moa/qna/detail" class="router"> 관련 문의 </RouterLink></td>
+      <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관련 문의 </RouterLink></td>
       <td>대기중</td>
       <td>2022-08-10</td>
     </tr>
     <tr>
       <td>2</td>
-      <td><RouterLink to="/moa/qna/detail" class="router">예매문의입니다</RouterLink></td>
+      <td><RouterLink to="/moaplace.com/qna/detail" class="router">예매 관련 문의입니다 예매 관련 문의입니다 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 </RouterLink></td>
       <td>처리중</td>
       <td>2022-08-10</td>
     </tr>
     <tr>
       <td>1</td>
-      <td><RouterLink to="/moa/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
+      <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
       <td>답변완료</td>
       <td>2022-08-09</td>
     </tr>
@@ -75,6 +81,9 @@
   </div>
 
   </div>
+ 
+  <AppFooter/>
+
 </template>
 
 <style scoped lang="scss">
@@ -88,11 +97,20 @@
   padding-top: 50px;
   margin: auto;
 
+  h2.title{
+    font-size: 32px;
+    text-align: center;
+    margin-top: 32px;
+    & + p{
+      text-align: center;
+      margin-bottom: 64px;
+    }
+  }
+
   .info {
     width: 100%;
     color: #333333d4;
     border: 1px solid #33333330;
-
     p {
     font-weight: bold;
     padding: 15px 0 0 20px;
@@ -127,16 +145,35 @@
     border-bottom: 1px solid lightgray;
 
     thead {
+      th {
+        vertical-align : middle;
+      }
       border-top:2px solid $black;
       border-bottom: 1px solid $black;
     }
 
     tr {
+      vertical-align : middle;
       height: 50px;
       border-bottom: 1px dotted lightgray;
     }
 
     tbody{
+      td {
+        vertical-align : middle;
+
+        &:nth-child(2){
+          a {
+          display: inline-block;
+          width:500px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          }
+        }
+
+      }
+
       tr{
         &:hover {
           background-color: rgb(249,249,249);
@@ -157,7 +194,7 @@
   #mypaging{
     display: flex;
     justify-content: center;
-    margin-top:15px;
+    margin-top:16px;
 
     ul,li,a,span {
       color: $black;
@@ -168,13 +205,11 @@
   .btnGroup{
     display: flex;
     justify-content: flex-end;
-    margin: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 
     .insert {
       width:160px;
       height:50px;
-      margin: 3px;
       border: none;
       background-color: $brown;
       color:white;
@@ -189,3 +224,17 @@
   }
 }
 </style>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
+export default {
+    components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  }
+}
+</script>

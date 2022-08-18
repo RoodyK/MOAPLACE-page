@@ -1,5 +1,8 @@
 <template>
   <section class="same">
+    <AppHeader />
+    <SideVisual menu="JOIN" img="cs"/>
+
     <div class="inner">
       <div class="title">
         <span>MOA PLACE</span>
@@ -21,17 +24,25 @@
         <button type="button">확인</button>
       </div>
     </div>
+
+    <AppFooter />
   </section>
 </template>
 
 <script>
 import OfTheSame from '@/components/join/TheSame.vue';
-import JoinOrder from '@/components/join/JoinOrder.vue';
+import JoinOrder from "@/components/join/JoinOrder.vue"
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
 
 export default {
   components: {
     OfTheSame,
-    JoinOrder
+    JoinOrder,
+    AppHeader,
+    AppFooter,
+    SideVisual
   }
 }
 </script>
@@ -46,7 +57,7 @@ export default {
     position: relative;
     .title {
       text-align: center;
-      margin-bottom: 40px;
+      margin: 50px 0 40px;
       span {
         font-size: 2rem;
         font-weight: 700;
@@ -92,6 +103,7 @@ export default {
         height: 65px;
         font-size: 1.5rem;
         border: none;
+        margin-bottom: 100px;
         &:first-child {
           margin-right: 15px;
           background-color: #b1b1b1;

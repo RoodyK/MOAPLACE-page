@@ -1,5 +1,11 @@
 <template>
+  <AppHeader/>
+  <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+
   <div class="app">
+    <h2 class="title">자주 묻는 질문(FAQ)</h2>
+    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+
     <!-- 상단 메뉴 -->
     <div class="headerBox">
       <select>
@@ -61,6 +67,9 @@
     </div>
 
   </div>
+  
+  <AppFooter/>
+
 </template>
 
 <style scoped lang="scss">
@@ -71,13 +80,22 @@
   display:flex;
   flex-direction: column;
   color: $black;
-  margin: auto;
+  margin: 50px auto;
+
+    h2.title{
+      font-size: 32px;
+      text-align: center;
+      margin-top: 32px;
+      & + p{
+        text-align: center;
+        margin-bottom: 64px;
+      }
+    }
 
   // 상단 메뉴
   .headerBox {
     display:flex;
     justify-content: space-between;
-    margin-top:50px;
     margin-bottom: 10px;
 
     select {
@@ -214,7 +232,16 @@
 </style>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+
 export default {
+    components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data(){
     return{
       items:[{num:'5',sort:'예매',title:'예매 내역은 어떻게 확인할 수 있나요?', content:'회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.', open:false, isActive:false},

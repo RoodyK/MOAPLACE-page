@@ -3,7 +3,6 @@
   <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
 
   <div class="app">
-
     <h2> 모아플레이스에 바라는 사항이나 불편한 사항, <br>
          궁금증을 올려주시면 성심성의껏 답변해 드리겠습니다. </h2>
 
@@ -46,7 +45,7 @@ export default {
   align-items: center;
   padding: 80px;
   color: $black;
-  margin: auto;
+  margin: 35px auto;
 
   h2 { 
   text-align: center;
@@ -74,7 +73,7 @@ export default {
     color:$black;
 
       &:hover {
-      background-color: gold;
+      background-color: lightgray;
 
         img{
           transform: scale(1.1);

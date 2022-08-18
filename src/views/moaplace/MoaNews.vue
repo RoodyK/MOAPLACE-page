@@ -1,5 +1,7 @@
 <template>
-  <div class="container">
+  <div class="containers">
+    <AppHeader />
+    <SideVisual menu="MOA PLACE" img="moa" />
     <div class="title inner_wrap">
       <p class="tit">공지사항</p>
       <p class="txt">
@@ -64,17 +66,28 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script>
-export default {};
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 @import "@/scss/common.scss";
 $brown: #826d5e;
-.container {
+.containers {
   width: 100%;
   margin: 0 auto;
 }
@@ -86,11 +99,10 @@ $brown: #826d5e;
   text-align: center;
   padding: 125px 0 100px;
   .tit {
-    font-size: 40px;
+    font-size: 32px;
     font-weight: 500;
   }
   .txt {
-    font-size: 17px;
     color: #666666;
     margin-top: 15px;
   }
@@ -107,22 +119,21 @@ $brown: #826d5e;
     border: 1px solid #e2e2e2;
     float: right;
     select {
-      font-size: 17px;
-      width: 95px;
       height: 100%;
-      float: left;
       border: 0;
-      padding: 10px 5px;
+      padding: 10px 16px;
     }
     input {
       margin: 0;
       height: 45px;
       border: none;
+      padding: 0 12px;
     }
     button {
-      margin-left: 20px;
       height: 100%;
       background: url(@/assets/moaplace/search.png) no-repeat center;
+      float: right;
+      padding: 0 32px 0;
     }
   }
   .table {
