@@ -1,4 +1,6 @@
 <template>
+  <AppHeader/>
+  <SideVisual menu="SHOW / TICKET" img="show"/>
   <div id="wrap">
     <div id="title">
       <h4>웃는남자</h4>
@@ -24,9 +26,9 @@
     </div>
     <hr>
     <div id=nav>
-      <div class="click">상세보기</div>
-      <div class="click">관람평</div>
-      <div id=present class="click">취소 및 환불 안내</div>
+      <div class="click" onclick="location.href='/moaplace.com/showdetail'">상세보기</div>
+      <div class="click" onclick="location.href='/moaplace.com/showreview'">관람평</div>
+      <div id=present class="click" onclick="location.href='/moaplace.com/showrefund'">취소 및 환불 안내</div>
     </div>
     <div id="datail">
       <div class="container" >
@@ -67,11 +69,21 @@
       </div>
     </div>
   </div>
+  <AppFooter/>
 </template>
 
 <script>
-export default {
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
 
+export default {
+  name:"ShowRefundView",
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  }
 }
 </script>
 
@@ -80,6 +92,8 @@ export default {
   #wrap{
     width: $width;
     margin: 0 auto;
+    margin-top: 120px;
+    margin-bottom: 120px;
   }
   h4{
     color: $black;
