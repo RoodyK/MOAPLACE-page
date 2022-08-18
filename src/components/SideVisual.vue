@@ -61,7 +61,17 @@ export default {
                     taps:[
                         {title: 'FAQ', href: '/moaplace.com/faq'},
                         {title: '1:1문의', href: '/moaplace.com/qna/list'},
+                        {title: '공연예절', href: '/'},
+                        {title: '멤버십혜택', href: '/'},
                     ]
+                },
+                {
+                    name: 'login',
+                    taps:[]
+                },
+                {
+                    name: 'mypage',
+                    taps:[]
                 }
             ],
         }

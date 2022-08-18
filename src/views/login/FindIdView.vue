@@ -1,7 +1,7 @@
 <template>
   <section class="find-id">
   <AppHeader/>
-  <SideVisual menu="FIND ID" img="cs"/>
+  <SideVisual menu="FIND ID" img="login"/>
 
     <div class="inner">
 

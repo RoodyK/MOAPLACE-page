@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" />
+    <SideVisual menu="MOA PLACE" img="moa"  title="공간소개"/>
     <div class="m00 m10 m11">
       <div class="title_inner_wrap">
         <p class="main_tit">MOAPLACE INTRODUCTION</p>

@@ -2,7 +2,7 @@
   
   <section class="login-page">
     <AppHeader/>
-    <SideVisual menu="LOGIN" img="cs"/>
+    <SideVisual menu="LOGIN" img="login"/>
     <div class="inner">
 
       <div class="title">

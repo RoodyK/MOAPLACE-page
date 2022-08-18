@@ -1,7 +1,7 @@
 <template>
   <div id="wrap">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" />
+    <SideVisual menu="MOA PLACE" img="moa" title="오시는길"/>
     <div class="m00 m10 m14">
       <div class="tit inner_wrap">
         <p class="main_tit">오시는길</p>

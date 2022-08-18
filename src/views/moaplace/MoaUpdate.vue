@@ -1,9 +1,9 @@
 <template>
   <div class="containers">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" />
+    <SideVisual menu="MOA PLACE" img="moa" title="새소식"/>
     <div class="title inner_wrap">
-      <p class="tit">공지사항</p>
+      <p class="tit">새소식</p>
       <p class="txt">
         문화예술을 통한 즐거움과 감동을 공유하는 나눔터 모아플레이스입니다.
       </p>

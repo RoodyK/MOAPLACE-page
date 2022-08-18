@@ -1,7 +1,7 @@
 <template>
   <section class="membership">
     <AppHeader/>
-    <SideVisual menu="CUSTOMER SERVICE" img="cs"/>
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="멤버십혜택"/>
 
     <div class="inner">
       <div class="sub-title">

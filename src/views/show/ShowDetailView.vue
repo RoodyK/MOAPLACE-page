@@ -1,6 +1,7 @@
 <template>
+<div>
   <AppHeader/>
-  <SideVisual menu="SHOW / TICKET" img="show"/>
+  <SideVisual menu="SHOW / TICKET" img="show" title="공연목록"/>
   <div id="wrap">
     <div id="title">
       <h4>웃는남자</h4>
@@ -36,6 +37,7 @@
     </div>
   </div>
   <AppFooter/>
+</div>
 </template>
 
 <script>
