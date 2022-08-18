@@ -373,7 +373,7 @@ const routes = [
     path: '/moaplace.com/payment/done',
     name: 'paymentDone',
     component: PaymentDone
-  }
+  },
   {
     path: '/moaplace.com/booking/cnt',
     name: 'bookingCnt',
