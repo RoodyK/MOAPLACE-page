@@ -346,7 +346,11 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
-
+  {
+    path: '/moaplace.com/booking/cnt',
+    name: 'bookingCnt',
+    component: () => import('@/views/BookingCntView.vue')
+  },
 ]
 
 const router = createRouter({
