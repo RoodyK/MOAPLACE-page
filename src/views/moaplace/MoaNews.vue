@@ -30,21 +30,27 @@
                 <th>조회수</th>
               </tr>
               <tr class="important">
-                <td class="num">공지</td>
+                <td class="num">1</td>
                 <td>공지</td>
                 <td class="tit"><a hrf="">회원반입금지안내</a></td>
                 <td class="date">2022.08.11</td>
                 <td class="hit">0</td>
               </tr>
               <tr class="important">
-                <td class="num">공지</td>
+                <td class="num">2</td>
                 <td>대관공고</td>
-                <td class="tit"><a hrf="">COVID-19 관련 안내사항</a></td>
+                <td class="tit">
+                  <a hrf=""
+                    >COVID-19 관련 안내사항
+                    길다긷랃저갸ㅐㅈ됴ㅗ갸맻료규ㅗ잼뎌ㅑ곶ㅁ댜ㅐㅊ교ㅜㅗㅈㅁ대ㅑㅊ
+                    ㄱㅈ모</a
+                  >
+                </td>
                 <td class="date">2022.08.11</td>
                 <td class="hit">0</td>
               </tr>
               <tr class="important">
-                <td class="num">공지</td>
+                <td class="num">3</td>
                 <td>공지</td>
                 <td class="tit"><a hrf="">모아플레이스 대관 안내</a></td>
                 <td class="date">2022.08.11</td>
@@ -143,6 +149,24 @@ $brown: #826d5e;
   .table {
     width: 100%;
     border-top: 2px solid $black;
+    table-layout: fixed;
+    tr {
+      & > *:nth-child(1) {
+        width: 10%;
+        padding: 0 16px;
+      }
+      & > *:nth-child(2) {
+        width: 15%;
+        padding: 0 8px;
+      }
+      & > *:nth-child(3) {
+        width: 50%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 0 16px;
+      }
+    }
     tbody {
       vertical-align: middle;
     }
@@ -155,22 +179,16 @@ $brown: #826d5e;
     }
     th {
       border-bottom: 1px solid $black;
-      font-size: 17px;
       font-weight: 800;
     }
-    tr.important {
-      .num {
-        color: $brown;
-        font-weight: 700;
-      }
-    }
+
     tr.important:hover {
       background-color: #f6f6f6;
       cursor: pointer;
     }
     .td.hit,
     .td.date {
-      width: 170px;
+      width: 20%;
       padding: 10px 0;
     }
   }
