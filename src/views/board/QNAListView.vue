@@ -16,73 +16,70 @@
         </ul>
     </div>
 
-    <hr class="line">
-    <div class="total"> 현재 <p class="cnt">0건</p>의 문의글이 등록되어 있습니다. </div>
-
-    <table>
-      <thead>
-      <tr>
-        <th>번호</th>
-        <th width="600px">제목</th>
-        <th>상태</th>
-        <th>작성일</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>3</td>
-        <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관련 문의 </RouterLink></td>
-        <td>대기중</td>
-        <td>2022-08-10</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td><RouterLink to="/moaplace.com/qna/detail" class="router">예매 관련 문의입니다 예매 관련 문의입니다 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 </RouterLink></td>
-        <td>처리중</td>
-        <td>2022-08-10</td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
-        <td>답변완료</td>
-        <td>2022-08-09</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <!-- 페이징 -->
-    <div id="mypaging">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="" aria-label="Previous">
-              <span aria-hidden="true">
-                &laquo;
-              </span>
-            </a>
-            </li>
-              <li class="page-item"><a class="page-link" href="">1</a></li>
-              <li class="page-item"><a class="page-link" href="">2</a></li>
-              <li class="page-item"><a class="page-link" href="">3</a></li>
-              <li class="page-item"><a class="page-link" href="">4</a></li>
-              <li class="page-item"><a class="page-link" href="">5</a></li>
-              <li class="page-item">
-            <a class="page-link" href="" aria-label="Next">
-              <span aria-hidden="true">
-              &raquo;
-              </span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
     <div class="btnGroup">
+      <div class="total"> 현재 <p class="cnt">0건</p>의 문의글이 등록되어 있습니다. </div>
       <button class="insert" @click="$router.push({name:'qnaInsert'})">문의하기</button>
     </div>
 
-    </div>
-  
+      <table>
+        <thead>
+        <tr>
+          <th>번호</th>
+          <th width="600px">제목</th>
+          <th>상태</th>
+          <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>3</td>
+          <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관련 문의 </RouterLink></td>
+          <td>대기중</td>
+          <td>2022-08-10</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><RouterLink to="/moaplace.com/qna/detail" class="router">예매 관련 문의입니다 예매 관련 문의입니다 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 줄바꿈 테스트 </RouterLink></td>
+          <td>처리중</td>
+          <td>2022-08-10</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><RouterLink to="/moaplace.com/qna/detail" class="router"> 관람 문의사항 </RouterLink></td>
+          <td>답변완료</td>
+          <td>2022-08-09</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- 페이징 -->
+      <div id="mypaging">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" href="" aria-label="Previous">
+                <span aria-hidden="true">
+                  &laquo;
+                </span>
+              </a>
+              </li>
+                <li class="page-item"><a class="page-link" href="">1</a></li>
+                <li class="page-item"><a class="page-link" href="">2</a></li>
+                <li class="page-item"><a class="page-link" href="">3</a></li>
+                <li class="page-item"><a class="page-link" href="">4</a></li>
+                <li class="page-item"><a class="page-link" href="">5</a></li>
+                <li class="page-item">
+              <a class="page-link" href="" aria-label="Next">
+                <span aria-hidden="true">
+                &raquo;
+                </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+    </div>  
     <AppFooter/>
   </div>
 
@@ -97,12 +94,11 @@
   width: $width;
   color: $black;
   padding-top: 50px;
-  margin: auto;
+  margin: 32px auto;
 
   h2.title{
     font-size: 32px;
     text-align: center;
-    margin-top: 32px;
     & + p{
       text-align: center;
       margin-bottom: 64px;
@@ -123,72 +119,84 @@
       }
     }
   }
-
-  .line {
-    color: white; 
-    margin: 30px;
-  }
-
-  .total {
+  .btnGroup{
     display: flex;
-    justify-content: flex-end;
-    color: gray;
+    justify-content: space-between;
+    margin: 32px 0 8px 0;
+    align-items: center;
 
-    .cnt{
-      color: #D67747;
-      margin-left: 5px;
-      font-weight: bold;
+    .total {
+      display: flex;
+      justify-content: flex-end;
+      color: gray;
+      padding-bottom:0;
+
+      .cnt{
+        color: #D67747;
+        font-weight: bold;
+        margin-left: 5px;
+        margin-bottom: 0;
+      }
+    }
+
+    .insert {
+      padding: 16px 40px;
+      border: 1px solid transparent;
+      background-color: $brown;
+      color:white;
+      transition: all 0.3s;
+
+      &:hover {
+        border: 1px solid $brown;
+        background-color: white;
+        color:$brown;
+      }
     }
   }
   
   table {
     width: 100%;
+    table-layout: fixed;
     text-align: center;
-    border-bottom: 1px solid lightgray;
+    border-top: 2px solid $black;
+    border-bottom: 1px solid $black;
+
+    tr{
+      vertical-align : middle;
+      border-bottom: 1px solid #ddd;
+
+      & > *:nth-child(2) {
+        width:60%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      &:hover {
+          background-color: rgb(249,249,249);
+          color: $brown;
+      }
+    }
 
     thead {
       th {
         vertical-align : middle;
+        border-bottom: 1px solid $black;
+        padding: 20px 0;
       }
-      border-top:2px solid $black;
-      border-bottom: 1px solid $black;
-    }
-
-    tr {
-      vertical-align : middle;
-      height: 50px;
-      border-bottom: 1px dotted lightgray;
     }
 
     tbody{
       td {
+        padding: 20px 0;
         vertical-align : middle;
-
-        &:nth-child(2){
-          a {
-          display: inline-block;
-          width:500px;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
+        a {
+          width:100%;
+          color:$black;
+          text-decoration: none;
+          &:hover {
+            color: $brown;
           }
         }
-
-      }
-
-      tr{
-        &:hover {
-          background-color: rgb(249,249,249);
-        }
-      }
-    }
-
-    .router{
-      color:$black;
-      text-decoration: none;
-
-      &:hover {
-        color: $brown;
       }
     }
   }
@@ -201,27 +209,6 @@
     ul,li,a,span {
       color: $black;
       border:none;
-    }
-  }
-  
-  .btnGroup{
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 32px;
-
-    .insert {
-      width:160px;
-      height:50px;
-      border: none;
-      background-color: $brown;
-      color:white;
-      transition: all 0.3s;
-
-      &:hover {
-        border: 1px solid $brown;
-        background-color: white;
-        color:$brown;
-      }
     }
   }
 }

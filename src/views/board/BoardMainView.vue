@@ -15,7 +15,6 @@
         <button class="btn" @click="$router.push({name:'qnaList'})"><img src="../../assets/board/myqna.png" style="padding-left:30px;"><br>나의 문의글 확인</button>
       </div>
 
-
     </div>
     <AppFooter/>
   </div>
