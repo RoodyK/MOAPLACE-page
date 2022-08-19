@@ -1,46 +1,28 @@
 <template>
-  <div class="rounded left">
-    <div class="top fs-6">
-      <span class="fs-4 brown">사용자</span>님, 안녕하세요.
+    <div class="rounded left">
+      <div class="top fs-6">
+        <span class="fs-4 brown">사용자</span>님, 안녕하세요.
+      </div>
+      <div class="mid fs-6 fw-bold">
+        <p>현재 보유 적립금</p>
+        <p class="text-end">
+          <span class="fs-3 text-end">5,000</span>원
+        </p>
+      </div>
+      <div class="bot">
+        <ul class="nav flex-column fs-6">
+          <li class="nav-item"
+            v-for="(nav, index) in navigations"
+            :key="index"
+            :class="{active : nav.isActive}"
+            @click="isMatch(index)">
+            <RouterLink :to="nav.href" class="nav-link">
+              {{nav.name}}
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="mid fs-6 fw-bold">
-      <p>현재 보유 적립금</p>
-      <p class="text-end">
-        <span class="fs-3 text-end">5,000</span>원
-      </p>
-    </div>
-    <div class="bot">
-      <ul class="nav flex-column fs-6">
-        <li class="nav-item">
-          <a class="nav-link active fw-bold" aria-current="page" href="#">마이페이지</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">내 관심 공연</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">예매내역</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">대관내역</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">관람 후기</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">1:1 문의</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">내 정보 수정</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">로그아웃</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">회원 탈퇴</a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -48,7 +30,63 @@ export default {
   name : 'MySideMenu',
   data(){
     return{
-      
+      navigations:[
+        {
+          name: '마이페이지',
+          href: '/moaplace.com/users/mypage',
+          isActive: false
+        },
+        {
+          name: '내 관심 공연',
+          href: '/moaplace.com/users/performance',
+          isActive: false
+        },
+        {
+          name: '예매내역',
+          href: '/moaplace.com/users/ticket/list',
+          isActive: false
+        },
+        {
+          name: '대관내역',
+          href: '/moaplace.com/users/rental/list',
+          isActive: false
+        },
+        {
+          name: '관람 후기',
+          href: '/moaplace.com/users/review/list',
+          isActive: false
+        },
+        {
+          name: '1:1 문의',
+          href: '/moaplace.com/qna/list',
+          isActive: false
+        },
+        {
+          name: '내 정보 수정',
+          href: '/moaplace.com/users/info/edit',
+          isActive: false
+        },
+        {
+          name: '회원 탈퇴',
+          href: '/moaplace.com/users/withdrawal',
+          isActive: false
+        }
+      ]
+    }
+  },
+  props:{
+    category: String
+  },
+  created(){
+    for(let i = 0; i < this.navigations.length; i++){
+      if(this.category == this.navigations[i].name){
+        this.navigations[i].isActive = true;
+      }
+    }
+  },
+  methods:{
+    isMatch(idx){
+      this.navigations[idx].isActive = true;
     }
   }
 }
@@ -57,14 +95,6 @@ export default {
 <style lang="scss" scoped>
 @import '../../scss/common.scss';
 
-#wrap {
-  td {
-    vertical-align: middle;
-  }
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  background-color: rgb(249, 249, 249);
   a {
     color: $black;
     text-decoration:none;
@@ -115,12 +145,12 @@ export default {
             color: $brown;
             opacity: 50%;
           }
-          .active {
-              color: $brown;
-          }
+        }
+        ul > .active > a {
+          color: $brown;
+          font-weight: bold;
         }
       }
     }
   }
-}
 </style>
