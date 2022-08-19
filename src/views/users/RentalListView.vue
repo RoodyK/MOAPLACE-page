@@ -232,6 +232,9 @@ export default {
   .brown {
     color: $brown;
   }
+  td {
+    vertical-align: middle;
+  }
   #box {
     display: flex;
     justify-content: center;
@@ -285,10 +288,12 @@ export default {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        border-radius: 0%;
       }
       .mybtn:hover {
         color: white;
         background: $brown;
+        border-radius: 0%;
       }
       .title {
         display: flex;
@@ -334,8 +339,10 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {

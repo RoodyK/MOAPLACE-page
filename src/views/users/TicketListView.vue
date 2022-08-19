@@ -352,6 +352,7 @@ export default {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        border-radius: 0%;
       }
       .mybtn:hover {
         color: white;
@@ -401,8 +402,10 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {

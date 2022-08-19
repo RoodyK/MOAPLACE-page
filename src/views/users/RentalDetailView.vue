@@ -137,8 +137,8 @@
         </div>
         <div class="text-center btnmargin">
           <p class="fs-7 brown">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">대관취소</button>
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">이전으로</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn">대관취소</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">이전으로</button>
         </div>
       </div>
     </div>
@@ -240,6 +240,7 @@ export default {
         border-color: $brown;
         background-color: white;
         padding: 5px 50px;
+        border-radius: 0%;
         &:hover {
           color: white;
           background: $brown;
@@ -251,6 +252,7 @@ export default {
         background-color: $brown;
         padding: 5px 50px;
         margin-left: 20px;
+        border-radius: 0%;
         &:hover {
           color: $brown;
           background: white;

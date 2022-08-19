@@ -6,10 +6,10 @@
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
       <div class="rounded left">
-        <div class="top fs-6">
+        <div class="top">
           <span class="fs-4 brown">사용자</span>님, 안녕하세요.
         </div>
-        <div class="mid fs-6 fw-bold">
+        <div class="mid fw-bold">
           <p>
             현재 보유 적립금
           </p>
@@ -18,7 +18,7 @@
           </p>
         </div>
         <div class="bot">
-          <ul class="nav flex-column fs-6">
+          <ul class="nav flex-column">
             <li class="nav-item">
               <a class="nav-link active fw-bold" aria-current="page" href="#">마이페이지</a>
             </li>
@@ -54,7 +54,7 @@
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">최근 예매내역</span>
-            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">더보기+</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">더보기+</button>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
@@ -113,7 +113,7 @@
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">최근 대관신청내역</span>
-            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">더보기+</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">더보기+</button>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
@@ -246,6 +246,7 @@ export default {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        border-radius: 0%;
       }
       .mybtn:hover {
         color: white;
@@ -288,8 +289,10 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {
