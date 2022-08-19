@@ -66,7 +66,7 @@
                 <br>
                 이상의 내용에 동의하여 탈퇴를 원하실 경우, 아래의 동의하기 버튼을 클릭해주세요.
               </span>
-              <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">동의하기</button>
+              <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">동의하기</button>
             </p>
           </div>
         </div>
@@ -162,21 +162,13 @@ export default {
       background-color: white;
       border: 2px solid #dbe2e8;
       padding: 30px;
-      .mybtn {
-        color: $brown;
-        border-color: $brown;
-        background-color: white;
-      }
-      .mybtn:hover {
-        color: white;
-        background: $brown;
-      }
       .mybtn2 {
         color: white;
         border-color: $brown;
         background-color: $brown;
         padding: 5px 50px;
-        margin: 20px;
+        margin: 25px 0px 15px;
+        border-radius: 0%;
         &:hover {
           color: $brown;
           background: white;
@@ -191,6 +183,7 @@ export default {
       }
       .titledesc {
         border: 5px solid #eee;
+        margin-top: 30px;
         margin-bottom: 10px;
         .desctxt {
           margin: 15px 20px;

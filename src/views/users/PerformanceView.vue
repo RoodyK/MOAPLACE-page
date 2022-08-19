@@ -55,7 +55,7 @@
         <div id="mylist">
           <div class="title">
             <span class="fs-5 fw-bold">내 관심 공연</span>
-            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">1건</span>의 관심공연이 등록되어 있습니다.</span>
+            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold orange">1건</span>의 관심공연이 등록되어 있습니다.</span>
           </div>
           <div>
             <table class="table table-borderless myborder ticket-table">
@@ -91,7 +91,7 @@
                     </a>
                   </td>
                   <td class="text-center">뮤지컬</td>
-                  <td class="text-center end"><button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">삭제</button></td>
+                  <td class="text-center end"><button type="button" class="btn btn-outline-secondary fw-bold mybtn">삭제</button></td>
                 </tr>
               </tbody>
             </table>
@@ -166,6 +166,9 @@ export default {
   .brown {
     color: $brown;
   }
+  .orange {
+    color: #D67747;
+  }
   #box {
     display: flex;
     justify-content: center;
@@ -219,6 +222,7 @@ export default {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        border-radius: 0%;
       }
       .mybtn:hover {
         color: white;
@@ -261,12 +265,15 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {
           background-color: white;
+          vertical-align: middle;
           .info {
             display: flex;
             margin: 20px 20px;

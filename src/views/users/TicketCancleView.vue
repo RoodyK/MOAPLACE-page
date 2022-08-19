@@ -263,12 +263,17 @@ export default {
         }
       }
       .table {
-        margin: 30px auto;
+        margin: 0 auto;
+        margin-top: 30px;
         width: 700px;
         > thead > tr > th {
           background-color: $brown;
           color: #ffffff;
+          border: 1px solid $brown;
           border-right: 1px solid #eee;
+        }
+        > tbody > tr > th {
+          border: 1px solid $brown;
         }
         > tbody > tr > td {
           border: 1px solid #dbe2e8;
@@ -307,6 +312,7 @@ export default {
         margin-bottom: 30px;
         > input {
           width: 200px;
+          border-radius: 0%;
         }
         > span {
           // width: ;
@@ -319,6 +325,7 @@ export default {
         border-color: $brown;
         background-color: white;
         padding: 5px 50px;
+        border-radius: 0%;
         &:hover {
           color: white;
           background: $brown;
@@ -331,6 +338,7 @@ export default {
         background-color: $brown;
         padding: 5px 50px;
         margin-left: 20px;
+        border-radius: 0%;
         &:hover {
           color: $brown;
           background: white;

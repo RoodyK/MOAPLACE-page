@@ -54,7 +54,7 @@
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">관람 후기</span>
-            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold brown">2건</span>의 관람후기가 등록되어 있습니다.</span>
+            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold orange">2건</span>의 관람후기가 등록되어 있습니다.</span>
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
@@ -193,6 +193,9 @@ export default {
   .brown {
     color: $brown;
   }
+  .orange {
+    color: #D67747;
+  }
   #box {
     display: flex;
     justify-content: center;
@@ -301,8 +304,10 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {
