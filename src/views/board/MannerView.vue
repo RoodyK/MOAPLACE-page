@@ -109,7 +109,7 @@ p {
   }
   .inner {
     width: 100%;
-    padding: 50px 10px;
+    padding: 50px 0px;
     padding-top: 120px;
     .toptit {
       margin-bottom: 64px;
@@ -136,7 +136,7 @@ p {
         padding: 0;
         justify-content: center;
         > li {
-          width: 50%;
+          width: calc((100% - 60px)/2);
           display: flex;
           // margin-right: 50px;
           margin-bottom: 50px;
@@ -147,7 +147,6 @@ p {
             }
           }
           .content {
-            margin-right: 60px;
             > p {
               font-size: 1.5em;
               margin-bottom: 20px;
@@ -162,6 +161,9 @@ p {
                 margin-bottom: 10px;
               }
             }
+          }
+          &:nth-child(2n) {
+            margin-left: 60px;
           }
         }
       }

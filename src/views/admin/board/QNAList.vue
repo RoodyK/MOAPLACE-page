@@ -34,7 +34,7 @@
                             <p>{{item.sort}}</p>
                             <p>{{item.id}}</p>
                             <p>{{item.name}}</p>
-                            <p><RouterLink to="/moa/admin/qna/detail">{{item.title}}</RouterLink></p>
+                            <p><RouterLink to="/moaplace.com/admin/qna/detail">{{item.title}}</RouterLink></p>
                             <p>{{item.regdate}}</p>
                             <p>{{item.ansdate}}</p>
                             <div>
