@@ -71,7 +71,10 @@ const routes = [
     name: 'bookinseat',
     component: SeatSelect
   },
-
+  {
+    path: "/",
+    redirect: "/moaplace.com"
+  },
   // 메인
   {
     path: '/moaplace.com',
