@@ -1,10 +1,10 @@
 <template>
   <div id="wrap">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" title="오시는길"/>
+    <SideVisual menu="MOA PLACE" img="moa" title="오시는길" />
     <div class="m00 m10 m14">
       <div class="tit inner_wrap">
-        <p class="main_tit">오시는길</p>
+        <h2 class="main_tit">오시는길</h2>
         <p class="main_txt">
           문화예술을 통한 즐거움과 감동을 공유하는 나눔터 모아플레이스입니다.
         </p>
@@ -150,12 +150,13 @@ $brown: #826d5e;
   text-align: center;
 }
 .inner_wrap {
-  width: 1100px;
+  width: $width;
   margin: 0 auto;
 }
 .m00 .tit .main_tit {
   font-size: 32px;
-  font-weight: 500;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 .m00 .con1 {
