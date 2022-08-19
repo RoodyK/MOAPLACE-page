@@ -1,9 +1,9 @@
-import axios from 'axios'
+import axios from "axios"
 
 const instance = axios.create({
-  baseURL: 'http://localhost:9090',
+  baseURL: "http://localhost:9090",
   headers: {
-    'Access Control Allow Origin': '*'
+    'Access-Control-Allow-Origin' : '*'
   }
 });
 
