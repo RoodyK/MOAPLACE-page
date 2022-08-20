@@ -71,7 +71,10 @@ const routes = [
     name: 'bookinseat',
     component: SeatSelect
   },
-
+  {
+    path: "/",
+    redirect: "/moaplace.com"
+  },
   // 메인
   {
     path: '/moaplace.com',
@@ -408,6 +411,9 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
+  scrollBehavior() {
+    return { top: 0 }
+  },
   routes
 })
 export default router

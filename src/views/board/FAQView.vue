@@ -106,11 +106,11 @@
   .headerBox {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 
     select {
       width: 150px;
-      height: 50px;
+      height: 56x;
       border-color: #ccc;
       padding: 0 28px 0 15px;
       -webkit-appearance: none;
@@ -121,7 +121,7 @@
 
     .custom-search {
       width: 300px;
-      height: 50px;
+      height: 60px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -148,8 +148,7 @@
 
       .qnaBtn {
         background-color: $brown;
-        padding: 0 32px;
-        height: 50px;
+        padding: 16px 40px;
         border: 1px solid transparent;
         margin-left: 16px;
         color: white;
@@ -179,16 +178,10 @@
       &:hover {
         background-color: rgb(249, 249, 249);
         cursor: pointer;
-
-        .title {
-          color: #d67747;
-        }
+        color: #d67747;
       }
       span {
         margin: 20px 50px;
-      }
-      .title {
-        font-weight: bold;
       }
       .arrow {
         img {
@@ -206,10 +199,9 @@
     }
   }
   .faq_main.active {
+        
     .faq_title {
-      .title {
-        color: #d67747;
-      }
+      color: #d67747;
     }
     .arrow {
       img {

@@ -53,15 +53,14 @@
         </div>
 
         <div class="btnGroup">
-          <button type="submit" class="insert" @click.prevent="">문의글 등록</button>
-          <button class="cancle" @click="$router.push({name:'boardMain'})"> 취소 </button>
+          <button type="submit" @click.prevent="">등록하기</button>
+          <button @click="$router.push({name:'boardMain'})"> 이전으로 </button>
         </div>
       
       </div>
       </form>
 
     </div>
-    
     <AppFooter/>
   </div>
 
@@ -108,15 +107,19 @@
   .line {
     width: 100%;
     border: 2px solid $brown;
-    margin: 32px;
+    margin: 32px 0 8px 0;
   }
 
   .forms {
     width:1100px;
     margin-bottom: 64px;
 
+    ::placeholder {
+      padding: 16px;
+    }
+
     label {
-      padding-top: 20px;
+      padding: 24px 0 8px 0;
     }
 
     .headerBox{
@@ -129,7 +132,8 @@
         select {
           width:100%;
           height: 40px;
-          border: 1px solid lightgray; 
+          border: 1px solid lightgray;
+          padding-left: 16px;
         }
       }
 
@@ -155,36 +159,22 @@
 
     .btnGroup{
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
+      margin: 16px 0 40px 0;
 
-      .insert {
-        width:160px;
-        height:50px;
-        margin: 3px;
-        border: none;
-        background-color: $brown;
-        color:white;
-        transition: all 0.3s;
+      button {
+        padding: 16px 40px;
+        margin: 2px;
 
-        &:hover {
-          border: 1px solid $brown;
-          background-color: white;
-          color:$brown;
-        }
-      }
-
-      .cancle {
-        width:100px;
-        height:50px;
-        margin: 3px;
-        border: 1px solid $brown;
-        background-color: white;
-        color:$brown;
-        transition: all 0.3s;
-
-        &:hover {
-          background-color:$brown;
+        &:nth-child(1){
+          background-color: $brown;
+          border: 1px solid transparent;
           color:white;
+        }
+        &:nth-child(2){
+          border: 1px solid $black;
+          background-color: white;
+          color:$black;
         }
       }
     }
