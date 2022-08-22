@@ -122,7 +122,7 @@ export default {
             },
             {
                 name: 'JOIN',
-                href: '/moaplace.com/join/same',
+                href: '/moaplace.com/users/join/same',
             },
         ]
     }    

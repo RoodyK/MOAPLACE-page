@@ -58,7 +58,7 @@ export default {
         return;
       }
 
-      this.$router.push("/moaplace.com/join/main");
+      this.$router.push("/moaplace.com/users/join/main");
     }
   }
 }

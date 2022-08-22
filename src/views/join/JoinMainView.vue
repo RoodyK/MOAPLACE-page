@@ -14,7 +14,7 @@
         <div class="join">
           <div class="id">
             <label for="idInput">아이디</label>
-            <input type="text" class="idInput" id="idInput" placeholder="6~20 영문자, 숫자만 사용" maxlength="20">
+            <input type="text" class="idInput" id="idInput" placeholder="6~20 영문자, 숫자만 사용" maxlength="20" @keyup="idCheck()" />
             <div class="idHelp help"></div>
           </div>
           <div class="pwd">
@@ -36,7 +36,7 @@
           <div class="authentication">
             <label for="authenticationInput">인증번호</label>
             <input type="text" class="authenticationInput" id="authenticationInput">
-            <button>인증번호 확인</button>
+            <button type="button" @click="confirmEmailAuth()">인증번호 확인</button>
             <div class="authenticationHelp help"></div>
           </div>
           <div class="name">
@@ -46,9 +46,9 @@
           </div>
           <div class="gender">
             <label>성별</label>
-            <input type="radio" name="gender" id="male" checked>
+            <input type="radio" name="gender" id="male" value="male" checked>
             <label for="male">남성</label>
-            <input type="radio" name="gender" id="female">
+            <input type="radio" name="gender" id="female" value="female">
             <label for="female">여성</label>
             <div class="genderHelp help"></div>
           </div>
@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import axios from "@/axios/axios.js"
+
 import JoinOrder from "@/components/join/JoinOrder.vue"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -99,7 +101,9 @@ export default {
   },
   data() {
     return {
-      isAuthentication: false
+      isAuthentication: false, // 이메일 인증완료되었는지 체크
+      authNumber: 0, // 인증번호
+      isDuplication: false // 아이디 중복 여부
     }
   },
   mounted() {
@@ -129,6 +133,34 @@ export default {
     revert() {
       this.$router.push("/moaplace.com")
     },
+    // 아이디 중복검사
+    idCheck() {
+      const idEl = document.querySelector("#idInput");
+      const idHelp = document.querySelector(".idHelp");
+
+      // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
+      let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+
+      if(!regExpId.test(idEl.value)){
+        idHelp.innerText = "영문자 및 숫자만 사용하여 6자이상 16자 이하로 입력하세요";
+        idEl.focus();
+        return;
+      }
+      idHelp.innerText = "";
+
+      axios.get("/moaplace.com/users/join/checkId/"+ idEl.value)
+      .then(function(response) {
+        console.log(response.data);
+        if(response.data == "duple") {
+          idHelp.innerText = "중복된 아이디 입니다.";
+          this.isDuplication = false;
+        }else {
+          idHelp.innerText = "사용가능한 아이디 입니다.";
+          this.isDuplication = true;
+        }
+      }.bind(this));
+    },
+    // 이메일 인증번호 발송
     emailAuth() {
       let email = document.querySelector("form").emailInput;
       let regExpEmail =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -139,8 +171,36 @@ export default {
         email.focus();
         return;
       }
-      emailHelp.innerText = "";
+      emailHelp.innerText = "인증번호가 전송되었습니다.";
+
       document.querySelector(".authentication").style.display = "block";
+
+      axios.post("/moaplace.com/users/join/email/auth", {
+        email: email.value
+      }, 
+      {
+        headers: {
+          "Authorization" : "1234"
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.authNumber = response.data;
+      });
+    },
+    // 이메일 인증 확인
+    confirmEmailAuth() {
+      console.log(this.authNumber);
+      const authenticationInputEl = document.querySelector("#authenticationInput");
+      const authenticationHelpEl = document.querySelector(".authenticationHelp");
+
+      if(this.authNumber == authenticationInputEl.value) {
+        this.isAuthentication = true;
+        authenticationHelpEl.innerText = "이메일이 인증되었습니다.";
+        return;
+      }
+      authenticationHelpEl.innerText = "인증번호가 올바르지 않습니다.";
+      authenticationInputEl.focus();
     },
     // 회원가입 유효성 검사
     joinOk() {
@@ -151,10 +211,16 @@ export default {
       let confirmPwd = formEl.confirmPwdInput;
       let email = formEl.emailInput;
       let name = formEl.nameInput;
+      let gender = formEl.gender;
       let birth = formEl.birthInput;
       let phone = formEl.phoneInput;
       let postcode = formEl.postcode;
       let address = formEl.address;
+      let detailAddress = formEl.detailAddress;
+      let totalAddress = "";
+
+      console.log(gender.value)
+
 
       // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
       let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
@@ -195,6 +261,13 @@ export default {
       }
       idHelp.innerText = "";
 
+      if(!this.isDuplication) {
+        idHelp.innerText = "아이디 중복을 확인하세요.";
+        window.scrollTo(0, 400);
+        return;
+      }
+      idHelp.innerText = "";
+
       if(!regExpPassword.test(pwd.value)) {
         pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 16자 이하로 입력하세요.";
         pwd.focus();
@@ -211,7 +284,7 @@ export default {
       }
       confirmPwdHelp.innerText = "";
 
-      if(this.isAuthentication) {
+      if(!this.isAuthentication) {
         emailHelp.innerText = "이메일 인증을 진행하세요.";
         email.focus();
         window.scrollTo(0, 700);
@@ -242,7 +315,7 @@ export default {
       phoneHelp.innerText = "";
 
       if(!regExpPostcode.test(postcode.value)) {
-        postcodeHelp.innerText = "주소 양식이 올바르지 않습니다.";
+        postcodeHelp.innerText = "우편변호 양식이 올바르지 않습니다.";
         postcode.focus();
         return;
       }
@@ -254,8 +327,35 @@ export default {
       }
       postcodeHelp.innerText = "";
 
-      this.$router.push("/moaplace.com/join/success");
-    }
+      // 전체 주소 합치기
+      totalAddress = postcode.value + " " + address.value;
+      if(detailAddress.value != null && detailAddress.value != "") {
+        totalAddress = totalAddress + " " + detailAddress;
+      }
+
+      const memberRequest = {
+        member_id: id.value,
+        member_pwd: pwd.value,
+        member_email: email.value,
+        member_name: name.value,
+        member_gender: gender.value,
+        member_birth: birth.value,
+        member_phone: phone.value,
+        member_address: totalAddress
+      }
+
+      axios.post("/moaplace.com/users/join/result",
+        JSON.stringify(memberRequest), {
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.$router.push("/moaplace.com/users/join/success");
+      })
+
+    },
   }
 }
 </script>
@@ -277,39 +377,6 @@ export default {
           font-size: 2rem;
           font-weight: 700;
           letter-spacing: 3px;
-        }
-      }
-
-      .line {
-        width: 700px;
-        height: 3px;
-        margin: 0 auto 100px;
-        background-color: #000;
-        position: relative;
-
-        .step {
-          width: 20px;
-          height: 20px;
-          position: absolute;
-          border-radius: 50%;
-          border: 2px solid $brown;
-          background-color: #fff;
-
-          &:nth-child(1) {
-            top: -10px;
-            left: 80px;
-          }
-
-          &:nth-child(2) {
-            top: -10px;
-            left: calc(50% - 10px);
-            background-color: $brown;
-          }
-
-          &:nth-child(3) {
-            top: -10px;
-            right: 80px;
-          }
         }
       }
 
