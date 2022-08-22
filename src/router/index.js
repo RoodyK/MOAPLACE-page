@@ -94,32 +94,32 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/moaplace.com/join/same',
+    path: '/moaplace.com/users/join/same',
     name: 'same',
     component: SameView
   },
   {
-    path: '/moaplace.com/join/main',
+    path: '/moaplace.com/users/join/main',
     name: 'join',
     component: JoinMainView
   },
   {
-    path: '/moaplace.com/join/success',
+    path: '/moaplace.com/users/join/success',
     name: 'joinSuccess',
     component: JoinSuccessView
   },
   {
-    path: '/moaplace.com/login/findId',
+    path: '/moaplace.com/users/login/findId',
     name: 'findId',
     component: FindIdView
   },
   {
-    path: '/moaplace.com/login/findPwd',
+    path: '/moaplace.com/users/login/findPwd',
     name: 'findPwd',
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
