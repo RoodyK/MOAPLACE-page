@@ -1,5 +1,7 @@
 <template>
   <div id="wrap">
+    <AppHeader/>
+    <SideVisual menu="RENTAL APPLICATION" img="rental" title="대관정보"/>
     <section>
       <div class="inner">
         <h2 class="title">대관 절차 및 비용</h2>
@@ -64,7 +66,7 @@
         </div>
       </div>
     </section>
-    <section>
+    <section class="sec02">
       <div class="inner">
         <h2 class="title">대관안내</h2>
         <table>
@@ -172,13 +174,25 @@
         <p class="etc">* 기타 문의사항은 대관자료등록담당자에게 연락 주시기 바랍니다.</p>
       </div>
     </section>
+    <AppFooter/>
   </div>
+
+  
 </template>
 <span class="material-symbols-outlined">
 
 </span>
 <script>
+import SideVisual from '@/components/SideVisual.vue'
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+
 export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
   data(){
     return{
       processes:[
@@ -200,7 +214,7 @@ export default {
   #wrap{
     section{
       padding: 120px 0;
-      &:last-child{
+      &.sec02{
         background: #f1f1f1;
       }
     }
@@ -364,7 +378,7 @@ export default {
         
       }
     }
-    section:last-child{
+    section.sec02{
       h2.title{
         &::after{
           content: '';

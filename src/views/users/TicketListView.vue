@@ -1,0 +1,406 @@
+<template>
+<div>
+  <AppHeader/>
+  <SideVisual menu="MY PAGE" img="mypage"/>
+  <div id="wrap">
+    <div id="box" class="black">
+      <!-- 사이드 메뉴 -->
+      <MySideMenu category="예매내역"/>
+      <!-- 내역 -->
+      <div class="rounded right">
+        <div>
+          <div class="title">
+            <span class="fs-5 fw-bold">전체 예매내역</span>
+          </div>
+          <div class="datenav fs-7 titledesc">
+            <span class="">기간선택</span>
+            <table>
+              <tr>
+                <td class="datebtn select"><a href="">1주일</a></td>
+                <td class="datebtn"><a href="">1개월</a></td>
+                <td class="datebtn"><a href="">3개월</a></td>
+                <td class="datebtn"><a href="">6개월</a></td>
+              </tr>
+            </table>
+            <div>
+              <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
+              <button class="btn mybtn resultbtn">조회</button>
+            </div>
+          </div>
+          <div>
+            <table class="table table-borderless myborder ticket-table">
+              <thead>
+                <tr class="text-center">
+                  <th class="col col-md-1">예매번호</th>
+                  <th class="col col-md-2">공연정보</th>
+                  <th class="col col-md-1">결제금액</th>
+                  <th class="col col-md-1">결제상태</th>
+                  <th class="col col-md-1 end">상세보기</th>
+                </tr>
+              </thead>
+              <tbody class="fs-7">
+                <tr class="mytr">
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table class="subtable">
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center">입금완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
+                <tr class="mytr">
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table class="subtable">
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center">입금완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
+                <tr class="mytr">
+                  <td>
+                    <div class="text-center">
+                      <span>220807-0000-0001</span>
+                      <br>
+                      <span class="brown">(2022.08.07)</span>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="">
+                      <div class="info">
+                        <div class="img1"></div>
+                        <div class="txt">
+                          <p class="fs-5 fw-bold">Title</p>
+                          <table class="subtable">
+                            <tr>
+                              <th>장소</th>
+                              <td>공연장1</td>
+                            </tr>
+                            <tr>
+                              <th>날짜</th>
+                              <td>2022.08.09</td>
+                            </tr>
+                            <tr>
+                              <th>회차</th>
+                              <td>1회차 14:00</td>
+                            </tr>
+                            <tr>
+                              <th>좌석</th>
+                              <td>R석 A01,S석 ...</td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="text-center">250,000원</td>
+                  <td class="text-center">입금완료</td>
+                  <td class="text-center end">
+                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- 페이징 -->
+        <div id="mypaging">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a class="page-link" href="" aria-label="Previous">
+                  <span aria-hidden="true">
+                    &laquo;
+                  </span>
+                </a>
+              </li>
+              <li class="page-item select"><a class="page-link" href="">1</a></li>
+              <li class="page-item"><a class="page-link" href="">2</a></li>
+              <li class="page-item"><a class="page-link" href="">3</a></li>
+              <li class="page-item"><a class="page-link" href="">4</a></li>
+              <li class="page-item"><a class="page-link" href="">5</a></li>
+              <li class="page-item">
+                <a class="page-link" href="" aria-label="Next">
+                  <span aria-hidden="true">
+                    &raquo;
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+  <AppFooter/>
+</div>
+</template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+import MySideMenu from '@/components/users/MySideMenu.vue'
+
+export default {
+  name: 'MyTicketListView',
+  components: {
+  AppHeader,
+  AppFooter,
+  SideVisual,
+  MySideMenu
+  },
+  data() {
+    return{
+      startdate: '',
+      enddate: ''
+    }
+  },
+  created(){
+    const cur = new Date();
+    const date = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+    const weekdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+    this.enddate = date;
+    // console.log(this.enddate);
+    this.startdate = weekdate;
+    // console.log(this.startdate);
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '../../scss/common.scss';
+
+#wrap {
+  td {
+    vertical-align: middle;
+  }
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: rgb(249, 249, 249);
+  a {
+    color: $black;
+    text-decoration:none;
+  }
+  .fs-7 {
+    font-size: 0.8em;
+  }
+  .black {
+    color: $black;
+  }
+  .brown {
+    color: $brown;
+  }
+  #box {
+    display: flex;
+    justify-content: center;
+    width: $width;
+    margin: 50px;
+    .right {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border: 2px solid #dbe2e8;
+      padding: 30px;
+      .mybtn {
+        color: $brown;
+        border-color: $brown;
+        background-color: white;
+        border-radius: 0%;
+      }
+      .mybtn:hover {
+        color: white;
+        background: $brown;
+      }
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .titledesc {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        .desctxt {
+          margin: 15px 20px;
+        }
+      }
+      .datenav {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        height: 70px;
+        margin: 30px 0px;
+        .mydate {
+          padding: 5px;
+        }
+        .datebtn {
+          padding: 5px 20px;
+          border: 1px solid gray;
+          background-color: white;
+        }
+        .select {
+          background-color: $brown;
+          a {
+            color: white;
+          }
+        }
+        .resultbtn {
+          margin-left: 10px;
+          font-size: 1em;
+        }
+      }
+      .table {
+        th.col {
+          background-color: $brown;
+          color: white;
+        }
+        tbody {
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
+          }
+        }
+        td {
+          background-color: white;
+          .info {
+            display: flex;
+            align-items: center;
+            margin: 20px 20px;
+            .img1 {
+              background-color: gray;
+              width: 110px;
+              height: 150px;
+              margin-right: 20px;
+            }
+            .img2 {
+              background-color: gray;
+              width: 55px;
+              height: 75px;
+              margin-right: 20px;
+            }
+            .txt {
+              p {
+                margin-bottom: 10px;
+              }
+              table td,th {
+                border: 0px;
+                background-color: transparent;
+              }
+              .subtable{
+                th {
+                  font-weight: bold;
+                }
+                td {
+                  padding-left: 5px;
+                }
+              } 
+            }
+          }
+        }
+      }
+      .myborder {
+        th{
+          border-right: 1px solid #eee;
+        }
+        td{
+          border-right: 1px solid #dbe2e8;
+          border-bottom: 1px solid #dbe2e8;
+        }
+        .end{
+          border-right: 0px;
+        }
+      }
+      .ticket-table {
+        vertical-align : middle;
+      }
+    }
+  }
+  #mypaging {
+    display: flex;
+    justify-content: center;
+    .select {
+      font-weight: bold;
+    }
+    li {
+      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+      a:hover {
+        color: $brown;
+        opacity: 50%;
+      }
+    }
+  }
+}
+</style>
