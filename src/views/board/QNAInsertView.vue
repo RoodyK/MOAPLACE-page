@@ -33,7 +33,7 @@
 
           <div class="nameBox">
             <label>아이디</label><br>
-            <input type="text" v-model="forms.member_id" readonly="readonly">
+            <input type="text" v-model="forms.member_id" disabled>
             <input type="hidden" name="forms.member_num" value="forms.member_num">
           </div>
         </div>
@@ -50,7 +50,7 @@
 
         <div class="btnGroup">
           <button type="submit" @click.prevent="checkForm()">등록하기</button>
-          <button @click="$router.push({name:'boardMain'})"> 이전으로 </button>
+          <button @click="$router.go(-1)"> 이전으로 </button>
         </div>
       
       </div>
@@ -85,12 +85,13 @@ export default {
         qna_content:""} // 내용
     }
   },
-  mounted() {
+  created() {
+    // this.member_num = this.$route.state.member_num;
     this.sortList();
   },
   methods: {
     sortList() { // 구분목록 불러오기
-      axios.get('/moaplace.com/sort/list').then(function(resp){
+      axios.get('/moaplace.com/board/sort/list').then(function(resp){
         if(resp.data!=null || resp.data!=''){
           this.sort_list = resp.data;
 
@@ -101,7 +102,7 @@ export default {
     },
 
     checkForm() { 
-      // 입력 유효성 체크
+      // 입력 체크
       if(this.forms.sort_num<1) {
         alert("문의 구분을 선택하세요.");
         return;
@@ -123,9 +124,8 @@ export default {
     },
 
     qnaInsert(){ // 데이터 제출
-      axios.post('/moaplace.com/qna/insert', JSON.stringify(this.forms),{
+      axios.post('/moaplace.com/board/qna/insert', JSON.stringify(this.forms),{
         headers: {
-          'Access-Control-Allow-Origin' : '*',
           'Content-Type' : 'application/json'}
       }).then(function(resp){
 
