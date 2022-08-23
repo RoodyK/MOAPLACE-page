@@ -98,12 +98,12 @@ export default {
             },
             {
                 name: '고객센터',
-                href: '/moaplace.com/boardMain',
+                href: '/moaplace.com/board/main',
                 submenus:[
-                    {name: 'FAQ', href: '/moaplace.com/faq'},
-                    {name: '1:1문의', href: '/moaplace.com/qna/list'},
-                    {name: '공연예절', href: '/'},
-                    {name: '멤버십혜택', href: '/'},
+                    {name: 'FAQ', href: '/moaplace.com/board/faq'},
+                    {name: '1:1문의', href: '/moaplace.com/board/qna/list'},
+                    {name: '공연예절', href: '/moaplace.com/board/manner'},
+                    {name: '멤버십혜택', href: '/moaplace.com/board/membership'},
                 ]
             }
         ],
