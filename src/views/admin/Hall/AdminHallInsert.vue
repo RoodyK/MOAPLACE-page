@@ -41,9 +41,9 @@
             </tr>
             <tr>
               <th>러닝타임</th>
-              <td><input type="text" v-model.number="runningTime">분</td>
+              <td><input type="text" v-model.number="runningTime" class="rntime">분</td>
               <th>인터미션</th>
-              <td><input type="text" v-model.number="intermission">분</td>
+              <td><input type="text" v-model.number="intermission" class="rntime">분</td>
             </tr>
             <tr>
               <th>상연등급</th>
@@ -62,19 +62,19 @@
             <tr>
               <th>R석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="rPrice">원
+                <input type="text" v-model.number="rPrice" class="seatPrice">원
               </td>
             </tr>
             <tr>
               <th>S석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="sPrice">원
+                <input type="text" v-model.number="sPrice" class="seatPrice">원
               </td>
             </tr>
             <tr>
               <th>A석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="aPrice">원
+                <input type="text" v-model.number="aPrice" class="seatPrice">원
               </td>
             </tr>
             <tr>
@@ -222,7 +222,7 @@
             pageNum:1
           }
           })
-        },
+        }
     }
   }
 </script>
