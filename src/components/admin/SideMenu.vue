@@ -79,6 +79,10 @@ export default {
                 href:'/moaplace.com/admin/show/list',
               },
               {
+                name: '일정정보',
+                href:'/moaplace.com/admin/show/schedule/list',
+              },
+              {
                 name: '예매정보',
                 href:'/moaplace.com/admin/ticket/list',
               }

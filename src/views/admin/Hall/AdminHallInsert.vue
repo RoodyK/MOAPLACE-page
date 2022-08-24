@@ -9,100 +9,220 @@
           <table>
             <tr>
               <th>공연장</th>
-              <td colspan="5">
-                <label><input type="radio" name="hallName" value="MHall">모던홀</label>
-                <label><input type="radio" name="hallName" value="OHall">오케스트라홀</label>
-                <label><input type="radio" name="hallName" value="AHall">아트홀</label>
+              <td colspan="3">
+                <label><input type="radio" name="hallName" v-model="hall" value="1">모던홀</label>
+                <label><input type="radio" name="hallName" v-model="hall" value="2">오케스트라홀</label>
+                <label><input type="radio" name="hallName" v-model="hall" value="3">아트홀</label>
               </td>
             </tr>
             <tr>
               <th>장르</th>
-              <td colspan="5">
-                <label><input type="radio" name="genre" value="drama">연극</label>
-                <label><input type="radio" name="genre" value="musical">뮤지컬</label>
-                <label><input type="radio" name="genre" value="pop">대중음악</label>
-                <label><input type="radio" name="genre" value="instrumental">기악</label>
-                <label><input type="radio" name="genre" value="vocal">성악</label>
-                <label><input type="radio" name="genre" value="dance">무용</label>
-                <label><input type="radio" name="genre" value="opera">오페라</label>
+              <td colspan="3">
+                <label><input type="radio" name="genre" v-model="genre" value="1">연극</label>
+                <label><input type="radio" name="genre" v-model="genre" value="2">뮤지컬</label>
+                <label><input type="radio" name="genre" v-model="genre" value="3">대중음악</label>
+                <label><input type="radio" name="genre" v-model="genre" value="4">기악</label>
+                <label><input type="radio" name="genre" v-model="genre" value="5">성악</label>
+                <label><input type="radio" name="genre" v-model="genre" value="6">무용</label>
+                <label><input type="radio" name="genre" v-model="genre" value="7">오페라</label>
               </td>
             </tr>
             <tr>
               <th>공연명</th>
-              <td colspan="5"><input type="text"></td>
-            </tr>
-            <tr>
-              <th>공연날짜</th>
-              <td><input type="date" v-model="showDate"></td>
-
+              <td colspan="3"><input type="text" v-model="title" placeholder="공연 제목을 입력하세요."></td>
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td><input type="date" v-model="regdate"></td>
+              <td colspan="3"><input type="date" v-model="regdate"></td>
             </tr>
             <tr>
               <th>공연종료일</th>
-              <td><input type="date" v-model="appdate"></td>
+              <td colspan="3"><input type="date" v-model="appdate"></td>
+            </tr>
+            <tr>
+              <th>러닝타임</th>
+              <td><input type="text" v-model.number="runningTime">분</td>
+              <th>인터미션</th>
+              <td><input type="text" v-model.number="intermission">분</td>
             </tr>
             <tr>
               <th>상연등급</th>
-              <td colspan="2">
-                <select v-model="gValue" @change="go">
+              <td>
+                <select v-model="gValue">
                   <option v-for="(g,index) in grade" :key="index" :value="g.value">{{g.text}}</option>
                 </select>
-                </td>
+              </td>
+              <th>공연여부</th>
+              <td>
+                <select v-model="yornValue">
+                  <option v-for="(item,index) in yorn" :key="index" :value="item.value">{{item.text}}</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>R석 가격</th>
+              <td colspan="3">
+                <input type="text" v-model.number="rPrice">원
+              </td>
+            </tr>
+            <tr>
+              <th>S석 가격</th>
+              <td colspan="3">
+                <input type="text" v-model.number="sPrice">원
+              </td>
+            </tr>
+            <tr>
+              <th>A석 가격</th>
+              <td colspan="3">
+                <input type="text" v-model.number="aPrice">원
+              </td>
             </tr>
             <tr>
               <th>섬네일</th>
               <td colspan="5">
+                <input type="file" @change="thumbGo($event.currentTarget)">
                 <img :src="thumb">
-                <input type="file">
               </td>
             </tr>
             <tr>
               <th>상세이미지</th>
               <td colspan="5">
-                <img :src="detailImgs.src1">
-                <input type="file">
+                <input type="file" multiple="multiple" @change="detailGo($event.currentTarget)">
+                <img v-for="(item,index) in detailImgs" :key="index" :src="item">
               </td>
             </tr>
           </table>
         </div>
         <div class="btnBox">
-          <button>취소</button>
-          <button>등록</button>
+          <button @click="goList">취소</button>
+          <button @click="postInsert">등록</button>
         </div>
       </div>
     </main>
   </div>
 </template>
 <script>
-  import SideMenu from '@/components/admin/SideMenu.vue'
+  import SideMenu from '@/components/admin/SideMenu.vue';
+  import axios from '@/axios/axios.js';
     export default {
       components: {
         SideMenu
       },
       data(){
         return{
-          going:true,
-          hideRow:'',
-          gValue:'all',
-          grade:[
-            {text:'전체관람가',value:'all'},
-            {text:'12세 관람가',value:'twelve'},
-            {text:'15세 관람가',value:'fifteen'},
-            {text:'청소년 관람불가',value:'adult'},
-          ],
-          showDate:new Date().toISOString().substr(0, 10),
-          regdate: '',
+          hall:1,
+          genre:1,
+          title:'',
+          regdate: new Date().toISOString().substr(0, 10),
           appdate: '',
+          runningTime:'',
+          intermission:'',
+          gValue:'전체관람가',
+          grade:[
+            {text:'전체관람가',value:'전체관람가'},
+            {text:'12세 관람가',value:'12세'},
+            {text:'15세 관람가',value:'15세'},
+            {text:'청소년 관람불가',value:'청소년'},
+          ],
+          yornValue:'Y',
+          rPrice:'',
+          sPrice:'',
+          aPrice:'',
+          yorn:[{text:'진행중',value:'Y'},{text:'상연중지',value:'N'}],
           thumb:'',
-          detailImgs:{
-            src1:''
-          },
+          detailImgs:[]
+        }
+      },
+      watch:{
+        runningTime(newV){
+          if(isNaN(newV)){
+            alert('숫자만 입력하세요');
+            this.runningTime='';
+          }
+        },
+        intermission(newV){
+          if(isNaN(newV)){
+            alert('숫자만 입력하세요');
+            this.runningTime='';
+          }
         }
       },
       methods:{
+        thumbGo(e){
+          let fr = new FileReader();
+
+          fr.readAsDataURL(e.files[0]); //readAsDataURL(파일/blob객체) -> 해당 파일이나 blob객체를 읽어오고, 읽기가 종료되면 readystate가 done(완료)되면서 loadend이벤트가 트리거되고 base64인코딩된 스트링 데이터가 result속성(attribute)에 담김. 
+          fr.addEventListener('load',()=>{this.thumb=fr.result},false) //위와 같은 이유로 해당 FileReader객체에 load이벤트가 발생했을 때 .result 속성을 가져와 변수에 담으면 인코딩된 스트링데이터가 변수에 담기는 것임
+          
+          //console.log(this.thumb) //왜 스트링 데이터인데 로그로는 나오지 않을까? -> 이벤트리스너로 발생한 이벤트객체를 타겟으로 출력했어야 함! 
+
+        },
+
+        detailGo(e){
+          this.detailImgs.splice(0);
+          for(let i = 0; i < e.files.length ; i++){
+
+            let fr = new FileReader();
+            
+            fr.readAsDataURL(e.files[i]);
+            fr.addEventListener('load',()=>{this.detailImgs.push(fr.result)},false);
+          }
+        },
+
+        postInsert(){
+          // let formData=new FormData();
+          // formData.append('thumb',this.thumb);
+          // for(let i=0;i<this.detailImgs.length;i++){
+          //   formData.append('details',this.detailImgs[i]);
+          // }
+          // formData.append('dto',);
+        axios.post(
+          '/moaplace.com/admin/show/insertShow',
+          JSON.stringify(
+            {
+            genre_num:this.genre,
+            hall_num:this.hall,
+            show_name:this.title,
+            show_start:this.regdate,
+            show_end:this.appdate,
+            show_check:this.yornValue,
+            show_age:this.gValue,
+            intermission:this.intermission,
+            running_time:this.runningTime,
+            show_thumbnail:this.thumb,
+            show_detail_img:this.detailImgs,
+            rprice: this.rPrice,
+            sprice: this.sPrice,
+            aprice: this.aPrice
+          }),
+          {
+            headers:{'Content-Type':'application/json'},
+          }
+          ).then(function(resp){
+            if(resp.data.result==true){
+              alert('공연정보 등록됨')
+              this.goList()
+            }else{
+              alert('공연정보 등록 실패')
+            }
+
+          }.bind(this)).
+          catch(function(error){
+            if(error.response){
+              alert('공연정보를 모두 입력하세요')
+            }
+          })
+      },
+      goList(){
+        this.$router.push({
+          name:'adminHallInfoList',
+          params:{
+            selectField:'hall',
+            search:'',
+            pageNum:1
+          }
+          })
+        },
     }
   }
 </script>
@@ -160,7 +280,9 @@
                         border: 1px solid gainsboro;
                       }
                       img{
-                        width: calc(80%/1);
+                        width: 240px;
+                        display: block;
+                        margin-top:8px;
                       }
                     }
                     &:nth-child(3){
@@ -173,7 +295,7 @@
                         width:150px;
                       }
                     }
-
+                    
                   label{
                       margin-right:16px;
                   }
