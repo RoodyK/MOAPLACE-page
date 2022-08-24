@@ -8,17 +8,17 @@
       <div class="title">
         <h2><strong>MOA PLACE</strong> 회원 로그인</h2>
       </div>
-      <form @enter.prevent>
+      <form @submit.prevent>
         <div class="login">
           <div class="id">
-            <input type="text" name="id" id="id" placeholder="아이디를 입력하세요." />
+            <input type="text" name="id" id="id" placeholder="아이디를 입력하세요." v-model="loginId" />
           </div>
 
           <div class="pwd">
-            <input type="password" name="pwd" id="pwd" placeholder="비밀번호를 입력하세요." autocomplete="off" />
+            <input type="password" name="pwd" id="pwd" placeholder="비밀번호를 입력하세요." autocomplete="off" v-model="loginPwd"/>
           </div>
 
-          <button type="button" class="login-btn">로그인</button>
+          <button type="button" class="login-btn" @click="isLogin()">로그인</button>
         </div>
       </form>
 
@@ -47,7 +47,6 @@
       </div>
       
     </div>
-    
     <AppFooter/>
   </section>
  
@@ -64,22 +63,45 @@ export default {
     AppFooter,
     SideVisual
   },
+  mounted() {
+  },
   data() {
     return {
+      loginId: "",
+      loginPwd: "",
       searches: [
         {
-          name: '아이디 찾기',
-          href: '/moaplace.com/login/findid'
+          name : '아이디 찾기',
+          href : '/moaplace.com/users/login/findid'
         },
         {
-          name: '비밀번호 찾기',
-          href: '/moaplace.com/login/findpwd'
+          name : '비밀번호 찾기',
+          href : '/moaplace.com/users/login/findpwd'
         },
         {
-          name: '회원가입',
-          href: '/moaplace.com/join/same'
+          name : '회원가입',
+          href : '/moaplace.com/users/join/same'
         }
       ]
+    }
+  },
+  methods: {
+    isLogin() {
+      if(this.loginId == null || this.loginId == "") {
+        alert("아이디를 입력하세요.");
+        document.querySelector("#id").focus();
+        return;
+      }
+
+      if(this.loginPwd == null || this.loginPwd == "") {
+        alert("비밀번호를 입력하세요.");
+        document.querySelector("#pwd");
+        return;
+      }
+      this.$store.dispatch("login/memberLogin", {
+        id: this.loginId,
+        pwd: this.loginPwd
+      });
     }
   }
 }
