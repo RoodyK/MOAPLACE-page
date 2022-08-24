@@ -34,7 +34,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ bkDto.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ bkDto.booking_num }`">
                       <div class="info">
                         <img :src="bkDto.show_thumbnail" class="img1">
                         <div class="txt">
@@ -64,7 +64,7 @@
                   <td class="text-center">{{ bkDto.booking_price }}원</td>
                   <td class="text-center">{{ bkDto.payment_status }}</td>
                   <td class="text-center end">
-                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ bkDto.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ bkDto.booking_num }`">
                       <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
                     </RouterLink>
                   </td>
@@ -99,7 +99,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/users/rental/detail/${ rtDto.rental_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/rental/detail/${ rtDto.rental_num }`">
                       <div class="info">
                         <div class="txt">
                           <p class="fs-5 fw-bold">{{ rtDto.hall_name }}</p>
@@ -110,7 +110,7 @@
                   </td>
                   <td class="text-center">{{ rtDto.rental_state }}</td>
                   <td class="text-center end">
-                    <RouterLink :to="`/moaplace.com/users/rental/detail/${ rtDto.rental_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/rental/detail/${ rtDto.rental_num }`">
                       <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
                     </RouterLink>
                   </td>
@@ -150,14 +150,9 @@ export default {
       member : {}, // 회원정보
       bkExist : false, // 예매내역 존재여부
       bkDto : {}, // 최근 예매내역 1건
-      booking : { 
-        href : ''
-      },
+      
       rtExist : false, // 대관내역 존재여부
       rkDto : {}, // 최근 대관내역 1건
-      rental : { 
-        href : ''
-      }
 
     }
   },
