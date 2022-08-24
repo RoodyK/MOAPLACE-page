@@ -29,10 +29,10 @@ export default {
     actions:{
         // 대관정보 리스트 가져오기
         getList(){
-            axios.get('/moaplace.com/rental/list')
-            .then(function(resp){
-                console.log(resp.data);
-            });
+            // axios.get('/moaplace.com/rental/list')
+            // .then(function(resp){
+            //     console.log(resp.data);
+            // });
         }
     }
 
