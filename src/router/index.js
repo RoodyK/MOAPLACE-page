@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
+import LogoutView from '@/views/login/LogoutView.vue'
 import SameView from '../views/join/OfTheSameView.vue'
 import JoinMainView from '../views/join/JoinMainView.vue'
 import JoinSuccessView from '@/views/join/JoinSuccessView.vue'
@@ -92,6 +93,11 @@ const routes = [
     path: '/moaplace.com/users/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/moaplace.com/users/logout',
+    name: 'logout',
+    component: LogoutView
   },
   {
     path: '/moaplace.com/users/join/same',
