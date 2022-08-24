@@ -1,40 +1,48 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+        <SideMenu largeCategory="공연관리" mediumCategory="일정정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연정보</h2>
+                <h2 class="title">일정정보</h2>
                 <div class="list-top">
-                    <select v-model="selectField">
-                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                    <select>
+                        <option value="hall">공연장</option>
+                        <option value="title">공연명</option>
+                        <option value="status">공연상태</option>
                     </select>
-                    <input type="text" v-model="search">
+                    <input type="text">
                         <button>
                             검색
                             <i class="material-icons">
                                 search
                             </i>
                         </button>
-                        <button class="insertBtn" @click='goInsert'>공연등록</button>
+                        <button class="insertBtn" @click='goInsert'>일정등록</button>
                     </div>
                     <div class="list">
                         <div class="t-row thead">
-                            <p>공연번호</p>
+                            <p>일정번호</p>
                             <p>공연장</p>
                             <p>공연명</p>
+                            <p>공연날짜</p>
                             <p>공연시작일</p>
                             <p>공연종료일</p>
+                            <p>공연회차</p>
+                            <p>공연시작시간</p>
+                            <p>잔여석/좌석수</p>
                             <p>공연상태</p>
-                            <p>수정</p>
                         </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody">
                             <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
                             <p>{{item.title}}</p>
                             <p>{{item.appdate}}</p>
+                            <p>{{item.appdate}}</p>
                             <p>{{item.regdate}}</p>
+                            <p>{{item.count}} 회차</p>
+                            <p>{{item.opentime}}</p>
+                            <p>{{item.seats}}</p>
                             <p>{{item.status}}</p>
-                            <p><button>수정</button></p>
                         </div>
                         <ul class="paging">
                             <li>[이전]</li>
@@ -58,12 +66,6 @@
             },
             data() {
                 return {
-                    selectField:'hall',
-                    fieldList:[
-                        {field:'hall',fieldName:'공연장'},
-                        {field:'title',fieldName:'공연명'},
-                        {field:'status',fieldName:'공연상태'}],
-                    search:'',
                     list: [
                         {
                             num: 7,
@@ -123,9 +125,10 @@
             },
             methods:{
               goInsert(){
-              this.$router.push({name:'adminHallInsert'})
+              this.$router.push({name:'adminShowScheduleInsert'})
               },
             }
+            
         }
     </script>
     <style lang="scss" scoped="scoped">
@@ -235,18 +238,13 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /7);
+                            width: calc(100% /10);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             & {
                                 padding-top: 4px;
-                            }
-                            button{
-                                background-color: rgb(250, 250, 250);
-                                border: 1px solid rgba(51, 51, 51, 0.2);
-                                padding: 0 24px;
                             }
                         }
                     }
