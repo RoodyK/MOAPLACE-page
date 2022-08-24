@@ -17,7 +17,7 @@
             :class="{active : nav.isActive}"
             @click="isMatch(index)">
             <RouterLink :to="nav.href" class="nav-link">
-              {{nav.name}}
+              {{ nav.name }}
             </RouterLink>
           </li>
         </ul>
@@ -38,22 +38,22 @@ export default {
         },
         {
           name: '내 관심 공연',
-          href: '/moaplace.com/users/performance',
+          href: '/moaplace.com/users/mypage/performance',
           isActive: false
         },
         {
           name: '예매내역',
-          href: '/moaplace.com/users/ticket/list',
+          href: '/moaplace.com/users/mypage/ticket/list',
           isActive: false
         },
         {
           name: '대관내역',
-          href: '/moaplace.com/users/rental/list',
+          href: '/moaplace.com/users/mypage/rental/list',
           isActive: false
         },
         {
           name: '관람 후기',
-          href: '/moaplace.com/users/review/list',
+          href: '/moaplace.com/users/mypage/review/list',
           isActive: false
         },
         {
@@ -63,12 +63,12 @@ export default {
         },
         {
           name: '내 정보 수정',
-          href: '/moaplace.com/users/info/edit',
+          href: '/moaplace.com/users/mypage/info/edit',
           isActive: false
         },
         {
           name: '회원 탈퇴',
-          href: '/moaplace.com/users/withdrawal',
+          href: '/moaplace.com/users/mypage/withdrawal',
           isActive: false
         }
       ]

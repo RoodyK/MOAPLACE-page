@@ -60,7 +60,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ item.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ item.booking_num }`">
                       <div class="info">
                         <img :src="item.show_thumbnail" class="img1">
                         <div class="txt">
@@ -90,7 +90,7 @@
                   <td class="text-center">{{ item.booking_price }}원</td>
                   <td class="text-center">{{ item.payment_status }}</td>
                   <td class="text-center end">
-                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ item.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ item.booking_num }`">
                       <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
                     </RouterLink>
                   </td>
@@ -127,7 +127,7 @@
         <div v-show="!bkExist" class="borderbox">
           <span class="brown">최근 예매내역이 존재하지 않습니다.</span>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@ export default {
 
     async getList() { // 기간에 해당되는 내역 출력
       try {
-        await axios.get('/moaplace.com/users/ticket/list/' 
+        await axios.get('/moaplace.com/users/mypage/ticket/list/' 
           + this.$store.state.mypage.member.num + '/'
           + this.startdate + '/'
           + this.enddate + '/'
@@ -208,18 +208,29 @@ export default {
               this.endPage = resp.data.endPage;
               this.pageCnt = resp.data.pageCnt;
 
-              // 예매일, 공연일 yyyy-mm-dd 형식으로 변환해서 저장
               for(let i = 0 ; i < this.list.length ; i++) {
+
+                // 예매일, 공연일 yyyy-mm-dd 형식으로 변환해서 저장
                 var regdate = new Date(this.list[i].regdate);
                 this.list[i].regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
                 var schedule_date = new Date(this.list[i].schedule_date);
                 this.list[i].schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+                
+                // 결제금액 천단위 콤마 정규식으로 저장
+                var price = this.list[i].booking_price;
+                this.list[i].booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+                // 썸네일 Blob 변환해서 저장 (맞는건지모르겠음 확인필요)
+                var bytes, blob;
+                bytes = new Uint8Array(this.list[i].show_thumbnail.blob);
+                blob = new Blob([bytes], {type:'image'});
+                this.list[i].show_thumbnail = URL.createObjectURL(blob);
               }
 
             }
 
           } else {
-            alert('에러남');
+            alert('ticket list 에러');
           }
 
         }.bind(this));
