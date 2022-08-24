@@ -104,7 +104,7 @@ export default {
             ]
           },
           {
-            name: '게시판 관리',
+            name: '게시판관리',
             href: '/moaplace.com/moaplace/news/list',
             isActive: false,
             subMenu:[
