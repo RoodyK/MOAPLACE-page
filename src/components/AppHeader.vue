@@ -62,6 +62,43 @@
 
 export default {
   name: 'AppHeader',
+  created() {
+    if(this.$store.state.login.isLogin) {
+        this.topMenu = [
+            {
+                name: 'HOME',
+                href: '/moaplace.com',
+            },
+            {
+                name: 'LOGOUT',
+                href: '/moaplace.com/users/logout',
+            },
+            {
+                name: 'MYPAGE',
+                href: '/moaplace.com/users/mypage',
+            },
+        ]
+    }else {
+        this.topMenu = [
+            {
+                name: 'HOME',
+                href: '/moaplace.com',
+            },
+            {
+                name: 'LOGIN',
+                href: '/moaplace.com/users/login',
+            },
+            {
+                name: 'MYPAGE',
+                href: '/moaplace.com/users/mypage',
+            },
+            {
+                name: 'JOIN',
+                href: '/moaplace.com/users/join/same',
+            },
+        ]
+    }
+  },
   data(){
     return{
         logo: 'logo-white',
@@ -107,24 +144,7 @@ export default {
                 ]
             }
         ],
-        topMenu:[
-            {
-                name: 'HOME',
-                href: '/moaplace.com',
-            },
-            {
-                name: 'LOGIN',
-                href: '/moaplace.com/users/login',
-            },
-            {
-                name: 'MYPAGE',
-                href: '/moaplace.com/users/mypage',
-            },
-            {
-                name: 'JOIN',
-                href: '/moaplace.com/users/join/same',
-            },
-        ]
+        topMenu: []
     }    
   },
   mounted(){

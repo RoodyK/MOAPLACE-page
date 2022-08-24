@@ -33,7 +33,7 @@
 
       <div class="kakao-login">
         
-        <button>
+        <button type="button" @click="local()">
           <div class="img"></div>
           <p>Kakao 로그인</p>
         </button>
@@ -86,7 +86,10 @@ export default {
     }
   },
   methods: {
-    isLogin() {
+    local() {
+      console.log(localStorage.getItem("access_token"))
+    },
+    async isLogin() {
       if(this.loginId == null || this.loginId == "") {
         alert("아이디를 입력하세요.");
         document.querySelector("#id").focus();
