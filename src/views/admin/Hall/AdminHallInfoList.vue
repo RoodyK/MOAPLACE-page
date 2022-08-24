@@ -27,13 +27,13 @@
                             <p>공연상태</p>
                             <p>수정</p>
                         </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody">
+                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="viewDetail(item.num)">
                             <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
                             <p>{{item.title}}</p>
-                            <p>{{item.appdate}}</p>
-                            <p>{{item.regdate}}</p>
-                            <p>{{item.status}}</p>
+                            <p>{{item.startDate}}</p>
+                            <p>{{item.endDate}}</p>
+                            <p>{{item.status=='Y'?'진행중':'종료'}}</p>
                             <p><button>수정</button></p>
                         </div>
                         <ul class="paging">
@@ -52,6 +52,7 @@
 </template>
     <script>
         import SideMenu from '@/components/admin/SideMenu.vue'
+        import axios from '@/axios/axios.js';
         export default {
             components: {
                 SideMenu
@@ -64,70 +65,36 @@
                         {field:'title',fieldName:'공연명'},
                         {field:'status',fieldName:'공연상태'}],
                     search:'',
-                    list: [
-                        {
-                            num: 7,
-                            hall: '공연장1',
-                            title: '오늘메뉴',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 1,
-                            opentime: '13:30',
-                            seats: '77/120',
-                            grade: 15
-                        }, {
-                            num: 8,
-                            hall: '공연장1',
-                            title: '치킨텐더',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 2,
-                            opentime: '13:30',
-                            seats: '20/120',
-                            grade: 15
-                        }, {
-                            num: 2,
-                            hall: '공연장1',
-                            title: '꿔바로우',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 2,
-                            seats: '77/120',
-                        }, {
-                            num: 0,
-                            hall: '공연장1',
-                            title: '운동은',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
-                        }, {
-                            num: 1,
-                            hall: '공연장1',
-                            title: '언제하지',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
-                        }
-                    ]
+                    list: []
                 }
             },
+            mounted(){
+              this.viewList();
+                
+            },
             methods:{
+
               goInsert(){
-              this.$router.push({name:'adminHallInsert'})
+
+                this.$router.push({name:'adminHallInsert'})
+
               },
+
+              viewDetail(num){
+
+                this.$router.push({name:'adminHallDetail',params:{showNum:num}});
+              },
+
+              viewList(){
+
+                axios.get('/moaplace.com/admin/show/list').
+                then(function(resp){
+                  this.list=resp.data.list;
+                }.bind(this))
+              }
             }
         }
-    </script>
+</script>
     <style lang="scss" scoped="scoped">
         @import "@/scss/common.scss";
         nav {
@@ -222,7 +189,7 @@
                             color: #fff;
                         }
                         &.tbody {
-                            padding: 24px 0;
+                            padding: 16px 0;
                             border-bottom: 1px solid rgba($black, 0.2);
                             cursor: pointer;
                             &:hover {
@@ -232,6 +199,11 @@
                                 border: 1px solid #333;
                                 padding: 4px;
                             }
+                            p{
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
                         }
                         & > p,
                         div {
@@ -240,13 +212,14 @@
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
+                            
                             & {
                                 padding-top: 4px;
                             }
                             button{
                                 background-color: rgb(250, 250, 250);
                                 border: 1px solid rgba(51, 51, 51, 0.2);
-                                padding: 0 24px;
+                                padding: 5px 20px;
                             }
                         }
                     }
