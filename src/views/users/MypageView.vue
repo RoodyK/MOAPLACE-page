@@ -5,103 +5,121 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="마이페이지"/>
+      <MySideMenu category="마이페이지" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">최근 예매내역</span>
-            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">더보기+</button>
+            <button class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'myticketlist' })">더보기+</button>
           </div>
-          <div>
+          <div v-show="bkExist">
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
                   <th class="col col-md-1">예매번호</th>
                   <th class="col col-md-2">공연정보</th>
                   <th class="col col-md-1">결제금액</th>
-                  <th class="col col-md-1 end">결제상태</th>
+                  <th class="col col-md-1">결제상태</th>
+                  <th class="col col-md-1 end">상세보기</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
                 <tr>
                   <td>
                     <div class="text-center">
-                      <span>220807-0000-0001</span>
+                      <span>{{ bkDto.booking_num }}</span>
                       <br>
-                      <span class="brown">(2022.08.07)</span>
+                      <span class="brown">({{ bkDto.regdate }})</span>
                     </div>
                   </td>
                   <td>
-                    <a href="">
+                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ bkDto.booking_num }`">
                       <div class="info">
-                        <div class="img1"></div>
+                        <img :src="bkDto.show_thumbnail" class="img1">
                         <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
+                          <p class="fs-5 fw-bold">{{ bkDto.show_name }}</p>
                           <table class="subtable">
                             <tr>
                               <th>장소</th>
-                              <td>공연장1</td>
+                              <td>{{ bkDto.hall_name }}</td>
                             </tr>
                             <tr>
                               <th>날짜</th>
-                              <td>2022.08.09</td>
+                              <td>{{ bkDto.schedule_date }}</td>
                             </tr>
                             <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
+                              <th>시간</th>
+                              <td>{{ bkDto.schedule_time }}</td>
                             </tr>
                             <tr>
                               <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
+                              <td>{{ bkDto.booking_seat }}</td>
                             </tr>
                           </table>
                         </div>
                       </div>
-                    </a>
+                    </RouterLink>
                   </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center end">입금완료</td>
+                  <td class="text-center">{{ bkDto.booking_price }}원</td>
+                  <td class="text-center">{{ bkDto.payment_status }}</td>
+                  <td class="text-center end">
+                    <RouterLink :to="`/moaplace.com/users/ticket/detail/${ bkDto.booking_num }`">
+                      <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                    </RouterLink>
+                  </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-show="!bkExist" class="borderbox">
+            <span class="brown">최근 예매내역이 존재하지 않습니다.</span>
           </div>
         </div>
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">최근 대관신청내역</span>
-            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">더보기+</button>
+            <button class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'myrentallist' })">더보기+</button>
           </div>
-          <div>
+          <div v-if="rtExist">
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
                   <th class="col col-md-1">신청일자</th>
                   <th class="col col-md-2">공연장</th>
-                  <th class="col col-md-1 end">진행상태</th>
+                  <th class="col col-md-1">진행상태</th>
+                  <th class="col col-md-1 end">상세보기</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
                 <tr>
                   <td>
                     <div class="text-center">
-                      <span>2022-08-09</span>
+                      <span>{{ rtDto.regdate }}</span>
                     </div>
                   </td>
                   <td>
-                    <a href="">
+                    <RouterLink :to="`/moaplace.com/users/rental/detail/${ rtDto.rental_num }`">
                       <div class="info">
                         <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <p>2022.08.09 12:00 ~ 14:00</p>
+                          <p class="fs-5 fw-bold">{{ rtDto.hall_name }}</p>
+                          <p>{{ rtDto.rental_date }} / {{ rtDto.rental_time }}</p>
                         </div>
                       </div>
-                    </a>
+                    </RouterLink>
                   </td>
-                  <td class="text-center end">신청완료</td>
+                  <td class="text-center">{{ rtDto.rental_state }}</td>
+                  <td class="text-center end">
+                    <RouterLink :to="`/moaplace.com/users/rental/detail/${ rtDto.rental_num }`">
+                      <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                    </RouterLink>
+                  </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div v-else class="borderbox">
+            <span class="brown">최근 대관신청내역이 존재하지 않습니다.</span>
           </div>
         </div>
       </div>
@@ -112,6 +130,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -124,6 +143,101 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+  data(){
+    return {
+
+      member : {}, // 회원정보
+      bkExist : false, // 예매내역 존재여부
+      bkDto : {}, // 최근 예매내역 1건
+      booking : { 
+        href : ''
+      },
+      rtExist : false, // 대관내역 존재여부
+      rkDto : {}, // 최근 대관내역 1건
+      rental : { 
+        href : ''
+      }
+
+    }
+  },
+  computed: {
+  },
+  created(){
+
+    this.member = this.$store.state.mypage.member;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    console.log(this.member);
+
+    // 가장 최근 예매내역, 대관내역 1건씩 조회
+    this.getUserData();
+
+  },
+  mounted(){
+  },
+  methods:{
+
+    async getUserData() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/' + this.$store.state.mypage.member.num
+        ).then(function(resp){
+
+          if(resp.status == 200) {
+
+            this.bkExist = resp.data.bkExist; // 예매내역 존재여부
+            if(this.bkExist) {
+              this.bkDto = resp.data.bkDto; // 가장 최근 예매내역
+              
+              // 예매일 yyyy-mm-dd 형식으로 변환해서 저장
+              var bkRegdate = new Date(this.bkDto.regdate);
+              this.bkDto.regdate = bkRegdate.getFullYear() + "-" + ("0" + (bkRegdate.getMonth() + 1)).slice(-2) + "-" + ("0" + bkRegdate.getDate()).slice(-2);
+              
+              // 공연일 yyyy-mm-dd 형식으로 변환해서 저장
+              var schedule_date = new Date(this.bkDto.schedule_date);
+              this.bkDto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+              
+              // 결제금액 천단위 콤마 정규식으로 저장
+              var price = this.bkDto.booking_price;
+              this.bkDto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+              // 썸네일 Blob 변환해서 저장 (수정중)
+              var bytes, blob;
+              bytes = new Uint8Array(this.bkDto.show_thumbnail.blob);
+              blob = new Blob([bytes], {type:'image'});
+              this.bkDto.show_thumbnail = URL.createObjectURL(blob);
+            }
+
+            this.rtExist = resp.data.rtExist; // 대관내역 존재여부
+            if(this.rtExist) {
+              this.rtDto = resp.data.rtDto; // 가장 최근 대관내역
+
+              // 대관신청일 형식 변환해서 저장
+              var rtRegdate = new Date(this.rtDto.regdate);
+              this.rtDto.regdate = rtRegdate.getFullYear() + "-" + ("0" + (rtRegdate.getMonth() + 1)).slice(-2) + "-" + ("0" + rtRegdate.getDate()).slice(-2);
+
+              // 대관일 형식 변환해서 저장
+              var rental_date = new Date(this.rtDto.rental_date);
+              this.rtDto.rental_date = rental_date.getFullYear() + "-" + ("0" + (rental_date.getMonth() + 1)).slice(-2) + "-" + ("0" + rental_date.getDate()).slice(-2);
+
+            }
+            
+            console.log(this.bkExist,this.rtExist);
+            console.log(this.bkDto);
+            console.log(this.rtDto);
+
+          } else {
+            alert('에러 핸들링');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
   }
 }
 </script>
@@ -152,6 +266,9 @@ export default {
   .brown {
     color: $brown;
   }
+  .orange {
+    color: #D67747;
+  }
   #box {
     display: flex;
     justify-content: center;
@@ -178,6 +295,16 @@ export default {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
+      }
+      .borderbox {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        > span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 50px;
+        }
       }
       .datenav {
         display: flex;
@@ -228,12 +355,6 @@ export default {
               height: 150px;
               margin-right: 20px;
             }
-            .img2 {
-              background-color: gray;
-              width: 55px;
-              height: 75px;
-              margin-right: 20px;
-            }
             .txt {
               p {
                 margin-bottom: 10px;
@@ -271,24 +392,6 @@ export default {
       }
       .datenav {
         background-color: rgb(249, 249, 249);
-      }
-    }
-  }
-  #mypaging {
-    display: flex;
-    justify-content: center;
-    .select {
-      font-weight: bold;
-    }
-    li {
-      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-      }
-      a:hover {
-        color: $brown;
-        opacity: 50%;
       }
     }
   }

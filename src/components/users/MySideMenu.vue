@@ -1,12 +1,12 @@
 <template>
     <div class="rounded left">
       <div class="top fs-6">
-        <span class="fs-4 brown">사용자</span>님, 안녕하세요.
+        <span class="fs-4 brown">{{ this.name }}</span>님, 안녕하세요.
       </div>
       <div class="mid fs-6 fw-bold">
         <p>현재 보유 적립금</p>
         <p class="text-end">
-          <span class="fs-3 text-end">5,000</span>원
+          <span class="fs-3 text-end">{{ this.point }}</span>원
         </p>
       </div>
       <div class="bot">
@@ -75,7 +75,9 @@ export default {
     }
   },
   props:{
-    category: String
+    category: String,
+    name: String,
+    point: String
   },
   created(){
     for(let i = 0; i < this.navigations.length; i++){
@@ -83,6 +85,8 @@ export default {
         this.navigations[i].isActive = true;
       }
     }
+  },
+  mounted(){
   },
   methods:{
     isMatch(idx){
