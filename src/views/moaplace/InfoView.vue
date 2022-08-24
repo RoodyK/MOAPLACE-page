@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa"  title="공간소개"/>
+    <SideVisual menu="MOA PLACE" img="moa" title="공간소개" />
     <div class="m00 m10 m11">
       <div class="title_inner_wrap">
         <p class="main_tit">MOAPLACE INTRODUCTION</p>
@@ -353,6 +353,9 @@ li {
 
 .m11 .con2 ul {
   overflow: hidden;
+  margin: 0 auto;
+  display: table;
+  padding: 0;
 }
 
 .m11 .con2 ul li .box {
@@ -391,6 +394,7 @@ li {
   width: 355px;
   height: 430px;
 }
+
 ul li {
   list-style: none;
   text-align: left;
@@ -493,6 +497,9 @@ img {
 }
 .m11 .con3 .table1 .td {
   padding: 40px 0;
+  ul {
+    padding: 0;
+  }
 }
 </style> 
 
