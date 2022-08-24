@@ -231,15 +231,13 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import TextEditor from '@/components/TextEditor.vue'
 import axios from '@/axios/axios.js'
 
   export default {
     components:{
         AppHeader,
         AppFooter,
-        SideVisual,
-        TextEditor
+        SideVisual
     },
     data(){
       return{
@@ -457,7 +455,6 @@ import axios from '@/axios/axios.js'
           
           formData.append("data", JSON.stringify(this.insertForm));
           formData.append("file", this.file);
-
           axios.post('/moaplace.com/rental/insert', formData,{
             headers:{
               "Content-Type" : "multipart/form-data",

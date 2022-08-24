@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import rental from '@/store/rental'
+import rental from '@/store/rental.js'
 
 export default createStore({
   state: {
