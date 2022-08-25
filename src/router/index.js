@@ -274,7 +274,7 @@ const routes = [
     component: MyRentalListView
   },
   {
-    path: '/moaplace.com/users/mypage/rental/detail',
+    path: '/moaplace.com/users/mypage/rental/detail/:rental_num',
     name: 'myrentaldetail',
     component: MyRentalDetailView
   },

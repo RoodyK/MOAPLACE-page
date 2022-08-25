@@ -57,14 +57,14 @@
                     </div>
                   </td>
                   <td>
-                    <a href="">
+                    <RouterLink :to="`/moaplace.com/users/mypage/rental/detail/${ item.rental_num }`">
                       <div class="info">
                         <div class="txt">
                           <p class="fs-5 fw-bold">{{ item.hall_name }}</p>
                           <p>{{ item.rental_date }} / {{ item.rental_time }}</p>
                         </div>
                       </div>
-                    </a>
+                    </RouterLink>
                   </td>
                   <td class="text-center">{{ item.rental_state }}</td>
                   <td class="text-center end">
