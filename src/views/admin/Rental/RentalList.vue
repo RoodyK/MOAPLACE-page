@@ -38,7 +38,7 @@
             <RouterLink
               v-for="(item,index) in list"
               :key="item.num"
-              :to="`/moaplace.com/${item.rental_num}`"
+              :to="`/moaplace.com/admin/rental/detail/${item.rental_num}`"
               class="t-row tbody">
                 <p>{{item.rental_num}}</p>
                 <p>{{item.hall_name}}</p>
@@ -98,7 +98,7 @@ export default {
         sort : "rental_name",
         keyword : "",
         isSearch : false,
-        states : ['신청완료','서류검토','신청거절', '입금대기', '예약취소', '사용완료'],
+        states : ['신청완료','서류심사','신청거절', '입금대기', '예약취소', '사용완료'],
         pageNumbers : []
       }
     },
@@ -122,7 +122,7 @@ export default {
       },
       getList(){
         axios
-          .get('/moaplace.com/rental/list')
+          .get('/moaplace.com/admin/rental/list')
           .then(function(resp){
             this.list = resp.data.list;    
             this.pageUtil = resp.data.pageUtil;
@@ -137,7 +137,7 @@ export default {
         if(this.keyword !== null && this.keyword !== ""){
           this.isSearch = true;
           axios
-            .get(`/moaplace.com/rental/list/${this.sort}/${this.keyword}`)
+            .get(`/moaplace.com/admin/rental/list/${this.sort}/${this.keyword}`)
             .then(function(resp){
               this.list = resp.data.list;    
               this.pageUtil = resp.data.pageUtil;
@@ -157,8 +157,8 @@ export default {
       movePage(pagenum){
 
         const url = this.isSearch
-          ? `/moaplace.com/rental/list/${pagenum}/${this.sort}/${this.keyword}`
-          : `/moaplace.com/rental/list/${pagenum}`;
+          ? `/moaplace.com/admin/rental/list/${pagenum}/${this.sort}/${this.keyword}`
+          : `/moaplace.com/admin/rental/list/${pagenum}`;
         axios
           .get( url )
           .then(function(resp){
@@ -203,7 +203,7 @@ export default {
         let state = this.list[e].rental_state;
         let title = this.list[e].rental_title;
         axios
-          .get(`/moaplace.com/rental/update/${num}/${state}`)
+          .get(`/moaplace.com/admin/rental/update/${num}/${state}`)
           .then(function(resp){
             if(resp.data == 'success'){
               alert( "공연명 : '" +title + "'의 진행상태 변경을 완료했습니다.");    
@@ -232,6 +232,9 @@ export default {
         a{
             text-decoration: none;
             color: $black;
+        }
+        a:hover{
+          color: $black;
         }
         // 관리자 페이지 레이아웃 관련 시작------------------
         #wrap {

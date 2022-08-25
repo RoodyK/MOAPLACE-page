@@ -213,7 +213,7 @@
                 getMonthSchedule(){
                     this.schedules = [];
                     axios
-                        .get(`/moaplace.com/rental/calendar/${this.currentYear}/${this.currentMonth}/${this.endOfDay}`)
+                        .get(`/moaplace.com/admin/rental/calendar/${this.currentYear}/${this.currentMonth}/${this.endOfDay}`)
                         .then(function(resp){
                             this.schedules = resp.data;
                             console.log(this.schedules);
