@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
+import LogoutView from '@/views/login/LogoutView.vue'
 import SameView from '../views/join/OfTheSameView.vue'
 import JoinMainView from '../views/join/JoinMainView.vue'
 import JoinSuccessView from '@/views/join/JoinSuccessView.vue'
@@ -16,9 +18,9 @@ import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
 import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
-import showList from '@/views/show/ShowListView.vue'
+import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
-import showReview from '@/views/show/ShowReviewView.vue'
+import reviewList from '@/views/show/ReviewListView.vue'
 import showRefund from '@/views/show/ShowRefundView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
@@ -68,8 +70,9 @@ import QNAInsertView from '@/views/board/QNAInsertView.vue'
 import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
+
 const routes = [
-  //
+
   {
     path: '/moaplace.com/booking/seat',
     name: 'bookinseat',
@@ -92,32 +95,37 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/moaplace.com/join/same',
+    path: '/moaplace.com/users/logout',
+    name: 'logout',
+    component: LogoutView
+  },
+  {
+    path: '/moaplace.com/users/join/same',
     name: 'same',
     component: SameView
   },
   {
-    path: '/moaplace.com/join/main',
+    path: '/moaplace.com/users/join/main',
     name: 'join',
     component: JoinMainView
   },
   {
-    path: '/moaplace.com/join/success',
+    path: '/moaplace.com/users/join/success',
     name: 'joinSuccess',
     component: JoinSuccessView
   },
   {
-    path: '/moaplace.com/login/findId',
+    path: '/moaplace.com/users/login/findId',
     name: 'findId',
     component: FindIdView
   },
   {
-    path: '/moaplace.com/login/findPwd',
+    path: '/moaplace.com/users/login/findPwd',
     name: 'findPwd',
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
@@ -149,7 +157,7 @@ const routes = [
     component: moaplaceNaviView
   },
   {
-    path: '/moaplace.com/moaplace/news',
+    path: '/moaplace.com/moaplace/news/list',
     name: 'moaplaceMoaNews',
     component: moaplaceMoaNews
   },
@@ -171,22 +179,22 @@ const routes = [
     component: moaCalender
   },
   {
-    path: '/moaplace.com/showlist',
-    name: 'showlist',
-    component: showList
+    path: '/moaplace.com/preview',
+    name: 'preview',
+    component: preview
   },
   {
-    path: '/moaplace.com/showdetail',
+    path: '/moaplace.com/show/showdetail',
     name: 'showdetail',
     component: showDetail
   },
   {
-    path: '/moaplace.com/showreview',
-    name: 'showreview',
-    component: showReview
+    path: '/moaplace.com/show/review/list',
+    name: 'reviewlist',
+    component: reviewList
   },
   {
-    path: '/moaplace.com/showrefund',
+    path: '/moaplace.com/show/showrefund',
     name: 'showrefund',
     component: showRefund
   },
@@ -252,52 +260,52 @@ const routes = [
     component: MypageView
   },
   {
-    path: '/moaplace.com/users/performance',
+    path: '/moaplace.com/users/mypage/performance',
     name: 'myperformance',
     component: MyPerformanceView
   },
   {
-    path: '/moaplace.com/users/ticket/list',
+    path: '/moaplace.com/users/mypage/ticket/list',
     name: 'myticketlist',
     component: MyTicketListView
   },
   {
-    path: '/moaplace.com/users/ticket/detail',
+    path: '/moaplace.com/users/mypage/ticket/detail/:booking_num',
     name: 'myticketdetail',
     component: MyTicketDetailView
   },
   {
-    path: '/moaplace.com/users/ticket/cancle',
+    path: '/moaplace.com/users/mypage/ticket/cancle/:booking_num',
     name: 'myticketcancle',
     component: MyTicketCancleView
   },
   {
-    path: '/moaplace.com/users/rental/list',
+    path: '/moaplace.com/users/mypage/rental/list',
     name: 'myrentallist',
     component: MyRentalListView
   },
   {
-    path: '/moaplace.com/users/rental/detail',
+    path: '/moaplace.com/users/mypage/rental/detail/:rental_num',
     name: 'myrentaldetail',
     component: MyRentalDetailView
   },
   {
-    path: '/moaplace.com/users/review/list',
+    path: '/moaplace.com/users/mypage/review/list',
     name: 'myreviewlist',
     component: MyReviewListView
   },
   {
-    path: '/moaplace.com/users/qna/list',
+    path: '/moaplace.com/users/mypage/qna/list',
     name: 'myqnalist',
     component: MyQNAListView
   },
   {
-    path: '/moaplace.com/users/info/edit',
+    path: '/moaplace.com/users/mypage/info/edit',
     name: 'myinfoedit',
     component: MyInfoEditView
   },
   {
-    path: '/moaplace.com/users/withdrawal',
+    path: '/moaplace.com/users/mypage/withdrawal',
     name: 'withdrawal',
     component: WithdrawalView
   },
@@ -397,17 +405,17 @@ const routes = [
     component: AdminTicketDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/list',
+    path: '/moaplace.com/admin/news/list',
     name: 'adminNewsList',
     component: AdminNewsList
   },
   {
-    path: '/moaplace.com/moaplace/news/detail',
+    path: '/moaplace.com/admin/news/detail',
     name: 'adminNewsDetail',
     component: AdminNewsDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/insert',
+    path: '/moaplace.com/admin/news/insert',
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
@@ -446,4 +454,18 @@ const router = createRouter({
   },
   routes
 })
+
+router.beforeEach( (to, from, next) => {
+  console.log(to);
+  if(to.fullPath.startsWith("/moaplace.com/admin")) {
+    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+      next('/moaplace.com')
+    }
+  }
+  console.log(from);
+  if(store.state.login.userInfo == null){
+    next()
+  }
+})
+
 export default router
