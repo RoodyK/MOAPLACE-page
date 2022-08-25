@@ -8,7 +8,7 @@
 export default {
   name: 'TextEditor',
   props:{
-    height: Number,
+    height: String,
   },
   data(){
     return{
