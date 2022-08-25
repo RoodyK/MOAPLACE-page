@@ -77,7 +77,13 @@ export default {
                 name: 'MYPAGE',
                 href: '/moaplace.com/users/mypage',
             },
-        ]
+        ];
+        if(this.$store.state.login.userRoles == 'ROLE_ADMIN') {
+            this.topMenu.push({
+                name: 'ADMIN',
+                href: '/moaplace.com/admin/rental/list'
+            })
+        }
     }else {
         this.topMenu = [
             {
@@ -87,10 +93,6 @@ export default {
             {
                 name: 'LOGIN',
                 href: '/moaplace.com/users/login',
-            },
-            {
-                name: 'MYPAGE',
-                href: '/moaplace.com/users/mypage',
             },
             {
                 name: 'JOIN',
