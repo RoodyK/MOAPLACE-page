@@ -5,28 +5,36 @@
             <div class="inner">
                 <h2 class="title">공연정보</h2>
                 <div class="list-top">
-                    <select v-model="selectField">
-                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                  <div class="select-list">
+                    <label for="status">공연상태</label>
+                    <select v-model="status">
+                        <option v-for="(item,index) in statusList" :key="index" :value="item.status" id="status">{{item.statusName}}</option>
                     </select>
-                    <input type="text" v-model="search">
+                  </div>
+                    <div class="search-list">
+                      <select v-model="selectField">
+                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                      </select>
+                      <input type="text" v-model="search">
                         <button>
                             검색
                             <i class="material-icons">
                                 search
                             </i>
                         </button>
-                        <button class="insertBtn" @click='goInsert'>공연등록</button>
+                      <button class="insertBtn" @click='goInsert'>공연등록</button>
                     </div>
-                    <div class="list">
-                        <div class="t-row thead">
-                            <p>공연번호</p>
-                            <p>공연장</p>
-                            <p>공연명</p>
-                            <p>공연시작일</p>
-                            <p>공연종료일</p>
-                            <p>공연상태</p>
-                            <p>수정</p>
-                        </div>
+                </div>
+                  <div class="list">
+                      <div class="t-row thead">
+                          <p>공연번호</p>
+                          <p>공연장</p>
+                          <p>공연명</p>
+                          <p>공연시작일</p>
+                          <p>공연종료일</p>
+                          <p>공연상태</p>
+                          <p>수정</p>
+                  </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody" @click="viewDetail(item.num)">
                             <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
@@ -61,12 +69,22 @@
             },
             data() {
                 return {
-                    selectField:'hall',
+                    
+                    status: 'all',
+                    statusList:[
+                        {status: 'all', statusName: '전체'},
+                        {status: 'Y', statusName: '진행중'},
+                        {status: 'N', statusName: '종료'}
+                    ],
+
+                    selectField: 'title',
                     fieldList:[
-                        {field:'hall',fieldName:'공연장'},
-                        {field:'title',fieldName:'공연명'},
-                        {field:'status',fieldName:'공연상태'}],
-                    search:'',
+                        {field: 'hall',fieldName:'공연장'},
+                        {field: 'title',fieldName:'공연명'},
+                        {field: 'showNum',fieldName:'공연번호'}
+                    ],
+                    
+                    search:null,
                     pageNum:1,
                     list: [],
                     pageInfo:[],
@@ -139,7 +157,7 @@
 
               viewList(){
 
-                axios.get('/moaplace.com/admin/show/list/'+this.pageNum).
+                axios.get('/moaplace.com/admin/show/list/' + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
@@ -188,51 +206,77 @@
                 // 관리자 페이지 레이아웃 관련 끝------------------
                 .list-top {
                     width: 100%;
-                    text-align: right;
+
                     margin-bottom: 16px;
                     position: relative;
                     font-size: 14px;
                     display: flex;
-                    justify-content: flex-end;
-                    button,
-                    select {
-                        border: none;
-                    }
-                    select {
-                        position: absolute;
-                        top: 8px;
-                        right: 288px;
-                        border-right: 1px solid #ddd;
-                        &:focus{
-                            outline: none;
-                        }
-                    }
-                    button {
-                        background: transparent;
-                        font-size: 0;
-                        position: absolute;
-                        top: 4px;
-                        right: 104px;
-                        color: rgba($black, 0.9);
-                    }
-                    input {
-                        width: 280px;
-                        box-sizing: border-box;
-                        height: 32px;
-                        padding: 4px 32px 4px 90px;
-                        &:focus{
-                            outline-color: $black;
-                        }
-                    }
-                    .insertBtn {
-                        background-color: $black;
-                        color: white;
+                    justify-content: space-between;
+                    .select-list{
+                      
+                      display: flex;
+                      justify-content: flex-start;
+                      label{
+                        display: flex;
+                        padding: 4px 0 0 8px;
+                        font-weight: bold;
                         font-size: 16px;
-                        width: 80px;
-                        height: 32px;
-                        position: unset;
-                        margin-left: 16px;
+                      }
+                      select{
+                        display: flex;
+                        justify-content: flex-start;
+                        margin-left:16px;
+                        padding: 0 8px;
+
+                      }
                     }
+                   .search-list{
+                      
+                      display: flex;
+                      flex-direction: left;
+                      
+                      button,
+                      select {
+                          border: none;
+                      }
+                      select {
+                          position: absolute;
+                          top: 8px;
+                          right: 304px;
+                          border-right: 1px solid #ddd;
+                          padding: 0 8px 0 0;
+                          &:focus{
+                              outline: none;
+                          }
+                      }
+
+                      button {
+                          background: transparent;
+                          font-size: 0;
+                          position: absolute;
+                          top: 4px;
+                          right: 128px;
+                          color: rgba($black, 0.9);
+                      }
+                      input {
+                          width: 280px;
+                          box-sizing: border-box;
+                          height: 32px;
+                          padding: 4px 32px 4px 90px;
+                          &:focus{
+                              outline-color: $black;
+                          }
+                      }
+                      .insertBtn {
+                          background-color: $black;
+                          color: white;
+                          font-size: 16px;
+                          width: 104px;
+                          height: 32px;
+                          position: unset;
+                          margin-left: 16px;
+                      }
+                  }
                 }
                 .list {
                     text-align: center;
