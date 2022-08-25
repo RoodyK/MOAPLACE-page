@@ -65,11 +65,7 @@
             </div>
             <ul class="paging">
               <li>[이전]</li>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
+              <li v-for="index in paginationList" :key="index">{{ index }}</li>
               <li>[다음]</li>
             </ul>
           </div>
@@ -116,9 +112,14 @@ export default {
           notice_regdate: "",
         },
       ],
+      pageNum: 1,
+      // 확인
       startPageNum: "",
       endPageNum: "",
-      pageNum: "",
+      totalRowCount: "",
+      startRow: "",
+      endRow: "",
+      totalPageCount: "",
     };
   },
   created() {
@@ -131,13 +132,21 @@ export default {
       // alert(this.member_num);
       axios
         .get(
-          `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}`
+          `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
         )
         .then(
           function (resp) {
             console.log(resp.data);
             this.list = resp.data.list;
+            this.startPageNum = resp.data.startPageNum;
+            this.endPageNum = resp.data.endPageNum;
+            this.totalPageCount = resp.data.totalPageCount;
+            this.totalRowCount = resp.data.totalRowCount;
+            this.startRow = resp.data.startRow;
+            this.endRow = resp.data.endRow;
             console.log("리스트 불러오기 성공");
+            // alert("this.endPageNum:" + this.endPageNum);
+            alert("this.totalRowCount:" + this.totalPageCount);
           }.bind(this)
         );
     },
@@ -152,7 +161,8 @@ export default {
       } else {
         axios
           .get(
-            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}/${this.member_num}`
+            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}
+                             /${this.keyword}/${this.member_num}/${this.pageNum}`
           )
           .then(
             function (resp) {
@@ -162,6 +172,15 @@ export default {
             }.bind(this)
           );
       }
+    },
+  },
+  computed: {
+    paginationList() {
+      let pageList = [];
+      for (let num = this.startPageNum; num <= this.endPageNum; num++) {
+        pageList.push(num);
+      }
+      return pageList;
     },
   },
 };
