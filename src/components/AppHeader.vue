@@ -62,6 +62,45 @@
 
 export default {
   name: 'AppHeader',
+  created() {
+    if(this.$store.state.login.isLogin) {
+        this.topMenu = [
+            {
+                name: 'HOME',
+                href: '/moaplace.com',
+            },
+            {
+                name: 'LOGOUT',
+                href: '/moaplace.com/users/logout',
+            },
+            {
+                name: 'MYPAGE',
+                href: '/moaplace.com/users/mypage',
+            },
+        ];
+        if(this.$store.state.login.userRoles == 'ROLE_ADMIN') {
+            this.topMenu.push({
+                name: 'ADMIN',
+                href: '/moaplace.com/admin/rental/list'
+            })
+        }
+    }else {
+        this.topMenu = [
+            {
+                name: 'HOME',
+                href: '/moaplace.com',
+            },
+            {
+                name: 'LOGIN',
+                href: '/moaplace.com/users/login',
+            },
+            {
+                name: 'JOIN',
+                href: '/moaplace.com/users/join/same',
+            },
+        ]
+    }
+  },
   data(){
     return{
         logo: 'logo-white',
@@ -82,9 +121,9 @@ export default {
             },
             {
                 name: '공연/예매',
-                href: '/moaplace.com/showlist',
+                href: '/moaplace.com/preview',
                 submenus:[
-                    {name: '공연목록', href: '/moaplace.com/showlist'},
+                    {name: '공연목록', href: '/moaplace.com/preview'},
                     {name: '월간일정 ', href: '/moaplace.com/calendar'},
                 ]
             },
@@ -98,33 +137,16 @@ export default {
             },
             {
                 name: '고객센터',
-                href: '/moaplace.com/boardMain',
+                href: '/moaplace.com/board/main',
                 submenus:[
-                    {name: 'FAQ', href: '/moaplace.com/faq'},
-                    {name: '1:1문의', href: '/moaplace.com/qna/list'},
-                    {name: '공연예절', href: '/'},
-                    {name: '멤버십혜택', href: '/'},
+                    {name: 'FAQ', href: '/moaplace.com/board/faq'},
+                    {name: '1:1문의', href: '/moaplace.com/board/qna/list'},
+                    {name: '공연예절', href: '/moaplace.com/board/manner'},
+                    {name: '멤버십혜택', href: '/moaplace.com/board/membership'},
                 ]
             }
         ],
-        topMenu:[
-            {
-                name: 'HOME',
-                href: '/moaplace.com',
-            },
-            {
-                name: 'LOGIN',
-                href: '/moaplace.com/users/login',
-            },
-            {
-                name: 'MYPAGE',
-                href: '/moaplace.com/users/mypage',
-            },
-            {
-                name: 'JOIN',
-                href: '/moaplace.com/join/same',
-            },
-        ]
+        topMenu: []
     }    
   },
   mounted(){

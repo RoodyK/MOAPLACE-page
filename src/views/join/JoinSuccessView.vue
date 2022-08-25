@@ -16,8 +16,8 @@
           <p>회원가입이 완료되었습니다.</p>
           <p>MOA PLACE에 가입하신 것을 환영합니다.</p>
           <div class="btn">
-            <RouterLink to="/">홈으로</RouterLink>
-            <RouterLink to="/">로그인</RouterLink>
+            <RouterLink to="/moaplace.com">홈으로</RouterLink>
+            <RouterLink to="/moaplace.com/users/login">로그인</RouterLink>
           </div>
         </div>
       </div>

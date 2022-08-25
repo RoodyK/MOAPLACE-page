@@ -24,37 +24,40 @@
 
         <div class="headerBox">
           <div class="sortBox">
-            <label>문의구분</label><br>
-            <select>
-              <option value=""> 분류 선택 </option>  
-              <option name="qna_sort" value="공연">공연 문의</option>
-              <option name="qna_sort" value="대관">대관 문의</option>
-              <option name="qna_sort" value="예매">예매 문의</option>
-              <option name="qna_sort" value="관람">관람 문의</option>
-              <option name="qna_sort" value="회원">회원 문의</option>
-              <option name="qna_sort" value="기타">기타 문의</option>
+            <label>구분</label><br>
+            <select v-model.number="detail.sort_num">
+              <option :value="0"> 분류 선택 </option>
+              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+               {{sort.sort_name}} 문의
+              </option>
             </select>
           </div>
 
           <div class="nameBox">
-            <label>작성자</label><br>
-            <input type="text" name="name" value="홍길동">
+            <label>아이디</label><br>
+            <input type="text" name="member_id" v-model="member_id" disabled>
+            <input type="hidden" name="detail.member_num" value="detail.member_num">
           </div>
         </div>
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" name="" value="예매관련 문의입니다"><br>
+          <input type="text" v-model="detail.qna_title"><br>
         </div>
         
         <div class="contentBox">
           <label>내용</label>
-          <textarea>예매 관련 문의입니다.&#10;예매자 이름 홍길동입니다.&#10;답변 부탁드립니다.</textarea>
+          <textarea v-model="detail.qna_content"></textarea>
         </div>
 
+        <div class="titleBox">
+          <label>문의일자</label>
+          <input type="text" v-model="detail.qna_regdate" disabled><br>
+        </div>
+        
         <div class="btnGroup">
-          <button type="submit" @click.prevent="">수정하기</button>
-          <button @click="$router.push({name:'boardMain'})"> 이전으로 </button>
+          <button type="submit" @click.prevent="checkForm()">수정하기</button>
+          <button @click="$router.go(-1)"> 이전으로 </button>
         </div>
       
       </div>
@@ -65,6 +68,119 @@
   </div>
 
 </template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+import axios from '../../axios/axios.js'
+
+export default {
+    components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
+  data() {
+    return {
+      member_id:'admin',
+      sort_list:[], // 구분목록
+      detail:
+      {
+        member_num:0,
+        sort_num:0,
+        sort_name:'',
+        qna_num:0,
+        qna_title:'',
+        qna_content:'',
+        qna_state:'',
+        qna_regdate:''
+      }
+    }
+  },
+  created() {
+    // this.member_num = this.$route.state.member_num;
+    this.sortList(); // 구분목록 불러오기
+
+    console.log(this.$route.params.qna_num);
+    this.qna_num = this.$route.params.qna_num;
+    this.qnaDetail(); // 문의글 상세내용 불러오기
+  },
+  methods: {
+    async sortList() { // 구분목록 불러오기
+      try{
+        await axios.get('/moaplace.com/board/sort/list').then(function(resp){
+          if(resp.data!=null || resp.data!=''){
+            this.sort_list = resp.data;
+
+          } else {
+            alert('구분목록 로딩에 실패하였습니다.');
+          }
+        }.bind(this));
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async qnaDetail() { // 문의글 상세내용 불러오기
+      try { 
+        await axios.get("/moaplace.com/board/qna/detail", {params:
+          {qna_num: this.qna_num}
+        }).then(function(resp){
+
+          if(resp.status == 200) {
+            this.detail = resp.data.detail;
+            console.log(this.detail);
+
+          } else {
+            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+          }
+        }.bind(this));
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    checkForm() { 
+      // 입력 체크
+      if(this.detail.sort_num<1) {
+        alert("문의 구분을 선택하세요.");
+        return;
+      }
+      if(this.detail.qna_title==null || this.detail.qna_title==""){
+        alert("문의 제목을 입력하세요.");
+        return;
+      }
+      if(this.detail.qna_content==null || this.detail.qna_content==""){
+        alert("문의 내용을 입력하세요.");
+        return;
+      } else if (this.detail.qna_content.length<10) {
+        alert("문의 내용은 10자 이상 입력하세요.");
+        return;
+      }
+
+      // 데이터 제출
+      this.qnaUpdate();
+    },
+    qnaUpdate(){ // 데이터 제출
+      axios.post('/moaplace.com/board/qna/update', JSON.stringify(this.detail),{
+        headers: {
+          'Content-Type' : 'application/json'}
+      }).then(function(resp){
+
+        if(resp.data!='fail'){ // 성공하면 리스트로 이동
+          console.log(resp.data);
+          alert('문의글이 수정되었습니다.');
+          this.$router.push({name:'qnaList'});
+
+        } else { // 등록 실패하면 알림창
+          alert('문의글 수정에 실패하였습니다. 다시 시도해주세요.');
+        }
+      }.bind(this));      
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 @import '../../scss/common.scss';
@@ -180,37 +296,3 @@
   }  
 }
 </style>
-
-<script>
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import SideVisual from '@/components/SideVisual.vue'
-
-export default {
-    components: {
-    AppHeader,
-    AppFooter,
-    SideVisual
-  },
-  data() {
-    return {
-      date: new Date()
-    }
-  },
-  computed: {
-    calcDate: function() {
-      let year = this.date.getFullYear();
-      let month = this.date.getMonth()+1;
-      let dt = this.date.getDate();
-
-      if (dt < 10) {
-        dt = '0' + dt;
-      }
-      if (month < 10) {
-        month = '0' + month;
-      }
-      return year +'-'+ month +'-'+ dt;
-    }
-  }
-}
-</script>
