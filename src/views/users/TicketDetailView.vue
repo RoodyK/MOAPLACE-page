@@ -80,9 +80,10 @@
           </div>
         </div>
         <div class="text-center btnmargin">
-          <RouterLink :to="`/moaplace.com/users/mypage/ticket/cancle/${ booking_num }`">
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn">예매취소</button>
+          <RouterLink :to="`/moaplace.com/users/mypage/ticket/cancle/${ booking_num }`" v-show="cancle">
+            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">예매취소</button>
           </RouterLink>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn notcancle" v-show="!cancle" disabled>예매취소</button>
           <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myticketlist' })">목록으로</button>
         </div>
       </div>
@@ -113,6 +114,7 @@ export default {
       member : {}, // 회원정보
       booking_num : 0, // 예매번호
       dto : {}, // 예매내역 상세정보
+      cancle : true, // 예매취소 가능여부
 
     }
   },
@@ -140,6 +142,7 @@ export default {
           if(resp.status == 200) {
 
             this.dto = resp.data.dto;
+            this.cancle = resp.data.cancle;
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
@@ -214,6 +217,10 @@ export default {
         &:hover {
           color: white;
           background: $brown;
+        }
+        &.notcancle {
+          color: #ccc;
+          border-color: #ccc;
         }
       }
       .mybtn2 {

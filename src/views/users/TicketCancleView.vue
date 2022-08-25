@@ -1,11 +1,11 @@
 <template>
 <div>
   <AppHeader/>
-  <SideVisual menu="MOA PLACE" img="moa"/>
+  <SideVisual menu="MOA PLACE" img="mypage"/>
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="예매내역"/>
+      <MySideMenu category="예매내역" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -21,39 +21,39 @@
               <tr>
                 <td>
                   <div class="text-center">
-                    <span>220807-0000-0001</span>
+                    <span>{{ booking_num }}</span>
                     <br>
-                    <span class="brown">(2022.08.07)</span>
+                    <span class="brown">({{ dto.regdate }})</span>
                   </div>
                 </td>
                 <td>
                   <a href="">
                     <div class="info">
                       <div class="txt">
-                        <p class="fs-5 fw-bold">Title</p>
+                        <p class="fs-5 fw-bold">{{ dto.show_name }}</p>
                         <table class="subtable">
                           <tr>
                             <th>장소</th>
-                            <td>공연장1</td>
+                            <td>{{ dto.hall_name }}</td>
                           </tr>
                           <tr>
                             <th>날짜</th>
-                            <td>2022.08.09</td>
+                            <td>{{ dto.schedule_date }}</td>
                           </tr>
                           <tr>
-                            <th>회차</th>
-                            <td>1회차 14:00</td>
+                            <th>시간</th>
+                            <td>{{ dto.schedule_time }}</td>
                           </tr>
                           <tr>
                             <th>좌석</th>
-                            <td>R석 A01,S석 B01,S석 B02</td>
+                            <td>{{ dto.booking_seat }}</td>
                           </tr>
                         </table>
                       </div>
                     </div>
                   </a>
                 </td>
-                <td class="text-center">250,000원</td>
+                <td class="text-center">{{ dto.booking_price }}원</td>
               </tr>
             </tbody>
           </table>
@@ -62,7 +62,7 @@
               <tbody>
                 <tr>
                   <th>총 환불 금액</th>
-                  <td>250,000원</td>
+                  <td>{{ dto.booking_price }}원</td>
                 </tr>
               </tbody>
               
@@ -75,11 +75,11 @@
             </p>
           </div>
           <div class="mytxtform">
-            <span>비밀번호 입력 :</span> <input type="password" class="form-control" >
+            <span>비밀번호 입력 :</span> <input type="password" class="form-control" v-model="pwd">
           </div>
           <div class="text-center btnmargin">
             <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">이전</button>
-            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">예매취소</button>
+            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2" @click.prevent="pwdCheck()">예매취소</button>
           </div>
           <div class="desc">
             <p class="desctitle brown fw-bold">결제수단별 환불 방법</p>
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -127,6 +128,96 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+  data(){
+    return{
+
+      member : {},
+      booking_num : 0,
+      dto : {},
+      pwd : '',
+
+    }
+  },
+  created(){
+
+    this.member = this.$store.state.mypage.member;
+
+    this.booking_num = this.$route.params.booking_num;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+    this.getData();
+
+  },
+  methods:{
+
+    async getData() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/ticket/cancle/'
+          + this.booking_num
+        ).then(function(resp){
+
+          if(resp.status == 200) {
+
+            this.dto = resp.data.dto;
+
+            var regdate = new Date(this.dto.regdate);
+            this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+
+            var schedule_date = new Date(this.dto.schedule_date);
+            this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+
+            var price = this.dto.booking_price;
+            this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+          } else {
+            alert('ticket cancle 에러');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    pwdCheck() {
+
+      console.log(this.pwd);
+      console.log(this.$store.state.mypage.member.pwd);
+
+      if(this.pwd == this.$store.state.mypage.member.pwd) {
+
+        this.cancleOk();
+
+      } else {
+
+        alert('비밀번호가 틀렸습니다.');
+
+      }
+
+    },
+
+    // 비밀번호 맞으면 예매취소 실행하는 메소드
+    cancleOk() {
+      axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(this.booking_num), {
+        headers: {
+          "Content-Type": `application/json`,
+        }
+      }).then((resp) => {
+        if(resp.data == "success") {
+
+          alert('예매취소가 완료되었습니다.');
+          this.$router.push('/moaplace.com/users/mypage/ticket/list');
+
+        } else {
+          alert('cancleOk() 에러');
+        }
+      })
+    }
+
   }
 }
 </script>

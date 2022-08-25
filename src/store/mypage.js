@@ -5,6 +5,7 @@ export default {
       member:{ // 로그인한 회원 정보
         num:'1',
         id:'test',
+        pwd:'testpwd',
         email:'t@t.com',
         name:'테스트',
         gender:'female',
