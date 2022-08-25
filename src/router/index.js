@@ -68,7 +68,7 @@ import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
 
 const routes = [
-  //
+
   {
     path: '/moaplace.com/booking/seat',
     name: 'bookinseat',
@@ -84,12 +84,6 @@ const routes = [
     name: 'moaplace',
     component: MainView
   },
-  {
-    path: '/moaplace.com/booking/payment',
-    name: 'PaymentView',
-    component: PaymentView
-  },
-
   // 로그인
   {
     path: '/moaplace.com/users/login',
@@ -215,39 +209,44 @@ const routes = [
 
   // 고객센터
   {
-    path: '/moaplace.com/boardMain',
+    path: '/moaplace.com/board/main',
     name: 'boardMain',
     component: BoardMainView
   },
   {
-    path: '/moaplace.com/qna/insert',
+    path: '/moaplace.com/board/qna/insert',
     name: 'qnaInsert',
     component: QNAInsertView
   },
   {
-    path: '/moaplace.com/qna/list',
+    path: '/moaplace.com/board/qna/list/:pageNum?/:keyword?',
     name: 'qnaList',
     component: QNAListView
   },
   {
-    path: '/moaplace.com/qna/detail',
+    path: '/moaplace.com/board/qna/detail/:qna_num',
     name: 'qnaDetail',
     component: QNADetailView
   },
   {
-    path: '/moaplace.com/qna/update',
+    path: '/moaplace.com/board/qna/update/:qna_num',
     name: 'qnaUpdate',
     component: QNAUpdateView
   },
   {
-    path: '/moaplace.com/faq',
+    path: '/moaplace.com/board/faq',
     name: 'faq',
     component: FAQView
   },
   {
-    path: '/moaplace.com/manner',
+    path: '/moaplace.com/board/manner',
     name: 'manner',
     component: MannerView
+  },
+  {
+    path: '/moaplace.com/board/membership',
+    name: 'Membership',
+    component: MembershipView
   },
 
   // 마이페이지
@@ -410,11 +409,15 @@ const routes = [
     component: BookingCnt
   },
   {
-    path: '/moaplace.com/membership',
-    name: 'Membership',
-    component: MembershipView
-  }
-
+    path: '/moaplace.com/booking/seat',
+    name: 'bookinseat',
+    component: SeatSelect
+  },
+  {
+    path: '/moaplace.com/booking/payment',
+    name: 'PaymentView',
+    component: PaymentView
+  },
 ]
 
 const router = createRouter({
