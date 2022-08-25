@@ -44,11 +44,12 @@
                                         {{day}}
                                     </span>
                                     <ul>
-                                        <li v-for="(item, index) in getSchedules(currentYear, currentMonth, day)" :key="index">
+                                        <li v-for="(item, index) in getDaySchedules(currentYear, currentMonth, day)" :key="index">
                                           <routerLink
-                                            to="#">
-                                            <span>{{ item.time }}</span>
-                                            <span>{{ item.title }}</span>
+                                            :to="`/moaplace.com/admin/rental/detail/${item.rental_num}`"
+                                            :class="{modern: item.hall_num == 1, orchestra: item.hall_num == 2, art: item.hall_num == 3}">
+                                            <span>{{ item.rental_time }}</span>
+                                            <span>{{ item.rental_title }}</span>
                                           </routerLink>
                                         </li>
                                     </ul>
@@ -64,6 +65,7 @@
 
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
+    import axios from '@/axios/axios.js'
 
     export default {
         components: {
@@ -80,52 +82,17 @@
             currentCalendar:[],
             endOfDay : null,
             memoDatas: [],
-            schedules:[
-                {   
-                    year: 2022,
-                    month: 1,
-                    schedule:[
-                        {day: 1, time: '09:00', title: '전국 노래자랑'},
-                        {day: 1, time: '10:00', title: '전국 노래자랑'},
-                        {day: 1, time: '09:00', title: '전국 노래자랑'},
-                    ]
-                },
-                {
-                    year:2022,
-                    month: 8, 
-                    schedule: [
-                        {day: 11, time: '09:00', title:'우리 고양이 귀여워'},
-                        {day: 12, time: '09:00', title:'웃는남자'},
-                        {day: 15, time: '14:00', title:'광복절특사'},
-                        {day: 15, time: '16:00', title:'광복절특사'},
-                    ]
-                },
-                {
-                    year:2022,
-                    month: 7, 
-                    schedule: [
-                        {day: 11, time: '09:00', title:'우리 고양이 귀여워'},
-                    ]
-                },
-                {
-                    year:2022,
-                    month: 8, 
-                    schedule: [
-                        {day: 5, time: '09:00', title:'우리 고양이 귀여워'},
-                        {day: 20, time: '09:00', title:'자바의 정석'},
-                    ]
-                },
-            ]
+            schedules:[]
         }),
         mounted(){
             this.init();
-            console.log(this.currentCalendar);
         },
         methods: {
                 init(){
                     this.currentMonthStartWeekIndex = this.getStartWeek(this.currentYear, this.currentMonth);
                     this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
                     this.initCalendar();
+                    this.getMonthSchedule();
                 },
                 initCalendar(){
                     this.currentCalendar = [];
@@ -222,20 +189,38 @@
                     let date = new Date();
                     return year == date.getFullYear() && month == date.getMonth()+1 && day == date.getDate(); 
                 },
-                getSchedules(year, month, day){
+                getDaySchedules(year, month, day){
                     let list = [];
-                    for(let i = 0; i < this.schedules.length; i++) {
-                    if(this.schedules[i].year == year && this.schedules[i].month == month) {
-                        this.schedules[i].schedule.forEach(item => {
-                        if(item.day == day){
-                            list.push({day: item.day, time:item.time, title:item.title});
-                        }
+                    if(this.schedules.year == year && this.schedules.month == month) {
+                        this.schedules.schedule.forEach(item => { 
+                            let itemDay = item.rental_date.substr(-2,2);
+                            
+                            if(itemDay == day){
+                                list.push(
+                                    {
+                                        rental_num : item.rental_num, 
+                                        hall_num : item.hall_num, 
+                                        rental_date : item.rental_date,
+                                        rental_time : item.rental_time,
+                                        rental_title : item.rental_title,
+                                    }
+                                );
+                            }
                         });
                     }
-                    }
-                    // console.log(list);
                     return list;
-                }
+                },
+                getMonthSchedule(){
+                    this.schedules = [];
+                    axios
+                        .get(`/moaplace.com/rental/calendar/${this.currentYear}/${this.currentMonth}/${this.endOfDay}`)
+                        .then(function(resp){
+                            this.schedules = resp.data;
+                            console.log(this.schedules);
+                        }
+                        .bind(this)
+                    );
+                },
         }
     }
 </script>
@@ -366,28 +351,31 @@
                                 .round{
                                     padding: 4px;
                                     border-radius: 50%;
-                                    background: #ff8e55;
+                                    background: rgba($black, 1);
+                                    color: #fff;
                                 }
                                 ul{
                                   margin-top:8px;
                                   li{
                                     a{
-                                      font-size: 14px;
-                                      display: flex;
-                                      color: lighten($black, 10%);
-                                      transition: all 0.3s;
-                                      &:hover{
-                                        color:#ff8e55;
-                                      }
-                                      span{
-                                        &:first-child{
-                                          padding-right: 8px;
-                                        }
-                                        &:last-child{
-                                          overflow: hidden;
-                                          white-space: nowrap;
-                                          text-overflow: ellipsis;
-                                        }
+                                        font-size: 14px;
+                                        display: flex;
+                                        color: $black;
+                                        transition: all 0.3s;
+                                        padding: 0 4px;
+                                        margin-bottom: 8px;
+                                        &.modern{background: rgba(darkcyan, 0.4);}
+                                        &.orchestra{background: rgba(yellowgreen, 0.4);}
+                                        &.art{background: rgba(blueviolet, 0.4);}
+                                        span{
+                                            &:first-child{
+                                            padding-right: 8px;
+                                            }
+                                            &:last-child{
+                                            overflow: hidden;
+                                            white-space: nowrap;
+                                            text-overflow: ellipsis;
+                                            }
                                       }
                                     }
                                   }

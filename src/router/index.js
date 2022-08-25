@@ -40,6 +40,10 @@ import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
 import AdminHallDetail from '@/views/admin/Hall/AdminHallDetail.vue'
 import AdminHallInsert from '@/views/admin/Hall/AdminHallInsert.vue'
 import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
+import AdminShowScheduleList from '@/views/admin/Hall/AdminShowScheduleList.vue'
+import AdminShowScheduleDetail from '@/views/admin/Hall/AdminShowScheduleDetail.vue'
+import AdminShowScheduleInsert from '@/views/admin/Hall/AdminShowScheduleInsert.vue'
+import AdminShowScheduleUpdate from '@/views/admin/Hall/AdminShowScheduleUpdate.vue'
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import AdminFAQListView from '@/views/admin/board/FAQList.vue'
@@ -65,6 +69,16 @@ import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
 const routes = [
+  //
+  {
+    path: '/moaplace.com/booking/seat',
+    name: 'bookinseat',
+    component: SeatSelect
+  },
+  {
+    path: "/",
+    redirect: "/moaplace.com"
+  },
   // 메인
   {
     path: '/moaplace.com',
@@ -329,6 +343,7 @@ const routes = [
     name: 'adminQnaDetail',
     component: AdminQNADetailView
   },
+  //관리자기능-공연관리
   {
     path: '/moaplace.com/admin/show/list',
     name: 'adminHallInfoList',
@@ -349,6 +364,28 @@ const routes = [
     name: 'adminHallUpdate',
     component: AdminHallUpdate
   },
+  //관리자기능-일정관리
+  {
+    path: '/moaplace.com/admin/show/schedule/list',
+    name: 'adminShowScheduleList',
+    component: AdminShowScheduleList
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/detail',
+    name: 'adminShowScheduleDetail',
+    component: AdminShowScheduleDetail
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/insert',
+    name: 'adminShowScheduleInsert',
+    component: AdminShowScheduleInsert
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/update',
+    name: 'adminShowScheduleUpdate',
+    component: AdminShowScheduleUpdate
+  },
+  //관리자기능-예매관리
   {
     path: '/moaplace.com/admin/ticket/list',
     name: 'adminTicketList',

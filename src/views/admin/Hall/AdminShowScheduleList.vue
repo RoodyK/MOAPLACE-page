@@ -1,51 +1,57 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+        <SideMenu largeCategory="공연관리" mediumCategory="일정정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연정보</h2>
+                <h2 class="title">일정정보</h2>
                 <div class="list-top">
-                    <select v-model="selectField">
-                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                    <select>
+                        <option value="hall">공연장</option>
+                        <option value="title">공연명</option>
+                        <option value="status">공연상태</option>
                     </select>
-                    <input type="text" v-model="search">
+                    <input type="text">
                         <button>
                             검색
                             <i class="material-icons">
                                 search
                             </i>
                         </button>
-                        <button class="insertBtn" @click='goInsert'>공연등록</button>
+                        <button class="insertBtn" @click='goInsert'>일정등록</button>
                     </div>
                     <div class="list">
                         <div class="t-row thead">
-                            <p>공연번호</p>
+                            <p>일정번호</p>
                             <p>공연장</p>
                             <p>공연명</p>
+                            <p>공연날짜</p>
                             <p>공연시작일</p>
                             <p>공연종료일</p>
+                            <p>공연회차</p>
+                            <p>공연시작시간</p>
+                            <p>잔여석/좌석수</p>
                             <p>공연상태</p>
-                            <p>수정</p>
                         </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="viewDetail(item.num)">
+                        <div v-for="item in list" :key="item.num" class="t-row tbody">
                             <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
                             <p>{{item.title}}</p>
-                            <p>{{item.startDate}}</p>
-                            <p>{{item.endDate}}</p>
-                            <p>{{item.status=='Y'?'진행중':'종료'}}</p>
-                            <p @contextmenu.prevent="stop($event)"><button @click="updateDetail(item.num)">수정</button></p>
+                            <p>{{item.appdate}}</p>
+                            <p>{{item.appdate}}</p>
+                            <p>{{item.regdate}}</p>
+                            <p>{{item.count}} 회차</p>
+                            <p>{{item.opentime}}</p>
+                            <p>{{item.seats}}</p>
+                            <p>{{item.status}}</p>
                         </div>
                         <ul class="paging">
-                            
-                            <li @click="prevPage()" :class="{active : this.pageNum > 1}">
-                              [이전]</li>
-                            
-                            <li v-for="item in pageNums" :key="item" @click="movePage(item)" :class="{active : this.pageNum==item}" >
-                              {{item}}</li>
-                            
-                            <li @click="nextPage()" :class="{active : this.pageNum < pageInfo.totalPageCount}">
-                              [다음]</li>
+                            <li>[이전]</li>
+                            <li>1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li>4</li>
+                            <li>5</li>
+                            <li>[다음]</li>
                         </ul>
                     </div>
                 </div>
@@ -54,104 +60,77 @@
 </template>
     <script>
         import SideMenu from '@/components/admin/SideMenu.vue'
-        import axios from '@/axios/axios.js';
         export default {
             components: {
                 SideMenu
             },
             data() {
                 return {
-                    selectField:'hall',
-                    fieldList:[
-                        {field:'hall',fieldName:'공연장'},
-                        {field:'title',fieldName:'공연명'},
-                        {field:'status',fieldName:'공연상태'}],
-                    search:'',
-                    pageNum:1,
-                    list: [],
-                    pageInfo:[],
-                    pageNums:[]
+                    list: [
+                        {
+                            num: 7,
+                            hall: '공연장1',
+                            title: '오늘메뉴',
+                            regdate: '2022.08.10',
+                            appdate: '2022.08.10',
+                            status: '진행중',
+                            count: 1,
+                            opentime: '13:30',
+                            seats: '77/120',
+                            grade: 15
+                        }, {
+                            num: 8,
+                            hall: '공연장1',
+                            title: '치킨텐더',
+                            regdate: '2022.08.10',
+                            appdate: '2022.08.10',
+                            status: '진행중',
+                            count: 2,
+                            opentime: '13:30',
+                            seats: '20/120',
+                            grade: 15
+                        }, {
+                            num: 2,
+                            hall: '공연장1',
+                            title: '꿔바로우',
+                            regdate: '2022.08.10',
+                            appdate: '2022.08.10',
+                            status: '공연종료',
+                            opentime: '13:30',
+                            count: 2,
+                            seats: '77/120',
+                        }, {
+                            num: 0,
+                            hall: '공연장1',
+                            title: '운동은',
+                            regdate: '2022.08.10',
+                            appdate: '2022.08.10',
+                            status: '공연종료',
+                            opentime: '13:30',
+                            count: 1,
+                            seats: '110/120',
+                        }, {
+                            num: 1,
+                            hall: '공연장1',
+                            title: '언제하지',
+                            regdate: '2022.08.10',
+                            appdate: '2022.08.10',
+                            status: '공연종료',
+                            opentime: '13:30',
+                            count: 1,
+                            seats: '110/120',
+                        }
+                    ]
                 }
-            },
-            mounted(){
-              this.viewList();
-              
-            },
-            watch:{
-              pageNum(newV){
-                console.log(newV);
-              }
             },
             methods:{
-
-              stop(e) {
-                e.stopPropagation()
-              },
-
               goInsert(){
-
-                this.$router.push({name:'adminHallInsert'})
-
+              this.$router.push({name:'adminShowScheduleInsert'})
               },
-
-              pageNumbering(){
-                
-                this.pageNums.splice(0);
-
-                for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
-                    this.pageNums.push(i);
-                }
-              },
-
-              movePage(pNum){
-                axios.get('/moaplace.com/admin/show/list/'+pNum).
-                then(function(resp){
-
-                  this.list = resp.data.list;
-                  this.pageNum = resp.data.pageNum;
-                  this.pageInfo = resp.data.pageInfo;
-                  this.pageNumbering();
-
-                }.bind(this))
-              },
-
-              prevPage(){
-                if(this.pageNum > 1){
-                  this.movePage(this.pageNum-1);
-                }
-              },
-
-              nextPage(){
-                if(this.pageNum < this.pageInfo.endPageNum){
-                  this.movePage(this.pageNum+1);
-                }
-              },
-
-              viewDetail(num){
-
-                this.$router.push({name:'adminHallDetail',params:{showNum:num}});
-              },
-
-              updateDetail(num,){
-
-                this.$router.push({name:'adminHallUpdate',params:{showNum:num}});
-              },
-
-              viewList(){
-
-                axios.get('/moaplace.com/admin/show/list/'+this.pageNum).
-                then(function(resp){
-
-                  this.list = resp.data.list;
-                  this.pageNum = resp.data.pageNum;
-                  this.pageInfo = resp.data.pageInfo;
-                  this.pageNumbering();
-                  console.log(this.pageNum);
-                }.bind(this))
-              }
             }
+            
         }
-</script>
+    </script>
     <style lang="scss" scoped="scoped">
         @import "@/scss/common.scss";
         nav {
@@ -246,7 +225,7 @@
                             color: #fff;
                         }
                         &.tbody {
-                            padding: 16px 0;
+                            padding: 24px 0;
                             border-bottom: 1px solid rgba($black, 0.2);
                             cursor: pointer;
                             &:hover {
@@ -256,27 +235,16 @@
                                 border: 1px solid #333;
                                 padding: 4px;
                             }
-                            p{
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                            }
                         }
                         & > p,
                         div {
-                            width: calc(100% /7);
+                            width: calc(100% /10);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
-                            
                             & {
                                 padding-top: 4px;
-                            }
-                            button{
-                                background-color: rgb(250, 250, 250);
-                                border: 1px solid rgba(51, 51, 51, 0.2);
-                                padding: 5px 20px;
                             }
                         }
                     }
@@ -286,23 +254,12 @@
                         justify-content: center;
                         margin-top: 32px;
                         li {
-                            margin: 0 6px;
-                            padding: 0 6px;
-                            user-select: none;
-                            cursor: pointer;
-                            &.active{
-                              color: #D67747;
-                              font-weight: bold;
-                            }
+                            margin: 0 8px;
+                            padding: 0 8px;
                             &:first-child,
                             &:last-child {
-                                color: rgba($black, 0.5);
-                                font-weight: bold;  
-                                cursor: auto;
-                                &.active{
-                                  color: $brown;
-                                  cursor: pointer;
-                                }
+                                color: $brown;
+                                font-weight: bold;
                             }
                         }
                     }
