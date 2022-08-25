@@ -9,61 +9,69 @@
           <div>
             <div class="con">
               <div class="inner_wrap">
-                <div class="t-row">
-                  <div>구분</div>
-                  <div>
-                    <select>
-                      <option>구분선택</option>
-                      <option
-                        v-for="state in states"
-                        :key="state"
-                        :value="state"
-                      >
-                        {{ state }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="t-row">
-                  <div>제목</div>
-                  <div><input type="text" name="" vale="제목입력란" /></div>
-                </div>
-                <div class="t-row">
-                  <div>내용</div>
-                  <div>
-                    <textarea>내용입력란</textarea>
-                  </div>
-                </div>
-                <div class="t-row">
-                  <div>첨부파일</div>
-                  <div>
-                    <input
-                      type="file"
-                      id="file"
-                      multiple
-                      @change="handleFileChange"
-                    />
-                    <div class="file-box">
-                      <input
-                        type="text"
-                        class="file-input"
-                        :value="filename"
-                        disabled
-                      />
-                      <label for="file">첨부파일 등록</label>
+                <form>
+                  <div class="t-row">
+                    <div>구분</div>
+                    <div>
+                      <select v-model="selected" @change="vueselect">
+                        <option
+                          v-for="(list, sort_num) in sorts"
+                          :key="sort_num"
+                          :value="sort_num"
+                        >
+                          {{ list.sort_name }}
+                        </option>
+                      </select>
                     </div>
                   </div>
-                </div>
-                <div class="footer">
-                  <button class="page">이전</button>
-                  <button
-                    class="update"
-                    @click="$router.push({ name: 'moaplaceMoaNews' })"
-                  >
-                    수정
-                  </button>
-                  <button class="delete">삭제</button>
-                </div>
+                  <div class="t-row">
+                    <div>제목</div>
+                    <div>
+                      <input type="text" v-model="title" id="title" />
+                    </div>
+                  </div>
+                  <div class="t-row">
+                    <div>내용</div>
+                    <div>
+                      <textarea id="content" v-model="content">
+내용입력란</textarea
+                      >
+                    </div>
+                  </div>
+                  <div class="t-row">
+                    <div>첨부파일</div>
+                    <div>
+                      <input
+                        type="file"
+                        id="file"
+                        ref="files"
+                        @change="selectFile"
+                        multiple
+                      />
+                      <div class="file-box">
+                        <label for="file">첨부파일 등록</label>
+                        <ul>
+                          <li
+                            v-for="(filelist, index) in fileList"
+                            :key="index"
+                          >
+                            {{ filelist.name }}
+                            <button @click.prevent="deletefile1(index)">
+                              <img src="@/assets/admin/remove.png" />
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="footer">
+                    <button class="page">이전</button>
+                    <button class="submit" @click.prevent="checkForm()">
+                      등록
+                    </button>
+                    <button class="delete">삭제</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -75,21 +83,104 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import axios from "@/axios/axios.js";
+
 export default {
   components: {
     SideMenu,
   },
   data() {
     return {
-      states: ["공연", "대관", "좌석", "예매", "관람", "회원", "주차", "기타"],
-      filename: "",
+      sorts: [
+        { sort_num: -1, sort_name: "구분선택" },
+        { sort_num: 1, sort_name: "공연" },
+        { sort_num: 2, sort_name: "대관" },
+        { sort_num: 3, sort_name: "예매" },
+        { sort_num: 4, sort_name: "관람" },
+        { sort_num: 5, sort_name: "회원" },
+        { sort_num: 6, sort_name: "기타" },
+      ],
+      fileList: [],
+      content: "",
+      title: "",
+      selected: 0,
     };
   },
+
   methods: {
-    handleFileChange(e) {
-      let file = e.target.files[0];
-      let name = file.name;
-      this.filename = name;
+    deletefile1(index) {
+      /*splice 그 인덱스부터 1개 삭제 , form 안 buttom prevent 처리 */
+      // alert(index);
+      this.fileList.splice(index, 1);
+      // alert("aaa");
+    },
+    // vueselect() {
+    //   console.log(this.selected);
+    // },
+
+    selectFile() {
+      for (let i = 0; i < this.$refs.files.files.length; i++) {
+        /* 데이터 전송 리스트에 담기 */
+        this.fileList.push(this.$refs.files.files[i]);
+      }
+      /*파일 크기 제한*/
+      if (this.fileList.length > 5) {
+        alert("최대 가능한 첨부 파일 개수는 5개입니다.");
+        this.fileList.splice(0, this.fileList.length);
+        return;
+      }
+      console.log(this.fileList);
+      console.log(this.fileList.length);
+    },
+
+    savefile() {
+      var formData = new FormData();
+      formData.append("sort_num", this.selected);
+      formData.append("content", this.content);
+      formData.append("title", this.title);
+      this.fileList.forEach(function (fileList) {
+        formData.append("files", fileList);
+      });
+      return formData;
+    },
+
+    checkForm() {
+      if (this.selected == 0) {
+        alert("구분을 선택하세요");
+        return;
+      }
+      if (this.title == null || this.title == "") {
+        alert("제목을 입력하세요");
+        return;
+      }
+      if (this.content == null || this.content == "") {
+        alert("내용을 입력하세요");
+        return;
+      }
+
+      this.insertnews();
+    },
+
+    insertnews() {
+      console.log(this.savefile());
+      axios
+        .post("/moaplace.com/admin/news/insert", this.savefile(), {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(
+          function (resp) {
+            if (resp.data === "success") {
+              alert("등록이 완료되었습니다");
+              this.$router.push({ name: "adminNewsList" });
+              console.log("등록성공");
+            } else {
+              alert("등록이 실패되었습니다. 다시 확인해주세요");
+              console.log("등록실패");
+            }
+          }.bind(this)
+        );
     },
   },
 };
@@ -170,16 +261,25 @@ nav {
               &[type="file"] {
                 display: none;
               }
-              &.file-input {
-                width: 70%;
-                margin-right: 16px;
-                & + label {
-                  background: $brown;
-                  color: #fff;
-                  font-size: 14px;
-                  padding: 7px 16px;
-                  margin: 0;
-                }
+            }
+            label {
+              background: $brown;
+              color: #fff;
+              font-size: 14px;
+              padding: 7px 16px;
+              margin: 0;
+              position: relative;
+              width: 120px;
+              text-align: center;
+            }
+            button {
+              background: none;
+              border: none;
+            }
+            ul {
+              padding: 2px 0;
+              li {
+                padding: 4px 0;
               }
             }
           }

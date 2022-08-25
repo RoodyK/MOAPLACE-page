@@ -148,7 +148,7 @@ const routes = [
     component: moaplaceNaviView
   },
   {
-    path: '/moaplace.com/moaplace/news',
+    path: '/moaplace.com/moaplace/news/list',
     name: 'moaplaceMoaNews',
     component: moaplaceMoaNews
   },
@@ -368,17 +368,17 @@ const routes = [
     component: AdminTicketDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/list',
+    path: '/moaplace.com/admin/news/list',
     name: 'adminNewsList',
     component: AdminNewsList
   },
   {
-    path: '/moaplace.com/moaplace/news/detail',
+    path: '/moaplace.com/admin/news/detail',
     name: 'adminNewsDetail',
     component: AdminNewsDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/insert',
+    path: '/moaplace.com/admin/news/insert',
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
