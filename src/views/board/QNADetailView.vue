@@ -3,8 +3,7 @@
     <AppHeader/>
     <SideVisual menu="CUSTOMER SERVICE" img="cs" title="1:1문의"/>
 
-    <div class="app">
-    
+    <div class="app">    
       <h2 class="title">1:1문의</h2>
       <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
@@ -18,48 +17,123 @@
 
       <table>
         <thead>
-        <tr>
-          <th>[구분]<h2>Q. 문의글 제목</h2></th>
-        </tr>
-        <tr>
-          <td class="state">답변완료</td>
-        </tr>
-        <tr>
-          <td>등록일 2022-08-10</td>
-        </tr>
+          <tr>
+            <th>[{{detail.sort_name}} 문의]<h2>Q. {{detail.qna_title}}</h2></th>
+          </tr>
+          <tr>
+            <td class="state">{{detail.qna_state}}</td>
+          </tr>
+          <tr>
+            <td>등록일 {{detail.qna_regdate}}</td>
+          </tr>
         </thead>
 
-        <tr>
-          <td class="content"> 예매 관련 문의입니다.<br>
-              예매자 이름 홍길동입니다. <br>
-              답변 부탁드립니다. </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td class="content">
+              {{detail.qna_content}}
+            </td>
+          </tr>
 
-        <tr>
-          <td>
-          <div class="answer">
-            <h2> A. 답변 제목 </h2>
-            <div class="content">
-              답변 내용입니다.<br><br>
-              감사합니다.
-            </div>
-          </div>
-          </td>
-        </tr>
+          <tr>
+            <td>
+              <div class="answer" v-if="answer!=null">
+                  <h2> A. {{answer.answer_title}} </h2>
+                  <div v-html="answer.answer_content"></div>
+              </div>
 
+              <div class="answer" v-else>
+                <div class="wait">
+                  문의가 정상적으로 접수되었습니다. <br>
+                  빠른 시일 내에 답변 드리도록 하겠습니다. 
+                </div>
+              </div>
+
+            </td>            
+          </tr>
+        </tbody>
       </table>
 
       <div class="btnGroup">
-        <button @click="$router.push({name:'qnaUpdate'})">수정하기</button>
-        <button @click="$router.push({name:'qnaDelete'})">삭제하기</button>
+        <button @click="$router.push({name:'qnaUpdate'})" v-if="answer==null">수정하기</button>
+        <button @click="qnaDelete()">삭제하기</button>
         <button @click="$router.push({name:'qnaList'})">목록으로</button>
       </div>
 
     </div>    
     <AppFooter/>
   </div>
-
 </template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+import axios from '../../axios/axios.js'
+
+export default {
+  components: {
+      AppHeader,
+      AppFooter,
+      SideVisual
+  }, 
+  data() {
+    return {
+      qna_num:0,
+      detail:[],
+      answer:[]
+    }
+  },
+  created() {
+    console.log(this.$route.params.qna_num);
+    this.qna_num = this.$route.params.qna_num;
+    this.qnaDetail(); // 문의 상세내용 불러오기
+  },
+  methods: {
+    async qnaDetail() {
+      try { 
+        await axios.get("/moaplace.com/board/qna/detail", {params:
+          {qna_num: this.qna_num}
+        }).then(function(resp){
+
+          if(resp.status == 200) {
+            this.detail = resp.data.detail;
+            this.answer = resp.data.answer;
+            console.log(this.detail);
+            console.log(this.answer);
+
+          } else {
+            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+          }
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async qnaDelete() {
+      if (confirm('해당 문의글을 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
+        try { 
+          await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num, 
+          ).then(function(resp){
+
+            if(resp.status == 200) {
+              alert('문의글이 삭제되었습니다.');
+              this.$router.push({name:'qnaList'});
+
+            } else {
+              alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
+            }
+          }.bind(this));
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        return;
+      }
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 @import '../../scss/common.scss';
@@ -101,49 +175,62 @@
 
   table {
     width: 100%;
-    border-bottom: 1px solid #ddd;
+    border-top:2px solid $black;
     
     thead {
-      border-top:2px solid $black;
-      font-size:small;
       tr{
+        border-bottom: 1px solid #ddd;
         th {
-          padding: 20px;
+          padding: 30px 24px;
+        }
+        td {
+          padding: 16px 24px;
         }
         &:nth-child(3){
-          border-bottom: 1px solid $black;
+          border-bottom: 2px solid #ddd;
         }
       }
       .state {
         color:#D67747;
         font-weight: bold;
-        font-size:larger;
+        font-size: 18px;
       }
     }
-    tr {
-      height: 50px;
-      border-bottom: 1px solid #ddd;
-    }
-    td {
-      padding: 20px;
-    }
-    .content {
-      padding: 30px;
+
+    tbody{
+      tr {
+        border-bottom: 1px solid #ddd;
+        &:nth-child(1){
+          border-bottom: 1px solid $black;
+        }
+      td {
+          padding: 48px 24px;
+          white-space:pre;
+          font-size: 18px;
+        }
+      }
+      .answer {
+        width: 100%;
+        padding: 40px 32px;
+        background-color: rgba($brown, 0.1);
+
+        & > div {
+          padding: 30px 0 16px 0;
+        }
+        .wait {
+          color: rgba($black, 0.7);
+          text-align: center;
+          padding: 24px;
+        }
+      }
     }
   }
 
-  .answer {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding:30px;
-    background-color: rgb(243, 241, 241);
-  }
   
   .btnGroup{
     display: flex;
     justify-content: center;
-    margin: 16px 0 40px 0;
+    margin: 24px 0 40px 0;
 
     button {
       padding: 16px 40px;
@@ -155,7 +242,7 @@
         color:white;
       }
       &:nth-child(2) {
-        background-color:rgba($black, 0.6);
+        background-color:rgba($black, 0.5);
         border: 1px solid transparent;
         color:white;
       }
@@ -168,17 +255,3 @@
   }
 }
 </style>
-
-<script>
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import SideVisual from '@/components/SideVisual.vue'
-
-export default {
-    components: {
-    AppHeader,
-    AppFooter,
-    SideVisual
-  }
-}
-</script>

@@ -24,37 +24,33 @@
 
         <div class="headerBox">
           <div class="sortBox">
-            <label>문의구분</label><br>
-            <select>
-              <option value=""> 분류 선택 </option>  
-              <option name="qna_sort" value="공연">공연 문의</option>
-              <option name="qna_sort" value="대관">대관 문의</option>
-              <option name="qna_sort" value="예매">예매 문의</option>
-              <option name="qna_sort" value="관람">관람 문의</option>
-              <option name="qna_sort" value="회원">회원 문의</option>
-              <option name="qna_sort" value="기타">기타 문의</option>
+            <label>구분</label><br>
+            <select v-model.number="forms.sort_num">
+              <option :value="0"> 분류 선택 </option>
+              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">{{sort.sort_name}} 문의</option>
             </select>
           </div>
 
           <div class="nameBox">
-            <label>작성자</label><br>
-            <input type="text" name="name" placeholder="문의자 이름">
+            <label>아이디</label><br>
+            <input type="text" v-model="forms.member_id" disabled>
+            <input type="hidden" name="forms.member_num" value="forms.member_num">
           </div>
         </div>
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" name="" placeholder="문의글 제목"><br>
+          <input type="text" v-model="forms.qna_title" placeholder="문의글 제목"><br>
         </div>
         
         <div class="contentBox">
           <label>내용</label>
-          <textarea placeholder="문의하실 내용을 작성해주세요."></textarea>
+          <textarea v-model="forms.qna_content" placeholder="문의하실 내용을 작성해주세요."></textarea>
         </div>
 
         <div class="btnGroup">
-          <button type="submit" @click.prevent="">등록하기</button>
-          <button @click="$router.push({name:'boardMain'})"> 이전으로 </button>
+          <button type="submit" @click.prevent="checkForm()">등록하기</button>
+           <button @click="$router.push({name:'qnaList'})">목록으로</button>
         </div>
       
       </div>
@@ -65,6 +61,87 @@
   </div>
 
 </template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+import axios from '../../axios/axios.js'
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual
+  },
+  data() {
+    return {
+      sort_list:[], // 구분목록
+      forms: // 전송할 데이터
+        {sort_num:0, // 구분번호
+        member_num:1, // 회원번호
+        member_id:"admin", // 회원아이디
+        qna_title:"", // 제목
+        qna_content:""} // 내용
+    }
+  },
+  created() {
+    // this.member_num = this.$route.state.member_num;
+    this.sortList();
+  },
+  methods: {
+    sortList() { // 구분목록 불러오기
+      axios.get('/moaplace.com/board/sort/list').then(function(resp){
+        if(resp.data!=null || resp.data!=''){
+          this.sort_list = resp.data;
+
+        } else {
+          alert('구분목록 로딩에 실패하였습니다.');
+        }
+      }.bind(this));
+    },
+
+    checkForm() { 
+      // 입력 체크
+      if(this.forms.sort_num<1) {
+        alert("문의 구분을 선택하세요.");
+        return;
+      }
+      if(this.forms.qna_title==null || this.forms.qna_title==""){
+        alert("문의 제목을 입력하세요.");
+        return;
+      }
+      if(this.forms.qna_content==null || this.forms.qna_content==""){
+        alert("문의 내용을 입력하세요.");
+        return;
+      } else if (this.forms.qna_content.length<10) {
+        alert("문의 내용은 10자 이상 입력하세요.");
+        return;
+      }
+
+      // 데이터 제출
+      this.qnaInsert();
+    },
+
+    qnaInsert(){ // 데이터 제출
+      axios.post('/moaplace.com/board/qna/insert', JSON.stringify(this.forms),{
+        headers: {
+          'Content-Type' : 'application/json'}
+      }).then(function(resp){
+
+        if(resp.data!='fail'){ // 등록 성공하면 qna리스트로 이동
+          console.log(resp.data);
+          alert('문의글이 등록되었습니다.');
+          this.$router.push({name:'qnaList'});
+
+        } else { // 등록 실패하면 알림창
+          alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
+        }
+      }.bind(this));      
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 @import '../../scss/common.scss';
@@ -114,11 +191,8 @@
     width:1100px;
     margin-bottom: 64px;
 
-    ::placeholder {
-      padding: 16px;
-    }
-
     label {
+      font-weight: bold;
       padding: 24px 0 8px 0;
     }
 
@@ -148,12 +222,14 @@
     input {
       width: 100%;
       height: 40px;
+      padding: 16px;
       border: 1px solid lightgray;
     }
 
     textarea {
       width: 100%;
       height: 300px;
+      padding: 16px;
       border: 1px solid lightgray;
     }
 
@@ -181,37 +257,3 @@
   }  
 }
 </style>
-
-<script>
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import SideVisual from '@/components/SideVisual.vue'
-
-export default {
-    components: {
-    AppHeader,
-    AppFooter,
-    SideVisual
-  },
-  data() {
-    return {
-      date: new Date()
-    }
-  },
-  computed: {
-    calcDate: function() {
-      let year = this.date.getFullYear();
-      let month = this.date.getMonth()+1;
-      let dt = this.date.getDate();
-
-      if (dt < 10) {
-        dt = '0' + dt;
-      }
-      if (month < 10) {
-        month = '0' + month;
-      }
-      return year +'-'+ month +'-'+ dt;
-    }
-  }
-}
-</script>
