@@ -39,7 +39,7 @@ export default {
                         {title: '공간소개', href: '/moaplace.com/moaplace/info'},
                         {title: '공연장정보', href: '/moaplace.com/moaplace/guide'},
                         {title: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
-                        {title: '새소식', href: '/moaplace.com/moaplace/news'}, 
+                        {title: '새소식', href: '/moaplace.com/moaplace/news/list'}, 
                     ]
                 },
                 {
