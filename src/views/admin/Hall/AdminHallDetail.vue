@@ -28,7 +28,7 @@
                                 <th>공연장르</th>
                                 <td colspan="2">{{list.genre}}</td>
                                 <th>공연상태</th>
-                                <td colspan="2">{{list.status}}</td>
+                                <td colspan="2">{{list.status=='Y'?'진행중':'종료'}}</td>
                             </tr>
                             <tr>
                                 <th>러닝타임</th>
