@@ -74,11 +74,6 @@ import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 const routes = [
 
   {
-    path: '/moaplace.com/booking/seat',
-    name: 'bookinseat',
-    component: SeatSelect
-  },
-  {
     path: "/",
     redirect: "/moaplace.com"
   },
@@ -310,7 +305,7 @@ const routes = [
     component: WithdrawalView
   },
 
-  // 관리자기능
+  // 관리자기능-대관관리
   {
     path: '/moaplace.com/admin/rental/list',
     name: 'rentallist',
@@ -326,6 +321,7 @@ const routes = [
     name: 'rentalcalendare',
     component: RentalCalendarView
   },
+  // 관리자기능-게시판관리
   {
     path: '/moaplace.com/admin/faq/list',
     name: 'adminFaqList',
@@ -419,21 +415,12 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+
+  // 예매페이지
   {
-    path: '/moaplace.com/moaplace/booking/select',
+    path: '/moaplace.com/booking/select',
     name: 'bookingSelect',
     component: BookingSelect
-  },
-  // 예매완료 페이지
-  {
-    path: '/moaplace.com/payment/done',
-    name: 'paymentDone',
-    component: PaymentDone
-  },
-  {
-    path: '/moaplace.com/booking/cnt',
-    name: 'bookingCnt',
-    component: BookingCnt
   },
   {
     path: '/moaplace.com/booking/seat',
@@ -441,9 +428,19 @@ const routes = [
     component: SeatSelect
   },
   {
+    path: '/moaplace.com/booking/count',
+    name: 'bookingCount',
+    component: BookingCnt
+  },
+  {
     path: '/moaplace.com/booking/payment',
     name: 'PaymentView',
     component: PaymentView
+  },
+  {
+    path: '/moaplace.com/booking/done',
+    name: 'paymentDone',
+    component: PaymentDone
   },
 ]
 
