@@ -35,28 +35,32 @@
       </div>
       <div id="nav">
         <div class="tap_off" id="tap_1">
-          <RouterLink to="/moaplace.com/showdetail">상세보기</RouterLink>
+          <RouterLink to="/moaplace.com/show/showdetail">상세보기</RouterLink>
         </div>
         <div class="tap_on" id="tap_2">
-          <RouterLink to="/moaplace.com/showreview">관람평</RouterLink>
+          <RouterLink to="/moaplace.com/show/review/list">관람평</RouterLink>
         </div>
         <div class="tap_off" id="tap_3">
-          <RouterLink to="/moaplace.com/showrefund">취소 및 환불 안내</RouterLink>
+          <RouterLink to="/moaplace.com/show/showrefund">취소 및 환불 안내</RouterLink>
         </div>
       </div>
       <div class="detail">
+        <div class="cnt">
+          웃는남자에 대한 <span>2</span>개의 리뷰가 있어요!
+        </div>
         <div class="write_box">
-          <div class="cnt">
-            웃는남자에 대한 <span>2</span>개의 리뷰가 있어요!
-          </div>
           <div class="write">
             <div class="write_score">
-              <img src="../../assets/star5.png">
+              <span class="star">
+                ★★★★★
+                <span>★★★★★</span>
+                <input type="range" @input="drawStar($event)" value="10" step="1" min="1" max="10">
+              </span>
             </div>  
             <div class="write_text">
-              <span>1000/1000</span>
+              <span>{{rbyte}}/1000</span>
               <div>
-                <textarea class="test" placeholder="감상평을 남겨주세요 공연과 상관없는 내용은 약관에 의해 제재를 받을수 있습니다."/>
+                <textarea v-model="cont" @keyup="limit" placeholder="감상평을 남겨주세요 공연과 상관없는 내용은 약관에 의해 제재를 받을수 있습니다."/>
               </div>
               <button>등록</button>
             </div>
@@ -64,29 +68,37 @@
         </div>
         <div class="list">
           <div class="list_score">
-            <img src="../../assets/star5.png">
+            <span>★★★★★</span>
           </div>
           <div class="list_text">
             <div class="cont">
               독특한 소재로 공포감은 크지 않았지만 배우들의 명품연기로 보는 내내 긴장감을 놓을 수 없었다. 독특한 소재로 공포감은 크지 않았지만 배우들의 명품연기로 보는 내내 긴장감을 놓을 수 없었다.
             </div>
             <div class="writer">
-              wkrwja12
-              <span id="date">&nbsp;&nbsp;|&nbsp;&nbsp;2022-08-08</span>
+              <div>
+                <span id="id">wkrwja12</span>
+                <span id="date">2022-08-08</span>
+              </div>
             </div>
           </div>
         </div>
         <div class="list">
           <div class="list_score">
-            <img src="../../assets/star5.png">
+            <span>★★★★★</span>
           </div>
           <div class="list_text">
             <div class="cont">
               언뜻보면 뭔지 잘 알 수 없지만 영화의 역사를 상징적으로 다룬 작품이라는 것을 보니 탁월한 연출이었구나도 싶고....좀 난해한 영화였네요
             </div>
             <div class="writer">
-              jungjy42
-              <span id="date">&nbsp;&nbsp;|&nbsp;&nbsp;2022-08-02</span>
+              <div>
+                <span id="id">jungjy42</span>
+                <span id="date">2022-08-02</span>
+              </div>
+              <div>
+                <a id="update">수정</a>
+                <a id="delete">삭제</a>
+              </div>
             </div>
           </div>
         </div>
@@ -108,9 +120,35 @@ export default {
     AppFooter,
     SideVisual
   },
-  date(){
+  data(){
     return{
-      tectlength:0,
+      cont:""
+    }
+  },
+  computed:{
+    rbyte(){
+        let cnt=0;
+        for(let i=0; i<this.cont.length; i++){
+          if(escape(this.cont.charAt(i)).length>4){
+            cnt += 2;
+          }else{
+            cnt ++;
+          }
+        }
+        return cnt;
+    }
+  },
+  methods: {
+    drawStar(e) {
+      document.querySelector(`.star span`).style.width = `${e.target.value * 10}%`;
+    },
+    limit() {
+      if(this.rbyte>1000){
+        alert("1000Byte를 초과 입력할 수 없습니다.");
+        while(this.rbyte>1000){
+          this.cont=this.cont.substring(0, this.cont.length-1);
+        }
+      }
     }
   }
 }
@@ -220,25 +258,45 @@ export default {
   }
   .detail{
     padding-top: 50px;
+    .cnt{
+      color: gray;
+      font-weight: bold;
+      font-size: 32px;
+      margin-bottom: 24px;
+      span{
+        color: $brown;
+      }
+    }
     .write_box{
       height: 240px;
-      .cnt{
-        color: gray;
-        font-weight: bold;
-        font-size: 32px;
-        height: 20%;
-        span{
-          color: $brown;
-        }
-      }
       .write{
-        height: 80%;
-        background-color: rgba(#ccc, 0.2);
+        height: 100%;
+        padding: 8px 12px 24px 12px;
+        background-color: rgba(#ccc, 0.2); // 
         .write_score{
           width: 100%;
-          // height: 20%;
-          img{
-            width: 15%;
+          .star {
+            position: relative;
+            font-size: 32px;
+            color: #ccc;
+            background-color: white;
+            border: 1px solid $brown;
+            input {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              left: 0;
+              opacity: 0;
+              cursor: pointer;
+            }
+            span {
+              width: 100%;
+              position: absolute; 
+              left: 0;
+              color: $brown;
+              overflow: hidden;
+              pointer-events: none;
+            }
           }
         }
         .write_text{
@@ -249,13 +307,14 @@ export default {
           span{
             position: absolute;
             right: 11%;
-            top: 70%;
+            top: 67%;
             color: #ccc;
           }
           div{
             width: 90%;
             height: 80%;
             border: 1px solid $brown;
+            background-color: white;
             textarea{
               padding: 12px;
               width: 100%;
@@ -268,7 +327,6 @@ export default {
               }
             }
           }
-          
           button{
             width: 10%;
             height: 80%;
@@ -284,11 +342,13 @@ export default {
       height: 160px;
       display: flex;
       border: 1px solid #ccc;
-      background-color: rgba(#ccc, 0.2);
+      background-color: rgba(#ccc, 0.2); // 
       .list_score{
         width: 15%;
-        img{
-          width: 100%;
+        text-align: center;
+        span{
+          font-size: 32px;
+          color: $brown;
         }
       }
       .list_text{
@@ -300,11 +360,31 @@ export default {
         }
         .writer{
           height: 20%;
-          font-weight: bold;
-          span{
-            color: #ccc;
-            font-size: 14px;
+          
+          display: flex;
+          justify-content: space-between;
+          div{
+            #id{
+              font-weight: bold;
+            }
+            #date{
+              color: #ccc;
+              font-size: 14px;
+              border-left: 1px solid #ccc;
+              margin-left: 12px;
+              padding-left: 12px;
+            }
+            a{
+              border: none;
+              color: rgba($black, 0.7);
+              font-size: 14px;
+              padding: 0 12px;
+            }
+            #delete{
+              border-left: 1px solid #ccc;
+            }
           }
+          
         }
       }
     }

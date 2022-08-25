@@ -82,9 +82,9 @@ export default {
             },
             {
                 name: '공연/예매',
-                href: '/moaplace.com/showlist',
+                href: '/moaplace.com/preview',
                 submenus:[
-                    {name: '공연목록', href: '/moaplace.com/showlist'},
+                    {name: '공연목록', href: '/moaplace.com/preview'},
                     {name: '월간일정 ', href: '/moaplace.com/calendar'},
                 ]
             },
