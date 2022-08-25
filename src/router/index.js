@@ -256,52 +256,52 @@ const routes = [
     component: MypageView
   },
   {
-    path: '/moaplace.com/users/performance',
+    path: '/moaplace.com/users/mypage/performance',
     name: 'myperformance',
     component: MyPerformanceView
   },
   {
-    path: '/moaplace.com/users/ticket/list',
+    path: '/moaplace.com/users/mypage/ticket/list',
     name: 'myticketlist',
     component: MyTicketListView
   },
   {
-    path: '/moaplace.com/users/ticket/detail',
+    path: '/moaplace.com/users/mypage/ticket/detail/:booking_num',
     name: 'myticketdetail',
     component: MyTicketDetailView
   },
   {
-    path: '/moaplace.com/users/ticket/cancle',
+    path: '/moaplace.com/users/mypage/ticket/cancle/:booking_num',
     name: 'myticketcancle',
     component: MyTicketCancleView
   },
   {
-    path: '/moaplace.com/users/rental/list',
+    path: '/moaplace.com/users/mypage/rental/list',
     name: 'myrentallist',
     component: MyRentalListView
   },
   {
-    path: '/moaplace.com/users/rental/detail',
+    path: '/moaplace.com/users/mypage/rental/detail/:rental_num',
     name: 'myrentaldetail',
     component: MyRentalDetailView
   },
   {
-    path: '/moaplace.com/users/review/list',
+    path: '/moaplace.com/users/mypage/review/list',
     name: 'myreviewlist',
     component: MyReviewListView
   },
   {
-    path: '/moaplace.com/users/qna/list',
+    path: '/moaplace.com/users/mypage/qna/list',
     name: 'myqnalist',
     component: MyQNAListView
   },
   {
-    path: '/moaplace.com/users/info/edit',
+    path: '/moaplace.com/users/mypage/info/edit',
     name: 'myinfoedit',
     component: MyInfoEditView
   },
   {
-    path: '/moaplace.com/users/withdrawal',
+    path: '/moaplace.com/users/mypage/withdrawal',
     name: 'withdrawal',
     component: WithdrawalView
   },
