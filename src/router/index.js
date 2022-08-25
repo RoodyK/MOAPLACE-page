@@ -456,16 +456,13 @@ const router = createRouter({
 })
 
 router.beforeEach( (to, from, next) => {
-  console.log(to);
   if(to.fullPath.startsWith("/moaplace.com/admin")) {
     if(store.state.login.userRoles !== 'ROLE_ADMIN') {
       next('/moaplace.com')
     }
   }
   console.log(from);
-  if(store.state.login.userInfo == null){
-    next()
-  }
+  next();
 })
 
 export default router

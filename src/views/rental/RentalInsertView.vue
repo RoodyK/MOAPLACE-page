@@ -467,13 +467,11 @@ import axios from '@/axios/axios.js'
               //마이페이지로 이동
               this.$router.push('/moaplace.com/users/mypage/rental/list');
 
-            }
-          }.bind(this));
-
             }else{
               alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
             }
-          }).catch(function(error){
+          }.bind(this))
+          .catch(function(error){
             alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
             console.log(error);
           });

@@ -116,7 +116,7 @@ export default {
                     {name: '공간소개', href: '/moaplace.com/moaplace/info'},
                     {name: '공연장정보', href: '/moaplace.com/moaplace/guide'},
                     {name: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
-                    {name: '새소식', href: '/moaplace.com/moaplace/news'}, 
+                    {name: '새소식', href: '/moaplace.com/moaplace/news/list'}, 
                 ]
             },
             {
