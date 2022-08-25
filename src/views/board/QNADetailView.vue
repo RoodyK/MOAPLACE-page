@@ -31,7 +31,7 @@
         <tbody>
           <tr>
             <td class="content">
-              <pre>{{detail.qna_content}}</pre>
+              {{detail.qna_content}}
             </td>
           </tr>
 
@@ -39,9 +39,7 @@
             <td>
               <div class="answer" v-if="answer!=null">
                   <h2> A. {{answer.answer_title}} </h2>
-                <div>
-                  <pre>{{answer.answer_content}}</pre>
-                </div>
+                  <div v-html="answer.answer_content"></div>
               </div>
 
               <div class="answer" v-else>
@@ -115,16 +113,15 @@ export default {
     async qnaDelete() {
       if (confirm('해당 문의글을 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
         try { 
-          await axios.get("/moaplace.com/board/qna/delete", {params:
-            {qna_num: this.qna_num}
-          }).then(function(resp){
+          await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num, 
+          ).then(function(resp){
 
             if(resp.status == 200) {
               alert('문의글이 삭제되었습니다.');
               this.$router.push({name:'qnaList'});
 
             } else {
-              alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+              alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
             }
           }.bind(this));
         } catch (error) {
@@ -196,7 +193,7 @@ export default {
       .state {
         color:#D67747;
         font-weight: bold;
-        font-size: 20px;
+        font-size: 18px;
       }
     }
 
@@ -205,12 +202,11 @@ export default {
         border-bottom: 1px solid #ddd;
         &:nth-child(1){
           border-bottom: 1px solid $black;
-          pre {
-            font-size: 20px;
-          }
         }
       td {
           padding: 48px 24px;
+          white-space:pre;
+          font-size: 18px;
         }
       }
       .answer {
@@ -220,7 +216,6 @@ export default {
 
         & > div {
           padding: 30px 0 16px 0;
-          font-size: 20px;
         }
         .wait {
           color: rgba($black, 0.7);

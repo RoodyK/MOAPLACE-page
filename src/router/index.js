@@ -339,7 +339,7 @@ const routes = [
     component: AdminQNAListView
   },
   {
-    path: '/moaplace.com/admin/qna/detail',
+    path: '/moaplace.com/admin/qna/detail/:qna_num',
     name: 'adminQnaDetail',
     component: AdminQNADetailView
   },
