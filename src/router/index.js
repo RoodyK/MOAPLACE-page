@@ -458,7 +458,9 @@ router.beforeEach( (to, from, next) => {
       next('/moaplace.com')
     }
   }
-  console.log(from);
+  if(from.name == 'asefawfawefawef') {
+    console.log(from.name);
+  }
   next();
 })
 

@@ -42,10 +42,10 @@ export default {
         }
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         
         let token = response.data.token;
-        console.log("토큰", token)
+        // console.log("토큰", token)
         // localStorage에 토큰 저장
         localStorage.setItem("access_token", token);
         // 회원정보 읽어들이기
@@ -91,7 +91,7 @@ export default {
 
       try {
         let data = response.data.info;
-        console.log(response.data);
+        // console.log(response.data);
 
         const info = {
           num: data.member_num,
