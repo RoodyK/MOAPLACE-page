@@ -18,9 +18,9 @@ import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
 import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
-import showList from '@/views/show/ShowListView.vue'
+import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
-import showReview from '@/views/show/ShowReviewView.vue'
+import reviewList from '@/views/show/ReviewListView.vue'
 import showRefund from '@/views/show/ShowRefundView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
@@ -181,22 +181,22 @@ const routes = [
     component: moaCalender
   },
   {
-    path: '/moaplace.com/showlist',
-    name: 'showlist',
-    component: showList
+    path: '/moaplace.com/preview',
+    name: 'preview',
+    component: preview
   },
   {
-    path: '/moaplace.com/showdetail',
+    path: '/moaplace.com/show/showdetail',
     name: 'showdetail',
     component: showDetail
   },
   {
-    path: '/moaplace.com/showreview',
-    name: 'showreview',
-    component: showReview
+    path: '/moaplace.com/show/review/list',
+    name: 'reviewlist',
+    component: reviewList
   },
   {
-    path: '/moaplace.com/showrefund',
+    path: '/moaplace.com/show/showrefund',
     name: 'showrefund',
     component: showRefund
   },
