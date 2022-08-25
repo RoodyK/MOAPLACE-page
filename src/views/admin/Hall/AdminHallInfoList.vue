@@ -34,16 +34,18 @@
                             <p>{{item.startDate}}</p>
                             <p>{{item.endDate}}</p>
                             <p>{{item.status=='Y'?'진행중':'종료'}}</p>
-                            <p><button>수정</button></p>
+                            <p @contextmenu.prevent="stop($event)"><button @click="updateDetail(item.num)">수정</button></p>
                         </div>
                         <ul class="paging">
-                            <li>[이전]</li>
-                            <li>1</li>
-                            <li>2</li>
-                            <li>3</li>
-                            <li>4</li>
-                            <li>5</li>
-                            <li>[다음]</li>
+                            
+                            <li @click="prevPage()" :class="{active : this.pageNum > 1}">
+                              [이전]</li>
+                            
+                            <li v-for="item in pageNums" :key="item" @click="movePage(item)" :class="{active : this.pageNum==item}" >
+                              {{item}}</li>
+                            
+                            <li @click="nextPage()" :class="{active : this.pageNum < pageInfo.totalPageCount}">
+                              [다음]</li>
                         </ul>
                     </div>
                 </div>
@@ -65,14 +67,26 @@
                         {field:'title',fieldName:'공연명'},
                         {field:'status',fieldName:'공연상태'}],
                     search:'',
-                    list: []
+                    pageNum:1,
+                    list: [],
+                    pageInfo:[],
+                    pageNums:[]
                 }
             },
             mounted(){
               this.viewList();
-                
+              
+            },
+            watch:{
+              pageNum(newV){
+                console.log(newV);
+              }
             },
             methods:{
+
+              stop(e) {
+                e.stopPropagation()
+              },
 
               goInsert(){
 
@@ -80,16 +94,59 @@
 
               },
 
+              pageNumbering(){
+                
+                this.pageNums.splice(0);
+
+                for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
+                    this.pageNums.push(i);
+                }
+              },
+
+              movePage(pNum){
+                axios.get('/moaplace.com/admin/show/list/'+pNum).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+
+                }.bind(this))
+              },
+
+              prevPage(){
+                if(this.pageNum > 1){
+                  this.movePage(this.pageNum-1);
+                }
+              },
+
+              nextPage(){
+                if(this.pageNum < this.pageInfo.endPageNum){
+                  this.movePage(this.pageNum+1);
+                }
+              },
+
               viewDetail(num){
 
                 this.$router.push({name:'adminHallDetail',params:{showNum:num}});
               },
 
+              updateDetail(num,){
+
+                this.$router.push({name:'adminHallUpdate',params:{showNum:num}});
+              },
+
               viewList(){
 
-                axios.get('/moaplace.com/admin/show/list').
+                axios.get('/moaplace.com/admin/show/list/'+this.pageNum).
                 then(function(resp){
-                  this.list=resp.data.list;
+
+                  this.list = resp.data.list;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+                  console.log(this.pageNum);
                 }.bind(this))
               }
             }
@@ -229,12 +286,23 @@
                         justify-content: center;
                         margin-top: 32px;
                         li {
-                            margin: 0 8px;
-                            padding: 0 8px;
+                            margin: 0 6px;
+                            padding: 0 6px;
+                            user-select: none;
+                            cursor: pointer;
+                            &.active{
+                              color: #D67747;
+                              font-weight: bold;
+                            }
                             &:first-child,
                             &:last-child {
-                                color: $brown;
-                                font-weight: bold;
+                                color: rgba($black, 0.5);
+                                font-weight: bold;  
+                                cursor: auto;
+                                &.active{
+                                  color: $brown;
+                                  cursor: pointer;
+                                }
                             }
                         }
                     }
