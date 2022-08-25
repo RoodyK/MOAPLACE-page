@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store/index.js'
+// import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import LogoutView from '@/views/login/LogoutView.vue'
@@ -452,16 +452,16 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach( (to, from, next) => {
-  if(to.fullPath.startsWith("/moaplace.com/admin")) {
-    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
-      next('/moaplace.com')
-    }
-  }
-  if(from.name == 'asefawfawefawef') {
-    console.log(from.name);
-  }
-  next();
-})
+// router.beforeEach( (to, from, next) => {
+//   if(to.fullPath.startsWith("/moaplace.com/admin")) {
+//     if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+//       next('/moaplace.com')
+//     }
+//   }
+//   if(from.name == 'asefawfawefawef') {
+//     console.log(from.name);
+//   }
+//   next();
+// })
 
 export default router
