@@ -49,9 +49,9 @@
                   <th class="col col-md-1 end">상세보기</th>
                 </tr>
               </thead>
-              <!-- tdoby 시작 -->
+              <!-- tbody 시작 -->
               <tbody class="fs-7">
-                <tr class="mytr" v-for="(item, index) in list" :key="index">
+                <tr v-for="(item, index) in list" :key="index">
                   <td>
                     <div class="text-center">
                       <span>{{ item.booking_num }}</span>
@@ -101,7 +101,7 @@
         </div>
 
         <!-- 페이징 -->
-        <div id="mypaging">
+        <div id="mypaging" v-show="bkExist">
 
           <p v-if="startPage>5"
             @click="movePage(pageNum-1)">
