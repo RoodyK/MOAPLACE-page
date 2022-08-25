@@ -35,25 +35,24 @@ export default {
         member_pwd: payload.pwd
       }
 
-      await axios.post("/moaplace.com/users/login/result",
-      JSON.stringify(login), {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then((response) => {
-        // console.log(response);
-        
+      try {
+        const response = await axios.post("/moaplace.com/users/login/result",
+        JSON.stringify(login), {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
         let token = response.data.token;
-        // console.log("토큰", token)
-        // localStorage에 토큰 저장
-        localStorage.setItem("access_token", token);
-        // 회원정보 읽어들이기
-        dispatch('getMemberInfo');
-      })
-      .catch(() => {
-        alert('아이디와 비밀번호를 다시 확인해주세요.');
-      })
+          // console.log("토큰", token)
+          // localStorage에 토큰 저장
+          localStorage.setItem("access_token", token);
+          // 회원정보 읽어들이기
+          dispatch('getMemberInfo');
+          router.push('/moaplace.com');
+      }catch(error) {
+        alert('아이디와 비밀번호를 다시 확인하세요.')
+      }
     },
     async getMemberInfo({ commit }) {
       // 토큰 꺼내기
@@ -67,27 +66,7 @@ export default {
         }
       }
 
-      // 토큰으로 멤버 정보 반환
-      // await axios.get("/moaplace.com/users/login/member/info", config)
-      // .then(response => {
-      //   let data = response.data;
-      //   console.log(data);
-      //   const info = {
-      //     num: data.member_num,
-      //     id: data.member_id,
-      //     pwd: data.member_pwd,
-      //     email: data.member_email,
-      //     name: data.member_name,
-      //     gender: data.member_gender,
-      //     phone: data.member_gender,
-      //     address: data.member_address,
-      //     point: data.member_point
-      //   }
-      //   commit('loginSuccess', info);
-      //   router.push('/moaplace.com')
-      // })
       const response = await axios.get("/moaplace.com/users/login/member/info", config)
-      
 
       try {
         let data = response.data.info;
@@ -107,7 +86,6 @@ export default {
         commit('loginSuccess', info);
         commit('updateRoles', response.data.roles);
 
-        router.push('/moaplace.com')
       }catch(error) {
         console.log(error);
       }
