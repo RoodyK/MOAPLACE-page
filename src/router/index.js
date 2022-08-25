@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
+import LogoutView from '@/views/login/LogoutView.vue'
 import SameView from '../views/join/OfTheSameView.vue'
 import JoinMainView from '../views/join/JoinMainView.vue'
 import JoinSuccessView from '@/views/join/JoinSuccessView.vue'
@@ -64,6 +66,7 @@ import QNAInsertView from '@/views/board/QNAInsertView.vue'
 import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
+
 const routes = [
   //
   {
@@ -94,32 +97,37 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/moaplace.com/join/same',
+    path: '/moaplace.com/users/logout',
+    name: 'logout',
+    component: LogoutView
+  },
+  {
+    path: '/moaplace.com/users/join/same',
     name: 'same',
     component: SameView
   },
   {
-    path: '/moaplace.com/join/main',
+    path: '/moaplace.com/users/join/main',
     name: 'join',
     component: JoinMainView
   },
   {
-    path: '/moaplace.com/join/success',
+    path: '/moaplace.com/users/join/success',
     name: 'joinSuccess',
     component: JoinSuccessView
   },
   {
-    path: '/moaplace.com/login/findId',
+    path: '/moaplace.com/users/login/findId',
     name: 'findId',
     component: FindIdView
   },
   {
-    path: '/moaplace.com/login/findPwd',
+    path: '/moaplace.com/users/login/findPwd',
     name: 'findPwd',
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
@@ -416,4 +424,18 @@ const router = createRouter({
   },
   routes
 })
+
+router.beforeEach( (to, from, next) => {
+  console.log(to);
+  if(to.fullPath.startsWith("/moaplace.com/admin")) {
+    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+      next('/moaplace.com')
+    }
+  }
+  console.log(from);
+  if(store.state.login.userInfo == null){
+    next()
+  }
+})
+
 export default router
