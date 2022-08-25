@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import LogoutView from '@/views/login/LogoutView.vue'
@@ -64,6 +65,7 @@ import QNAListView from '@/views/board/QNAListView.vue'
 import QNAInsertView from '@/views/board/QNAInsertView.vue'
 import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
+
 
 const routes = [
   //
@@ -422,4 +424,18 @@ const router = createRouter({
   },
   routes
 })
+
+router.beforeEach( (to, from, next) => {
+  console.log(to);
+  if(to.fullPath.startsWith("/moaplace.com/admin")) {
+    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+      next('/moaplace.com')
+    }
+  }
+  console.log(from);
+  if(store.state.login.userInfo == null){
+    next()
+  }
+})
+
 export default router

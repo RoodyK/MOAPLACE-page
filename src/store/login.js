@@ -6,7 +6,8 @@ export default {
   state() {
     return {
       userInfo: null,
-      isLogin: false
+      isLogin: false,
+      userRoles: null
     }
   },
   getters: {
@@ -18,6 +19,9 @@ export default {
       state.isLogin = true;
       state.userInfo = payload
     },
+    updateRoles(state, payload) {
+      state.userRoles = payload
+    },
     logout(state) {
       state.isLogin = false;
       state.userInfo = null;
@@ -26,7 +30,6 @@ export default {
   // method 역할
   actions: {
     async memberLogin({ dispatch }, payload) {
-      console.log(dispatch);
       const login = {
         member_id: payload.id,
         member_pwd: payload.pwd
@@ -55,7 +58,6 @@ export default {
     async getMemberInfo({ commit }) {
       // 토큰 꺼내기
       let token = localStorage.getItem("access_token");
-      console.log(token);
       if(token == null) return;
 
       //헤더 설정
@@ -88,8 +90,9 @@ export default {
       
 
       try {
-        let data = response.data;
-        console.log(data);
+        let data = response.data.info;
+        console.log(response.data);
+
         const info = {
           num: data.member_num,
           id: data.member_id,
@@ -102,6 +105,8 @@ export default {
           point: data.member_point
         }
         commit('loginSuccess', info);
+        commit('updateRoles', response.data.roles);
+
         router.push('/moaplace.com')
       }catch(error) {
         console.log(error);
