@@ -15,7 +15,7 @@
                       <select v-model="selectField">
                         <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
                       </select>
-                      <input type="text" :value="search">
+                      <input type="text" :value="search" placeholder="검색어를 입력하세요.">
                       <button @click="inputSearch($event)">
                           검색
                           <i class="material-icons">
