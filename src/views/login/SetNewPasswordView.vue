@@ -10,25 +10,27 @@
         <span>비밀번호와 비밀번호 확인을 정확히 입력해주세요.</span>
       </div>
 
-      <form action="" @enter.prevent>
+      <form @submit.prevent>
         <div class="info">
           <div class="id">
             <label for="idInput">아이디</label>
-            <input type="text" class="idInput" id="idInput">
-            <div class="idHelp help">asdasdasd</div>
+            <input type="text" class="idInput" id="idInput" :value="myId" readonly>
+            <div class="idHelp help"></div>
           </div>
           <div class="pwd">
             <label for="pwdInput">비밀번호</label>
-            <input type="text" class="pwdInput" id="pwdInput">
-            <div class="pwdHelp help">asdasdasd</div>
+            <input type="password" class="pwdInput" id="pwdInput" autocomplete="off">
+            <div class="pwdHelp help"></div>
           </div>
           <div class="confirmPwd">
-            <label for="confirmInput">비밀번호 확인</label>
-            <input type="text" class="confirmPwdInput" id="confirmInput">
-            <div class="confirmPwdHelp help">asdasdasd</div>
+            <label for="confirmPwdInput">비밀번호 확인</label>
+            <input type="password" class="confirmPwdInput" id="confirmPwdInput" autocomplete="off">
+            <div class="confirmPwdHelp help"></div>
           </div>
           <div class="info-btn">
-            <button>비밀번호 재설정</button>
+            <button type="button" @click="newPasswordCheck()">
+              비밀번호 재설정
+            </button>
           </div>
 
         </div>
@@ -41,6 +43,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -53,16 +56,62 @@ export default {
   },
   data() {
     return {
-      find: [
-        {
-          name: '아이디 찾기',
-          href: '/login/findid'
-        },
-        {
-          name: '비밀번호 찾기',
-          href: '/login/findpwd'
+      myId : '',
+    }
+  },
+  created() {
+    this.myId = this.$route.params.id;
+  },
+  mounted() {
+    console.log(this.$route.params.id);
+    console.log(this.$route.params.name);
+  },
+  methods: {
+    newPasswordCheck() {
+      const formEl = document.querySelector("form");
+
+      let pwd = formEl.pwdInput;
+      let confirmPwd = formEl.confirmPwdInput;
+
+      let regExpPassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+
+      let pwdHelp = document.querySelector(".pwdHelp")
+      let confirmPwdHelp = document.querySelector(".confirmPwdHelp");
+
+      if(!regExpPassword.test(pwd.value)) {
+        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 20자 이하로 입력하세요.";
+        pwd.focus();
+        return;
+      }
+      pwdHelp.innerText = "";
+
+      if(pwd.value != confirmPwd.value) {
+        confirmPwdHelp.innerText = "비밀번호와 비밀번호 확인이 일치하지 않습니다."
+        confirmPwd.focus();
+        return;
+      }
+      confirmPwdHelp.innerText = "";
+
+      const info = {
+        member_id: this.myId,
+        member_pwd: pwd.value
+      }
+
+      axios.post("/moaplace.com/users/login/reset/password",
+        JSON.stringify(info), {
+        headers: {
+          "Content-Type" : "application/json"
         }
-      ]
+      })
+      .then(response => {
+        if(response.data == "success") {
+          alert("비밀번호가 변경되었습니다.");
+          this.$router.push("/moaplace.com");
+        }
+      })
+      .catch(() => {
+        alert("비밀번호 변경에 실패했습니다.");
+      })
     }
   }
 }
