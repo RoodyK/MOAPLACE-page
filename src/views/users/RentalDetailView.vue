@@ -5,7 +5,7 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="대관내역"/>
+      <MySideMenu category="대관내역" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -22,15 +22,15 @@
               <tbody class="fs-7">
                 <tr>
                   <th class="col-md-2 text-center descth">대관신청자</th>
-                  <td class="desctd">강아지</td>
+                  <td class="desctd">{{ dto.rental_name }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">연락처</th>
-                  <td class="desctd">010-0000-0000</td>
+                  <td class="desctd">{{ dto.rental_phone }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">E-mail</th>
-                  <td class="desctd">moa@moa.com</td>
+                  <td class="desctd">{{ dto.rental_email }}</td>
                 </tr>
               </tbody>
             </table>
@@ -43,39 +43,41 @@
               <tbody class="fs-7">
                 <tr>
                   <th class="col-md-2 text-center descth">공연명</th>
-                  <td class="desctd">우리집 고양이가 제일 귀여워</td>
+                  <td class="desctd">{{ dto.rental_title }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">공연장</th>
-                  <td class="desctd">모던홀</td>
+                  <td class="desctd">{{ dto.hall_name }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">대관희망일자</th>
-                  <td class="desctd">2022-08-25</td>
+                  <td class="desctd">{{ dto.rental_date }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">대관시작시간</th>
-                  <td class="desctd">09:00</td>
+                  <td class="desctd">{{ dto.rental_time }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">공연장르</th>
-                  <td class="desctd">무용</td>
+                  <td class="desctd">{{ dto.rental_genre }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">첨부파일</th>
-                  <td class="desctd">공연계획서.zip</td>
+                  <td class="desctd">
+                    <v-btn href="@/file/test/test.txt" download>{{ dto.rental_originfilename }}</v-btn>
+                  </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">담당자</th>
-                  <td class="desctd">고양이박사님</td>
+                  <td class="desctd">{{ dto.rental_ownsname }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">담당자 연락처</th>
-                  <td class="desctd">010-0000-0000 / se@moa.com</td>
+                  <td class="desctd">{{ dto.rental_ownsphone }} / {{ dto.rental_ownemail }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">기타 요청사항</th>
-                  <td class="desctd">에어컨을 시원하게 틀어주세요.</td>
+                  <td class="desctd">{{ dto.rental_content }}</td>
                 </tr>
               </tbody>
             </table>
@@ -87,15 +89,14 @@
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
-              공연계획서 확인했습니다. 대관시작시간은 9시로 하시죠. 돈 보내주세용 3333230293-092342 모아플레이스<br>
-              줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트
+              {{ dto.answer_content }}
             </p>
           </div>
         </div>
         <div class="text-center btnmargin">
           <p class="fs-7 brown">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn">대관취소</button>
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">이전으로</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'qnaList' })">대관취소</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myrentallist' })">목록으로</button>
         </div>
       </div>
     </div>
@@ -105,6 +106,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -117,6 +119,62 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+  data(){
+    return{
+
+      member : {}, // 회원정보
+      rental_num : 0, // 대관번호
+      dto : {}, // 대관내역 상세정보
+      answer : false, // 답변여부
+
+    }
+  },
+  created(){
+
+    this.member = this.$store.state.mypage.member;
+    
+    this.rental_num = this.$route.params.rental_num;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    
+    this.getData();
+
+  },
+  methods:{
+
+    async getData() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/rental/detail/'
+          + this.rental_num
+        ).then(function(resp){
+          console.log(resp);
+          if(resp.status == 200) {
+
+            this.dto = resp.data.dto;
+
+            if(resp.data.dto.answer_content != 'null') {
+              this.answer = true;
+            }
+
+            var regdate = new Date(this.dto.regdate);
+            this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+
+            var rental_date = new Date(this.dto.rental_date);
+            this.dto.rental_date = rental_date.getFullYear() + "-" + ("0" + (rental_date.getMonth() + 1)).slice(-2) + "-" + ("0" + rental_date.getDate()).slice(-2);
+
+          } else {
+            alert('rental detail 에러');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   }
 }
 </script>

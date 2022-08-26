@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store/index.js'
+// import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import LogoutView from '@/views/login/LogoutView.vue'
@@ -18,9 +18,9 @@ import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
 import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
-import showList from '@/views/show/ShowListView.vue'
+import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
-import showReview from '@/views/show/ShowReviewView.vue'
+import reviewList from '@/views/show/ReviewListView.vue'
 import showRefund from '@/views/show/ShowRefundView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
@@ -42,6 +42,10 @@ import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
 import AdminHallDetail from '@/views/admin/Hall/AdminHallDetail.vue'
 import AdminHallInsert from '@/views/admin/Hall/AdminHallInsert.vue'
 import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
+import AdminShowScheduleList from '@/views/admin/Hall/AdminShowScheduleList.vue'
+import AdminShowScheduleDetail from '@/views/admin/Hall/AdminShowScheduleDetail.vue'
+import AdminShowScheduleInsert from '@/views/admin/Hall/AdminShowScheduleInsert.vue'
+import AdminShowScheduleUpdate from '@/views/admin/Hall/AdminShowScheduleUpdate.vue'
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import AdminFAQListView from '@/views/admin/board/FAQList.vue'
@@ -68,12 +72,7 @@ import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
 
 const routes = [
-  //
-  {
-    path: '/moaplace.com/booking/seat',
-    name: 'bookinseat',
-    component: SeatSelect
-  },
+
   {
     path: "/",
     redirect: "/moaplace.com"
@@ -84,12 +83,6 @@ const routes = [
     name: 'moaplace',
     component: MainView
   },
-  {
-    path: '/moaplace.com/booking/payment',
-    name: 'PaymentView',
-    component: PaymentView
-  },
-
   // 로그인
   {
     path: '/moaplace.com/users/login',
@@ -159,7 +152,7 @@ const routes = [
     component: moaplaceNaviView
   },
   {
-    path: '/moaplace.com/moaplace/news',
+    path: '/moaplace.com/moaplace/news/list',
     name: 'moaplaceMoaNews',
     component: moaplaceMoaNews
   },
@@ -181,22 +174,22 @@ const routes = [
     component: moaCalender
   },
   {
-    path: '/moaplace.com/showlist',
-    name: 'showlist',
-    component: showList
+    path: '/moaplace.com/preview',
+    name: 'preview',
+    component: preview
   },
   {
-    path: '/moaplace.com/showdetail',
+    path: '/moaplace.com/show/showdetail',
     name: 'showdetail',
     component: showDetail
   },
   {
-    path: '/moaplace.com/showreview',
-    name: 'showreview',
-    component: showReview
+    path: '/moaplace.com/show/review/list',
+    name: 'reviewlist',
+    component: reviewList
   },
   {
-    path: '/moaplace.com/showrefund',
+    path: '/moaplace.com/show/showrefund',
     name: 'showrefund',
     component: showRefund
   },
@@ -215,39 +208,44 @@ const routes = [
 
   // 고객센터
   {
-    path: '/moaplace.com/boardMain',
+    path: '/moaplace.com/board/main',
     name: 'boardMain',
     component: BoardMainView
   },
   {
-    path: '/moaplace.com/qna/insert',
+    path: '/moaplace.com/board/qna/insert',
     name: 'qnaInsert',
     component: QNAInsertView
   },
   {
-    path: '/moaplace.com/qna/list',
+    path: '/moaplace.com/board/qna/list/:pageNum?/:keyword?',
     name: 'qnaList',
     component: QNAListView
   },
   {
-    path: '/moaplace.com/qna/detail',
+    path: '/moaplace.com/board/qna/detail/:qna_num',
     name: 'qnaDetail',
     component: QNADetailView
   },
   {
-    path: '/moaplace.com/qna/update',
+    path: '/moaplace.com/board/qna/update/:qna_num',
     name: 'qnaUpdate',
     component: QNAUpdateView
   },
   {
-    path: '/moaplace.com/faq',
+    path: '/moaplace.com/board/faq',
     name: 'faq',
     component: FAQView
   },
   {
-    path: '/moaplace.com/manner',
+    path: '/moaplace.com/board/manner',
     name: 'manner',
     component: MannerView
+  },
+  {
+    path: '/moaplace.com/board/membership',
+    name: 'Membership',
+    component: MembershipView
   },
 
   // 마이페이지
@@ -257,64 +255,64 @@ const routes = [
     component: MypageView
   },
   {
-    path: '/moaplace.com/users/performance',
+    path: '/moaplace.com/users/mypage/performance',
     name: 'myperformance',
     component: MyPerformanceView
   },
   {
-    path: '/moaplace.com/users/ticket/list',
+    path: '/moaplace.com/users/mypage/ticket/list',
     name: 'myticketlist',
     component: MyTicketListView
   },
   {
-    path: '/moaplace.com/users/ticket/detail',
+    path: '/moaplace.com/users/mypage/ticket/detail/:booking_num',
     name: 'myticketdetail',
     component: MyTicketDetailView
   },
   {
-    path: '/moaplace.com/users/ticket/cancle',
+    path: '/moaplace.com/users/mypage/ticket/cancle/:booking_num',
     name: 'myticketcancle',
     component: MyTicketCancleView
   },
   {
-    path: '/moaplace.com/users/rental/list',
+    path: '/moaplace.com/users/mypage/rental/list',
     name: 'myrentallist',
     component: MyRentalListView
   },
   {
-    path: '/moaplace.com/users/rental/detail',
+    path: '/moaplace.com/users/mypage/rental/detail/:rental_num',
     name: 'myrentaldetail',
     component: MyRentalDetailView
   },
   {
-    path: '/moaplace.com/users/review/list',
+    path: '/moaplace.com/users/mypage/review/list',
     name: 'myreviewlist',
     component: MyReviewListView
   },
   {
-    path: '/moaplace.com/users/qna/list',
+    path: '/moaplace.com/users/mypage/qna/list',
     name: 'myqnalist',
     component: MyQNAListView
   },
   {
-    path: '/moaplace.com/users/info/edit',
+    path: '/moaplace.com/users/mypage/info/edit',
     name: 'myinfoedit',
     component: MyInfoEditView
   },
   {
-    path: '/moaplace.com/users/withdrawal',
+    path: '/moaplace.com/users/mypage/withdrawal',
     name: 'withdrawal',
     component: WithdrawalView
   },
 
-  // 관리자기능
+  // 관리자기능-대관관리
   {
     path: '/moaplace.com/admin/rental/list',
     name: 'rentallist',
     component: RentalListView
   },
   {
-    path: '/moaplace.com/admin/rental/update',
+    path: '/moaplace.com/admin/rental/detail/:id',
     name: 'rentalupdate',
     component: RentalDetailView
   },
@@ -323,6 +321,7 @@ const routes = [
     name: 'rentalcalendare',
     component: RentalCalendarView
   },
+  // 관리자기능-게시판관리
   {
     path: '/moaplace.com/admin/faq/list',
     name: 'adminFaqList',
@@ -344,10 +343,11 @@ const routes = [
     component: AdminQNAListView
   },
   {
-    path: '/moaplace.com/admin/qna/detail',
+    path: '/moaplace.com/admin/qna/detail/:qna_num',
     name: 'adminQnaDetail',
     component: AdminQNADetailView
   },
+  //관리자기능-공연관리
   {
     path: '/moaplace.com/admin/show/list',
     name: 'adminHallInfoList',
@@ -368,6 +368,28 @@ const routes = [
     name: 'adminHallUpdate',
     component: AdminHallUpdate
   },
+  //관리자기능-일정관리
+  {
+    path: '/moaplace.com/admin/show/schedule/list',
+    name: 'adminShowScheduleList',
+    component: AdminShowScheduleList
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/detail',
+    name: 'adminShowScheduleDetail',
+    component: AdminShowScheduleDetail
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/insert',
+    name: 'adminShowScheduleInsert',
+    component: AdminShowScheduleInsert
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/update',
+    name: 'adminShowScheduleUpdate',
+    component: AdminShowScheduleUpdate
+  },
+  //관리자기능-예매관리
   {
     path: '/moaplace.com/admin/ticket/list',
     name: 'adminTicketList',
@@ -379,42 +401,47 @@ const routes = [
     component: AdminTicketDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/list',
+    path: '/moaplace.com/admin/news/list',
     name: 'adminNewsList',
     component: AdminNewsList
   },
   {
-    path: '/moaplace.com/moaplace/news/detail',
+    path: '/moaplace.com/admin/news/detail',
     name: 'adminNewsDetail',
     component: AdminNewsDetail
   },
   {
-    path: '/moaplace.com/moaplace/news/insert',
+    path: '/moaplace.com/admin/news/insert',
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+
+  // 예매페이지
   {
-    path: '/moaplace.com/moaplace/booking/select',
+    path: '/moaplace.com/booking/select',
     name: 'bookingSelect',
     component: BookingSelect
   },
-  // 예매완료 페이지
   {
-    path: '/moaplace.com/payment/done',
-    name: 'paymentDone',
-    component: PaymentDone
+    path: '/moaplace.com/booking/seat',
+    name: 'bookinseat',
+    component: SeatSelect
   },
   {
-    path: '/moaplace.com/booking/cnt',
-    name: 'bookingCnt',
+    path: '/moaplace.com/booking/count',
+    name: 'bookingCount',
     component: BookingCnt
   },
   {
-    path: '/moaplace.com/membership',
-    name: 'Membership',
-    component: MembershipView
-  }
-
+    path: '/moaplace.com/booking/payment',
+    name: 'PaymentView',
+    component: PaymentView
+  },
+  {
+    path: '/moaplace.com/booking/done',
+    name: 'paymentDone',
+    component: PaymentDone
+  },
 ]
 
 const router = createRouter({
@@ -425,17 +452,16 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach( (to, from, next) => {
-  console.log(to);
-  if(to.fullPath.startsWith("/moaplace.com/admin")) {
-    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
-      next('/moaplace.com')
-    }
-  }
-  console.log(from);
-  if(store.state.login.userInfo == null){
-    next()
-  }
-})
+// router.beforeEach( (to, from, next) => {
+//   if(to.fullPath.startsWith("/moaplace.com/admin")) {
+//     if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+//       next('/moaplace.com')
+//     }
+//   }
+//   if(from.name == 'asefawfawefawef') {
+//     console.log(from.name);
+//   }
+//   next();
+// })
 
 export default router

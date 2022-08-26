@@ -5,7 +5,7 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="예매내역"/>
+      <MySideMenu category="예매내역" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -16,33 +16,33 @@
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col end" colspan="2">Title</th>
+                  <th class="col end" colspan="2">{{ dto.show_name }}</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
                 <tr>
-                  <th class="col-md-2 text-center descth">예매자</th>
-                  <td class="desctd">고양이</td>
+                  <th class="col-md-2 text-center descth">예매번호</th>
+                  <td class="desctd">{{ booking_num }}</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">예매번호</th>
-                  <td class="desctd">220807-0000-0001</td>
+                  <th class="col-md-2 text-center descth">예매일</th>
+                  <td class="desctd">{{ dto.regdate }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">공연일</th>
-                  <td class="desctd">2022.08.09</td>
+                  <td class="desctd">{{ dto.schedule_date }}</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">회차</th>
-                  <td class="desctd">1회차 14:00</td>
+                  <th class="col-md-2 text-center descth">시간</th>
+                  <td class="desctd">{{ dto.schedule_time }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">좌석</th>
-                  <td class="desctd">R석 A01, S석 B01</td>
+                  <td class="desctd">{{ dto.booking_seat }}</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">장소</th>
-                  <td class="desctd">공연장1</td>
+                  <th class="col-md-2 text-center descth">공연장</th>
+                  <td class="desctd">{{ dto.hall_name }}</td>
                 </tr>
               </tbody>
             </table>
@@ -57,27 +57,34 @@
               <tbody class="fs-7">
                 <tr>
                   <th class="col-md-2 text-center descth">결제일</th>
-                  <td class="desctd">2022.08.01</td>
+                  <td class="desctd">{{ dto.payment_date }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">결제금액</th>
-                  <td class="desctd">250,000원</td>
+                  <td class="desctd">{{ dto.booking_price }}원</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">결제수단</th>
-                  <td class="desctd">신용카드</td>
+                  <td class="desctd">{{ dto.payment_method }}</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">사용적립금</th>
+                  <td class="desctd">{{ dto.use_point }}원</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">결제상태</th>
-                  <td class="desctd">입금완료</td>
+                  <td class="desctd">{{ dto.payment_status }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="text-center btnmargin">
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn">예매취소</button>
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">이전으로</button>
+          <RouterLink :to="`/moaplace.com/users/mypage/ticket/cancle/${ booking_num }`" v-show="cancle">
+            <button type="button" class="btn btn-outline-secondary fw-bold mybtn">예매취소</button>
+          </RouterLink>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn notcancle" v-show="!cancle" disabled>예매취소</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myticketlist' })">목록으로</button>
         </div>
       </div>
     </div>
@@ -87,6 +94,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -99,6 +107,68 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+  data(){
+    return{
+
+      member : {}, // 회원정보
+      booking_num : 0, // 예매번호
+      dto : {}, // 예매내역 상세정보
+      cancle : true, // 예매취소 가능여부
+
+    }
+  },
+  created(){
+
+    this.member = this.$store.state.mypage.member;
+    
+    this.booking_num = this.$route.params.booking_num;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    
+    this.getData();
+
+  },
+  methods:{
+
+    async getData() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/ticket/detail/'
+          + this.booking_num
+        ).then(function(resp){
+
+          if(resp.status == 200) {
+
+            this.dto = resp.data.dto;
+            this.cancle = resp.data.cancle;
+
+            var regdate = new Date(this.dto.regdate);
+            this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+
+            var schedule_date = new Date(this.dto.schedule_date);
+            this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+
+            var payment_date = new Date(this.dto.payment_date);
+            this.dto.payment_date = payment_date.getFullYear() + "-" + ("0" + (payment_date.getMonth() + 1)).slice(-2) + "-" + ("0" + payment_date.getDate()).slice(-2);
+
+            var price = this.dto.booking_price;
+            this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+            var use_point = this.dto.use_point;
+            this.dto.use_point = use_point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+          } else {
+            alert('ticket detail 에러');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   }
 }
 </script>
@@ -147,6 +217,10 @@ export default {
         &:hover {
           color: white;
           background: $brown;
+        }
+        &.notcancle {
+          color: #ccc;
+          border-color: #ccc;
         }
       }
       .mybtn2 {
