@@ -219,9 +219,6 @@ export default {
       let detailAddress = formEl.detailAddress;
       let totalAddress = "";
 
-      console.log(gender.value)
-
-
       // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
       let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
       // 비밀번호 정규식(영문자, 숫자, 특수문자 하나이상 8~16글자)
@@ -269,7 +266,7 @@ export default {
       idHelp.innerText = "";
 
       if(!regExpPassword.test(pwd.value)) {
-        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 16자 이하로 입력하세요.";
+        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 20자 이하로 입력하세요.";
         pwd.focus();
         window.scrollTo(0, 400);
         return;
