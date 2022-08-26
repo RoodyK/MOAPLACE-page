@@ -105,12 +105,12 @@ export default {
           },
           {
             name: '게시판관리',
-            href: '/moaplace.com/moaplace/news/list',
+            href: '/moaplace.com/admin/news/list',
             isActive: false,
             subMenu:[
               {
                 name: '새소식',
-                href:'/moaplace.com/moaplace/news/list',
+                href:'/moaplace.com/admin/news/list',
               },
               {
                 name: '1:1문의',
