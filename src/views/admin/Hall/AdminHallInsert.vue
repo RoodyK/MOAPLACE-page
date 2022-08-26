@@ -62,19 +62,22 @@
             <tr>
               <th>R석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="rPrice" class="seatPrice" @keyup="seatRPrice($event.currentTarget)"><p class="unitP">원</p>
+                <input type="text" v-model="rPrice" maxlength="10" class="seatPrice" @keyup="seatRPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>S석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="sPrice" class="seatPrice" @keyup="seatSPrice($event.currentTarget)"><p class="unitP">원</p>
+                <input type="text" v-model="sPrice" maxlength="10" class="seatPrice" @keyup="seatSPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>A석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="aPrice" class="seatPrice" @keyup="seatAPrice($event.currentTarget)"><p class="unitP">원</p>
+                <input type="text" v-model="aPrice" maxlength="10" class="seatPrice" @keyup="seatAPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
