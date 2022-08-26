@@ -7,7 +7,7 @@
                 <div class="list-top">
                   <div class="select-list">
                     <label for="status">공연상태</label>
-                    <select v-model="status">
+                    <select v-model="status" @change="selectStatus()">
                         <option v-for="(item,index) in statusList" :key="index" :value="item.status" id="status">{{item.statusName}}</option>
                     </select>
                   </div>
@@ -15,13 +15,13 @@
                       <select v-model="selectField">
                         <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
                       </select>
-                      <input type="text" v-model="search">
-                        <button>
-                            검색
-                            <i class="material-icons">
-                                search
-                            </i>
-                        </button>
+                      <input type="text" :value="search">
+                      <button @click="inputSearch($event)">
+                          검색
+                          <i class="material-icons">
+                              search
+                          </i>
+                      </button>
                       <button class="insertBtn" @click='goInsert'>공연등록</button>
                     </div>
                 </div>
@@ -35,14 +35,14 @@
                           <p>공연상태</p>
                           <p>수정</p>
                   </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="viewDetail(item.num)">
-                            <p>{{item.num}}</p>
-                            <p>{{item.hall}}</p>
-                            <p>{{item.title}}</p>
-                            <p>{{item.startDate}}</p>
-                            <p>{{item.endDate}}</p>
-                            <p>{{item.status=='Y'?'진행중':'종료'}}</p>
-                            <p @contextmenu.prevent="stop($event)"><button @click="updateDetail(item.num)">수정</button></p>
+                        <div v-for="item in list" :key="item.num" class="t-row tbody">
+                            <p @click="viewDetail(item.num)">{{item.num}}</p>
+                            <p @click="viewDetail(item.num)">{{item.hall}}</p>
+                            <p @click="viewDetail(item.num)">{{item.title}}</p>
+                            <p @click="viewDetail(item.num)">{{item.startDate}}</p>
+                            <p @click="viewDetail(item.num)">{{item.endDate}}</p>
+                            <p @click="viewDetail(item.num)">{{item.status=='Y'?'진행중':'종료'}}</p>
+                            <p><button @click="updateDetail(item.num)">수정</button></p>
                         </div>
                         <ul class="paging">
                             
@@ -70,22 +70,22 @@
             data() {
                 return {
                     
-                    status: 'all',
+                    status: '',
                     statusList:[
                         {status: 'all', statusName: '전체'},
                         {status: 'Y', statusName: '진행중'},
                         {status: 'N', statusName: '종료'}
                     ],
 
-                    selectField: 'title',
+                    selectField: '',
                     fieldList:[
                         {field: 'hall',fieldName:'공연장'},
                         {field: 'title',fieldName:'공연명'},
                         {field: 'showNum',fieldName:'공연번호'}
                     ],
                     
-                    search:null,
-                    pageNum:1,
+                    search:'',
+                    pageNum:'',
                     list: [],
                     pageInfo:[],
                     pageNums:[]
@@ -94,11 +94,6 @@
             mounted(){
               this.viewList();
               
-            },
-            watch:{
-              pageNum(newV){
-                console.log(newV);
-              }
             },
             methods:{
 
@@ -122,10 +117,13 @@
               },
 
               movePage(pNum){
-                axios.get('/moaplace.com/admin/show/list/'+pNum).
+                axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
@@ -147,20 +145,65 @@
 
               viewDetail(num){
 
-                this.$router.push({name:'adminHallDetail',params:{showNum:num}});
+                this.$router.push(
+                  {
+                    name:'adminHallDetail',
+                    params:{
+                      showNum:num,
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      selectField:this.selectField,
+                      search:this.search
+                      }});
               },
 
-              updateDetail(num,){
+              updateDetail(num){
 
                 this.$router.push({name:'adminHallUpdate',params:{showNum:num}});
               },
 
-              viewList(){
+              inputSearch(e){
 
-                axios.get('/moaplace.com/admin/show/list/' + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                // 부모의 바로 이전 형제 요소 가져오기(input)
+                this.search=e.target.parentNode.previousSibling.value;
+                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+                  console.log(this.pageNum);
+                }.bind(this))
+              },
+
+              selectStatus(){
+
+                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+                  console.log(this.pageNum);
+                }.bind(this))
+              },
+
+              viewList(){
+                axios.get('/moaplace.com/admin/show/list'+ '/'  + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
@@ -262,7 +305,7 @@
                           width: 280px;
                           box-sizing: border-box;
                           height: 32px;
-                          padding: 4px 32px 4px 90px;
+                          padding: 4px 32px 4px 110px;
                           &:focus{
                               outline-color: $black;
                           }
@@ -321,6 +364,8 @@
                                 background-color: rgb(250, 250, 250);
                                 border: 1px solid rgba(51, 51, 51, 0.2);
                                 padding: 5px 20px;
+                                z-index: 9999;
+                                
                             }
                         }
                     }

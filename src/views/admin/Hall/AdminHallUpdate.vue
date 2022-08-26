@@ -184,7 +184,7 @@
                       border: none;
                       }
                       input[type=text] {
-                        border:1px solid gainsboro;
+                        border:1px solid rgba($black, 0.3);
                         padding: 8px;
                       }
                       input[type=file] {
@@ -206,9 +206,10 @@
 
                         &:checked{
                           background-color: $black;
+                          border-color: $black;
                         }
                         &:focus{
-                          border-color:gainsboro;
+                          border-color: #eee;
                           box-shadow: 0 0 0 0.25rem rgb(156 156 156 / 25%);
                           background-image:url("@/store/circle.svg")
                         }

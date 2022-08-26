@@ -41,9 +41,9 @@
             </tr>
             <tr>
               <th>러닝타임</th>
-              <td><input type="text" v-model.number="runningTime" class="rntime">분</td>
+              <td><input type="text" v-model="runningTime" class="rntime" @keyup="rnTime($event.currentTarget.value)"><p class="unitP">분</p></td>
               <th>인터미션</th>
-              <td><input type="text" v-model.number="intermission" class="rntime">분</td>
+              <td><input type="text" v-model="intermission" class="rntime" @keyup="rnTime($event.currentTarget.value)"><p class="unitP">분</p></td>
             </tr>
             <tr>
               <th>상연등급</th>
@@ -62,19 +62,19 @@
             <tr>
               <th>R석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="rPrice" class="seatPrice">원
+                <input type="text" v-model="rPrice" class="seatPrice" @keyup="seatRPrice($event.currentTarget)"><p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>S석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="sPrice" class="seatPrice">원
+                <input type="text" v-model="sPrice" class="seatPrice" @keyup="seatSPrice($event.currentTarget)"><p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>A석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="aPrice" class="seatPrice">원
+                <input type="text" v-model="aPrice" class="seatPrice" @keyup="seatAPrice($event.currentTarget)"><p class="unitP">원</p>
               </td>
             </tr>
             <tr>
@@ -133,21 +133,30 @@
           detailImgs:[]
         }
       },
+
+      filters:{
+        comma(val){
+          return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      },
+
       watch:{
-        runningTime(newV){
-          if(isNaN(newV)){
-            alert('숫자만 입력하세요');
-            this.runningTime='';
+        runningTime(newV,oldV){
+          if(newV.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.runningTime=oldV;
           }
         },
-        intermission(newV){
-          if(isNaN(newV)){
-            alert('숫자만 입력하세요');
-            this.runningTime='';
+        intermission(newV,oldV){
+          console.log(oldV);
+          if(newV.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.intermission=oldV;
           }
         }
       },
       methods:{
+
         thumbGo(e){
           let fr = new FileReader();
 
@@ -191,9 +200,9 @@
             running_time:this.runningTime,
             show_thumbnail:this.thumb,
             show_detail_img:this.detailImgs,
-            rprice: this.rPrice,
-            sprice: this.sPrice,
-            aprice: this.aPrice
+            rprice: this.rPrice.replace(/(,)/g,""),
+            sprice: this.sPrice.replace(/(,)/g,""),
+            aprice: this.aPrice.replace(/(,)/g,"")
           }),
           {
             headers:{'Content-Type':'application/json'},
@@ -222,7 +231,42 @@
             pageNum:1
           }
           })
+        },
+        seatRPrice(e){
+
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.rPrice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.rPrice=e.value
+          }
+        },
+        seatSPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.sPrice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.sPrice=e.value
+          }
+        },
+        seatAPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.aPrice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.aPrice=e.value
+          }
         }
+        
+
     }
   }
 </script>
@@ -276,13 +320,28 @@
                       margin-right: 16px;
                       border: none;
                       }
+                      .rntime{
+                          width:56px;
+                          text-align: right;
+                          padding-right: 8px;
+                        }
+                      .seatPrice{
+                        width:104px;
+                        text-align: right;
+                        padding-right: 8px;
+                      }
                       input[type=text] {
                         border: 1px solid gainsboro;
+                        
                       }
                       img{
                         width: 240px;
                         display: block;
                         margin-top:8px;
+                      }
+                      .unitP{
+                        display: inline;
+                        margin-left: 8px;
                       }
                     }
                     &:nth-child(3){
