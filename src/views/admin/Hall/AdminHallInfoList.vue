@@ -261,15 +261,18 @@
                       justify-content: flex-start;
                       label{
                         display: flex;
-                        padding: 4px 0 0 8px;
-                        font-weight: bold;
                         font-size: 16px;
+                        align-items: center;
                       }
                       select{
                         display: flex;
                         justify-content: flex-start;
                         margin-left:16px;
                         padding: 0 8px;
+                        font-size: 16px;
+                        &:focus{
+                              outline-color: $black;
+                          }
 
                       }
                     }
@@ -285,9 +288,10 @@
                       select {
                           position: absolute;
                           top: 8px;
-                          right: 304px;
+                          right: 320px;
                           border-right: 1px solid #ddd;
-                          padding: 0 8px 0 0;
+                          font-size: 16px;
+                          padding: 2px 8px 0 0;
                           &:focus{
                               outline: none;
                           }
@@ -297,14 +301,15 @@
                           background: transparent;
                           font-size: 0;
                           position: absolute;
-                          top: 4px;
+                          top: 8px;
                           right: 128px;
                           color: rgba($black, 0.9);
                       }
                       input {
-                          width: 280px;
+                          width: 300px;
                           box-sizing: border-box;
-                          height: 32px;
+                          font-size: 16px;
+                          height: 40px;
                           padding: 4px 32px 4px 110px;
                           &:focus{
                               outline-color: $black;
@@ -315,9 +320,9 @@
                           color: white;
                           font-size: 16px;
                           width: 104px;
-                          height: 32px;
                           position: unset;
                           margin-left: 16px;
+                          padding: 8px 0;
                       }
                   }
                 }
@@ -327,14 +332,25 @@
                         display: flex;
                         flex-flow: row wrap;
                         padding: 8px 0;
-                        font-size: 14px;
+                        font-size: 16px;
                         &.thead {
                             background: $black;
                             color: #fff;
+                             > & :first-child{
+                              width:10%;
+                            }
+                            > & :nth-child(3){
+                              width:calc(90%/3.95);
+                            }
+                            > & :last-child{
+                              width:10%;
+                            }
                         }
                         &.tbody {
                             padding: 16px 0;
                             border-bottom: 1px solid rgba($black, 0.2);
+                            display: flex;
+                            align-items: center;
                             cursor: pointer;
                             &:hover {
                                 background: #eee;
@@ -343,10 +359,33 @@
                                 border: 1px solid #333;
                                 padding: 4px;
                             }
-                            p{
+                            &:p{
                                 display: flex;
                                 align-items: center;
+                                text-align: center;
+                                font-size: 16px;
+                                overflow: hidden;
+                                text-overflow:ellipsis;
+                                white-space:nowrap;
+                                padding: 4px;
+                            }
+                            > & :first-child{
+                              width:10%;
+                            }
+                            > & :nth-child(3){
+                              width:calc(90%/3.95);
+                            }
+                            > & :last-child{
+                              width:10%;
+                              display: flex;
+                              justify-content: center;
+                              >& button{
+                                background-color: rgb(250, 250, 250);
+                                border: 1px solid rgba(51, 51, 51, 0.2);
+                                padding: 4px 40px 4px 40px;
+                                display: flex;
                                 justify-content: center;
+                            }
                             }
                         }
                         & > p,
@@ -360,13 +399,7 @@
                             & {
                                 padding-top: 4px;
                             }
-                            button{
-                                background-color: rgb(250, 250, 250);
-                                border: 1px solid rgba(51, 51, 51, 0.2);
-                                padding: 5px 20px;
-                                z-index: 9999;
-                                
-                            }
+                            
                         }
                     }
                     .paging {
