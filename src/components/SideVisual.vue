@@ -45,7 +45,7 @@ export default {
                 {
                     name: 'show',
                     taps:[
-                        {title: '공연목록', href: '/moaplace.com/showlist'},
+                        {title: '공연목록', href: '/moaplace.com/preview'},
                         {title: '월간일정', href: '/moaplace.com/calendar'},
                     ]
                 },

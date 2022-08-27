@@ -13,23 +13,23 @@
           <div class="top_right">
             <div class="btn_box">
               <label class="mybtn">
-                <input type="radio" name="period" class="all" @click="all">
+                <input type="radio" name="period" class="all" @click="all" @change="change">
                 <span>전체</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="week" checked>
+                <input type="radio" name="period" @click="week" @change="change" checked>
                 <span>이번주</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="next_week">
+                <input type="radio" name="period" @click="next_week" @change="change">
                 <span>다음주</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="month">
+                <input type="radio" name="period" @click="month" @change="change">
                 <span>1개월</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="three_month">
+                <input type="radio" name="period" @click="three_month" @change="change">
                 <span>3개월</span>
               </label>
             </div>
@@ -43,9 +43,9 @@
           <table>
             <tr>
               <td rowspan="2" id="calendar">
-                <input type="date" v-model="start_date">
+                <input type="date" v-model="start_date" @change="change">
                 -
-                <input type="date" v-model="end_date" :min="start_date">
+                <input type="date" v-model="end_date" :min="start_date" @change="change">
               </td>
               <td>
                 <div class="category_box">
@@ -89,7 +89,7 @@
           </table>
         </div>
       </div>
-      <div id=list>
+      <div id="list" v-if="show_list.length!=0">
         <div class="show" v-for="show in show_list" :key="show.show_num">
           <div class="img">
             <div class="pop" v-if="show.show_check=='Y'">
@@ -110,6 +110,9 @@
           <h6 class="vocal" v-else-if="show.genre_num==7">무용</h6>
           <h5>{{show.show_name}}</h5>
         </div>
+      </div>
+      <div class="list_null" v-else>
+        <h6>등록된 공연이 없습니다.</h6>
       </div>
       <ul class="paging">
         <li>[이전]</li>
@@ -167,12 +170,22 @@ export default {
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
+      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
+      .then((resp) => {
+        this.show_list = resp.data;
+      }
+    )
     },
     prev(){
       this.select_year--;
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
+      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
+      .then((resp) => {
+        this.show_list = resp.data;
+      }
+    )
     },
     all(){
       this.start_date=new Date().getFullYear()+"-01-01";
@@ -222,6 +235,13 @@ export default {
         this.categoty_another6=false;
         this.categoty_another7=false;
       }
+    },
+    change(){
+      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
+        .then((resp) => {
+          this.show_list = resp.data;
+        }
+      )
     }
   }
 }
@@ -263,13 +283,6 @@ export default {
   td{
     border: 1px solid rgba($black, 0.5);
   }
-  h6{
-    width: 70px;
-    text-align: center;
-    margin-top: 16px;
-    padding: 4px 0;
-    font-weight: bold;
-  }
   .play{
     border: 1px solid #FECB65;
     color: #FECB65;
@@ -300,15 +313,21 @@ export default {
   }
   #list {
     margin-top: 25px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
     position: relative;
     .show{
       margin-top: 25px;
-      width: calc((100% - (24px * 3)) / 4);
       h5{
         font-size: 22px;
+        font-weight: bold;
+      }
+      h6{
+        width: 70px;
+        text-align: center;
+        margin-top: 16px;
+        padding: 4px 0;
         font-weight: bold;
       }
       .img{
@@ -370,7 +389,6 @@ export default {
       background: url(@/assets/moaplace/search.png) no-repeat center;
     }
   }
-  
   table{
     margin-top: 30px;
     width: 100%;
@@ -475,6 +493,14 @@ export default {
           cursor: pointer;
         }
       }
+    }
+  }
+  .list_null{
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 24px;
+    h6{
+      font-weight: bold;
     }
   }
 </style>

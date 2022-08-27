@@ -112,6 +112,10 @@ export default {
         }
         commit('loginSuccess', info);
         
+        commit('updateRoles', response.data.roles);
+
+        // router.push('/moaplace.com')
+
       }catch(error) {
         console.log(error);
       }
