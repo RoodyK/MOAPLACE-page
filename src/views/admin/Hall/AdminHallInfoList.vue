@@ -92,8 +92,13 @@
                 }
             },
             mounted(){
-              this.viewList();
-              
+
+              this.viewList(
+              this.$route.params.pageNum,
+              this.$route.params.status,
+              this.$route.params.selectField,
+              this.$route.params.search);
+
             },
             methods:{
 
@@ -103,7 +108,15 @@
 
               goInsert(){
 
-                this.$router.push({name:'adminHallInsert'})
+                this.$router.push({
+                  name:'adminHallInsert',
+                  params:{
+                    pageNum:this.pageNum,
+                    status:this.status,
+                    field:this.selectField,
+                    search:this.search
+                    }
+                  })
 
               },
 
@@ -152,14 +165,23 @@
                       showNum:num,
                       pageNum:this.pageNum,
                       status:this.status,
-                      selectField:this.selectField,
+                      field:this.selectField,
                       search:this.search
                       }});
               },
 
               updateDetail(num){
 
-                this.$router.push({name:'adminHallUpdate',params:{showNum:num}});
+                console.log("업데이트넘",num)
+                this.$router.push(
+                  {
+                    name:'adminHallUpdate',
+                    params:{
+                      showNum:num,
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      field:this.selectField,
+                      search:this.search}});
               },
 
               inputSearch(e){
@@ -176,7 +198,7 @@
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
-                  console.log(this.pageNum);
+
                 }.bind(this))
               },
 
@@ -192,12 +214,18 @@
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
-                  console.log(this.pageNum);
+
                 }.bind(this))
               },
 
-              viewList(){
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+              viewList(pageNum,status,field,search){
+
+                if(pageNum!=null)this.pageNum = pageNum;
+                if(status!=null)this.status = status;
+                if(field!=null)this.selectField = field;
+                if(search!=null)this.search = search;
+
+                axios.get('/moaplace.com/admin/show/list/'  + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
@@ -207,7 +235,7 @@
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
-                  console.log(this.pageNum);
+
                 }.bind(this))
               }
             }
