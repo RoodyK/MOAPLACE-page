@@ -31,20 +31,33 @@
         </div>
       </div>
 
-      <div class="kakao-login">
-        
-        <button type="button" @click="local()">
+      <!-- <div class="kakao-login">
+        <button type="button" @click="kakaoLogin()">
           <div class="img"></div>
           <p>Kakao 로그인</p>
         </button>
+      </div> -->
+
+      <div class="kakao-login">
+        <a :href="kakaoLogin">
+          <div class="img"></div>
+          <p>Kakao 로그인</p>
+        </a>
       </div>
 
-      <div class="google-login">
+      <!-- <div class="google-login">
         <button>
           <div class="img"></div>
           <p>Google 로그인</p>
         </button>
-      </div>
+      </div> -->
+
+      <!-- <div class="google-login">
+        <a>
+          <div class="img"></div>
+          <p>Google 로그인</p>
+        </a>
+      </div> -->
       
     </div>
     <AppFooter/>
@@ -64,6 +77,7 @@ export default {
     SideVisual
   },
   mounted() {
+    
   },
   data() {
     return {
@@ -82,13 +96,43 @@ export default {
           name : '회원가입',
           href : '/moaplace.com/users/join/same'
         }
-      ]
+      ],
+      client_id : "88cd0c5be8453ab8d6153e082caf4cb0",
+      redirect_uri : 'http://localhost:8080/moaplace.com/users/join/main'
+    }
+  },
+  computed: {
+    kakaoLogin() {
+      return `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&response_type=code&scope=account_email,gender`
     }
   },
   methods: {
-    local() {
-      console.log(localStorage.getItem("access_token"))
-    },
+    // kakaoLogin() {
+      
+    //   window.Kakao.Auth.login({
+    //       // 동의항목 페이지에 있는 활성화된 추가 동의 항목 ID값
+    //       scope:"account_email, gender",
+    //       // 로그인 성공 시 토큰을 받을 콜백함수
+    //       success: function(response){
+    //         console.log(response);
+    //         // 카카오 사용자 정보 가져오기
+    //         window.Kakao.API.request({
+    //           // url은 고정
+    //           url:'/v2/user/me',
+    //           success: res => {
+    //             // 사용자 정보 가져오기(동작확인을 위하여 콘솔로 출력)
+    //             // 사용자 정보는 자신이 원하는 방식으로 ajax나 form태그를 활용해서 처리하면 됨.
+    //             console.log(res.kakao_account);
+                
+    //           },
+    //           // API호출이 실패할 때 실행되는 콜백함수
+    //           fail: function(){
+    //             alert('카카오 로그인에 실패했습니다.');
+    //           }
+    //         });
+    //       }
+    //     });
+    // },
     async isLogin() {
       if(this.loginId == null || this.loginId == "") {
         alert("아이디를 입력하세요.");
@@ -172,9 +216,9 @@ export default {
     }
 
     .kakao-login, .google-login {
-      
       margin: 0 auto;
-      button {
+      a {
+        display: block;
         width: 400px;
         height: 70px;
         border: none;
@@ -184,6 +228,7 @@ export default {
         position: relative;
         box-shadow: 2px 3px 5px #ccc;
         p {
+          height: 70px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -193,7 +238,7 @@ export default {
     }
     .kakao-login {
       margin-bottom: 20px;
-      button {
+      a {
         background-color: #FEE500;
         .img {
           width: 40px;
@@ -208,7 +253,7 @@ export default {
     }
     .google-login {
       margin-bottom: 100px;
-      button {
+      a {
         background-color: #fff;
         .img {
           width: 55px;
