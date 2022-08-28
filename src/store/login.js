@@ -15,6 +15,9 @@ export default {
   // methods 역할
   // state의 값을 변경해주는 용도 commit()을 사용해서 실행
   mutations: {
+    loginState(state){
+      state.isLogin = true;
+    },
     loginSuccess(state, payload) {
       state.isLogin = true;
       state.userInfo = payload
@@ -116,6 +119,12 @@ export default {
         console.log(error);
       }
 
+    },
+    checkLogin({commit}) {
+      const token = localStorage.getItem("access_token");
+      if(token == null) return;
+
+      commit('loginState');
     },
     logout({commit}) {
       localStorage.removeItem("access_token");
