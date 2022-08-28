@@ -183,7 +183,7 @@ export default {
         },
       })
       .then((response) => {
-
+        console.log(response.data); // 인증번호
         this.authNumber = response.data;
       });
     },

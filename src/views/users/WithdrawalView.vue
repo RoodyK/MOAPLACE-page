@@ -22,8 +22,10 @@
                 한 번 삭제된 정보는 복구가 불가능하며 같은 아이디로 재가입할 수 없습니다.<br>
                 <br/>
               </span>
-              <div><input type="checkbox"> 안내사항을 모두 확인했으며 이에 동의합니다.</div>
-              <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">탈퇴하기</button>
+              <div><input type="checkbox" v-model="agree"> 안내사항을 모두 확인했으며 이에 동의합니다.</div>
+              <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="withdraw()">
+                탈퇴하기
+              </button>
             </div>
           </div>
         </div>
@@ -35,6 +37,7 @@
 </template>
 
 <script>
+import axios from "@/axios/axios.js"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -47,6 +50,35 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+
+  data() {
+    return {
+      agree: false
+    }
+  },
+  methods: {
+    withdraw() {
+      if(this.agree == false) {
+        alert("회원탈퇴 동의 후 버튼을 눌러주세요.");
+        return;
+      }
+
+      let token = localStorage.getItem("access_token");
+
+      let config = {
+        headers: {
+          Authorization : token
+        }
+      }
+
+      axios.get("/moaplace.com/users/mypage/withdrawal", config)
+      .then(response => {
+        if(response.data == "success") {
+          this.$store.dispatch("login/logout");
+        }
+      })
+    }
   }
 }
 </script>
