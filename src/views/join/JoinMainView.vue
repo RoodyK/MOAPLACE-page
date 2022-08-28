@@ -107,7 +107,7 @@ export default {
     }
   },
   mounted() {
-
+    console.log(new URLSearchParams(location.search).get("code"));
   },
   methods: {
     execDaumPostcode() {
