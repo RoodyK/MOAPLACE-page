@@ -150,7 +150,6 @@ export default {
 
       axios.get("/moaplace.com/users/join/checkId/"+ idEl.value)
       .then(function(response) {
-        console.log(response.data);
         if(response.data == "duple") {
           idHelp.innerText = "중복된 아이디 입니다.";
           this.isDuplication = false;
@@ -184,13 +183,13 @@ export default {
         },
       })
       .then((response) => {
-        console.log(response.data);
+
         this.authNumber = response.data;
       });
     },
     // 이메일 인증 확인
     confirmEmailAuth() {
-      console.log(this.authNumber);
+      // console.log(this.authNumber);
       const authenticationInputEl = document.querySelector("#authenticationInput");
       const authenticationHelpEl = document.querySelector(".authenticationHelp");
 
