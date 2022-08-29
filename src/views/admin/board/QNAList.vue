@@ -4,11 +4,14 @@
         <main id="main">
             <div class="inner">
                 <h2 class="title">1:1문의</h2>
+                
                 <div class="list-top">
                     <div class="top-1">
                         <select v-model="sort_num" @change="searchList()">
-                            <option value="0"> 구분 </option>
-                            <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">{{sort.sort_name}} 문의</option>
+                            <option value="0"> 전체 </option>
+                            <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+                            {{sort.sort_name}} 문의
+                            </option>
                         </select>
                     </div>
 
@@ -19,7 +22,7 @@
                             <option value="member_name">이름</option>
                             <option value="qna_title">제목</option>
                         </select>
-                        <input type="text" v-model="keyword" @keyup.enter="searchList()">
+                        <input type="text" v-model="newKeyword" @keyup.enter="searchList()">
                         <i class="material-icons" @click="searchList()">search</i>
                     </div>
                 </div>
@@ -35,15 +38,16 @@
                         <p>답변일자</p>
                         <p>답변상태</p>
                     </div>
-                    <div v-for="i in list" :key="i" class="t-row tbody">
+                    <div v-for="i in list" :key="i" class="t-row tbody" 
+                    @click="$router.push({name: 'adminQnaDetail', params: {qna_num:i.qna_num}})">
                         <p>{{i.rnum}}</p>
                         <p>{{i.sort_name}} 문의</p>
                         <p>{{i.member_id}}</p>
                         <p>{{i.member_name}}</p>
-                        <p><RouterLink :to="`/moaplace.com/admin/qna/detail/${i.qna_num}`">{{i.qna_title}}</RouterLink></p>
+                        <p>{{i.qna_title}}</p>
                         <p>{{i.qna_regdate}}</p>
                         <p>{{i.answer_regdate}}</p>
-                        <div>
+                        <div @click.prevent="prevent($event)">
                             <select v-model="i.qna_state" @change="changeState(i.qna_state, i.qna_num)">
                                 <option v-for="s in states" :key="s" :value="s">
                                     {{s}}
@@ -51,6 +55,13 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- 리스트 내역 없을 때 -->
+                    <div class="empty-list" v-if="list.length < 1">
+                        <i class="material-symbols-outlined">info</i>
+                        <p> 문의 내역이 존재하지 않습니다. </p>
+                    </div>
+
                 </div>
 
                 <!-- 페이징 -->
@@ -89,33 +100,17 @@
         },
         data() {
             return {
-                sort_list:[
-                    {sort_num:1, sort_name:'공연'},
-                    {sort_num:2, sort_name:'대관'},
-                    {sort_num:3, sort_name:'예매'},
-                    {sort_num:4, sort_name:'관람'},
-                    {sort_num:5, sort_name:'회원'},
-                    {sort_num:6, sort_name:'기타'}
-                ],
+                sort_list:[],
                 states: [ // 답변상태 목록
                     '대기중',
                     '처리중',
                     '답변완료'
                 ],
-                list:[{ // 리스트
-                        rnum:0,
-                        sort_name: '',
-                        member_id: '',
-                        member_name: '',
-                        qna_num: 0,
-                        qna_title: '',
-                        qna_regdate: '',
-                        answer_regdate: '',
-                        qna_state: ''
-                    }],
+                list:[],
                 pageNum: 1, // 현재 페이지
                 field:'', // 검색필드
                 keyword:'', // 검색어
+                newKeyword:'', // 검색어 변경
                 startPage:1, // 페이지 시작번호
                 endPage:1, // 페이지 마지막번호
                 pageCnt:1, // 전체 페이지 개수
@@ -132,9 +127,25 @@
             }
 
             console.log(this.pageNum, this.field, this.keyword);
+            this.sortList(); // 구분목록 불러오기
             this.qnaList(); // 리스트 불러오기
         },
         methods: {
+            async sortList() { // 구분목록 불러오기
+                try {
+                    await axios.get('/moaplace.com/board/sort/list').then(function(resp){
+                        if(resp.data!=null || resp.data!=''){
+                        this.sort_list = resp.data;
+
+                        } else {
+                        alert('구분목록 로딩에 실패하였습니다.');
+                        }
+                    }.bind(this));
+
+                } catch (error) {
+                    console.log(error);
+                }                
+            },            
             async qnaList() {
                 try { 
                     await axios.get("/moaplace.com/admin/qna/list", {params:
@@ -148,6 +159,7 @@
                         this.pageNum = resp.data.pageNum, // 페이지 번호
                         this.field = resp.data.field, // 검색어
                         this.keyword = resp.data.keyword, // 검색어
+                        this.newKeyword = resp.data.keyword, // 검색어 변경
                         this.list = resp.data.list, // 문의글 리스트
                         this.startPage = resp.data.startPage, // 페이지 시작번호
                         this.endPage = resp.data.endPage, // 페이지 마지막번호
@@ -164,6 +176,7 @@
             },
             searchList(){
                 this.pageNum = 1;
+                this.keyword = this.newKeyword; // 검색어 변경
                 console.log(this.field, this.keyword, this.sort_num);
                 this.qnaList();
             },
@@ -194,7 +207,10 @@
                 } else {
                     return;
                 }
-            }
+            },
+            prevent(e) {
+                e.stopPropagation();
+            },
         }
     }
 </script>
@@ -243,7 +259,7 @@
                     font-size: 14px;
 
                     .top-1 {
-                        width:100px;
+                        width:120px;
                         box-sizing: border-box;
                         border: 1px solid rgba($black, 0.5);
                         
@@ -291,10 +307,6 @@
                             color: #fff;
                         }
                         &.tbody {
-                            a {
-                                text-decoration: none;
-                                color: $black;
-                            }
                             padding: 16px 0;
                             border-bottom: 1px solid rgba($black, 0.2);
                             cursor: pointer;
@@ -330,6 +342,16 @@
                             }
                         }
                     }
+                }
+                .empty-list{
+                  height: 300px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  border-bottom: 1px solid rgba($black, 0.1);
+                  i{
+                    margin-right:8px;
+                  }
                 }
                 #mypaging{
                     display: flex;

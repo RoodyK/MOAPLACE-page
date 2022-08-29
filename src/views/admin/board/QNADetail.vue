@@ -3,7 +3,7 @@
         <SideMenu largeCategory="게시판관리" mediumCategory="1:1문의"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">1:1문의 > 상세보기</h2>
+                <h2 class="title">1:1문의</h2>
 
                 <div class="state-box">
                     <span>문의상태</span>    
@@ -51,7 +51,7 @@
                                 <td>{{detail.qna_title}}</td>
                             </tr>
                             <tr>
-                                <th>내용</th>
+                                <th class="content">내용</th>
                                 <td>{{detail.qna_content}}</td>
                             </tr>
                             <tr>
@@ -73,7 +73,7 @@
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor :height="300" v-model:content="answer_content" contentType="html"/></td>
+                                <td><TextEditor height="300" v-model:content="answer_content" contentType="html"/></td>
                                 <!-- <td><textarea cols="120" rows="10" v-model="answer_content"></textarea></td> -->
                             </tr>
                             <tr>
@@ -90,12 +90,11 @@
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer.answer_title">
-                                </td>
+                                <td><input type="text" v-model="answer.answer_title"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor :height="300" v-model:content="answer.answer_content" contentType="html"/></td>
+                                <td><TextEditor height="300" v-model:content="answer.answer_content" contentType="html"/></td>
                                 <!-- <td><textarea cols="120" rows="10" v-model="answer.answer_content"></textarea></td> -->
                             </tr>
                             <tr>
@@ -121,7 +120,7 @@
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
     import TextEditor from '@/components/TextEditor.vue'
-    import axios from '../../../axios/axios.js'
+    import axios from '@/axios/axios.js'
 
     export default {
         components: {
@@ -394,7 +393,11 @@
                                 text-align: center;
                                 vertical-align: middle;
                             }
+                            .content {
+                                height: 300px;
+                            }
                             td{
+                                vertical-align: middle;
                                 input {
                                     border: 1px solid rgba($black,0.3);
                                     padding: 5px;

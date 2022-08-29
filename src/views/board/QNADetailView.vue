@@ -69,7 +69,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import axios from '../../axios/axios.js'
+import axios from '@/axios/axios.js'
 
 export default {
   components: {
