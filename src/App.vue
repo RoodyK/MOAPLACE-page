@@ -3,10 +3,8 @@
 </template>
 
 <script>
-export default {
-  // async beforeCreate() {
-  //     await this.$store.dispatch('login/getMemberInfo');
-  // },
+export default { 
+
 }
 </script>
 
