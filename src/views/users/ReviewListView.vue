@@ -5,7 +5,7 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="관람 후기"/>
+      <MySideMenu category="관람 후기" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -117,6 +118,70 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
+  },
+  data(){
+    return {
+
+      member : {}, // 회원정보
+      
+      pageNum : 1, // 현재 페이지
+      list : [], // 후기 리스트
+      listCnt : 0, // 전체 결과 개수
+      startPage : 0, // 페이지 시작번호
+      endPage : 0, // 페이지 끝번호
+      pageCnt : 0, // 전체 페이지 수
+
+    }
+  },
+  computed: {
+  },
+  created(){
+
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
+
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
+
+  },
+  methods: {
+
+    // 후기내역 가져오기
+    
   }
 }
 </script>

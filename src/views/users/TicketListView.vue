@@ -171,18 +171,50 @@ export default {
   },
   created(){
 
-    this.member = this.$store.state.mypage.member;
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
 
-    // 적립금 천단위 콤마형식으로 변환
-    var point = this.member.point;
-    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
 
-    // 조회기간 yyyy-mm-dd 형식으로 변환해서 초기화
-    const cur = new Date();
-    this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-    this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
 
-    this.getList();
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      // 조회기간 yyyy-mm-dd 형식으로 변환해서 초기화
+      const cur = new Date();
+      this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+      this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+
+      this.getList();
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
 
   },
   methods: {
@@ -190,7 +222,7 @@ export default {
     async getList() { // 기간에 해당되는 내역 출력
       try {
         await axios.get('/moaplace.com/users/mypage/ticket/list/' 
-          + this.$store.state.mypage.member.num + '/'
+          + this.member.num + '/'
           + this.startdate + '/'
           + this.enddate + '/'
           + this.pageNum
@@ -220,11 +252,6 @@ export default {
                 var price = this.list[i].booking_price;
                 this.list[i].booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-                // 썸네일 Blob 변환해서 저장 (맞는건지모르겠음 확인필요)
-                var bytes, blob;
-                bytes = new Uint8Array(this.list[i].show_thumbnail.blob);
-                blob = new Blob([bytes], {type:'image'});
-                this.list[i].show_thumbnail = URL.createObjectURL(blob);
               }
 
             }
@@ -254,19 +281,41 @@ export default {
       console.log("period : ", this.period);
 
       // period값에 따라서 startdate 변경 + enddate 현재날짜로 초기화
-      const cur = new Date();
+      let date = new Date();
+
+      let dateWeek = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() - 7
+      );
+      let date1month = new Date(
+        date.getFullYear(),
+        date.getMonth() - 1,
+        date.getDate()
+      );
+      let date3month = new Date(
+        date.getFullYear(),
+        date.getMonth() - 3,
+        date.getDate()
+      );
+      let date6month = new Date(
+        date.getFullYear(),
+        date.getMonth() - 6,
+        date.getDate()
+      );
+
       if( this.period == 'week' ) {
-        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.startdate = dateWeek.getFullYear()+'-'+('0'+(dateWeek.getMonth()+1)).slice(-2)+'-'+('0'+dateWeek.getDate()).slice(-2);
       } else if( this.period == '1month' ) {
-        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-        this.startdate = cur.getFullYear()+'-'+('0'+cur.getMonth()).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
       } else if( this.period == '3month' ) {
-        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()-2)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.startdate = date3month.getFullYear()+'-'+('0'+(date3month.getMonth()+1)).slice(-2)+'-'+('0'+date3month.getDate()).slice(-2);
       } else if( this.period == '6month' ) {
-        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()-5)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.startdate = date6month.getFullYear()+'-'+('0'+(date6month.getMonth()+1)).slice(-2)+'-'+('0'+date6month.getDate()).slice(-2);
       }
 
     },
