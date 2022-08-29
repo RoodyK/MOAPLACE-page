@@ -97,8 +97,8 @@ export default {
           href : '/moaplace.com/users/join/same'
         }
       ],
-      client_id : "88cd0c5be8453ab8d6153e082caf4cb0",
-      redirect_uri : 'http://localhost:8080/moaplace.com/users/join/main'
+      client_id : process.env.VUE_APP_KAKAO_API_KEY,
+      redirect_uri : process.env.VUE_APP_KAKAO_REDIRECT_URI
     }
   },
   computed: {
@@ -107,32 +107,6 @@ export default {
     }
   },
   methods: {
-    // kakaoLogin() {
-      
-    //   window.Kakao.Auth.login({
-    //       // 동의항목 페이지에 있는 활성화된 추가 동의 항목 ID값
-    //       scope:"account_email, gender",
-    //       // 로그인 성공 시 토큰을 받을 콜백함수
-    //       success: function(response){
-    //         console.log(response);
-    //         // 카카오 사용자 정보 가져오기
-    //         window.Kakao.API.request({
-    //           // url은 고정
-    //           url:'/v2/user/me',
-    //           success: res => {
-    //             // 사용자 정보 가져오기(동작확인을 위하여 콘솔로 출력)
-    //             // 사용자 정보는 자신이 원하는 방식으로 ajax나 form태그를 활용해서 처리하면 됨.
-    //             console.log(res.kakao_account);
-                
-    //           },
-    //           // API호출이 실패할 때 실행되는 콜백함수
-    //           fail: function(){
-    //             alert('카카오 로그인에 실패했습니다.');
-    //           }
-    //         });
-    //       }
-    //     });
-    // },
     async isLogin() {
       if(this.loginId == null || this.loginId == "") {
         alert("아이디를 입력하세요.");
@@ -237,7 +211,7 @@ export default {
       }
     }
     .kakao-login {
-      margin-bottom: 20px;
+      margin-bottom: 100px;
       a {
         background-color: #FEE500;
         .img {
@@ -251,21 +225,22 @@ export default {
         }
       }
     }
-    .google-login {
-      margin-bottom: 100px;
-      a {
-        background-color: #fff;
-        .img {
-          width: 55px;
-          height: 50px;
-          background: url(@/assets/login/google-login.jpg) no-repeat;
-          background-size: cover;
-          position: absolute;
-          top: 10px;
-          left: 12px;
-        }
-      }
-    }
+
+    // .google-login {
+    //   margin-bottom: 100px;
+    //   a {
+    //     background-color: #fff;
+    //     .img {
+    //       width: 55px;
+    //       height: 50px;
+    //       background: url(@/assets/login/google-login.jpg) no-repeat;
+    //       background-size: cover;
+    //       position: absolute;
+    //       top: 10px;
+    //       left: 12px;
+    //     }
+    //   }
+    // }
   }
 }
 
