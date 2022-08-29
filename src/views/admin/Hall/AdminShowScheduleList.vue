@@ -21,28 +21,20 @@
                     </div>
                     <div class="list">
                         <div class="t-row thead">
-                            <p>일정번호</p>
                             <p>공연장</p>
                             <p>공연명</p>
                             <p>공연날짜</p>
-                            <p>공연시작일</p>
-                            <p>공연종료일</p>
                             <p>공연회차</p>
-                            <p>공연시작시간</p>
-                            <p>잔여석/좌석수</p>
                             <p>공연상태</p>
+                            <p>수정</p>
                         </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody">
-                            <p>{{item.num}}</p>
                             <p>{{item.hall}}</p>
                             <p>{{item.title}}</p>
                             <p>{{item.appdate}}</p>
-                            <p>{{item.appdate}}</p>
-                            <p>{{item.regdate}}</p>
                             <p>{{item.count}} 회차</p>
-                            <p>{{item.opentime}}</p>
-                            <p>{{item.seats}}</p>
                             <p>{{item.status}}</p>
+                            <p><button @click="updateDetail(item.num)">수정</button></p>
                         </div>
                         <ul class="paging">
                             <li>[이전]</li>
@@ -125,7 +117,16 @@
             },
             methods:{
               goInsert(){
-              this.$router.push({name:'adminShowScheduleInsert'})
+
+                this.$router.push({
+                  name:'adminShowScheduleInsert',
+                  params:{
+                    pageNum:this.pageNum,
+                    status:this.status,
+                    field:this.selectField,
+                    search:this.search
+                    }
+                  })
               },
             }
             
@@ -238,7 +239,7 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /10);
+                            width: calc(100% /6);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
