@@ -13,23 +13,23 @@
           <div class="top_right">
             <div class="btn_box">
               <label class="mybtn">
-                <input type="radio" name="period" class="all" @click="all" @change="change">
+                <input type="radio" name="period" class="all" @click="all">
                 <span>전체</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="week" @change="change" checked>
+                <input type="radio" name="period" @click="week" checked>
                 <span>이번주</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="next_week" @change="change">
+                <input type="radio" name="period" @click="next_week">
                 <span>다음주</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="month" @change="change">
+                <input type="radio" name="period" @click="month">
                 <span>1개월</span>
               </label>
               <label class="mybtn">
-                <input type="radio" name="period" @click="three_month" @change="change">
+                <input type="radio" name="period" @click="three_month">
                 <span>3개월</span>
               </label>
             </div>
@@ -43,9 +43,9 @@
           <table>
             <tr>
               <td rowspan="2" id="calendar">
-                <input type="date" v-model="start_date" @change="change">
+                <input type="date" v-model="start_date" @change="list">
                 -
-                <input type="date" v-model="end_date" :min="start_date" @change="change">
+                <input type="date" v-model="end_date" :min="start_date" @change="list">
               </td>
               <td>
                 <div class="category_box">
@@ -115,13 +115,23 @@
         <h6>등록된 공연이 없습니다.</h6>
       </div>
       <ul class="paging">
-        <li>[이전]</li>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>[다음]</li>
+        <li
+          :class="{active: pageutil.startPageNum > 1}"
+          @click="changePage('prev',$event)">
+          [이전]
+        </li>
+        <li 
+          v-for="num in pageNumbers"
+          :key="num"
+          @click="movePage(num)"
+          :class="{active: pageutil.pageNum == num}">
+          {{num}}
+        </li>
+        <li
+          :class="{active: pageutil.endPageNum < pageutil.totalPageCount}"
+          @click="changePage('next',$event)">
+          [다음]
+        </li>
       </ul>
     </div>
     <AppFooter/>
@@ -144,6 +154,8 @@ export default {
   data(){
     return{
       show_list:[],
+      pageutil:[],
+      pageNumbers:[],
 
       select_year:new Date().getFullYear(),
 
@@ -158,59 +170,61 @@ export default {
     }
   },
   created(){
-    axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
-      .then((resp) => {
-        this.show_list = resp.data;
-      }
-    )
+    this.list();
   },
   methods: {
+    list(){
+      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
+        .then((resp) => {
+          this.show_list = resp.data.list;
+          this.pageutil = resp.data.pageUtil;
+          this.getPageNumber();
+        }
+      )
+    },
     next(){
       this.select_year++;
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
-      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
-      .then((resp) => {
-        this.show_list = resp.data;
-      }
-    )
+      this.list();
     },
     prev(){
       this.select_year--;
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
-      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
-      .then((resp) => {
-        this.show_list = resp.data;
-      }
-    )
+      this.list();
     },
     all(){
+      this.select_year=new Date().getFullYear();
       this.start_date=new Date().getFullYear()+"-01-01";
       this.end_date=new Date().getFullYear()+"-12-31";
-      this.select_year=new Date().getFullYear();
+      this.list();
     },
     week(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     next_week(){
       this.select_year=new Date().getFullYear();
       this.start_date=`${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate()}`;
       this.end_date=`${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     month(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     three_month(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     hall_change1(){
       this.hall_all=false;
@@ -236,10 +250,35 @@ export default {
         this.categoty_another7=false;
       }
     },
-    change(){
-      axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
-        .then((resp) => {
-          this.show_list = resp.data;
+    getPageNumber(){
+      this.pageNumbers = [];
+      for(let i = this.pageutil.startPageNum; i <= this.pageutil.endPageNum; i++){
+        this.pageNumbers.push(i);
+      }
+    },
+    changePage(where , e){
+      if(e.target.classList.contains('active')){
+        this.pagenum=1;
+
+        if(where == 'prev'){
+          this.pagenum = this.pageutil.startPageNum -1; 
+        }
+        else if(where == 'next'){
+          this.pagenum = this.pageutil.endPageNum +1;
+        }
+        else{
+          return;
+        }
+          
+        this.movePage(this.pagenum);
+        }
+    },
+    movePage(pagenum){
+      axios.get(`/moaplace.com/preview/${pagenum}/${this.start_date}/${this.end_date}`)
+      .then((resp) => {
+        this.show_list = resp.data.list;
+        this.pageutil = resp.data.pageUtil;
+        this.getPageNumber();
         }
       )
     }
@@ -409,6 +448,7 @@ export default {
         font-weight: bold;
         background-color: #f5f6f9;
         width: 145px;
+        outline: none;
       }
     }
   }
