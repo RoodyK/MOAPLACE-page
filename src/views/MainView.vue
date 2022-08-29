@@ -21,8 +21,8 @@
                                 :style="{left: `${img_width * index}px`}"
                                 ref="slide">
                                 <RouterLink
-                                    :to="slide.link">
-                                    <img :src="slide.img" :alt="slide.title">
+                                    :to="`/moaplace.com/show/showdetail/${slide.show_num}`">
+                                    <img :src="slide.show_thumbnail" :alt="slide.show_name">
                                 </RouterLink>
                             </li>
                         </ul>
@@ -42,7 +42,7 @@
                                 v-for="(news, index) in newsList" 
                                 :key="index" >
                                 <RouterLink
-                                    :to="`/moa/moaplace/news/detail?num=`+news.num">
+                                    :to="`/moaplace.com/moaplace/news/detail/${news.num}`">
                                         <div class="date">
                                             <p class="day">{{news.day}}</p>
                                             <p class="ym">{{news.ym}}</p>
@@ -66,9 +66,9 @@
     import AppHeader from '@/components/AppHeader.vue'
     import AppFooter from '@/components/AppFooter.vue'
     import MainVisual from '@/components/MainVisual.vue'
+    import axios from '@/axios/axios.js'
 
     export default {
-        name: 'TestComp',
         components: {
             AppHeader,
             AppFooter,
@@ -81,6 +81,7 @@
                 showsec02: false,
                 sec02Position: null,
                 wrapWidth : null,
+                slideExist: false,
                 slides:[
                     //title: 공연제목, img : 이미지 src, link : 공연 상세보기 페이지
                     {title: '웃는남자',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=7092ee934032e328dac3abc9fd80d8856a7ff77472074eb1dad6fba65becd736', link: '/'},
@@ -97,6 +98,7 @@
                 img_width : 0, //li 넓이
                 slide_width:0, //ul 전체 넓이
                 // 새소식
+                newsExist: false,
                 newsList:[
                     {num: 3, ym : '2022.08', day: '15', title : '화환반입 금지 안내', cont : '건물시설 관리상 리셉션은 불가하며, 화환은 반입이 금지되어 있는 점 양지하시기 바랍니다.​'},
                     {num: 2, ym : '2022.08', day: '10', title : 'COVID-19 관련 모아플레이스 안내사항 ', cont : ''},
@@ -104,23 +106,29 @@
                 ]
             }
         },
+        created(){
+            //슬라이드 불러오기
+            this.getRunningShow();
+            this.img_width = (((770 - (16 * 2)) / 3) + 16); //넓이 + margin값
+        },
         mounted(){
-            this.length =  this.$refs.slide.length;
-            this.img_width = this.$refs.slide[0].offsetWidth + 16; //넓이 + margin값
-            this.slide_width = this.img_width * this.length;
             //스크롤 위치 가져오기
             window.addEventListener('scroll', this.getScorollTop);
             this.sec01Position = this.$refs.sec01.offsetTop;
             this.sec02Position = this.$refs.sec02.offsetTop;
+
             //wrap width * 스크롤이 생기지 않을정도 화면이면 미리 content들 배치하기
             this.wrapWidth = this.$refs.wrap.clientWidth;
-            if(this.wrapWidth >=2305){
+            if(this.wrapWidth >= 2305){
                 this.showsec01 = true;
                 this.showsec02 = true;
             }
+
         },
         methods:{
             goPrev(){
+                this.slide_width = this.img_width * this.length;//ul 전체 넓이
+
                 for(let i=0; i< this.length; i++){
                     let left = this.$refs.slide[i].style.left;
                     left = left.replace('px', '');
@@ -132,11 +140,15 @@
                 }
             },
             goNext(){
+                this.slide_width = this.img_width * this.length;//ul 전체 넓이
+
                 for(let i=0; i< this.length; i++){
                     let left = this.$refs.slide[i].style.left;
                     left = Number(left.replace('px', ''));
                     left += this.img_width;
+                    
                     this.$refs.slide[i].style.left = left + 'px';
+
                     if(left >= this.slide_width){
                         this.$refs.slide[i].style.left = - 0;
                     }
@@ -152,7 +164,27 @@
                 this.showsec01 = this.sec01Position - 450 <= currentScrollPosition;
                 //sec02 위치     
                 this.showsec02 = this.sec02Position - 800 <= currentScrollPosition;
+            },
+            async getRunningShow(){
+                
+                await axios
+                    .get('/moaplace.com/main/getRunningShow')
+                    .then(function(resp){
+                        //슬라이드 초기화
+                        this.slides = [];
+
+                        if(resp.data.result == "success"){
+                            this.slides = resp.data.list;
+                            this.slideExist = true;
+                            this.length =  this.slides.length;
+                        }else{
+                            this.slideExist = false;
+                        }
+                    }
+                    .bind(this)
+                    );
             }
+
         }
     }
 </script>
@@ -223,15 +255,18 @@
                         height: 351px;
                         overflow: hidden;
                         .slide-box{
+                            height: 100%;
                             position: relative;
                             display: flex;
                             flex-flow: row nowrap;
                             li{
+                                height: 100%;
                                 position: absolute;
                                 overflow: hidden;
                                 margin-right: 16px;
                                 img{
                                     width: calc((770px - (16px * 2)) /3);
+                                    height: 100%;
                                     transform: scale(1);
                                     transition: all 0.3s;
                                 }
