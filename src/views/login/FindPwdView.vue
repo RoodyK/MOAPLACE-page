@@ -94,11 +94,12 @@ export default {
       margin: 50px 0;
       text-align: center;
       h2 {
-        font-size : 36px;
-        font-weight: 700;
+        font-size : 32px;
+        font-weight: 500;
         margin-bottom: 10px;
       }
       span {
+        font-size: 17px;
         color: rgba($black, .9);
       }
     }

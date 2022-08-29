@@ -1,17 +1,41 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="게시판 관리" mediumCategory="1:1문의"/>
+        <SideMenu largeCategory="게시판관리" mediumCategory="1:1문의"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">1:1문의 > 자세히보기</h2>
+                <h2 class="title">1:1문의 > 상세보기</h2>
 
                 <div class="state-box">
-                    <span>답변 상태</span>
-                    <select>
-                        <option v-for="state in states" :key="state" :value="state">
-                            {{state}}
+                    <span>문의상태</span>    
+                    <select v-model="detail.qna_state" @change="changeState(detail.qna_state, qna_num)">
+                        <option v-for="s in states" :key="s" :value="s">
+                            {{s}}
                         </option>
                     </select>
+                </div>
+
+                <div class="info-box">
+                    <h3>문의회원</h3>
+                    <div>
+                        <table cellspacing="0">
+                            <tr>
+                                <th>아이디</th>
+                                <td>{{member.member_id}}</td>
+                            </tr>
+                            <tr>
+                                <th>이름</th>
+                                <td>{{member.member_name}}</td>
+                            </tr>
+                            <tr>
+                                <th>연락처</th>
+                                <td>{{member.member_phone}}</td>
+                            </tr>
+                            <tr>
+                                <th>이메일</th>
+                                <td>{{member.member_email}}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="info-box">
@@ -19,72 +43,76 @@
                     <div>
                         <table>
                             <tr>
-                                <th>문의번호</th>
-                                <td>10</td>
-                                <th>문의구분</th>
-                                <td>예매</td>
-                                <th>문의일</th>
-                                <td>2022-08-25</td>
-                            </tr>
-                            <tr>
-                                <th>회원명</th>
-                                <td colspan="5">길동스</td>
-                            </tr>
-                            <tr>
-                                <th>아이디</th>
-                                <td colspan="5">testtest</td>
-                            </tr>
-                            <tr>
-                                <th>연락처</th>
-                                <td colspan="5">010-0000-0000</td>
-                            </tr>
-                            <tr>
-                                <th>이메일</th>
-                                <td colspan="5">moa@moa.com</td>
+                                <th>구분</th>
+                                <td>{{detail.sort_name}} 문의</td>
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td colspan="5">예매 관련 문의임당</td>
+                                <td>{{detail.qna_title}}</td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td colspan="5">예매했는데 어디서 확인하나요?<br>답변 부탁요</td>
+                                <td>{{detail.qna_content}}</td>
+                            </tr>
+                            <tr>
+                                <th>문의일</th>
+                                <td>{{detail.qna_regdate}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <h3 v-if="answer!=null">답변 수정</h3>
-                    <h3 v-if="answer==null">답변 등록</h3>
+                <div class="info-box" v-if="answer==null">
+                    <h3>답변등록 </h3> 
                     <div>
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-if="answer!=null" v-bind:value="answer.a_title">
-                                    <input type="text" v-if="answer==null">
+                                <td><input type="text" v-model="answer_title">
                                 </td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><textarea cols="100" rows="10" v-if="answer!=null" v-bind:value="answer.a_content"></textarea>
-                                <textarea cols="100" rows="10" v-if="answer==null"></textarea></td>
+                                <td><TextEditor :height="300" v-model:content="answer_content" contentType="html"/></td>
+                                <!-- <td><textarea cols="120" rows="10" v-model="answer_content"></textarea></td> -->
+                            </tr>
+                            <tr>
+                                <th>답변일자</th>
+                                <td>{{curday()}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="info-box" v-if="answer!=null">
+                    <h3>답변수정</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>제목</th>
+                                <td><input type="text" v-model="answer.answer_title">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>내용</th>
+                                <td><TextEditor :height="300" v-model:content="answer.answer_content" contentType="html"/></td>
+                                <!-- <td><textarea cols="120" rows="10" v-model="answer.answer_content"></textarea></td> -->
                             </tr>
                             <tr>
                                 <th>답변일</th>
-                                <td v-if="answer!=null">{{answer.a_answerdate}}</td>
-                                <td v-if="answer==null">{{curday()}}</td>
+                                <td>{{answer.answer_regdate}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 
-                <div class="btn-box">
-                    <button @click="$router.push({name:'adminQnaList'})">이전</button>
-                    <button v-if="answer!=null">수정</button>
-                    <button v-if="answer==null">등록</button>
-                </div>
-
+                <div class="btn-box" >
+                    <button @click="$router.push({name:'adminQnaList'})">목록으로</button>
+                    <button @click="checkForm()" v-if="answer==null">등록하기</button>
+                    <button @click="updateAnswer()" v-if="answer!=null">수정하기</button>
+                    <button @click="deleteAnswer()">답변삭제</button>
+                    <button @click="deleteQna()">전체삭제</button>
+                </div> 
             </div>
         </main>
     </div>
@@ -92,30 +120,197 @@
 
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
+    import TextEditor from '@/components/TextEditor.vue'
+    import axios from '../../../axios/axios.js'
+
     export default {
         components: {
-            SideMenu
+            SideMenu,
+            TextEditor,
         },
         data() {
             return {
-                faq: {  num:5,
-                        sort:'예매',
-                        title:'예매 내역은 어떻게 확인할 수 있나요?', 
-                        content:'회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.'},
-                // answer: {   a_title:'답변입니당', 
-                //             a_content:'문의하신 내용에 대한 답변입니다. 감사합니다',
-                //             a_answerdate: '2022-08-11'},
+                member: [],
+                detail: [],
+                answer: null,
+                answer_title:'',
+                answer_content:'',
                 states: [
-                    '문의대기',
-                    '확인중',
+                    '대기중',
+                    '처리중',
                     '답변완료'
                 ]
             }
         },
+        created() {
+            console.log(this.$route.params.qna_num);
+            this.qna_num = this.$route.params.qna_num;
+            this.qnaDetail(); // 문의 상세내용 불러오기
+        },
         methods: {
-            curday() {
+            curday() { // 오늘날짜(=답변일)
                 return new Date().toISOString().substring(0,10);
-            }
+            },
+            async qnaDetail() { // 문의 상세글 불러오기
+            try { 
+                await axios.get("/moaplace.com/admin/qna/detail/"+this.qna_num)
+                            .then(function(resp){
+
+                    if(resp.status == 200) {
+                        this.detail = resp.data.detail;
+                        this.answer = resp.data.answer;
+                        this.member = resp.data.member;
+                        console.log(this.detail);
+                        console.log(this.answer);
+                        console.log(this.member);
+
+                    } else {
+                        alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+                    }
+                }.bind(this));
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            checkForm() { 
+                // 입력 체크
+                if(this.answer_title==null || this.answer_title==""){
+                    alert("답변 제목을 입력하세요.");
+                    return;
+                }
+                if(this.answer_content==null || this.answer_content==""){
+                    alert("답변 내용을 입력하세요.");
+                    return;
+
+                // } else if (this.answer_content.length<10) {
+                //     alert("답변 내용은 10자 이상 입력하세요.");
+                //     return;
+                }
+
+                console.log(this.answer_title, this.answer_content);
+
+                // 답변 등록
+                this.insertAnswer();
+            },
+            async insertAnswer(){ // 답변 등록
+                var form = {
+                    qna_num: this.qna_num,
+                    answer_title: this.answer_title,
+                    answer_content: this.answer_content
+                }
+                await axios.post('/moaplace.com/admin/qna/answer/insert', JSON.stringify(form),{
+                    headers: {
+                    'Content-Type' : 'application/json'}
+                }).then(function(resp){
+
+                    if(resp.data!='fail'){ // 등록 성공하면 리스트로 이동
+                        console.log(resp.data);
+                        alert('답변이 등록되었습니다.');
+                        this.$router.push({name:'adminQnaList'});
+
+                    } else { // 등록 실패하면 알림창
+                        alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
+                        return;
+                    }
+                }.bind(this));      
+            },
+            async changeState(change, num){ // 문의글 상태 변경
+                if(confirm('해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?')){
+                    console.log(change, num);
+
+                    try { 
+                        await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
+                                   .then(function(resp){
+
+                        if(resp.status == 200) {
+                            alert('문의 상태가 변경되었습니다.')
+                            this.qnaDetail();
+
+                        } else {
+                            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+                        }
+                        }.bind(this));
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    return;
+                }
+            },
+            updateAnswer(){ // 답변 수정
+                if(confirm('답변을 수정하시겠습니까?')){
+                    var form = {
+                        answer_num: this.answer.answer_num,
+                        answer_title: this.answer.answer_title,
+                        answer_content: this.answer.answer_content
+                    }
+                    axios.post('/moaplace.com/admin/qna/answer/update', JSON.stringify(form),{
+                        headers: {
+                        'Content-Type' : 'application/json'}
+                    }).then(function(resp){
+
+                        if(resp.data!='fail'){ // 성공하면 리스트로 이동
+                            console.log(resp.data);
+                            alert('답변이 수정되었습니다.');
+                        this.$router.push({name:'adminQnaList'});
+
+                        } else { // 실패하면 알림창
+                            alert('답변 수정에 실패하였습니다. 다시 시도해주세요.');
+                        }
+                    }.bind(this));
+
+                } else {
+                    return;
+                }
+            },
+            async deleteQna() { // 전체 문의글 + 답변 삭제
+                if (confirm('해당 문의글과 답변을 모두 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
+                    try { 
+                        await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num)
+                                .then(function(resp){
+
+                            if(resp.status == 200) {
+                                alert('문의글이 삭제되었습니다.');
+                                this.$router.push({name:'adminQnaList'});
+
+                            } else {
+                            alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
+                            }
+                        }.bind(this));
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    return;
+                }
+            },
+            async deleteAnswer() { // 답변만 삭제
+                if (this.answer==null){
+                    alert('등록된 답변이 없습니다.');
+                    return;
+                }
+                if (confirm('해당 답변을 삭제하시겠습니까?\n문의글은 삭제되지 않습니다.')){
+                    console.log('답변삭제 번호:' + this.qna_num);
+
+                    try { 
+                        await axios.post("/moaplace.com/admin/qna/answer/delete/"+this.qna_num)
+                                .then(function(resp){
+
+                            if(resp.status == 200) {
+                                alert('해당 답변이 삭제되었습니다.');
+                                this.$router.go();
+
+                            } else {
+                            alert('답변 삭제에 실패하였습니다. 다시 시도해주세요.');
+                            }
+                        }.bind(this));
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    return;
+                }
+            }               
         }
     }
 </script>
@@ -191,28 +386,36 @@
                             th {
                                 padding: 8px 16px;
                                 border-bottom: 1px solid rgba($black, 0.3);
+                                white-space:pre;
                             }
                             th {
                                 width:15%;
                                 background: #eee;
                                 text-align: center;
+                                vertical-align: middle;
                             }
-                            &:nth-child(7){
-                               height:250px;
+                            td{
+                                input {
+                                    border: 1px solid rgba($black,0.3);
+                                    padding: 5px;
+                                    width: 100%;
+                                }
+                                textarea {
+                                    width:100%;
+                                    border: 1px solid rgba($black,0.3);
+                                    padding: 5px;
+                                    white-space:pre;
+                                }
                             }
-                        }
-                        input {
-                            border: 1px solid rgba($black,0.3);
-                            padding: 5px;
-                            width: 100%; 
-                        }
-                        textarea {
-                            width:100%;
-                            border: 1px solid rgba($black,0.3);
-                            padding: 5px;
-                        }                        
+                        }                 
                     }
                 }
+            }
+            .delete-btn{
+                padding: 4px 32px;
+                border:1px solid rgba($black, 0.5);
+                color:rgba($black, 0.8);
+                cursor: pointer;
             }
 
             .btn-box {
@@ -220,16 +423,23 @@
                 display: flex;
                 justify-content: space-between;
                 button {
-                    width: calc((100% - 16px) /2);
+                    width: calc((100% - 16px) /4);
                     padding: 12px 0;
                     border: none;
-                    &:last-child {
+                    &:nth-child(2) {
                         background-color: $brown;
+                        color: #fff;
+                    }
+                    &:nth-child(3) {
+                        background-color: rgba($black, 0.5);
+                        color: #fff;
+                    }
+                    &:nth-child(4) {
+                        background-color: $black;
                         color: #fff;
                     }
                 }
             }
         }
-
     }
 </style>

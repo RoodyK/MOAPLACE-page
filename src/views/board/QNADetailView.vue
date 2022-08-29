@@ -3,66 +3,137 @@
     <AppHeader/>
     <SideVisual menu="CUSTOMER SERVICE" img="cs" title="1:1문의"/>
 
-    <div class="app">
-    
-    <h2 class="title">1:1문의</h2>
-    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <div class="app">    
+      <h2 class="title">1:1문의</h2>
+      <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-    <div class="info">
-      <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
-        <ul>
-          <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
-          <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
-        </ul>
-    </div>
+      <div class="info">
+        <p> <img src='../../assets/board/info.png'> 고객님의 문의내역입니다. </p>
+          <ul>
+            <li> 모아플레이스는 고객님의 문의에 성심성의껏 답변해드리고 있습니다. </li>
+            <li> 욕설이나 비방, 음란, 광고 등 1:1문의 게시판 의도와 맞지 않는 내용은 별도 안내 없이 삭제되어 공개되지 않습니다. </li>
+          </ul>
+      </div>
 
-    <hr class="line">
+      <table>
+        <thead>
+          <tr>
+            <th>[{{detail.sort_name}} 문의]<h2>Q. {{detail.qna_title}}</h2></th>
+          </tr>
+          <tr>
+            <td class="state">{{detail.qna_state}}</td>
+          </tr>
+          <tr>
+            <td>등록일 {{detail.qna_regdate}}</td>
+          </tr>
+        </thead>
 
-    <table>
-      <thead>
-      <tr>
-        <th>[구분]<h2>Q. 문의글 제목</h2></th>
-      </tr>
-      <tr>
-        <td class="state">답변완료</td>
-      </tr>
-      <tr>
-        <td>등록일 2022-08-10</td>
-      </tr>
-      </thead>
+        <tbody>
+          <tr>
+            <td class="content">
+              {{detail.qna_content}}
+            </td>
+          </tr>
 
-      <tr>
-        <td class="content"> 예매 관련 문의입니다.<br>
-            예매자 이름 홍길동입니다. <br>
-            답변 부탁드립니다. </td>
-      </tr>
+          <tr>
+            <td>
+              <div class="answer" v-if="answer!=null">
+                  <h2> A. {{answer.answer_title}} </h2>
+                  <div v-html="answer.answer_content"></div>
+              </div>
 
-      <tr>
-        <td>
-        <div class="answer">
-          <h2> A. 답변 제목 </h2>
-          <div class="content">
-            답변 내용입니다.<br><br>
-            감사합니다.
-          </div>
-        </div>
-        </td>
-      </tr>
+              <div class="answer" v-else>
+                <div class="wait">
+                  문의가 정상적으로 접수되었습니다. <br>
+                  빠른 시일 내에 답변 드리도록 하겠습니다. 
+                </div>
+              </div>
 
-    </table>
+            </td>            
+          </tr>
+        </tbody>
+      </table>
 
-    <div class="btnGroup">
-      <button class="update" @click="$router.push({name:'qnaUpdate'})">수정하기</button>
-      <button class="delete" @click="$router.push({name:'qnaDelete'})">삭제하기</button>
-      <button class="list" @click="$router.push({name:'qnaList'})">목록으로</button>
-    </div>
+      <div class="btnGroup">
+        <button @click="$router.push({name:'qnaUpdate'})" v-if="answer==null">수정하기</button>
+        <button @click="qnaDelete()">삭제하기</button>
+        <button @click="$router.push({name:'qnaList'})">목록으로</button>
+      </div>
 
-    </div>
-    
+    </div>    
     <AppFooter/>
   </div>
-
 </template>
+
+<script>
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import SideVisual from '@/components/SideVisual.vue'
+import axios from '../../axios/axios.js'
+
+export default {
+  components: {
+      AppHeader,
+      AppFooter,
+      SideVisual
+  }, 
+  data() {
+    return {
+      qna_num:0,
+      detail:[],
+      answer:[]
+    }
+  },
+  created() {
+    console.log(this.$route.params.qna_num);
+    this.qna_num = this.$route.params.qna_num;
+    this.qnaDetail(); // 문의 상세내용 불러오기
+  },
+  methods: {
+    async qnaDetail() {
+      try { 
+        await axios.get("/moaplace.com/board/qna/detail", {params:
+          {qna_num: this.qna_num}
+        }).then(function(resp){
+
+          if(resp.status == 200) {
+            this.detail = resp.data.detail;
+            this.answer = resp.data.answer;
+            console.log(this.detail);
+            console.log(this.answer);
+
+          } else {
+            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+          }
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async qnaDelete() {
+      if (confirm('해당 문의글을 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
+        try { 
+          await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num, 
+          ).then(function(resp){
+
+            if(resp.status == 200) {
+              alert('문의글이 삭제되었습니다.');
+              this.$router.push({name:'qnaList'});
+
+            } else {
+              alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
+            }
+          }.bind(this));
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        return;
+      }
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 @import '../../scss/common.scss';
@@ -89,6 +160,7 @@
     width: 100%;
     color: #333333d4;
     border: 1px solid #33333330;
+    margin-bottom: 64px;
 
     p {
     font-weight: bold;
@@ -101,120 +173,85 @@
     }
   }
 
-  .line {
-    color: white; 
-    margin: 32px;
-  }
-
   table {
     width: 100%;
-    border-bottom: 1px solid lightgray;
+    border-top:2px solid $black;
     
     thead {
-      border-top:2px solid $black;
-      border-bottom: 1px solid $black;
-      font-size:small;
-
-      th {
-        padding: 20px;
+      tr{
+        border-bottom: 1px solid #ddd;
+        th {
+          padding: 30px 24px;
+        }
+        td {
+          padding: 16px 24px;
+        }
+        &:nth-child(3){
+          border-bottom: 2px solid #ddd;
+        }
       }
-
       .state {
         color:#D67747;
         font-weight: bold;
-        font-size:larger;
+        font-size: 18px;
       }
     }
 
-    tr {
-      height: 50px;
-      border-bottom: 1px dotted lightgray;
+    tbody{
+      tr {
+        border-bottom: 1px solid #ddd;
+        &:nth-child(1){
+          border-bottom: 1px solid $black;
+        }
+      td {
+          padding: 48px 24px;
+          white-space:pre;
+          font-size: 18px;
+        }
+      }
+      .answer {
+        width: 100%;
+        padding: 40px 32px;
+        background-color: rgba($brown, 0.1);
+
+        & > div {
+          padding: 30px 0 16px 0;
+        }
+        .wait {
+          color: rgba($black, 0.7);
+          text-align: center;
+          padding: 24px;
+        }
+      }
     }
-
-    td {
-      padding: 20px;
-    }
   }
 
-  .content {
-    padding: 30px;
-  }
-
-  .answer {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding:30px;
-    background-color: rgb(243, 241, 241);
-  }
   
   .btnGroup{
     display: flex;
-    justify-content: flex-end;
-    margin: 15px;
-    margin-bottom: 50px;
+    justify-content: center;
+    margin: 24px 0 40px 0;
 
-    .update {
-      background-color: $brown;
-      width:160px;
-      height:50px;
-      border: none;
-      margin: 3px;
-      color:white;
-      transition: all 0.3s;
+    button {
+      padding: 16px 40px;
+      margin: 2px;
 
-      &:hover {
-        border: 1px solid $brown;
-        background-color: white;
-        color:$brown;
-      }
-    }
-
-    .delete {
-      background-color:rgb(170 161 161);
-      width:100px;
-      height:50px;
-      border: none;
-      margin: 3px;
-      color:white;
-      transition: all 0.3s;
-
-      &:hover {
-        border: 1px solid $brown;
-        background-color: white;
-        color:$brown;
-      }
-    }
-
-    .list{
-      width:100px;
-      height:50px;
-      margin: 3px;
-      border: 1px solid $brown;
-      background-color: white;
-      color:$brown;
-      transition: all 0.3s;
-
-
-      &:hover {
-        background-color:$brown;
+      &:nth-child(1){
+        background-color: $brown;
+        border: 1px solid transparent;
         color:white;
+      }
+      &:nth-child(2) {
+        background-color:rgba($black, 0.5);
+        border: 1px solid transparent;
+        color:white;
+      }
+      &:nth-child(3){
+        border: 1px solid $black;
+        background-color: white;
+        color:$black;
       }
     }
   }
 }
 </style>
-
-<script>
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import SideVisual from '@/components/SideVisual.vue'
-
-export default {
-    components: {
-    AppHeader,
-    AppFooter,
-    SideVisual
-  }
-}
-</script>

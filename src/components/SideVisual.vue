@@ -39,7 +39,7 @@ export default {
                         {title: '공간소개', href: '/moaplace.com/moaplace/info'},
                         {title: '공연장정보', href: '/moaplace.com/moaplace/guide'},
                         {title: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
-                        {title: '새소식', href: '/moaplace.com/moaplace/news'}, 
+                        {title: '새소식', href: '/moaplace.com/moaplace/news/list'}, 
                     ]
                 },
                 {
@@ -59,10 +59,10 @@ export default {
                 {
                     name: 'cs',
                     taps:[
-                        {title: 'FAQ', href: '/moaplace.com/faq'},
-                        {title: '1:1문의', href: '/moaplace.com/qna/list'},
-                        {title: '공연예절', href: '/'},
-                        {title: '멤버십혜택', href: '/'},
+                        {title: 'FAQ', href: '/moaplace.com/board/faq'},
+                        {title: '1:1문의', href: '/moaplace.com/board/qna/list'},
+                        {title: '공연예절', href: '/moaplace.com/board/manner'},
+                        {title: '멤버십혜택', href: '/moaplace.com/board/membership'},
                     ]
                 },
                 {

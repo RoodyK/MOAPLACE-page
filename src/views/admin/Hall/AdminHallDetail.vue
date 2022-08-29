@@ -21,43 +21,39 @@
                     <h3>공연정보</h3>
                     <div>
                         <table>
+
                             <tr>
                                 <th>공연장</th>
-                                <td>{{list.hall}}</td>
+                                <td colspan="2">{{list.hall}}</td>
                                 <th>공연장르</th>
-                                <td>클래식</td>
+                                <td colspan="2">{{list.genre}}</td>
                                 <th>공연상태</th>
-                                <td colspan="3">{{list.status}}</td>
+                                <td colspan="2">{{list.status=='Y'?'진행중':'종료'}}</td>
                             </tr>
                             <tr>
-                                <th>공연날짜</th>
-                                <td>{{list.date}}</td>
-                                <th>시작시간</th>
-                                <td>{{list.opentime}}</td>
                                 <th>러닝타임</th>
-                                <td>{{list.running_time}}분</td>
+                                <td colspan="3">{{list.running_time}}분</td>
                                 <th>인터미션</th>
-                                <td>{{list.intermission}}분</td>
-                            </tr>
-                            <tr>
-                                <th>공연시작일</th>
-                                <td colspan="3">{{list.regdate}}</td>
-                                <th>공연종료일</th>
-                                <td colspan="3">{{list.appdate}}</td>
-                            </tr>
-                            <tr>
-                                <th>공연중단시작일</th>
-                                <td colspan="3">2022-08-10</td>
-                                <th>공연중단종료일</th>
-                                <td colspan="3">2022-08-15</td>
+                                <td colspan="3">{{list.intermission}}분</td>
                             </tr>
                             <tr>
                                 <th>총좌석수</th>
-                                <td>120</td>
-                                <th>잔여좌석수</th>
-                                <td>0</td>
+                                <td colspan="3">{{list.seats}}</td>
                                 <th>상연등급</th>
-                                <td colspan="3">15세</td>
+                                <td colspan="3">{{list.age}}</td>
+                            </tr>
+                            <tr>
+                                <th>공연시작일</th>
+                                <td colspan="3">{{list.startDate}}</td>
+                                <th>공연종료일</th>
+                                <td colspan="3">{{list.endDate}}</td>
+                            </tr>
+                            
+                            <tr>
+                                <th>공연중단시작일</th>
+                                <td colspan="3">{{list.blockStartDate}}</td>
+                                <th>공연중단종료일</th>
+                                <td colspan="3">{{list.blockEndDate}}</td>
                             </tr>
                         </table>
                     </div>
@@ -69,18 +65,18 @@
                         <table>
                             <tr>
                                 <th>섬네일</th>
-                                <td><img src="https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=dfd67de4f3055521c7f754bfdc3cb5896db30ab9edb0bb8e4f449a9903cb06fb"></td>
+                                <td><img :src='list.thumbnail'></td>
                                </tr>
                                <tr>
                                <th>상세이미지</th>
-                                <td><img src="https://www.sejongpac.or.kr/upload/2022/07/20220727_163335690_30277.jpg"></td>
+                                <td><img v-for="(item,index) in list.detailImgs" :key="index" :src='item'></td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
                 <div class="btnBox">
-                    <button>이전</button>
+                    <button @click="goList">이전</button>
                     <button>수정</button>
                     <button>삭제</button>
                 </div>
@@ -90,30 +86,42 @@
 </template>
         <script>
             import SideMenu from '@/components/admin/SideMenu.vue'
+            import axios from '@/axios/axios.js';
             export default {
                 components: {
                     SideMenu
                 },
-
                 data() {
                     return {
-                        list:{
-                                num: 11111,
-                                title: '아무튼 엄청 긴 공연제목-아무튼 엄청 긴 공연제목',
-                                hall: '오케스트라홀',
-                                status: '진행중',
-                                regdate: '2022.08.02',
-                                appdate: '2022.08.22',
-                                date: '2022.08.07',
-                                running_time: 120,
-                                opentime: '13:30',
-                                intermission: 20,
-                                seats: '110/120',
-                                grade: 15
-                            }
+                        showNum:'',
+                        list:[]
+                    }
+                },
+
+                mounted(){
+
+                  this.viewDetail(this.$route.params.showNum);
+                },
+
+                methods:{
+                    viewDetail(num){
+                      axios.get('/moaplace.com/admin/show/detail/'+num).
+                      then(function(resp){
+                          this.list=resp.data.list;
+                      }.bind(this));
+                    },
+
+                    goList(){
+                      this.$router.push({
+                        name:'adminHallInfoList',
+                        params:{
+                          selectField:'hall',
+                          search:'',
+                          pageNum:1
+                        }
+                      })
                     }
                 }
-
             }
         </script>
         <style lang="scss" scoped="scoped">
@@ -204,11 +212,12 @@
                                 tr {
                                     td,
                                     th {
+                                        
                                         padding: 8px 16px;
                                         border-bottom: 1px solid rgba($black, 0.3);
                                     }
                                     th {
-                                        width: 15%;
+                                        width: calc(100%/6);
                                         background: #eee;
                                         text-align: center;
                                     }

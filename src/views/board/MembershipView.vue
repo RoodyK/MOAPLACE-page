@@ -103,6 +103,7 @@ export default {
   },
   methods: {
     saveMore() {
+      const saveHeight = getComputedStyle(document.querySelector('.save')).getPropertyValue('height');
       const useHeight = getComputedStyle(document.querySelector('.use')).getPropertyValue('height');
 
       if(useHeight != "0px") {
@@ -110,15 +111,40 @@ export default {
       } 
       document.querySelector('.more').style.display = "none";
       document.querySelector('.save').style.height = "350px";
+
+      if(saveHeight == "0px") {
+        document.querySelector('.more').style.display = "none";
+        document.querySelector('.save').style.height = "350px";
+      }else {
+        document.querySelector('.save').style.height = "0px";
+        setTimeout(function() {
+          document.querySelector('.benefit').style.height = '760px';
+          if(useHeight === "0px" || saveHeight === "0px") {
+            document.querySelector('.more').style.display = "flex";
+          }
+        }, 500);
+      }
     },
     useMore() {
       const saveHeight = getComputedStyle(document.querySelector('.save')).getPropertyValue('height');
+      const useHeight = getComputedStyle(document.querySelector('.use')).getPropertyValue('height');
       
       if(saveHeight != "0px") {
         document.querySelector('.benefit').style.height = '1200px';
       }
-      document.querySelector('.more').style.display = "none";
-      document.querySelector('.use').style.height = "350px";
+      
+      if(useHeight == "0px") {
+        document.querySelector('.use').style.height = "350px";
+        document.querySelector('.more').style.display = "none";
+      }else {
+        document.querySelector('.use').style.height = "0px";
+        setTimeout(function() {
+          document.querySelector('.benefit').style.height = '760px';
+          if(useHeight === "0px" || saveHeight === "0px") {
+            document.querySelector('.more').style.display = "flex";
+          }
+        }, 500);
+      }
     }
   }
 }

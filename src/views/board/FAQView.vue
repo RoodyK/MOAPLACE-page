@@ -21,11 +21,11 @@
 
         <div class="searchBox">
           <div class="custom-search">
-            <input
-              type="text"
-              class="custom-search-input"
-              placeholder="검색어를 입력하세요."
-            />
+            <input type="text" class="custom-search-input" v-model="keyword" 
+              @keyup.enter="searchList()" placeholder="검색어를 입력하세요."/>
+            <i class="material-icons" @click="searchList()">
+              search
+            </i>
           </div>
           <!-- 문의하기 버튼 -->
           <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
@@ -106,11 +106,11 @@
   .headerBox {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 
     select {
       width: 150px;
-      height: 50px;
+      height: 56x;
       border-color: #ccc;
       padding: 0 28px 0 15px;
       -webkit-appearance: none;
@@ -119,37 +119,35 @@
         auto;
     }
 
-    .custom-search {
-      width: 300px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1;
-      opacity: 1;
-    }
-    .custom-search-input {
-      width: 100%;
-      height: 100%;
-      border: 1px solid #ccc;
-      padding: 10px 50px 10px 20px;
-      outline: none;
-      background-image: url(@/assets/moaplace/search.png);
-      background-position: 260px center;
-      background-size: 25px 25px;
-      background-repeat: no-repeat;
-      padding-left: 20px;
-      box-sizing: border-box;
-      outline: none;
-    }
-
     .searchBox {
       display: flex;
 
+      .custom-search {
+        width: 300px;
+        height: 60px;
+        display: relative;
+        justify-content: center;
+        align-items: center;
+        position:relative;
+
+        .custom-search-input {
+          width: 100%;
+          height: 100%;
+          border: 1px solid #ccc;
+          padding: 10px 50px 10px 20px;
+        }
+        i {
+          position: absolute;
+          font-size: 40px;
+          color:rgba($black, 0.7);
+          top: 10px;
+          right: 10px;
+          cursor: pointer;
+        }
+      }
       .qnaBtn {
         background-color: $brown;
-        padding: 0 32px;
-        height: 50px;
+        padding: 16px 40px;
         border: 1px solid transparent;
         margin-left: 16px;
         color: white;
@@ -179,16 +177,10 @@
       &:hover {
         background-color: rgb(249, 249, 249);
         cursor: pointer;
-
-        .title {
-          color: #d67747;
-        }
+        color: #d67747;
       }
       span {
         margin: 20px 50px;
-      }
-      .title {
-        font-weight: bold;
       }
       .arrow {
         img {
@@ -206,10 +198,9 @@
     }
   }
   .faq_main.active {
+        
     .faq_title {
-      .title {
-        color: #d67747;
-      }
+      color: #d67747;
     }
     .arrow {
       img {
@@ -219,26 +210,32 @@
     }
   }
 
-  // 페이징
-  #mypaging {
+  #mypaging{
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin: 32px 0;
+    align-items: center;
 
-    ul,
-    li,
-    a,
-    span {
-      color: $black;
-      border: none;
+    .act {
+      color: $brown;
+      font-weight: bold;
     }
-  }
+    p {
+      padding: 0 6px;
+      margin: 0 6px;
+      color:$black;
+      cursor:pointer;
 
-  // 문의하기 버튼
-  .btnGroup {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 30px;
+      &.active {
+        color: #D67747;
+        font-weight: bold;
+      }
+    }
+    .noActive {
+        color:rgba($black, 0.5);
+        cursor: default;
+        font-weight: bold;
+    }
   }
 }
 </style>

@@ -1,131 +1,203 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="게시판 관리" mediumCategory="1:1문의"/>
+        <SideMenu largeCategory="게시판관리" mediumCategory="1:1문의"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">1:1문의 관리</h2>
+                <h2 class="title">1:1문의</h2>
                 <div class="list-top">
-                    <select>
-                        <option value="id">회원아이디</option>
-                        <option value="mnum">회원명</option>
-                        <option value="title">제목</option>
-                    </select>
-                    <input type="text">
-                        <button>
-                            검색
-                            <i class="material-icons">
-                                search
-                            </i>
-                        </button>
+                    <div class="top-1">
+                        <select v-model="sort_num" @change="searchList()">
+                            <option value="0"> 구분 </option>
+                            <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">{{sort.sort_name}} 문의</option>
+                        </select>
                     </div>
-                    <div class="list">
-                        <div class="t-row thead">
-                            <p>문의번호</p>
-                            <p>구분</p>
-                            <p>회원아이디</p>
-                            <p>회원명</p>
-                            <p>제목</p>
-                            <p>문의일자</p>
-                            <p>답변일자</p>
-                            <p>답변상태</p>
-                        </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody">
-                            <p>{{item.num}}</p>
-                            <p>{{item.sort}}</p>
-                            <p>{{item.id}}</p>
-                            <p>{{item.name}}</p>
-                            <p><RouterLink to="/moa/admin/qna/detail">{{item.title}}</RouterLink></p>
-                            <p>{{item.regdate}}</p>
-                            <p>{{item.ansdate}}</p>
-                            <div>
-                                <select v-model="item.state">
-                                    <option v-for="(state,index) in states" :key="index" :value="state">
-                                        {{state}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <ul class="paging">
-                            <li>[이전]</li>
-                            <li>1</li>
-                            <li>2</li>
-                            <li>3</li>
-                            <li>4</li>
-                            <li>5</li>
-                            <li>[다음]</li>
-                        </ul>
+
+                    <div class="top-2">
+                        <select v-model="field">
+                            <option value="">검색구분</option>
+                            <option value="member_id">아이디</option>
+                            <option value="member_name">이름</option>
+                            <option value="qna_title">제목</option>
+                        </select>
+                        <input type="text" v-model="keyword" @keyup.enter="searchList()">
+                        <i class="material-icons" @click="searchList()">search</i>
                     </div>
                 </div>
-            </main>
-        </div>
-    </template>
 
-    <script>
-        import SideMenu from '@/components/admin/SideMenu.vue'
-        export default {
-            components: {
-                SideMenu
+                <div class="list">
+                    <div class="t-row thead">
+                        <p>번호</p>
+                        <p>구분</p>
+                        <p>아이디</p>
+                        <p>이름</p>
+                        <p>제목</p>
+                        <p>문의일자</p>
+                        <p>답변일자</p>
+                        <p>답변상태</p>
+                    </div>
+                    <div v-for="i in list" :key="i" class="t-row tbody">
+                        <p>{{i.rnum}}</p>
+                        <p>{{i.sort_name}} 문의</p>
+                        <p>{{i.member_id}}</p>
+                        <p>{{i.member_name}}</p>
+                        <p><RouterLink :to="`/moaplace.com/admin/qna/detail/${i.qna_num}`">{{i.qna_title}}</RouterLink></p>
+                        <p>{{i.qna_regdate}}</p>
+                        <p>{{i.answer_regdate}}</p>
+                        <div>
+                            <select v-model="i.qna_state" @change="changeState(i.qna_state, i.qna_num)">
+                                <option v-for="s in states" :key="s" :value="s">
+                                    {{s}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 페이징 -->
+                <div id="mypaging">
+                    <p v-if="startPage>5"
+                        @click="movePage(pageNum-1)" class="act">
+                        [이전]
+                    </p>
+                    <p v-if="startPage<5" class="noActive"> [이전] </p>
+
+                    <div v-for="index in ((endPage-startPage)+1)" :key="index">
+                    <p :class="{active:startPage+(index-1)==pageNum}"
+                        @click="movePage(startPage+(index-1))">
+                        {{startPage+(index-1)}} 
+                    </p>
+                    </div>
+
+                    <p v-if="endPage<pageCnt"
+                        @click="movePage(pageNum+1)" class="act">
+                        [다음] 
+                    </p>
+                    <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
+                </div>
+            </div>
+        </main>
+    </div>
+</template>
+
+<script>
+    import SideMenu from '@/components/admin/SideMenu.vue'
+    import axios from '../../../axios/axios.js'
+
+    export default {
+        components: {
+            SideMenu
+        },
+        data() {
+            return {
+                sort_list:[
+                    {sort_num:1, sort_name:'공연'},
+                    {sort_num:2, sort_name:'대관'},
+                    {sort_num:3, sort_name:'예매'},
+                    {sort_num:4, sort_name:'관람'},
+                    {sort_num:5, sort_name:'회원'},
+                    {sort_num:6, sort_name:'기타'}
+                ],
+                states: [ // 답변상태 목록
+                    '대기중',
+                    '처리중',
+                    '답변완료'
+                ],
+                list:[{ // 리스트
+                        rnum:0,
+                        sort_name: '',
+                        member_id: '',
+                        member_name: '',
+                        qna_num: 0,
+                        qna_title: '',
+                        qna_regdate: '',
+                        answer_regdate: '',
+                        qna_state: ''
+                    }],
+                pageNum: 1, // 현재 페이지
+                field:'', // 검색필드
+                keyword:'', // 검색어
+                startPage:1, // 페이지 시작번호
+                endPage:1, // 페이지 마지막번호
+                pageCnt:1, // 전체 페이지 개수
+                sort_num:0 // 필터용 구분번호
+            }
+        },
+        created() {
+            if(this.$route.params.pageNum) {
+                this.pageNum = this.$route.params.pageNum;
+            }
+            if(this.$route.params.keyword) {
+                this.keyword = this.$route.params.keyword;
+                this.field = this.$route.params.field;
+            }
+
+            console.log(this.pageNum, this.field, this.keyword);
+            this.qnaList(); // 리스트 불러오기
+        },
+        methods: {
+            async qnaList() {
+                try { 
+                    await axios.get("/moaplace.com/admin/qna/list", {params:
+                    {   pageNum: this.pageNum,
+                        field: this.field,
+                        keyword: this.keyword,
+                        sort_num: this.sort_num    }
+                    }).then(function(resp){
+
+                    if(resp.status == 200) {
+                        this.pageNum = resp.data.pageNum, // 페이지 번호
+                        this.field = resp.data.field, // 검색어
+                        this.keyword = resp.data.keyword, // 검색어
+                        this.list = resp.data.list, // 문의글 리스트
+                        this.startPage = resp.data.startPage, // 페이지 시작번호
+                        this.endPage = resp.data.endPage, // 페이지 마지막번호
+                        this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                        this.sort_num = resp.data.sort_num // 필터용 구분번호
+
+                    } else {
+                        alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+                    }
+                    }.bind(this));
+                } catch (error) {
+                    console.log(error);
+                }
             },
-            data() {
-                return {
-                    list: [
-                        {
-                            num: 5,
-                            sort: '예매',
-                            id: 'test',
-                            name: '홍길동',
-                            title: '예매 관련 문의입니다',
-                            regdate: '2022.08.10',
-                            ansdate: '2022.08.12',
-                            state: '답변완료'
-                        }, {
-                            num: 5,
-                            sort: '예매',
-                            id: 'test',
-                            name: '홍길동',
-                            title: '예매 관련 문의입니다',
-                            regdate: '2022.08.10',
-                            ansdate: '2022.08.12',
-                            state: '답변완료'
-                        }, {
-                            num: 5,
-                            sort: '예매',
-                            id: 'test',
-                            name: '홍길동',
-                            title: '예매 관련 문의입니다',
-                            regdate: '2022.08.10',
-                            ansdate: '',
-                            state: '확인중'
-                        }, {
-                            num: 5,
-                            sort: '예매',
-                            id: 'test',
-                            name: '홍길동',
-                            title: '예매 관련 문의입니다',
-                            regdate: '2022.08.10',
-                            ansdate: '2022.08.11',
-                            state: '답변완료'
+            searchList(){
+                this.pageNum = 1;
+                console.log(this.field, this.keyword, this.sort_num);
+                this.qnaList();
+            },
+            movePage(move){
+                this.pageNum = move;
+                console.log(this.pageNum);
+                this.qnaList();
+            },
+            async changeState(change, num){
+                if(confirm('해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?')){
+                    console.log(change, num);
 
-                        }, {
-                            num: 5,
-                            sort: '예매',
-                            id: 'test',
-                            name: '홍길동',
-                            title: '예매 관련 문의입니다',
-                            regdate: '2022.08.10',
-                            ansdate: '',
-                            state: '문의대기'
+                    try { 
+                        await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
+                                   .then(function(resp){
+
+                        if(resp.status == 200) {
+                            alert('문의 상태가 변경되었습니다.')
+                            this.qnaList();
+
+                        } else {
+                            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
                         }
-                    ],
-                    states: [
-                        '문의대기',
-                        '확인중',
-                        '답변완료'
-                    ]
+                        }.bind(this));
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    return;
                 }
             }
         }
-    </script>
+    }
+</script>
 
     <style lang="scss" scoped="scoped">
         @import "@/scss/common.scss";
@@ -165,34 +237,46 @@
                 // 관리자 페이지 레이아웃 관련 끝------------------
                 .list-top {
                     width: 100%;
-                    text-align: right;
                     margin-bottom: 16px;
-                    position: relative;
+                    display:flex;
+                    justify-content: space-between;
                     font-size: 14px;
-                    button,
-                    select {
-                        border: none;
-                    }
-                    select {
-                        position: absolute;
-                        top: 50%;
-                        right: 205px;
-                        transform: translateY(-50%);
-                        border-right: 1px solid #ddd;
 
-                    }
-                    button {
-                        background: transparent;
-                        font-size: 0;
-                        position: absolute;
-                        top: 4px;
-                        right: 5px;
-                        color: rgba($black, 0.9);
-                    }
-                    input {
-                        width: 300px;
+                    .top-1 {
+                        width:100px;
                         box-sizing: border-box;
-                        padding: 4px 32px 4px 90px;
+                        border: 1px solid rgba($black, 0.5);
+                        
+                        & > select {
+                            width:100%;
+                            height: 100%;
+                            padding:0 12px;
+                            border:none;
+                        }
+                    }
+                    .top-2 {
+                        position: relative;
+                        & > select {
+                            position: absolute;
+                            top: 50%;
+                            right: 210px;
+                            transform: translateY(-50%);
+                            border:none;
+                            padding-right: 4px;
+                        }
+                        input {
+                            width: 300px;
+                            box-sizing: border-box;
+                            padding: 4px 48px 4px 100px;
+                        }
+                        & > i {
+                            background: transparent;
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                            color: rgba($black, 0.9);
+                            cursor:pointer;
+                        }
                     }
                 }
                 .list {
@@ -219,11 +303,12 @@
                             }
                             select {
                                 border: 1px solid #333;
-                                padding: 4px;
+                                padding: 4px 4px 4px 8px;
                             }
                             p {
                                 &:nth-child(7){
                                     color:#D67747;
+                                    font-weight: bold;
                                 }
                             }
                         }
@@ -238,31 +323,41 @@
                                 padding-top: 4px;
                             }
                             &:nth-child(1){
-                                width: 65px;
+                                width: 60px;
                             }
                             &:nth-child(5){
                                 width: 350px;
                             }
                         }
                     }
-                    .paging {
-                        display: flex;
-                        flex-flow: row wrap;
-                        justify-content: center;
-                        margin-top: 32px;
-                        li {
-                            margin: 0 8px;
-                            padding: 0 8px;
-                            &:first-child,
-                            &:last-child {
-                                color: $brown;
-                                font-weight: bold;
-                            }
+                }
+                #mypaging{
+                    display: flex;
+                    justify-content: center;
+                    margin: 32px 0;
+                    align-items: center;
+
+                    .act {
+                        color: $brown;
+                        font-weight: bold;
+                    }
+                    p {
+                        padding : 0 6px;
+                        margin: 0 6px;
+                        color:$black;
+                        cursor:pointer;
+
+                        &.active {
+                            color: #D67747;
+                            font-weight: bold;
                         }
                     }
+                    .noActive {
+                        color:rgba($black, 0.5);
+                        cursor: default;
+                        font-weight: bold;
+                    }
                 }
-
             }
-
         }
     </style>
