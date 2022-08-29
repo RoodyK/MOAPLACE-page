@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store/index.js'
+// import store from '@/store/index.js'
 import MainView from '@/views/MainView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import LogoutView from '@/views/login/LogoutView.vue'
@@ -42,6 +42,10 @@ import AdminHallInfoList from '@/views/admin/Hall/AdminHallInfoList.vue'
 import AdminHallDetail from '@/views/admin/Hall/AdminHallDetail.vue'
 import AdminHallInsert from '@/views/admin/Hall/AdminHallInsert.vue'
 import AdminHallUpdate from '@/views/admin/Hall/AdminHallUpdate.vue'
+import AdminShowScheduleList from '@/views/admin/Hall/AdminShowScheduleList.vue'
+import AdminShowScheduleDetail from '@/views/admin/Hall/AdminShowScheduleDetail.vue'
+import AdminShowScheduleInsert from '@/views/admin/Hall/AdminShowScheduleInsert.vue'
+import AdminShowScheduleUpdate from '@/views/admin/Hall/AdminShowScheduleUpdate.vue'
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import AdminFAQListView from '@/views/admin/board/FAQList.vue'
@@ -69,11 +73,6 @@ import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
 
 const routes = [
 
-  {
-    path: '/moaplace.com/booking/seat',
-    name: 'bookinseat',
-    component: SeatSelect
-  },
   {
     path: "/",
     redirect: "/moaplace.com"
@@ -306,14 +305,14 @@ const routes = [
     component: WithdrawalView
   },
 
-  // 관리자기능
+  // 관리자기능-대관관리
   {
     path: '/moaplace.com/admin/rental/list',
     name: 'rentallist',
     component: RentalListView
   },
   {
-    path: '/moaplace.com/admin/rental/update',
+    path: '/moaplace.com/admin/rental/detail/:id',
     name: 'rentalupdate',
     component: RentalDetailView
   },
@@ -322,6 +321,7 @@ const routes = [
     name: 'rentalcalendare',
     component: RentalCalendarView
   },
+  // 관리자기능-게시판관리
   {
     path: '/moaplace.com/admin/faq/list',
     name: 'adminFaqList',
@@ -343,10 +343,11 @@ const routes = [
     component: AdminQNAListView
   },
   {
-    path: '/moaplace.com/admin/qna/detail',
+    path: '/moaplace.com/admin/qna/detail/:qna_num',
     name: 'adminQnaDetail',
     component: AdminQNADetailView
   },
+  //관리자기능-공연관리
   {
     path: '/moaplace.com/admin/show/list',
     name: 'adminHallInfoList',
@@ -367,6 +368,28 @@ const routes = [
     name: 'adminHallUpdate',
     component: AdminHallUpdate
   },
+  //관리자기능-일정관리
+  {
+    path: '/moaplace.com/admin/show/schedule/list',
+    name: 'adminShowScheduleList',
+    component: AdminShowScheduleList
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/detail',
+    name: 'adminShowScheduleDetail',
+    component: AdminShowScheduleDetail
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/insert',
+    name: 'adminShowScheduleInsert',
+    component: AdminShowScheduleInsert
+  },
+  {
+    path: '/moaplace.com/admin/show/schedule/update',
+    name: 'adminShowScheduleUpdate',
+    component: AdminShowScheduleUpdate
+  },
+  //관리자기능-예매관리
   {
     path: '/moaplace.com/admin/ticket/list',
     name: 'adminTicketList',
@@ -392,21 +415,12 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+
+  // 예매페이지
   {
-    path: '/moaplace.com/moaplace/booking/select',
+    path: '/moaplace.com/booking/select',
     name: 'bookingSelect',
     component: BookingSelect
-  },
-  // 예매완료 페이지
-  {
-    path: '/moaplace.com/payment/done',
-    name: 'paymentDone',
-    component: PaymentDone
-  },
-  {
-    path: '/moaplace.com/booking/cnt',
-    name: 'bookingCnt',
-    component: BookingCnt
   },
   {
     path: '/moaplace.com/booking/seat',
@@ -414,9 +428,19 @@ const routes = [
     component: SeatSelect
   },
   {
+    path: '/moaplace.com/booking/count',
+    name: 'bookingCount',
+    component: BookingCnt
+  },
+  {
     path: '/moaplace.com/booking/payment',
     name: 'PaymentView',
     component: PaymentView
+  },
+  {
+    path: '/moaplace.com/booking/done',
+    name: 'paymentDone',
+    component: PaymentDone
   },
 ]
 
@@ -428,17 +452,16 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach( (to, from, next) => {
-  console.log(to);
-  if(to.fullPath.startsWith("/moaplace.com/admin")) {
-    if(store.state.login.userRoles !== 'ROLE_ADMIN') {
-      next('/moaplace.com')
-    }
-  }
-  console.log(from);
-  if(store.state.login.userInfo == null){
-    next()
-  }
-})
+// router.beforeEach( (to, from, next) => {
+//   if(to.fullPath.startsWith("/moaplace.com/admin")) {
+//     if(store.state.login.userRoles !== 'ROLE_ADMIN') {
+//       next('/moaplace.com')
+//     }
+//   }
+//   if(from.name == 'asefawfawefawef') {
+//     console.log(from.name);
+//   }
+//   next();
+// })
 
 export default router

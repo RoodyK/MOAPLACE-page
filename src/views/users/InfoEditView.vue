@@ -5,7 +5,7 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="내 정보 수정"/>
+      <MySideMenu category="내 정보 수정" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -117,7 +118,57 @@ export default {
   AppFooter,
   SideVisual,
   MySideMenu
-  }
+  },
+  data(){
+    return {
+
+      member : {}, // 회원정보
+
+    }
+  },
+  computed: {
+  },
+  created(){
+
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
+
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
+
+  },
 }
 </script>
 

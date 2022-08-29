@@ -58,47 +58,51 @@
         <div class="nav-bg" :class="{on: isActive}"></div>
     </header>
 </template>
-<script>
 
+<script>
+// import axios from '@/axios/axios.js'
 export default {
   name: 'AppHeader',
   created() {
-    if(this.$store.state.login.isLogin) {
-        this.topMenu = [
-            {
-                name: 'HOME',
-                href: '/moaplace.com',
-            },
-            {
-                name: 'LOGOUT',
-                href: '/moaplace.com/users/logout',
-            },
-            {
-                name: 'MYPAGE',
-                href: '/moaplace.com/users/mypage',
-            },
-        ];
-        if(this.$store.state.login.userRoles == 'ROLE_ADMIN') {
-            this.topMenu.push({
-                name: 'ADMIN',
-                href: '/moaplace.com/admin/rental/list'
-            })
-        }
-    }else {
-        this.topMenu = [
-            {
-                name: 'HOME',
-                href: '/moaplace.com',
-            },
-            {
-                name: 'LOGIN',
-                href: '/moaplace.com/users/login',
-            },
-            {
-                name: 'JOIN',
-                href: '/moaplace.com/users/join/same',
-            },
-        ]
+
+    let token = localStorage.getItem("access_token");
+    if(token == null) {
+      this.topMenu = [
+        {
+            name: 'HOME',
+            href: '/moaplace.com',
+        },
+        {
+            name: 'LOGIN',
+            href: '/moaplace.com/users/login',
+        },
+        {
+            name: 'JOIN',
+            href: '/moaplace.com/users/join/same',
+        },
+      ]
+      return;
+    }
+    this.topMenu = [
+      {
+          name: 'HOME',
+          href: '/moaplace.com',
+      },
+      {
+          name: 'LOGOUT',
+          href: '/moaplace.com/users/logout',
+      },
+      {
+          name: 'MYPAGE',
+          href: '/moaplace.com/users/mypage',
+      },
+    ];
+    let roles = localStorage.getItem("user");
+    if(roles == 'special') {
+      this.topMenu.push({
+          name: 'ADMIN',
+          href: '/moaplace.com/admin/rental/list'
+      });
     }
   },
   data(){
@@ -116,7 +120,7 @@ export default {
                     {name: '공간소개', href: '/moaplace.com/moaplace/info'},
                     {name: '공연장정보', href: '/moaplace.com/moaplace/guide'},
                     {name: '오시는길', href: '/moaplace.com/moaplace/navi'}, 
-                    {name: '새소식', href: '/moaplace.com/moaplace/news'}, 
+                    {name: '새소식', href: '/moaplace.com/moaplace/news/list'}, 
                 ]
             },
             {

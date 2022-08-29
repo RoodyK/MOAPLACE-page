@@ -5,9 +5,9 @@
             <div class="inner">
                 <h2 class="title">대관관리 - 자세히보기</h2>
 
-                <div class="state-box">
+                <div class="state-box"  v-if="exists">
                     <span>진행 상황</span>
-                    <select>
+                    <select v-model = "details.rental_state">
                         <option v-for="state in states" :key="state" :value="state">
                             {{state}}
                         </option>
@@ -17,18 +17,18 @@
                 <div class="info-box">
                     <h3>신청자 정보</h3>
                     <div>
-                        <table>
+                        <table v-if="exists">
                             <tr>
                                 <th>신청인</th>
-                                <td>김모아</td>
+                                <td>{{details.rental_name}}</td>
                             </tr>
                             <tr>
                                 <th>연락처</th>
-                                <td>010-0000-0000</td>
+                                <td>{{details.rental_phone}}</td>
                             </tr>
                             <tr>
                                 <th>E-mail</th>
-                                <td>moa@moa.com</td>
+                                <td>{{details.rental_email}}</td>
                             </tr>
                         </table>
                     </div>
@@ -37,23 +37,23 @@
                 <div class="info-box">
                     <h3>공연 정보</h3>
                     <div>
-                        <table>
+                        <table  v-if="exists">
                             <tr>
                                 <th>공연명</th>
-                                <td>우리집 고양이가 제일 귀여워</td>
+                                <td>{{details.rental_title}}</td>
                             </tr>
                             <tr>
                                 <th>공연장</th>
-                                <td>모던홀</td>
+                                <td>{{getHallName(details.hall_num)}}</td>
                             </tr>
                             <tr>
                                 <th>대관희망일자</th>
-                                <td>2022-08-25</td>
+                                <td>{{details.rental_date}}</td>
                             </tr>
                             <tr>
                                 <th>대관시작시간</th>
                                 <td>
-                                    <select>
+                                    <select v-model="details.rental_time">
                                         <option v-for="time in times" :key="time" :value="time">
                                             {{time}}
                                         </option>
@@ -61,39 +61,36 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>공연장</th>
-                                <td>모던홀</td>
-                            </tr>
-                            <tr>
                                 <th>공연장르</th>
-                                <td>무용</td>
+                                <td>{{details.rental_genre}}</td>
                             </tr>
                             <tr>
                                 <th>첨부파일</th>
                                 <td>
-                                    <a href="#">공연계획서.zip</a>
+                                    <a href="#">{{details.rental_originfilename}}</a>
+                                    <span>{{formatBytes(details.rental_filesize)}}</span>
                                 </td>
                             </tr>
                             <tr>
                                 <th>담당자</th>
-                                <td>고양이박사님</td>
+                                <td>{{details.rental_ownsname}}</td>
                             </tr>
                             <tr>
                                 <th>담당자 연락처</th>
-                                <td>010-0000-0000 / se@moa.com</td>
+                                <td>{{details.rental_ownsphone}} / {{details.rental_ownemail}}</td>
                             </tr>
                             <tr>
                                 <th>기타 요청사항</th>
-                                <td>에어컨을 시원하게 틀어주세요.</td>
+                                <td>{{details.rental_content}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
+                
                 <div class="answer-box">
                     <h3>답변</h3>
-                    <textarea cols="30" rows="10">공연계획서 확인했씁니다. 대관시작시간은 9시로 하시죠. 돈 보내주세용 3333230293-092342 모아플레이스
-                    </textarea>
+                    <TextEditor height="300" v-model:content="answer_content" contentType="html"></TextEditor>
                 </div>
                 <div class="btn-box">
                     <button>이전</button>
@@ -106,9 +103,13 @@
 
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
+    import TextEditor from '@/components/TextEditor.vue'
+    import axios from '@/axios/axios.js'
+
     export default {
         components: {
-            SideMenu
+            SideMenu,
+            TextEditor
         },
         data() {
             return {
@@ -129,12 +130,55 @@
                 ],
                 states: [
                     '신청완료',
-                    '심사중',
+                    '서류심사',
                     '신청거절',
                     '입금대기',
                     '예약취소',
                     '사용완료'
-                ]
+                ],
+                details:[],
+                answer_content: "",
+                exists : true,
+            }
+        },
+        mounted(){
+            console.log("rental_num : " + this.$route.params.id );
+            this.getDetail();
+        },
+        methods:{
+            getDetail(){
+                let rental_num = this.$route.params.id
+                axios
+                    .get(`/moaplace.com/admin/rental/detail/${rental_num}`)
+                    .then(function(resp){
+                        if(resp.data.result == 'success'){
+                            this.details  = resp.data.vo;
+                            console.log(this.details);
+                        }else{
+                            this.exists = false;
+                        }
+                    }
+                    .bind(this)
+                )
+            },
+            formatBytes(bytes, decimals = 2) {
+                //파일 크기 변환
+                if (bytes === 0) return '0 Bytes';
+
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            },
+            getHallName(hall_num){
+                switch(hall_num){
+                    case 1 : return "모던홀"; 
+                    case 2 : return "오케스트라홀"; 
+                    case 3 : return "아트홀"; 
+                }
             }
         }
     }
@@ -181,6 +225,7 @@
                 width: 100%;
                 border: 1px solid rgba($black, 0.5);
                 padding: 8px 16px;
+                margin: 32px 0;
                 span {
                     border-right: 1px solid rgba($black, 0.5);
                     padding-right: 16px;

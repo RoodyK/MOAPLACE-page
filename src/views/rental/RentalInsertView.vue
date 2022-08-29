@@ -222,6 +222,7 @@
           <RouterLink to="/moaplace.com/rental"><button>이전으로</button></RouterLink>
           <button @click="onSubmit()">신청하기</button>
       </div>
+
     </div>
     <AppFooter/>
   </div>
@@ -290,7 +291,7 @@ import axios from '@/axios/axios.js'
             '19:00',
             '20:00',
             '21:00'
-          ],
+          ]
       }
     },
     methods:{
@@ -465,13 +466,16 @@ import axios from '@/axios/axios.js'
               alert("대관신청이 완료되었습니다.");
               //마이페이지로 이동
               this.$router.push('/moaplace.com/users/mypage/rental/list');
+
             }else{
               alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
             }
-          }).catch(function(error){
+          }.bind(this))
+          .catch(function(error){
             alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
             console.log(error);
           });
+
         }
       }
     }

@@ -4,9 +4,9 @@
 
 <script>
 export default {
-  beforeCreate() {
-      this.$store.dispatch('login/getMemberInfo')
-  },
+  // async beforeCreate() {
+  //     await this.$store.dispatch('login/getMemberInfo');
+  // },
 }
 </script>
 

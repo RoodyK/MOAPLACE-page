@@ -57,7 +57,7 @@
         
         <div class="btnGroup">
           <button type="submit" @click.prevent="checkForm()">수정하기</button>
-          <button @click="$router.go(-1)"> 이전으로 </button>
+          <button @click="$router.push({name:'qnaList'})">목록으로</button>
         </div>
       
       </div>
