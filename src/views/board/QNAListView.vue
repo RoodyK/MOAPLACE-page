@@ -21,7 +21,7 @@
      
       <div class="searchBox">
         <div class="custom-search">
-          <input type="text" class="custom-search-input" v-model="keyword" 
+          <input type="text" class="custom-search-input" v-model="newKeyword" 
             @keyup.enter="searchList()" placeholder="검색어를 입력하세요."/>
           <i class="material-icons" @click="searchList()">
             search
@@ -46,15 +46,23 @@
         </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in list" :key="index">
+          <tr v-for="(item, index) in list" :key="index" 
+          @click="$router.push({name: 'qnaDetail', params: {qna_num:item.qna_num}})">
             <td>{{item.rnum}}</td>
             <td>{{item.sort_name}} 문의</td>
-            <td><RouterLink :to="`/moaplace.com/board/qna/detail/${item.qna_num}`">
-                 {{item.qna_title}}
-                </RouterLink></td>
+            <td>{{item.qna_title}}</td>
             <td>{{item.qna_state}}</td>
             <td>{{item.qna_regdate}}</td>
           </tr>
+
+          <!-- 문의 내역이 없을 때 -->
+          <tr class="empty-list" v-if="list.length < 1">
+            <td colspan="5">
+              <p><i class="material-symbols-outlined">info</i>
+                  문의 내역이 존재하지 않습니다. </p>
+            </td>
+          </tr>
+
         </tbody>
       </table>
 
@@ -90,7 +98,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import axios from '../../axios/axios.js'
+import axios from '@/axios/axios.js'
 
 export default {
   components: {
@@ -100,33 +108,47 @@ export default {
   },
   data() {
     return {
-      member_num:1,
+      member_num:0,
       pageNum: 1, // 현재 페이지
       keyword:'', // 검색어
+      newKeyword: '', // 검색어 변경
       list: [], // 문의글 리스트
       listCnt: 0, // 전체 문의글 개수
-      startPage:0, // 페이지 시작번호
-      endPage:0, // 페이지 마지막번호
-      pageCnt:0, // 전체 페이지 개수
+      startPage:1, // 페이지 시작번호
+      endPage:1, // 페이지 마지막번호
+      pageCnt:1, // 전체 페이지 개수
     }
   },
   created() {
-    // this.member_num = this.$route.state.member_num;
-
     if(this.$route.params.pageNum) {
       this.pageNum = this.$route.params.pageNum;
     }
     if(this.$route.params.keyword) {
       this.keyword = this.$route.params.keyword;
     }
-
-    console.log(this.pageNum);
-    console.log(this.keyword);
+    console.log(this.pageNum, this.keyword);
     this.qnaList(); // 리스트 불러오기
   },
-  methods: {
+  methods: { 
     async qnaList() {
+      let token = localStorage.getItem("access_token");
+        if(token == null) return;
+        const config = {
+          headers: {
+            "Authorization" : token
+          }
+        }
       try { 
+        await axios.get("/moaplace.com/users/login/member/info", config)
+        .then(response => {
+          let data = response.data;
+          this.member_num = data.member_num;
+          console.log(this.member_num);
+        })
+        .catch(error => {
+          console.log(error.message);
+        })
+  
         await axios.get("/moaplace.com/board/qna/list", {params:
           { member_num:this.member_num,
             pageNum:this.pageNum,
@@ -136,6 +158,7 @@ export default {
           if(resp.status == 200) {
             this.pageNum = resp.data.pageNum, // 페이지 번호
             this.keyword = resp.data.keyword, // 검색어
+            this.newKeyword = resp.data.keyword, // 검색어 변경
             this.list = resp.data.list, // 문의글 리스트
             this.listCnt = resp.data.listCnt, // 전체 문의글 개수
             this.startPage = resp.data.startPage, // 페이지 시작번호
@@ -152,6 +175,7 @@ export default {
     },
     searchList(){
       this.pageNum = 1;
+      this.keyword = this.newKeyword; // 검색어 변경
       this.qnaList();
     },
     movePage(move){
@@ -277,11 +301,11 @@ export default {
         text-overflow: ellipsis;
       }
       &:hover {
-          background-color: rgb(249,249,249);
-          color: $brown;
+        background-color: rgb(249,249,249);
+        color: $brown;
+        cursor: pointer;
       }
     }
-
     thead {
       th {
         vertical-align : middle;
@@ -289,19 +313,26 @@ export default {
         padding: 20px 0;
       }
     }
-
     tbody{
       td {
         padding: 20px 0;
         vertical-align : middle;
-        a {
-          width:100%;
-          color:$black;
-          text-decoration: none;
-          &:hover {
-            color: $brown;
-          }
+      }
+    }
+    .empty-list{
+      border-bottom: 1px solid rgba($black, 0.1);
+      height:150px;
+      p {
+        vertical-align: middle;
+        margin-bottom:0;
+        i{
+          margin-right: 8px;
         }
+      }
+      &:hover {
+        cursor: default;
+        background: none;
+        color:$black;
       }
     }
   }

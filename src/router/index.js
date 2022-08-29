@@ -328,7 +328,7 @@ const routes = [
     component: AdminFAQListView
   },
   {
-    path: '/moaplace.com/admin/faq/detail',
+    path: '/moaplace.com/admin/faq/detail/:faq_num',
     name: 'adminFaqDetail',
     component: AdminFAQDetailView
   },

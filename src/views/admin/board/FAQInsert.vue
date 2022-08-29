@@ -3,37 +3,38 @@
         <SideMenu largeCategory="게시판관리" mediumCategory="FAQ"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">FAQ 관리 - 신규 등록 </h2>
+                <h2 class="title">FAQ 관리 > 등록 </h2>
 
                 <div class="info-box">
-                    <h3>신규 등록</h3>
+                    <h3>등록하기</h3>
                     <div>
                         <table>
                             <tr>
                                 <th>구분</th>
                                 <td>
-                                    <select>
-                                        <option> 구분 선택 </option>
-                                        <option v-for="state in states" :key="state" :value="state">
-                                            {{state}}
+                                    <select v-model="forms.sort_num">
+                                        <option value="0"> 구분 선택 </option>
+                                        <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+                                        {{sort.sort_name}} 문의
                                         </option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text"></td>
+                                <td><input type="text" v-model="forms.faq_title" placeholder="등록할 자주 묻는 질문을 입력하세요."></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><textarea cols="100" rows="10"></textarea></td>
+                                <td><TextEditor height="300" v-model:content="forms.faq_content" contentType="html"
+                                                placeholder="자주 묻는 질문에 대한 내용을 작성하세요."/></td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div class="btn-box">
-                    <button @click="$router.push({name:'adminFaqList'})">이전</button>
-                    <button>등록</button>
+                    <button @click="$router.push({name:'adminFaqList'})">목록으로</button>
+                    <button @click="checkForm()">등록하기</button>
                 </div>
             </div>
         </main>
@@ -42,20 +43,100 @@
 
 <script>
 import SideMenu from '@/components/admin/SideMenu.vue'
+import TextEditor from '@/components/TextEditor.vue'
+import axios from '@/axios/axios.js'
+
 export default {
     components: {
-        SideMenu
+        SideMenu,
+        TextEditor
     },
     data() {
         return {
-            states: [
-                    '공연',
-                    '대관',
-                    '예매',
-                    '관람',
-                    '회원',
-                    '기타'
-                ]
+            sort_list:[],
+            forms: {
+                    sort_num: 0,
+                    member_num: 0,
+                    faq_title: '',
+                    faq_content: ''
+            }
+        }
+    },
+    created() {
+        this.loginInfo(); // 회원번호 가져오기
+        this.sortList(); // 구분목록 가져오기
+    },
+    methods: {
+        loginInfo() { // 로그인 정보 가져오기
+            let token = localStorage.getItem("access_token");
+            if(token == null) return;
+            const config = {
+                headers: {
+                "Authorization" : token
+                }
+            }
+            axios.get("/moaplace.com/users/login/member/info", config)
+            .then(response => {
+                let data = response.data;
+                this.forms.member_num = data.member_num
+                console.log(this.forms.member_num);
+            })
+            .catch(error => {
+                console.log(error.message);
+            })
+        },
+        async sortList() { // 구분목록 불러오기
+            try {
+                await axios.get('/moaplace.com/board/sort/list').then(function(resp){
+                    if(resp.data!=null || resp.data!=''){
+                    this.sort_list = resp.data;
+
+                    } else {
+                        alert('구분목록 로딩에 실패하였습니다.');
+                    }
+                }.bind(this));
+
+            } catch (error) {
+                console.log(error);
+            }                
+        },         
+        checkForm() { 
+            // 입력 체크
+            if(this.forms.sort_num<1) {
+                alert("문의 구분을 선택하세요.");
+                return;
+            }
+            if(this.forms.faq_title==null || this.forms.faq_title==''){
+                alert("제목을 입력하세요.");
+                return;
+            }
+            if(this.forms.faq_content==null || this.forms.faq_content==''){
+                alert("내용을 입력하세요.");
+                return;
+
+            } else if (this.forms.faq_content.length<10) {
+                alert("내용은 10자 이상 입력하세요.");
+                return;
+            }
+
+            // 데이터 제출
+            this.faqInsert();
+        },
+        faqInsert(){ // 데이터 제출
+            axios.post('/moaplace.com/admin/faq/insert', JSON.stringify(this.forms),{
+                headers: {
+                'Content-Type' : 'application/json'}
+            }).then(function(resp){
+
+                if(resp.data!='fail'){ // 등록 성공하면 리스트로 이동
+                    console.log(resp.data);
+                    alert('자주 묻는 질문이 등록되었습니다.');
+                    this.$router.push({name:'adminFaqList'});
+
+                } else { // 등록 실패하면 알림창
+                    alert('자주 묻는 질문 등록에 실패하였습니다. 다시 시도해주세요.');
+                }
+            }.bind(this));      
         }
     }
 }
@@ -133,14 +214,9 @@ export default {
                         }
                         input {
                             border: 1px solid rgba($black,0.3);
-                            padding: 5px;
+                            padding: 4px 8px;
                             width: 100%; 
                         }
-                        textarea {
-                            width:100%;
-                            border: 1px solid rgba($black,0.3);
-                            padding: 5px;
-                        }                        
 
                         tr {
                             td,
@@ -152,6 +228,7 @@ export default {
                                 width: 15%;
                                 background: #eee;
                                 text-align: center;
+                                vertical-align: middle;
                             }
 
                         }
@@ -174,6 +251,5 @@ export default {
                 }
             }
         }
-
     }
 </style>

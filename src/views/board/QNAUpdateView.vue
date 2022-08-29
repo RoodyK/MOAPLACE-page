@@ -35,24 +35,24 @@
 
           <div class="nameBox">
             <label>아이디</label><br>
-            <input type="text" name="member_id" v-model="member_id" disabled>
+            <input type="text" v-model="member_id" disabled>
             <input type="hidden" name="detail.member_num" value="detail.member_num">
           </div>
         </div>
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" v-model="detail.qna_title"><br>
+          <input type="text" v-model="detail.qna_title">
         </div>
         
-        <div class="contentBox">
+        <div class="contentBox" v-if="detail.qna_content!=''">
           <label>내용</label>
-          <textarea v-model="detail.qna_content"></textarea>
+          <TextEditor height="300" v-model:content="detail.qna_content" contentType="text"/>
         </div>
 
         <div class="titleBox">
           <label>문의일자</label>
-          <input type="text" v-model="detail.qna_regdate" disabled><br>
+          <input type="text" v-model="detail.qna_regdate" disabled>
         </div>
         
         <div class="btnGroup">
@@ -62,8 +62,7 @@
       
       </div>
       </form>
-    </div>
-      
+    </div>      
     <AppFooter/>
   </div>
 
@@ -73,13 +72,15 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import TextEditor from '@/components/TextEditor.vue'
 import axios from '../../axios/axios.js'
 
 export default {
-    components: {
-    AppHeader,
-    AppFooter,
-    SideVisual
+  components: {
+      AppHeader,
+      AppFooter,
+      SideVisual,
+      TextEditor
   },
   data() {
     return {
@@ -89,12 +90,12 @@ export default {
       {
         member_num:0,
         sort_num:0,
-        sort_name:'',
+        sort_name:"",
         qna_num:0,
-        qna_title:'',
-        qna_content:'',
-        qna_state:'',
-        qna_regdate:''
+        qna_title:"",
+        qna_content:"",
+        qna_state:"",
+        qna_regdate:""
       }
     }
   },
@@ -122,6 +123,7 @@ export default {
         console.log(error);
       }
     },
+
     async qnaDetail() { // 문의글 상세내용 불러오기
       try { 
         await axios.get("/moaplace.com/board/qna/detail", {params:
@@ -141,6 +143,7 @@ export default {
         console.log(error);
       }
     },
+
     checkForm() { 
       // 입력 체크
       if(this.detail.sort_num<1) {
