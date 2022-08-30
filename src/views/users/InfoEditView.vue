@@ -18,31 +18,31 @@
                 <tr>
                   <th class="col-md-2 text-center descth">아이디</th>
                   <td>
-                    <input type="text" class="form-control mytxtform disform" name="id" placeholder="hotdog" disabled>
+                    <input type="text" class="form-control mytxtform disform" name="id" :placeholder="member.id" disabled>
                   </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">이메일</th>
                   <td>
-                    <input type="text" class="form-control mytxtform disform" name="email" placeholder="dog@test.com" disabled>
+                    <input type="text" class="form-control mytxtform disform" name="email" :placeholder="member.email" disabled>
                   </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">이름</th>
                   <td>
-                    <input type="text" class="form-control mytxtform" name="name" value="강아지">
+                    <input type="text" class="form-control mytxtform" name="name" id="nameInput" placeholder="1자 이상 한글만 사용" maxlength="8" v-model="updateName"> {{ nameHelp }}
                   </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">비밀번호</th>
                   <td>
-                    <input type="password" class="form-control mytxtform" name="pwd">
+                    <input type="password" class="form-control mytxtform" name="pwd" id="pwdInput" placeholder="8~20 영문자, 숫자, 특수문자를 하나이상 사용" maxlength="20" autocomplete="off" v-model="updatePwd"> {{ pwdHelp }}
                   </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">비밀번호 확인</th>
                   <td>
-                    <input type="password" class="form-control mytxtform" name="pwdcheck">
+                    <input type="password" class="form-control mytxtform" name="pwdcheck" id="confirmPwdInput" placeholder="입력한 비밀번호와 같은 비밀번호를 입력하세요." maxlength="20" autocomplete="off" v-model="updatePwdCheck"> {{ confirmPwdHelp }}
                   </td>
                 </tr>
                 <tr>
@@ -50,13 +50,13 @@
                   <td>
                     <div class="myradio">
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="male">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="updateGender">
                         <label class="form-check-label" for="male">
                           남성
                         </label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="female" checked>
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="updateGender">
                         <label class="form-check-label" for="female">
                           여성
                         </label>
@@ -64,28 +64,28 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <th class="col-md-2 text-center descth">생년월일</th>
                   <td>
-                    <input type="text" class="form-control mytxtform" name="birth" value="1900/01/01">
+                    <input type="date" class="form-control mytxtform" name="birth" :value="member.birth">
                   </td>
-                </tr>
+                </tr> -->
                 <tr>
                   <th class="col-md-2 text-center descth">전화번호</th>
                   <td>
-                    <input type="text" class="form-control mytxtform" name="phone" value="010-0000-0000">
+                    <input type="text" class="form-control mytxtform" name="phone" id="phoneInput" placeholder="ex)000-0000-0000" maxlength="13" v-model="updatePhone"> {{ phoneHelp }}
                   </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">주소</th>
                   <td>
                     <div class="myaddr">
-                      <input type="text" class="form-control mytxtform smallform" name="addr" value="우편번호">
-                      <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">주소검색</button>
+                      <input type="text" id="postcode" class="form-control mytxtform smallform" placeholder="우편번호" disabled>
+                      <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="execDaumPostcode()">우편번호 찾기</button>
                     </div>
                     <div>
-                      <input type="text" class="form-control mytxtform bigform" name="addr" value="캘리포니아 로스앤젤레스">
-                      <input type="text" class="form-control mytxtform bigform" name="addr" value="말리부">
+                      <input type="text" id="address" class="form-control mytxtform bigform" placeholder="주소" disabled>
+                      <input type="text" id="detailAddress" class="form-control mytxtform bigform" placeholder="상세주소">
                     </div>
                   </td>
                 </tr>
@@ -94,8 +94,8 @@
           </div>
         </div>
         <div class="text-center btnmargin">
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn">취소</button>
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">수정</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="revert()">취소</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="updateOk()">수정</button>
         </div>
       </div>
     </div>
@@ -123,6 +123,20 @@ export default {
     return {
 
       member : {}, // 회원정보
+
+      // 수정된 데이터
+      updateName : '',
+      updatePwd : '',
+      updatePwdCheck : '',
+      updateGender : '',
+      updatePhone : '',
+      updateAddr : '',
+
+      // 유효성검사
+      nameHelp : '',
+      pwdHelp : '',
+      confirmPwdHelp : '',
+      phoneHelp : '',
 
     }
   },
@@ -163,12 +177,136 @@ export default {
       var point = this.member.point;
       this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
+      // gender로 updateGender 초기화
+      this.updateGender = this.member.gender;
+      // 수정전 이름 초기화
+      this.updateName = this.member.name;
+      // 수정전 전화번호 초기화
+      this.updatePhone = this.member.phone;
+
     })
     .catch(error => {
       console.log(error.message);
     })
 
   },
+  methods: {
+
+    execDaumPostcode() {
+      new window.daum.Postcode({
+        oncomplete: function (data) {
+          var addr = ''; // 주소 변수
+
+          if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+            addr = data.roadAddress;
+          } else { // 사용자가 지번 주소를 선택했을 경우(J)
+            addr = data.jibunAddress;
+          }
+
+          // 우편번호와 주소 정보를 해당 필드에 넣는다.
+          document.getElementById('postcode').value = data.zonecode;
+          document.getElementById("address").value = addr;
+          // 커서를 상세주소 필드로 이동한다.
+          document.getElementById("detailAddress").focus();
+        }
+      }).open();
+    },
+
+    // 취소 = 마이페이지 메인으로 이동
+    revert() {
+      this.$router.push("/moaplace.com/users/mypage")
+    },
+
+    // 정보수정 유효성 검사
+    updateOk() {
+      // console.log("이름:", this.updateName);
+      // console.log("비번:", this.updatePwd);
+      // console.log("비번확인:", this.updatePwdCheck);
+      // console.log("성별:", this.updateGender);
+      // console.log("전화:", this.updatePhone);
+      // console.log("주소:", this.updateAddr);
+
+      // if(this.updateName == this.member.name) {
+      //   console.log("이름이 안바뀜")
+      // }
+
+      // if(this.updateName == '') {
+      //   console.log("이름이 null임");
+      // }
+
+      let name = this.updateName;
+      let pwd = this.updatePwd;
+      let confirmPwd = this.updatePwdCheck;
+      let gender = this.updateGender;
+      let phone = this.updatePhone;
+      let address = '';
+      
+      if(document.getElementById('postcode').value != '') {
+        address = document.getElementById('postcode').value + ' ' + document.getElementById("address").value + ' ' + document.getElementById("detailAddress").value;
+      }
+      
+      // 이름 정규식(한글만 사용가능)
+      let regExpName = /^[가-힣]{2,4}$/;
+      // 비밀번호 정규식(영문자, 숫자, 특수문자 하나이상 8~16글자)
+      let regExpPassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+      // 전화번호 정규식(숫자- 조합)
+      let regExpPhone = /\d{2,3}-\d{3,4}-\d{4}/g;
+
+      if(!regExpName.test(name)) {
+        this.nameHelp = "이름을 양식에 맞게 입력하세요(1자 이상 한글)";
+        return;
+      }
+      this.nameHelp = '';
+
+      if(!regExpPassword.test(pwd) && pwd != '') {
+        this.pwdHelp = "영문자, 숫자, 특수문자 하나 이상 사용하여 8자이상 16자 이하로 입력하세요.";
+        return;
+      }
+      this.pwdHelp = '';
+
+      if(pwd != confirmPwd) {
+        this.confirmPwdHelp = "비밀번호와 비밀번호 확인이 일치하지 않습니다.";
+        return;
+      }
+      this.confirmPwdHelp = '';
+
+      if(!regExpPhone.test(phone)) {
+        this.phoneHelp = "전화번호 양식에 맞게 입력하세요 ex)000-0000-0000";
+        return;
+      }
+      this.phoneHelp = '';
+
+      const updateRequest = {
+        member_num : this.member.num,
+        member_name : name,
+        member_pwd : pwd,
+        member_gender : gender,
+        member_phone : phone,
+        member_address : address
+      }
+
+      console.log(updateRequest);
+
+      axios.post("/moaplace.com/users/mypage/info/edit",
+        JSON.stringify(updateRequest), {
+          headers: {
+            "Content-Type" : "application/json"
+          }
+      }).then((resp) => {
+        console.log(resp.data);
+        if(resp.data == "success") {
+
+          alert('수정이 완료되었습니다.');
+          this.$router.push("/moaplace.com/users/mypage");
+
+        } else {
+          alert('업데이트 오류');
+        }
+      })
+
+    }
+
+  }
 }
 </script>
 
