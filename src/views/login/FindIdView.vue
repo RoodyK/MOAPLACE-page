@@ -19,7 +19,7 @@
         </ul>
       </div>
 
-      <form action="" @submit.prevent>
+      <form @submit.prevent>
         <div class="info">
           <div class="explain">
             <p>본인인증에 사용했던 이메일로 아이디를 보내드립니다.</p>
@@ -76,6 +76,9 @@ export default {
       inputName: '',
       inputEmail: ''
     }
+  },
+  created() {
+    document.querySelector('form').reset();
   },
   methods: {
     findById() {

@@ -106,6 +106,9 @@ export default {
       return `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&response_type=code&scope=account_email,gender`
     }
   },
+  created() {
+    document.querySelector('form').reset();
+  },
   methods: {
     async isLogin() {
       if(this.loginId == null || this.loginId == "") {
@@ -192,6 +195,7 @@ export default {
     .kakao-login, .google-login {
       margin: 0 auto;
       a {
+        color: $black;
         display: block;
         width: 400px;
         height: 70px;
