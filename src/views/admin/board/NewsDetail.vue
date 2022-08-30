@@ -1,36 +1,43 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="게시판 관리" mediumCategory="News" />
+    <SideMenu largeCategory="게시판 관리" mediumCategory="새소식" />
     <main id="main">
       <div class="inner">
         <h2 class="title">공지사항 - 자세히보기</h2>
-
         <div class="info-box">
-          <div>
+          <div v-for="(i, index) in news.splice(0, 1)" :key="index">
             <table>
               <tr>
                 <th>번호</th>
-                <td>{{ news.num }}</td>
+                <td>{{ i.notice_num }}</td>
               </tr>
               <tr>
                 <th>구분</th>
-                <td>{{ news.sort }}</td>
+                <td>{{ i.sort_name }}</td>
               </tr>
               <tr>
                 <th>제목</th>
-                <td>{{ news.title }}</td>
+                <td>{{ i.notice_title }}</td>
               </tr>
               <tr>
                 <th>첨부파일</th>
-                <td>{{ news.file }}</td>
+                <td>
+                  <ul>
+                    <li v-for="(list, index) in filelist" :key="index">
+                      <button @click.prevent="download(list.notice_detail_num)">
+                        <img src="@/assets/admin/download.png" />
+                      </button>
+                      {{ list.notice_orgfile }}
+                    </li>
+                  </ul>
+                </td>
               </tr>
               <tr>
-                <td colspan="2">{{ news.content }}</td>
+                <td colspan="2">{{ i.notice_content }}</td>
               </tr>
             </table>
           </div>
         </div>
-
         <div class="btn-box">
           <button @click="$router.push({ name: 'adminNewsList' })">이전</button>
           <button>삭제</button>
@@ -42,22 +49,67 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import axios from "@/axios/axios.js";
 export default {
   components: {
     SideMenu,
   },
   data() {
     return {
-      news: {
-        num: 5,
-        sort: "예매",
-        title: "예매 내역은 어떻게 확인할 수 있나요?",
-        file: "",
-        content:
-          "회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.",
-      },
-      states: ["공연", "대관", "좌석", "예매", "관람", "회원", "주차", "기타"],
+      news: [
+        {
+          notice_num: "",
+          sort_name: "",
+          notice_title: "",
+          notice_content: "",
+          notice_orgfile: "",
+        },
+      ],
+      filelist: [],
+      member_num: 1,
+      notice_num: "",
+      notice_detail_num: "",
     };
+  },
+  //렌더링 되기 전에 메소드 실행시켜주는 게 좋다. created -> mounted 순으로 실행되는 것
+  created() {
+    this.notice_num = this.$route.params.notice_num;
+    console.log("mounted: ", this.notice_num);
+    this.getdetail();
+  },
+  // mounted() {
+  //   this.notice_num = this.$route.params.notice_num;
+  //   console.log("created: ", this.notice_num);
+
+  // },
+
+  //리스트 v-for 중복 방지를 위해 v-for에 splice를 써줌 -> 반복 수 제한
+  methods: {
+    getdetail() {
+      console.log("메소드 notice_num", this.notice_num);
+      console.log("메소드 member_num", this.member_num);
+      console.log("메소드 notice_detail_num", this.notice_detail_num);
+      axios
+        .get(
+          `/moaplace.com/admin/news/detail/${this.member_num}/${this.notice_num}`
+        )
+        .then(
+          function (resp) {
+            // console.log(resp.data);
+            this.news = resp.data.list;
+            this.filelist = resp.data.filelist;
+
+            console.log(this.news);
+            console.log("파일리스트", this.filelist);
+            // this.news.notice_num = resp.data.notice_num;
+            // console.log(this.news.notice_num);
+          }.bind(this)
+        );
+    },
+    download(notice_detail_num) {
+      console.log("파일넘버:", notice_detail_num);
+      window.location = `/moaplace.com/admin/news/file/download/${notice_detail_num}`;
+    },
   },
 };
 </script>
@@ -118,7 +170,6 @@ nav {
               background: #eee;
               text-align: center;
             }
-
             &:nth-child(5) {
               vertical-align: top;
               height: 250px;
@@ -126,6 +177,11 @@ nav {
                 padding: 16px 16px;
               }
             }
+          }
+          //이미지 재
+          button {
+            background: none;
+            border: none;
           }
         }
       }

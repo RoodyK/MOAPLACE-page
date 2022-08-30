@@ -3,7 +3,7 @@
     <SideMenu largeCategory="게시판 관리" mediumCategory="새소식" />
     <main id="main">
       <main class="inner">
-        <h2 class="title">공지사항 - 신규 등록</h2>
+        <h2 class="title">공지사항 - 공지 수정</h2>
 
         <div class="info-box">
           <div>
@@ -27,15 +27,16 @@
                   <div class="t-row">
                     <div>제목</div>
                     <div>
-                      <input type="text" v-model="title" id="title" />
+                      <input type="text" v-model="notice_title" id="title" />
                     </div>
                   </div>
                   <div class="t-row">
                     <div>내용</div>
                     <div>
-                      <textarea id="content" v-model="content">
-내용입력란</textarea
-                      >
+                      <textarea
+                        id="content"
+                        v-model="notice_content"
+                      ></textarea>
                     </div>
                   </div>
                   <div class="t-row">
@@ -49,14 +50,13 @@
                         multiple
                       />
                       <div class="file-box">
-                        <label for="file">첨부파일 등록</label>
+                        <label for="file">첨부파일 추가</label>
                         <ul>
-                          <li
-                            v-for="(filelist, index) in fileList"
-                            :key="index"
-                          >
-                            {{ filelist.name }}
-                            <button @click.prevent="deletefile1(index)">
+                          <li v-for="(list, index) in filelist" :key="index">
+                            {{ list.notice_orgfile }}
+                            <button
+                              @click="deletefile1(list.notice_detail_num)"
+                            >
                               <img src="@/assets/admin/remove.png" />
                             </button>
                           </li>
@@ -65,10 +65,16 @@
                     </div>
                   </div>
                   <div class="footer">
-                    <button class="page">이전</button>
-                    <button class="submit" @click.prevent="checkForm()">
-                      등록
+                    <button
+                      class="page"
+                      @click="$router.push({ name: 'adminNewsList' })"
+                    >
+                      이전
                     </button>
+                    <button class="submit" @click.prevent="checkForm()">
+                      수정
+                    </button>
+                    <button class="delete">삭제</button>
                   </div>
                 </form>
               </div>
@@ -99,23 +105,41 @@ export default {
         { sort_num: 5, sort_name: "회원" },
         { sort_num: 6, sort_name: "기타" },
       ],
-      fileList: [],
-      content: "",
-      title: "",
-      selected: 0,
+
+      filelist: [],
+      notice_num: "",
+      notice_title: "",
+      notice_content: "",
+      notice_detail_num: "",
+      filename: "",
+      selected: "",
     };
   },
+  created() {
+    this.notice_num = this.$route.params.notice;
+    console.log("mounted: ", this.notice_num);
+    this.getupdate();
+  },
 
+  /*리스트 바인딩 하여 넘버 얻어오는 거 정리 */
   methods: {
-    deletefile1(index) {
-      /*splice 그 인덱스부터 1개 삭제 , form 안 buttom prevent 처리 */
-      // alert(index);
-      this.fileList.splice(index, 1);
-      // alert("aaa");
+    deletefile1(notice_detail_num) {
+      console.log("파일 넘버", notice_detail_num);
+      axios
+        .get(`/moaplace.com/admin/news/filedelete/${notice_detail_num}`)
+        .then(
+          function (resp) {
+            if (resp.data == 1) {
+              alert("파일이 삭제되었습니다.");
+              this.$router.push({ name: "AdminNewsUpdate" });
+            } else {
+              alert("파일 삭제를 실패하였습니다.");
+              this.$router.push({ name: "AdminNewsUpdate" });
+            }
+          }.bind(this)
+        );
+      this.fileList.splice(notice_detail_num, 1);
     },
-    // vueselect() {
-    //   console.log(this.selected);
-    // },
 
     selectFile() {
       for (let i = 0; i < this.$refs.files.files.length; i++) {
@@ -132,11 +156,24 @@ export default {
       console.log(this.fileList.length);
     },
 
+    getupdate() {
+      axios.get(`/moaplace.com/admin/news/update/${this.notice_num}`).then(
+        function (resp) {
+          // console.log(resp.data);
+          this.filelist = resp.data.filelist;
+          this.notice_title = resp.data.notice_title;
+          this.notice_content = resp.data.notice_content;
+          this.selected = resp.data.sort_num;
+
+          console.log("파일리스트", this.filelist);
+        }.bind(this)
+      );
+    },
     savefile() {
       var formData = new FormData();
       formData.append("sort_num", this.selected);
-      formData.append("content", this.content);
-      formData.append("title", this.title);
+      formData.append("content", this.notice_content);
+      formData.append("title", this.notice_title);
       this.fileList.forEach(function (fileList) {
         formData.append("files", fileList);
       });
@@ -148,11 +185,11 @@ export default {
         alert("구분을 선택하세요");
         return;
       }
-      if (this.title == null || this.title == "") {
+      if (this.notice_title == null || this.notice_title == "") {
         alert("제목을 입력하세요");
         return;
       }
-      if (this.content == null || this.content == "") {
+      if (this.notice_content == null || this.notice_content == "") {
         alert("내용을 입력하세요");
         return;
       }
