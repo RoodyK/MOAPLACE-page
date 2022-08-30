@@ -120,7 +120,7 @@ const routes = [
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/users/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword/:id',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
@@ -323,7 +323,7 @@ const routes = [
     component: AdminFAQListView
   },
   {
-    path: '/moaplace.com/admin/faq/detail',
+    path: '/moaplace.com/admin/faq/detail/:faq_num',
     name: 'adminFaqDetail',
     component: AdminFAQDetailView
   },

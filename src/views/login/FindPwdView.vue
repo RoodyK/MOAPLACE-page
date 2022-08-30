@@ -30,16 +30,18 @@
           </div>
           <div class="id">
             <label for="idInput">아이디</label>
-            <input type="text" class="idInput" id="idInput">
-            <div class="idHelp help">asdasdasd</div>
+            <input type="text" class="idInput" id="idInput" v-model="inputId">
+            <div class="idHelp help"></div>
           </div>
           <div class="email">
             <label for="emailInput">이메일</label>
-            <input type="text" class="emailInput" id="emailInput">
-            <div class="emailHelp help">asdasdasd</div>
+            <input type="text" class="emailInput" id="emailInput" v-model="inputEmail">
+            <div class="emailHelp help"></div>
           </div>
           <div class="info-btn">
-            <button>비밀번호 재설정 링크 전송</button>
+            <button type="button" @click="resetPassword()">
+              비밀번호 재설정 링크 전송
+            </button>
           </div>
 
         </div>
@@ -52,7 +54,7 @@
 </template>
 
 <script>
-
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -68,13 +70,50 @@ export default {
       find: [
         {
           name: '아이디 찾기',
-          href: '/moaplace.com/login/findid'
+          href: '/moaplace.com/users/login/findid'
         },
         {
           name: '비밀번호 찾기',
-          href: '/moaplace.com/login/findpwd'
+          href: '/moaplace.com/users/login/findpwd'
         }
-      ]
+      ],
+      inputId: "",
+      inputEmail: ""
+    }
+  },
+  methods: {
+    resetPassword() {
+      if (this.inputId == null || this.inputId == "") {
+        document.querySelector(".idHelp").innerText = "아이디를 입력하세요.";
+        return;
+      }
+      document.querySelector(".idHelp").innerText = "";
+
+      if (this.inputEmail == null || this.inputEmail == "") {
+        document.querySelector(".emailHelp").innerText = "이메일을 입력하세요..";
+        return;
+      }
+      document.querySelector(".emailHelp").innerText = "";
+
+      let info = {
+        id: this.inputId,
+        email: this.inputEmail
+      }
+
+      axios.post("/moaplace.com/users/login/find/pwd", 
+        JSON.stringify(info), {
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      })
+      .then(response => {
+        if(response.data == "success") {
+          alert("이메일을 확인하세요.");
+        }
+      })
+      .catch(() => {
+        alert("아이디와 이메일을 확인하세요.");
+      })
     }
   }
 }

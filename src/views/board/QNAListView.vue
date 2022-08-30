@@ -21,7 +21,7 @@
      
       <div class="searchBox">
         <div class="custom-search">
-          <input type="text" class="custom-search-input" v-model="keyword" 
+          <input type="text" class="custom-search-input" v-model="newKeyword" 
             @keyup.enter="searchList()" placeholder="검색어를 입력하세요."/>
           <i class="material-icons" @click="searchList()">
             search
@@ -46,25 +46,33 @@
         </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in list" :key="index">
+          <tr v-for="(item, index) in list" :key="index" 
+          @click="$router.push({name: 'qnaDetail', params: {qna_num:item.qna_num}})">
             <td>{{item.rnum}}</td>
             <td>{{item.sort_name}} 문의</td>
-            <td><RouterLink :to="`/moaplace.com/board/qna/detail/${item.qna_num}`">
-                 {{item.qna_title}}
-                </RouterLink></td>
+            <td>{{item.qna_title}}</td>
             <td>{{item.qna_state}}</td>
             <td>{{item.qna_regdate}}</td>
           </tr>
+
+          <!-- 문의 내역이 없을 때 -->
+          <tr class="empty-list" v-if="list.length < 1">
+            <td colspan="5">
+              <p><i class="material-symbols-outlined">info</i>
+                  문의 내역이 존재하지 않습니다. </p>
+            </td>
+          </tr>
+
         </tbody>
       </table>
 
       <!-- 페이징 -->
       <div id="mypaging">
-          <p v-if="startPage>5"
-            @click="movePage(pageNum-1)" class="act">
-            [이전]
-          </p>
-          <p v-if="startPage<5" class="noActive"> [이전] </p>
+        <p v-if="startPage>5"
+          @click="movePage(pageNum-1)" class="act">
+          [이전]
+        </p>
+        <p v-if="startPage<=5" class="noActive"> [이전] </p>
 
         <div v-for="index in ((endPage-startPage)+1)" :key="index">
           <p :class="{active:startPage+(index-1)==pageNum}"
@@ -73,11 +81,11 @@
           </p>
         </div>
 
-          <p v-if="endPage<pageCnt"
-            @click="movePage(pageNum+1)" class="act">
-            [다음] 
-          </p>
-          <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
+        <p v-if="endPage<pageCnt"
+          @click="movePage(pageNum+1)" class="act">
+          [다음] 
+        </p>
+        <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
       </div>
 
     </div>  
@@ -90,7 +98,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import axios from '../../axios/axios.js'
+import axios from '@/axios/axios.js'
 
 export default {
   components: {
@@ -100,58 +108,91 @@ export default {
   },
   data() {
     return {
-      member_num:1,
-      pageNum: 1, // 현재 페이지
-      keyword:'', // 검색어
+      member_num:0,
       list: [], // 문의글 리스트
       listCnt: 0, // 전체 문의글 개수
-      startPage:0, // 페이지 시작번호
-      endPage:0, // 페이지 마지막번호
-      pageCnt:0, // 전체 페이지 개수
+      pageNum: 1, // 현재 페이지
+      keyword:'', // 검색어
+      newKeyword: '', // 검색어 변경
+      startPage:1, // 페이지 시작번호
+      endPage:1, // 페이지 마지막번호
+      pageCnt:1, // 전체 페이지 개수
     }
   },
   created() {
-    // this.member_num = this.$route.state.member_num;
-
     if(this.$route.params.pageNum) {
       this.pageNum = this.$route.params.pageNum;
     }
     if(this.$route.params.keyword) {
       this.keyword = this.$route.params.keyword;
     }
+    console.log(this.pageNum, this.keyword);
 
-    console.log(this.pageNum);
-    console.log(this.keyword);
-    this.qnaList(); // 리스트 불러오기
+    this.qnaList();
   },
-  methods: {
+  methods: { 
     async qnaList() {
-      try { 
-        await axios.get("/moaplace.com/board/qna/list", {params:
-          { member_num:this.member_num,
-            pageNum:this.pageNum,
-            keyword:this.keyword}
-        }).then(function(resp){
-
-          if(resp.status == 200) {
-            this.pageNum = resp.data.pageNum, // 페이지 번호
-            this.keyword = resp.data.keyword, // 검색어
-            this.list = resp.data.list, // 문의글 리스트
-            this.listCnt = resp.data.listCnt, // 전체 문의글 개수
-            this.startPage = resp.data.startPage, // 페이지 시작번호
-            this.endPage = resp.data.endPage, // 페이지 마지막번호
-            this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
-
-          } else {
-            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+      if (this.member_num < 1) {
+        let token = localStorage.getItem("access_token");
+        if(token == null) return;
+          
+        const config = {
+          headers: {
+            "Authorization" : token
           }
-        }.bind(this));
-      } catch (error) {
-        console.log(error);
+        }
+        // 로그인 회원정보
+        await axios.get("/moaplace.com/users/login/member/info", config)
+                  .then(response => {
+                    let data = response.data;
+                    this.member_num = data.member_num;
+                    console.log(this.member_num);
+                  })
+                  .catch(error => {
+                      console.log(error.message);
+                  })
       }
+      // 문의글 리스트
+      await axios.get("/moaplace.com/board/qna/list", 
+                    { params:
+                            { member_num: this.member_num,
+                              pageNum: this.pageNum,
+                              keyword: this.keyword  }
+                  })
+                 .then(resp => {
+                    this.list = resp.data.list, // 문의글 리스트
+                    this.listCnt = resp.data.listCnt, // 전체 문의글 개수
+                    this.pageNum = resp.data.pageNum, // 페이지 번호
+                    this.keyword = resp.data.keyword, // 검색어
+                    this.newKeyword = resp.data.keyword, // 검색어 변경
+                    this.startPage = resp.data.startPage // 페이지 시작번호
+
+                    if(resp.data.endPage < 1){
+                      this.endPage = 1,
+                      this.pageCnt = 1
+                    } else {
+                      this.endPage = resp.data.endPage, // 페이지 마지막번호
+                      this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                    }
+                    console.log(this.startPage, this.endPage, this.pageCnt);
+                  })
+
+                 .catch (error => {
+                    console.log(error);
+                  })
     },
     searchList(){
+      if(this.field=='' || this.field==null) {
+        alert('검색 구분을 선택하세요.')
+        return;
+      }
+      if(this.newKeyword=='' || this.newKeyword==null){
+        alert('검색어를 입력하세요.')
+        return;
+      } 
+      
       this.pageNum = 1;
+      this.keyword = this.newKeyword; // 검색어 변경
       this.qnaList();
     },
     movePage(move){
@@ -276,12 +317,7 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-      &:hover {
-          background-color: rgb(249,249,249);
-          color: $brown;
-      }
     }
-
     thead {
       th {
         vertical-align : middle;
@@ -289,19 +325,35 @@ export default {
         padding: 20px 0;
       }
     }
-
     tbody{
-      td {
-        padding: 20px 0;
-        vertical-align : middle;
-        a {
-          width:100%;
-          color:$black;
-          text-decoration: none;
-          &:hover {
-            color: $brown;
-          }
+      tr{
+        td {
+          padding: 20px 0;
+          vertical-align : middle;
         }
+        &:hover {
+          background-color: rgb(249,249,249);
+          color: $brown;
+          cursor: pointer;
+        }
+      }
+    }
+    .empty-list{
+      border-bottom: 1px solid rgba($black, 0.1);
+      height: 160px;
+      color: rgba($black, 0.7);
+      p {
+        vertical-align: middle;
+        margin-bottom:0;
+        i{
+          vertical-align: middle;
+          margin-right: 8px;
+        }
+      }
+      &:hover {
+        cursor: default;
+        background-color: #fff;
+        color: rgba($black, 0.7);
       }
     }
   }
