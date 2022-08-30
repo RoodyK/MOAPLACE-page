@@ -77,7 +77,7 @@ export default {
       inputEmail: ''
     }
   },
-  created() {
+  mounted() {
     document.querySelector('form').reset();
   },
   methods: {

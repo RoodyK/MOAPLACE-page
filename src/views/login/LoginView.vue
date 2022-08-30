@@ -77,7 +77,7 @@ export default {
     SideVisual
   },
   mounted() {
-    
+    document.querySelector('form').reset();
   },
   data() {
     return {
@@ -105,9 +105,6 @@ export default {
     kakaoLogin() {
       return `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&response_type=code&scope=account_email,gender`
     }
-  },
-  created() {
-    document.querySelector('form').reset();
   },
   methods: {
     async isLogin() {
