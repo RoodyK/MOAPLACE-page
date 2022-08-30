@@ -49,11 +49,8 @@
                     </RouterLink>
                   </td>
                   <td class="text-center">{{ item.genre_category }}</td>
-                  
                   <td class="text-center end">
-                    <RouterLink :to="`/moaplace.com/`">
-                      <button type="button" class="btn btn-outline-secondary fw-bold mybtn">삭제</button>
-                    </RouterLink>
+                    <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click.prevent="deleteOk(item)">삭제</button>
                   </td>
                 </tr>
               </tbody>
@@ -200,7 +197,37 @@ export default {
         console.log(error);
       }
 
+    },
+
+    // 관심공연 삭제 메소드
+    deleteOk(e) {
+      console.log(e);
+      
+      const deleteData = {
+        member_num : e.member_num,
+        show_num : e.show_num
+      }
+
+      console.log(deleteData);
+
+      axios.post('moaplace.com/users/mypage/performance/delete', JSON.stringify(deleteData), {
+        headers: {
+          "Content-Type": `application/json`,
+        }
+      }).then((resp) => {
+
+        if(resp.data == "success") {
+
+          alert('내 관심 공연에서 삭제되었습니다.');
+          this.getList();
+
+        } else {
+          alert('관심공연 삭제 오류 핸들링');
+        }
+      });
+
     }
+
   }
 }
 </script>
@@ -318,6 +345,9 @@ export default {
               table td,th {
                 border: 0px;
                 background-color: transparent;
+              }
+              > table > tr > th {
+                padding-right: 5px;
               }
             }
           }
