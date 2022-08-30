@@ -53,6 +53,7 @@ export default {
     },
     created(){
         this.getMemberInfo();
+
         this.getAnswer();
     },
     methods:{
@@ -62,7 +63,7 @@ export default {
             axios
                 .get(`/moaplace.com/admin/rental/answer/getAnswer/${this.rental_num}`)
                 .then(function(resp){
-                    console.log(resp.data);
+                    
                     if(resp.data.result == 'success'){
                         this.exists = true;
                         this.editable = true;
@@ -88,8 +89,7 @@ export default {
             axios.get("/moaplace.com/users/login/member/info", config)
             .then(response => {
                 let data = response.data;
-                this.member_num = data.info.member_num; 
-                console.log(this.member_num);
+                this.member_num = data.member_num; 
             })
             .catch(error => {
                 console.log(error.message);
