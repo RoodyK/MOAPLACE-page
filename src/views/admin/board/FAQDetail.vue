@@ -78,8 +78,9 @@ export default {
     created() {
         this.faq_num = this.$route.params.faq_num;
         console.log(this.faq_num);
-        this.sortList(); // 구분목록 불러오기
-        this.faqDetail(); // 상세내용 불러오기
+
+        this.sortList();
+        this.faqDetail(); 
     },
     data() {
         return {
@@ -91,40 +92,27 @@ export default {
         }
     },
     methods: {
-        async sortList() { // 구분목록 불러오기
-            try {
-                await axios.get('/moaplace.com/board/sort/list').then(function(resp){
-                    if(resp.data!=null || resp.data!=''){
-                    this.sort_list = resp.data;
-
-                    } else {
-                        alert('구분목록 로딩에 실패하였습니다.');
-                    }
-                }.bind(this));
-
-            } catch (error) {
-                console.log(error);
-            }                
+        async sortList() {
+            await axios.get('/moaplace.com/board/sort/list')
+                        .then(resp => {
+                            this.sort_list = resp.data;
+                        })
+                        .catch(error => {
+                            console.log(error.message);
+                        })            
         },           
-        async faqDetail() { // 상세내용 불러오기
-            try { 
-                await axios.get("/moaplace.com/admin/faq/detail/"+this.faq_num)
-                           .then(function(resp){
+        async faqDetail() {
+            await axios.get("/moaplace.com/admin/faq/detail/"+this.faq_num)
+                        .then(resp => {
+                            this.detail = resp.data.detail;
+                            this.sort_num = resp.data.detail.sort_num;
+                            this.faq_title = resp.data.detail.faq_title;
+                            this.faq_content = resp.data.detail.faq_content;
 
-                    if(resp.status == 200) {
-                        this.detail = resp.data.detail;
-                        this.sort_num = resp.data.detail.sort_num;
-                        this.faq_title = resp.data.detail.faq_title;
-                        this.faq_content = resp.data.detail.faq_content;
-
-                    } else {
-                        alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-                    }
-                }.bind(this));
-
-            } catch (error) {
-                console.log(error);
-            }    
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })
         },
         updateFaq() { // 수정하기
             if(confirm('내용을 수정하시겠습니까?')){
@@ -137,45 +125,41 @@ export default {
                 console.log(forms);
 
                 axios.post("/moaplace.com/admin/faq/update", JSON.stringify(forms),{
-                    headers: {
-                        'Content-Type' : 'application/json'}
-                }).then(function(resp){
-
-                    if(resp.status == 200) {
+                    headers: {'Content-Type' : 'application/json'}
+                })
+                .then(resp => {
+                    if(resp.data != 'fail') {
                         console.log(resp.data);
                         alert('FAQ가 수정되었습니다.')
                         this.faqDetail();
-
                     } else {
                         alert('FAQ 수정에 실패하였습니다. 다시 시도해주세요.');
+                        return
                     }
-                }.bind(this));      
-            } else {
-                return;
-            }
+                })
+                .catch (error => {
+                    console.log(error);
+                })                
+            } else return;
         },
-        async deleteFaq(){ // faq 삭제
-        if(confirm('해당 글을 삭제하시겠습니까?')){
-            try { 
-            await axios.post("/moaplace.com/admin/faq/delete/"+this.faq_num)
-                        .then(function(resp){
+        deleteFaq(){ // faq 삭제
+            if(confirm('해당 글을 삭제하시겠습니까?')){
+                axios.post("/moaplace.com/admin/faq/delete/"+this.faq_num)
+                     .then(resp => {
+                        if(resp.data != 'fail') {
+                            alert('FAQ가 삭제되었습니다.');
+                            this.$router.push({name:'adminFaqList'});
 
-                if(resp.status == 200) {
-                alert('FAQ가 삭제되었습니다.');
-                this.$router.push({name:'adminFaqList'});
-
-                } else {
-                alert('FAQ 삭제를 실패하였습니다. 다시 시도해주세요.');
-                }
-            }.bind(this));
-
-            } catch (error) {
-            console.log(error);
-            }  
-        } else {
-            return;
-        }
-        },        
+                        } else {
+                            alert('FAQ 삭제를 실패하였습니다. 다시 시도해주세요.');
+                            return;
+                        }
+                    })
+                     .catch (error => {
+                        console.log(error);
+                    })
+            } else return;
+        }        
     }
 }
 </script>

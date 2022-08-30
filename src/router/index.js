@@ -16,7 +16,6 @@ import moaplaceGuideView3 from '../views/moaplace/GuideView3.vue'
 import moaplaceNaviView from '../views/moaplace/NaviView.vue'
 import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
-import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
 import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
@@ -56,6 +55,7 @@ import AdminQNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import AdminNewsUpdate from '@/views/admin/board/NewsUpdate.vue'
 import BookingSelect from '@/views/BookingSelect.vue'
 import BookingCnt from '@/views/BookingCntView.vue'
 import PaymentDone from '@/views/DoneView.vue'
@@ -160,14 +160,9 @@ const routes = [
     component: moaplaceMoaNews
   },
   {
-    path: '/moaplace.com/moaplace/news/detail',
+    path: '/moaplace.com/moaplace/news/detail/:notice',
     name: 'moaplaceMoaDetail',
     component: moaplaceMoaDetail
-  },
-  {
-    path: '/moaplace.com/moaplace/news/update',
-    name: 'moaplaceMoaUpdate',
-    component: moaplaceMoaUpdate
   },
 
   // 공연목록
@@ -403,13 +398,15 @@ const routes = [
     name: 'adminTicketDetail',
     component: AdminTicketDetail
   },
+
+  //관리자 기능- 새소식
   {
     path: '/moaplace.com/admin/news/list',
     name: 'adminNewsList',
     component: AdminNewsList
   },
   {
-    path: '/moaplace.com/admin/news/detail',
+    path: '/moaplace.com/admin/news/detail/:member_num/:notice_num',
     name: 'adminNewsDetail',
     component: AdminNewsDetail
   },
@@ -434,7 +431,12 @@ const routes = [
     name: 'adminShowChart',
     component: AdminShowChart
   },
-  
+  {
+    path: '/moaplace.com/admin/news/update/:notice',
+    name: 'AdminNewsUpdate',
+    component: AdminNewsUpdate
+  },
+
   // 예매페이지
   {
     path: '/moaplace.com/booking/select',

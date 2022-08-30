@@ -30,8 +30,7 @@
 
         <tbody>
           <tr>
-            <td class="content">
-              {{detail.qna_content}}
+            <td class="content" v-html="detail.qna_content">
             </td>
           </tr>
 
@@ -79,57 +78,72 @@ export default {
   }, 
   data() {
     return {
-      qna_num:0,
       detail:[],
       answer:[]
     }
   },
   created() {
-    console.log(this.$route.params.qna_num);
     this.qna_num = this.$route.params.qna_num;
+    console.log(this.qna_num);
+
     this.qnaDetail(); // 문의 상세내용 불러오기
   },
   methods: {
     async qnaDetail() {
-      try { 
-        await axios.get("/moaplace.com/board/qna/detail", {params:
-          {qna_num: this.qna_num}
-        }).then(function(resp){
-
-          if(resp.status == 200) {
-            this.detail = resp.data.detail;
-            this.answer = resp.data.answer;
-            console.log(this.detail);
-            console.log(this.answer);
-
-          } else {
-            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-          }
-        }.bind(this));
-      } catch (error) {
-        console.log(error);
+      let token = localStorage.getItem("access_token");
+      if(token == null) return;
+      const config = {
+        headers: {
+            "Authorization" : token
+        }
       }
+
+      await axios.get("/moaplace.com/users/login/member/info", config)
+                 .then(response => {
+                    let data = response.data;
+                    this.member_num = data.member_num;
+                    console.log(this.member_num);
+                })
+                 .catch(error => {
+                    console.log(error.message);
+                })      
+
+      await axios.get("/moaplace.com/board/qna/detail", 
+                    { params: {qna_num: this.qna_num} })
+
+                 .then(resp => {
+                      this.detail = resp.data.detail;
+                      this.answer = resp.data.answer;
+                      console.log(this.detail);
+                      console.log(this.answer);
+                      
+                      // 다른 회원이면 돌려보내기
+                      if(this.member_num != this.detail.member_num) {
+                        alert('잘못된 경로입니다.');
+                        this.$router.push({name:'qnaList'});
+                      }
+                  })
+                 .catch(error => {
+                  console.log(error);
+                })
     },
     async qnaDelete() {
-      if (confirm('해당 문의글을 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
-        try { 
-          await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num, 
-          ).then(function(resp){
+      let msg = '해당 문의글을 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.';
+      if (confirm(msg)){
+        await axios.post("/moaplace.com/board/qna/delete/" + this.qna_num)
+                   .then(resp => {
 
-            if(resp.status == 200) {
-              alert('문의글이 삭제되었습니다.');
-              this.$router.push({name:'qnaList'});
-
-            } else {
-              alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
-            }
-          }.bind(this));
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        return;
-      }
+                      if(resp.data != 'fail'){
+                        alert('문의글이 삭제되었습니다.');
+                        this.$router.push({name:'qnaList'});
+                      } else {
+                        alert('문의글 삭제에 실패했습니다. 다시 시도해주세요.');
+                      }
+                    })
+                   .catch (error => {
+                      console.log(error);
+                    })
+      } else return;
     }
   }
 }

@@ -33,11 +33,15 @@
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td colspan="3"><input type="date" v-model="regdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="regdate" @change="addStartDate">
+                </td>
             </tr>
             <tr>
               <th>공연종료일</th>
-              <td colspan="3"><input type="date" v-model="appdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="appdate" @change="addEndDate">
+                </td>
             </tr>
             <tr>
               <th>러닝타임</th>
@@ -251,6 +255,19 @@
             status:this.status
           }
           })
+        },
+        addStartDate(){
+          if(this.regdate < new Date().toISOString().substr(0, 10)){
+            alert("공연시작일은 현재 날짜보다 앞으로 설정할 수 없습니다.")
+            this.regdate=new Date().toISOString().substr(0, 10)
+          }
+        },
+        addEndDate(){
+          if(this.appdate < this.regdate){
+            alert("공연종료일은 공연시작일보다 뒤의 날짜여야 합니다.")
+            this.appdate=''
+          }
+
         },
         seatRPrice(e){
 

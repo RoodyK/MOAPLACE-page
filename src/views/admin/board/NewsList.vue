@@ -31,9 +31,13 @@
                   v-model="keyword"
                   class="custom-search-input"
                   placeholder="검색어를 입력하세요."
-                  @keydown.enter="searchlist()"
+                  :class="{ search: isSearch }"
+                  @keydown.enter="searchList()"
                 />
-                <button @click.prevent="searchlist()">
+                <button
+                  :class="{ search: isSearch }"
+                  @click.prevent="searchList()"
+                >
                   <img src="@/assets/moaplace/search.png" />
                 </button>
               </div>
@@ -55,18 +59,63 @@
               <p>수정</p>
               <p>삭제</p>
             </div>
-            <div v-for="item in list" :key="item.num" class="t-row tbody">
-              <p>{{ item.notice_num }}</p>
-              <p>{{ item.sort_name }}</p>
-              <p>{{ item.notice_title }}</p>
-              <p>{{ item.notice_regdate }}</p>
-              <p><button>수정</button></p>
-              <p><button>삭제</button></p>
+            <div v-for="(i, index) in list" :key="index" class="t-row tbody">
+              <p>{{ i.notice_num }}</p>
+              <p>{{ i.sort_name }}</p>
+              <p>
+                <RouterLink
+                  :to="`/moaplace.com/admin/news/detail/${i.member_num}/${i.notice_num}`"
+                  >{{ i.notice_title }}</RouterLink
+                >
+              </p>
+              <p>{{ i.notice_regdate }}</p>
+              <p>
+                <button>
+                  <RouterLink
+                    :to="`/moaplace.com/admin/news/update/${i.notice_num}`"
+                    >수정</RouterLink
+                  >
+                </button>
+              </p>
+              <p><button @click="deletenews(i.notice_num)">삭제</button></p>
             </div>
             <ul class="paging">
-              <li>[이전]</li>
-              <li v-for="index in paginationList" :key="index">{{ index }}</li>
-              <li>[다음]</li>
+              <li
+                v-if="this.startPageNum < 6"
+                @click.prevent="prevPage()"
+                class="disabled"
+              >
+                [이전]
+              </li>
+              <li
+                v-if="this.startPageNum > 5"
+                @click.prevent="prevPage()"
+                class="abled"
+              >
+                [이전]
+              </li>
+              <li
+                :class="{ active: this.pageNum == n }"
+                v-for="n in paginationList"
+                :key="n"
+                @click="movePage(n)"
+              >
+                {{ n }}
+              </li>
+              <li
+                v-if="this.startPageNum + 4 < this.totalPageCount"
+                @click.prevent="nextPage()"
+                class="abled"
+              >
+                [다음]
+              </li>
+              <li
+                v-if="this.startPageNum + 5 > this.totalPageCount"
+                @click.prevent="nextPage()"
+                class="disabled"
+              >
+                [다음]
+              </li>
             </ul>
           </div>
         </form>
@@ -107,8 +156,9 @@ export default {
         {
           notice_num: "",
           sort_name: "",
+          sort_num: "",
+          member_num: "",
           notice_title: "",
-          notice_content: "",
           notice_regdate: "",
         },
       ],
@@ -120,6 +170,8 @@ export default {
       startRow: "",
       endRow: "",
       totalPageCount: "",
+      isActive: false,
+      isSearch: false,
     };
   },
   created() {
@@ -128,6 +180,8 @@ export default {
 
   methods: {
     getList() {
+      console.log(this.pageNum); /* 클릭하는페이지 num */
+
       // alert(this.selected);
       // alert(this.member_num);
       axios
@@ -136,6 +190,7 @@ export default {
         )
         .then(
           function (resp) {
+            console.log("멤버번호:", this.member_num);
             console.log(resp.data);
             this.list = resp.data.list;
             this.startPageNum = resp.data.startPageNum;
@@ -145,8 +200,9 @@ export default {
             this.startRow = resp.data.startRow;
             this.endRow = resp.data.endRow;
             console.log("리스트 불러오기 성공");
+
             // alert("this.endPageNum:" + this.endPageNum);
-            alert("this.totalRowCount:" + this.totalPageCount);
+            //alert("this.totalRowCount:" + this.totalPageCount);
           }.bind(this)
         );
     },
@@ -154,23 +210,67 @@ export default {
     selectchange() {
       this.getList();
     },
-
-    searchlist() {
+    searchList() {
       if (this.keyword == null || this.keyword == "") {
         alert("검색어를 검색해주세요");
       } else {
+        this.isSearch = true;
         axios
           .get(
-            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}
-                             /${this.keyword}/${this.member_num}/${this.pageNum}`
+            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}/${this.member_num}/${this.pageNum}`
           )
           .then(
             function (resp) {
-              console.log(resp.data);
               this.list = resp.data.list;
-              console.log("리스트 불러오기 성공");
+              this.startPageNum = resp.data.startPageNum;
+              this.endPageNum = resp.data.endPageNum;
+              this.totalPageCount = resp.data.totalPageCount;
+              this.totalRowCount = resp.data.totalRowCount;
+              this.startRow = resp.data.startRow;
+              this.endRow = resp.data.endRow;
+              console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
+      }
+    },
+    deletenews(notice_num) {
+      console.log("파일넘버:", notice_num);
+      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`).then(
+        function (resp) {
+          if (resp.data == 1) {
+            alert("목록을 삭제하였습니다.");
+            this.$router.push({ name: "adminNewsList" });
+            console.log("삭제성공");
+          } else {
+            alert("삭제가 실패되었습니다. 다시 확인해주세요");
+            console.log("삭제실패");
+          }
+        }.bind(this)
+      );
+    },
+
+    // class -> css 처리용 , prevPage -> alert
+    prevPage() {
+      if (this.startPageNum < 6) {
+        alert("첫 페이지입니다.");
+      } else {
+        this.movePage(this.endPageNum - 1);
+      }
+    },
+    nextPage() {
+      if (this.startPageNum + 5 > this.totalPageCount) {
+        alert("마지막 페이지입니다.");
+      } else {
+        this.movePage(this.endPageNum + 1);
+      }
+    },
+    /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
+    movePage(n) {
+      this.pageNum = n;
+      if (this.keyword == null || this.keyword == "") {
+        this.getList();
+      } else {
+        this.searchList();
       }
     },
   },
@@ -272,7 +372,6 @@ nav {
         outline: none;
         border-left: none;
       }
-
       .searchBox {
         display: flex;
         .newBtn {
@@ -283,7 +382,6 @@ nav {
           margin-left: 16px;
           color: white;
           transition: all 0.3s;
-
           &:hover {
             cursor: pointer;
           }
@@ -306,10 +404,10 @@ nav {
         &.tbody {
           padding: 16px 0;
           border-bottom: 1px solid rgba($black, 0.2);
-          // cursor: pointer;
-          // &:hover {
-          //     background: #eee;
-          // }
+          cursor: pointer;
+          &:hover {
+            background: #eee;
+          }
         }
         & > p,
         div {
@@ -322,10 +420,14 @@ nav {
             padding-top: 4px;
           }
           &:nth-child(1) {
-            width: 5%;
+            width: 8%;
           }
           &:nth-child(3) {
             width: 45%;
+          }
+          a {
+            text-decoration: none;
+            color: $black;
           }
 
           button {
@@ -344,12 +446,23 @@ nav {
         flex-flow: row wrap;
         justify-content: center;
         margin-top: 32px;
+        // class -> css 처리용 , prevPage -> alert
         li {
           margin: 0 8px;
           padding: 0 8px;
-          &:first-child,
-          &:last-child {
+          cursor: pointer;
+
+          &.abled {
             color: $brown;
+            font-weight: bold;
+          }
+          &.disabled {
+            color: rgba($black, 0.5);
+            cursor: default;
+            font-weight: bold;
+          }
+          &.active {
+            color: #d67747;
             font-weight: bold;
           }
         }

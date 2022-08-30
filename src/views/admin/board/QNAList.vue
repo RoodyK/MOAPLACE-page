@@ -91,128 +91,125 @@
 </template>
 
 <script>
-    import SideMenu from '@/components/admin/SideMenu.vue'
-    import axios from '../../../axios/axios.js'
+import SideMenu from '@/components/admin/SideMenu.vue'
+import axios from '@/axios/axios.js'
 
-    export default {
-        components: {
-            SideMenu
-        },
-        data() {
-            return {
-                sort_list:[],
-                states: [ // 답변상태 목록
-                    '대기중',
-                    '처리중',
-                    '답변완료'
-                ],
-                list:[],
-                pageNum: 1, // 현재 페이지
-                field:'', // 검색필드
-                keyword:'', // 검색어
-                newKeyword:'', // 검색어 변경
-                startPage:1, // 페이지 시작번호
-                endPage:1, // 페이지 마지막번호
-                pageCnt:1, // 전체 페이지 개수
-                sort_num:0 // 필터용 구분번호
+export default {
+    components: {
+        SideMenu
+    },
+    data() {
+        return {
+            sort_list:[],
+            states: [ // 답변상태 목록
+                '대기중',
+                '처리중',
+                '답변완료'
+            ],
+            list:[],
+            pageNum: 1, // 현재 페이지
+            field:'', // 검색필드
+            keyword:'', // 검색어
+            newKeyword:'', // 검색어 변경
+            startPage:1, // 페이지 시작번호
+            endPage:1, // 페이지 마지막번호
+            pageCnt:1, // 전체 페이지 개수
+            sort_num:0 // 필터용 구분번호
             }
-        },
-        created() {
-            if(this.$route.params.pageNum) {
-                this.pageNum = this.$route.params.pageNum;
-            }
-            if(this.$route.params.keyword) {
-                this.keyword = this.$route.params.keyword;
-                this.field = this.$route.params.field;
-            }
-
-            console.log(this.pageNum, this.field, this.keyword);
-            this.sortList(); // 구분목록 불러오기
-            this.qnaList(); // 리스트 불러오기
-        },
-        methods: {
-            async sortList() { // 구분목록 불러오기
-                try {
-                    await axios.get('/moaplace.com/board/sort/list').then(function(resp){
-                        if(resp.data!=null || resp.data!=''){
-                        this.sort_list = resp.data;
-
-                        } else {
-                        alert('구분목록 로딩에 실패하였습니다.');
-                        }
-                    }.bind(this));
-
-                } catch (error) {
-                    console.log(error);
-                }                
-            },            
-            async qnaList() {
-                try { 
-                    await axios.get("/moaplace.com/admin/qna/list", {params:
-                    {   pageNum: this.pageNum,
-                        field: this.field,
-                        keyword: this.keyword,
-                        sort_num: this.sort_num    }
-                    }).then(function(resp){
-
-                    if(resp.status == 200) {
-                        this.pageNum = resp.data.pageNum, // 페이지 번호
-                        this.field = resp.data.field, // 검색어
-                        this.keyword = resp.data.keyword, // 검색어
-                        this.newKeyword = resp.data.keyword, // 검색어 변경
-                        this.list = resp.data.list, // 문의글 리스트
-                        this.startPage = resp.data.startPage, // 페이지 시작번호
-                        this.endPage = resp.data.endPage, // 페이지 마지막번호
-                        this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
-                        this.sort_num = resp.data.sort_num // 필터용 구분번호
-
-                    } else {
-                        alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-                    }
-                    }.bind(this));
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            searchList(){
-                this.pageNum = 1;
-                this.keyword = this.newKeyword; // 검색어 변경
-                console.log(this.field, this.keyword, this.sort_num);
-                this.qnaList();
-            },
-            movePage(move){
-                this.pageNum = move;
-                console.log(this.pageNum);
-                this.qnaList();
-            },
-            async changeState(change, num){
-                if(confirm('해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?')){
-                    console.log(change, num);
-
-                    try { 
-                        await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
-                                   .then(function(resp){
-
-                        if(resp.status == 200) {
-                            alert('문의 상태가 변경되었습니다.')
-                            this.qnaList();
-
-                        } else {
-                            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-                        }
-                        }.bind(this));
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    return;
-                }
-            },
-            prevent(e) {
-                e.stopPropagation();
-            },
+    },
+    created() {
+        if(this.$route.params.pageNum) {
+            this.pageNum = this.$route.params.pageNum;
         }
+        if(this.$route.params.keyword) {
+            this.keyword = this.$route.params.keyword;
+            this.field = this.$route.params.field;
+        }
+        console.log(this.pageNum, this.field, this.keyword);
+            
+        this.sortList(); 
+        this.qnaList();
+    },
+    methods: {
+        async sortList() { 
+            await axios.get('/moaplace.com/board/sort/list')
+                        .then(resp => {
+                            this.sort_list = resp.data;
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })                
+        },            
+        async qnaList() {
+            await axios.get("/moaplace.com/admin/qna/list",
+                            { params:
+                                { pageNum: this.pageNum,
+                                  field: this.field,
+                                  keyword: this.keyword,
+                                  sort_num: this.sort_num }
+                        })
+                        .then(resp => {
+                            this.list = resp.data.list, // 문의글 리스트
+                            this.field = resp.data.field, // 검색어
+                            this.keyword = resp.data.keyword, // 검색어
+                            this.newKeyword = resp.data.keyword, // 검색어 변경
+                            this.sort_num = resp.data.sort_num, // 필터용 구분번호
+                            this.pageNum = resp.data.pageNum, // 페이지 번호
+                            this.startPage = resp.data.startPage // 페이지 시작번호
+
+                            if(resp.data.endPage < 1){
+                                this.endPage = 1,
+                                this.pageCnt = 1
+                            } else {
+                                this.endPage = resp.data.endPage, // 페이지 마지막번호
+                                this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                            }
+                        }) 
+                        .catch (error => {
+                            console.log(error);
+                        })
+        },
+        searchList(){
+            if(this.field=='' || this.field==null) {
+                alert('검색 구분을 선택하세요.')
+                return;
+            }
+            if(this.newKeyword=='' || this.newKeyword==null){
+                alert('검색어를 입력하세요.')
+                return;
+            } 
+            this.pageNum = 1;
+            this.keyword = this.newKeyword; // 검색어 변경
+            console.log(this.field, this.keyword, this.sort_num);
+            this.qnaList();
+        },
+        movePage(move){
+            this.pageNum = move;
+            console.log(this.pageNum);
+            this.qnaList();
+        },
+        async changeState(change, num){
+            let msg = '해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?';
+            if(confirm(msg)){
+                await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
+                            .then(resp => {
+                                if(resp.data!='fail'){
+                                    alert('문의 상태가 변경되었습니다.')
+                                    this.qnaList();
+                                } else {
+                                    alert('문의상태 변경에 실패했습니다. 다시 시도해주세요.');
+                                }
+                            })
+                            .catch (error => {
+                                console.log(error);
+                            })
+            } else return;
+        },
+        prevent(e) {
+            e.stopPropagation();
+        },
     }
+}
 </script>
 
     <style lang="scss" scoped="scoped">
@@ -344,11 +341,12 @@
                     }
                 }
                 .empty-list{
-                  height: 300px;
+                  height: 160px;
                   display: flex;
                   justify-content: center;
                   align-items: center;
                   border-bottom: 1px solid rgba($black, 0.1);
+                  color: rgba($black, 0.7);
                   i{
                     margin-right:8px;
                   }
