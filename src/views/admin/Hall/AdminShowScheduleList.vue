@@ -74,26 +74,29 @@
                         {status: 'Y', statusName: '진행중'},
                         {status: 'N', statusName: '종료'}
                     ],
+
                     selectField: '',
                     fieldList:[
-                      {field: 'showNum',fieldName:'공연번호'},
-                      {field: 'title',fieldName:'공연명'},
-                      {field: 'date',fieldName:'공연날짜'},
+                        {field: 'title',fieldName:'공연명'},
+                        {field: 'showNum',fieldName:'공연번호'}
                     ],
+                    
                     search:'',
                     pageNum:'',
                     list: [],
                     pageInfo:[],
-                    pageNums:[]
+                    pageNums:[],
+                    selectDate:''
+
                 }
             },
             mounted(){
 
-              this.viewList();
-              // this.$route.params.pageNum,
-              // this.$route.params.status,
-              // this.$route.params.selectField,
-              // this.$route.params.search);
+              this.viewList(
+              this.$route.params.pageNum,
+              this.$route.params.status,
+              this.$route.params.selectField,
+              this.$route.params.search);
 
             },
             methods:{
@@ -105,7 +108,7 @@
               goInsert(){
 
                 this.$router.push({
-                  name:'adminShowScheduleInsert',
+                  name:'adminHallInsert',
                   params:{
                     pageNum:this.pageNum,
                     status:this.status,
@@ -126,8 +129,11 @@
               },
 
               movePage(pNum){
-                axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
+                axios.get('/moaplace.com/admin/show/schedule/list/' + pNum + '/'
+                  + this.status + '/' 
+                  + this.selectDate + '/' 
+                  + this.selectField + '/' + this.search).
+                  then(function(resp){
 
                   this.list = resp.data.list;
                   this.status = resp.data.status;
@@ -181,12 +187,13 @@
               },
 
               inputSearch(e){
-
+                
                 // 부모의 바로 이전 형제 요소 가져오기(input)
                 this.search=e.target.parentNode.previousSibling.value;
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
-
+                
+                axios.get('/moaplace.com/admin/show/schedule/list/' + 1 +'/' 
+                  + this.status + '/'  + this.selectDate + '/' + this.selectField + '/' + this.search).
+                  then(function(resp){
                   this.list = resp.data.list;
                   this.status = resp.data.status;
                   this.selectField = resp.data.selectField;
@@ -200,8 +207,11 @@
 
               selectStatus(){
 
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
+                axios.get('/moaplace.com/admin/show/schedule/list/' + this.pageNum + '/' 
+                  + this.status + '/' 
+                  + this.selectDate + '/' 
+                  + this.selectField + '/' + this.search).
+                  then(function(resp){
 
                   this.list = resp.data.list;
                   this.status = resp.data.status;
@@ -214,23 +224,27 @@
                 }.bind(this))
               },
 
-              viewList(){
+              viewList(pageNum,status,field,search){
 
-                // if(pageNum!=null)this.pageNum = pageNum;
-                // if(status!=null)this.status = status;
-                // if(field!=null)this.selectField = field;
-                // if(search!=null)this.search = search;
+                if(pageNum!=null)this.pageNum = pageNum;
+                if(status!=null)this.status = status;
+                if(field!=null)this.selectField = field;
+                if(search!=null)this.search = search;
 
-                axios.get('/moaplace.com/admin/show/schedule/list').
+                axios.get('/moaplace.com/admin/show/schedule/list/' 
+                  + this.pageNum + '/' 
+                  + this.status + '/' 
+                  + this.selectDate + '/' 
+                  + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
-                  // this.status = resp.data.status;
-                  // this.selectField = resp.data.selectField;
-                  // this.search = resp.data.search;
-                  // this.pageNum = resp.data.pageNum;
-                  // this.pageInfo = resp.data.pageInfo;
-                  // this.pageNumbering();
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
 
                 }.bind(this))
               }
@@ -364,7 +378,7 @@
                               width:10%;
                             }
                             > & :nth-child(3){
-                              width:calc(100%/3.4);
+                              width:calc(90%/3.95);
                             }
                             > & :last-child{
                               width:10%;
@@ -397,7 +411,7 @@
                               width:10%;
                             }
                             > & :nth-child(3){
-                              width:calc(100%/3.4);
+                              width:calc(90%/3.95);
                             }
                             > & :last-child{
                               width:10%;
@@ -414,7 +428,7 @@
                         }
                         & > p,
                         div {
-                            width: calc(100% /6);
+                            width: calc(100% /7);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;

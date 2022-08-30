@@ -13,16 +13,16 @@
                 <input type="text">
                 <button @click="viewShow($event)">검색</button></td>
             </tr>
-            <tr v-for="(item,index) in showList" :key="index">
+            <tr v-for="m in resultRow" :key="m">
               <th>검색된 공연</th>
               <td colspan="3" class="showList">
-                 <div class="t-row thead">
+                  <div class="t-row thead">
                     <p>공연번호</p>
                     <p>공연명</p>
                     <p>공연기간</p>
                     <p>공연상태</p>
                   </div>
-                  <div class="t-row tbody" @click="selectShow(index)">
+                  <div class="t-row tbody" v-for="(item,index) in showList" :key="index" @click="selectShow(index)">
                     <p>{{item.num}}</p>
                     <p>{{item.title}}</p>
                     <p>{{item.startDate}} ~ {{item.endDate}}</p>
@@ -116,6 +116,7 @@
           grade:'',
           check:'',
           thumnail:'',
+          resultRow:[],
         }
       },
       watch:{
@@ -161,6 +162,11 @@
           this.pauseEnd = '';
           axios.get('/moaplace.com/admin/show/schedule/viewshow/'+ searchShow).
           then(function(resp){
+              this.resultRow.splice(0);
+              this.thumnaill = '';
+              if(resp.data.showList.length>0){
+                this.resultRow.push(resp.data.showList.length>0);
+              }
               this.showList = resp.data.showList;
           }.bind(this));
         },
@@ -284,16 +290,13 @@
                             background: rgba($black,0.6);
                             color: #fff;
                              > & :first-child{
-                              width:10%;
+                              width:100px;
                             }
-                            > & :nth-child(3){
-                              width:40%;
-                            }
-                            > & :nth-child(4){
-                              width:40%;
+                            > & :nth-child(2){
+                              width:400px;
                             }
                             > & :last-child{
-                              width:10%;
+                              width:100px;
                             }
                         }
                         &.tbody {
@@ -318,23 +321,20 @@
                                 white-space:nowrap;
                                 padding: 4px;
                             }
-                            > & :first-child{
-                              width:10%;
+                             > & :first-child{
+                              width:100px;
                             }
-                            > & :nth-child(3){
-                              width:40%;
-                            }
-                            > & :nth-child(4){
-                              width:40%;
+                            > & :nth-child(2){
+                              width:400px;
                             }
                             > & :last-child{
-                              width:10%;
+                              width:100px;
                             }
                           
                         }
                         & > p,
                         div {
-                            width: calc(100% /7);
+                            width: calc(100% /4);
                             text-align: center;
                             overflow: hidden;
                             white-space: nowrap;
