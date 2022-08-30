@@ -50,7 +50,7 @@
                             <li v-for="item in pageNums" :key="item" @click="movePage(item)" :class="{active : this.pageNum==item}" >
                               {{item}}</li>
                             
-                            <li @click="nextPage()" :class="{active : this.pageNum < pageInfo.totalPageCount}">
+                            <li @click="nextPage()" :class="{active : this.pageNum < this.totalPageCount}">
                               [다음]</li>
                         </ul>
                     </div>
@@ -83,14 +83,17 @@
                     search:'',
                     pageNum:'',
                     list: [],
+                    startPageNum:'',
+                    endPageNum:'',
+                    totalPageCount:'',
                     pageInfo:[],
                     pageNums:[]
                 }
             },
             mounted(){
 
-              this.viewList();
-              // this.$route.params.pageNum,
+              this.viewList(
+              this.$route.params.pageNum);
               // this.$route.params.status,
               // this.$route.params.selectField,
               // this.$route.params.search);
@@ -108,9 +111,9 @@
                   name:'adminShowScheduleInsert',
                   params:{
                     pageNum:this.pageNum,
-                    status:this.status,
-                    field:this.selectField,
-                    search:this.search
+                    // status:this.status,
+                    // field:this.selectField,
+                    // search:this.search
                     }
                   })
 
@@ -120,23 +123,21 @@
                 
                 this.pageNums.splice(0);
 
-                for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
+                for(let i = this.startPageNum; i <= this.endPageNum; i++){
                     this.pageNums.push(i);
                 }
               },
 
               movePage(pNum){
-                axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                axios.get('/moaplace.com/admin/show/schedule/list/'+ pNum,
+                {headers: {'Access-Control-Allow-Origin' : '*'}}).
                 then(function(resp){
-
                   this.list = resp.data.list;
-                  this.status = resp.data.status;
-                  this.selectField = resp.data.selectField;
-                  this.search = resp.data.search;
                   this.pageNum = resp.data.pageNum;
-                  this.pageInfo = resp.data.pageInfo;
+                  this.startPageNum = resp.data.startPageNum;
+                  this.endPageNum = resp.data.endPageNum;
+                  this.totalPageCount = resp.data.totalPageCount
                   this.pageNumbering();
-
                 }.bind(this))
               },
 
@@ -147,7 +148,7 @@
               },
 
               nextPage(){
-                if(this.pageNum < this.pageInfo.endPageNum){
+                if(this.pageNum < this.endPageNum){
                   this.movePage(this.pageNum+1);
                 }
               },
@@ -180,43 +181,43 @@
                       search:this.search}});
               },
 
-              inputSearch(e){
+            //   inputSearch(e){
 
-                // 부모의 바로 이전 형제 요소 가져오기(input)
-                this.search=e.target.parentNode.previousSibling.value;
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
+            //     // 부모의 바로 이전 형제 요소 가져오기(input)
+            //     this.search=e.target.parentNode.previousSibling.value;
+            //     axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+            //     then(function(resp){
 
-                  this.list = resp.data.list;
-                  this.status = resp.data.status;
-                  this.selectField = resp.data.selectField;
-                  this.search = resp.data.search;
-                  this.pageNum = resp.data.pageNum;
-                  this.pageInfo = resp.data.pageInfo;
-                  this.pageNumbering();
+            //       this.list = resp.data.list;
+            //       this.status = resp.data.status;
+            //       this.selectField = resp.data.selectField;
+            //       this.search = resp.data.search;
+            //       this.pageNum = resp.data.pageNum;
+            //       this.pageInfo = resp.data.pageInfo;
+            //       this.pageNumbering();
 
-                }.bind(this))
-              },
+            //     }.bind(this))
+            //   },
 
-              selectStatus(){
+            //   selectStatus(){
 
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
+            //     axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+            //     then(function(resp){
 
-                  this.list = resp.data.list;
-                  this.status = resp.data.status;
-                  this.selectField = resp.data.selectField;
-                  this.search = resp.data.search;
-                  this.pageNum = resp.data.pageNum;
-                  this.pageInfo = resp.data.pageInfo;
-                  this.pageNumbering();
+            //       this.list = resp.data.list;
+            //       this.status = resp.data.status;
+            //       this.selectField = resp.data.selectField;
+            //       this.search = resp.data.search;
+            //       this.pageNum = resp.data.pageNum;
+            //       this.pageInfo = resp.data.pageInfo;
+            //       this.pageNumbering();
 
-                }.bind(this))
-              },
+            //     }.bind(this))
+            //   },
 
-              viewList(){
+              viewList(pageNum){
 
-                // if(pageNum!=null)this.pageNum = pageNum;
+                if(pageNum!=null)this.pageNum = pageNum;
                 // if(status!=null)this.status = status;
                 // if(field!=null)this.selectField = field;
                 // if(search!=null)this.search = search;
@@ -225,12 +226,14 @@
                 then(function(resp){
 
                   this.list = resp.data.list;
+                  this.pageNum = resp.data.pageNum;
+                  this.startPageNum = resp.data.startPageNum;
+                  this.endPageNum = resp.data.endPageNum;
+                  this.totalPageCount = resp.data.totalPageCount
                   // this.status = resp.data.status;
                   // this.selectField = resp.data.selectField;
                   // this.search = resp.data.search;
-                  // this.pageNum = resp.data.pageNum;
-                  // this.pageInfo = resp.data.pageInfo;
-                  // this.pageNumbering();
+                  this.pageNumbering();
 
                 }.bind(this))
               }
