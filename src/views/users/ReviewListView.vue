@@ -11,7 +11,7 @@
         <div>
           <div class="title">
             <span class="fs-5 fw-bold">관람 후기</span>
-            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold orange">2건</span>의 관람후기가 등록되어 있습니다.</span>
+            <span class="fs-7">회원님께서는 현재 <span class="fs-6 fw-bold orange">{{ listCnt }}건</span>의 관람후기가 등록되어 있습니다.</span>
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
@@ -32,39 +32,23 @@
                   <th class="col col-md-4 end">내용</th>
                 </tr>
               </thead>
+              <!-- tbody 시작 -->
               <tbody class="fs-7">
-                <tr>
+                <tr v-for="(item,index) in list" :key="index">
                   <td>
-                    <a href="">
+                    <RouterLink :to="`/moaplace.com/`">
                       <div class="info info-sub">
-                        <div class="img3"></div>
+                        <img :src="item.show_thumbnail" class="img3">
                         <div class="txt">
-                          <p class="fs-6 fw-bold">Title</p>
+                          <p class="fs-6 fw-bold">{{ item.show_name }}</p>
                         </div>
                       </div>
-                    </a>
+                    </RouterLink>
                   </td>
                   <td class="reviewtxt end">
-                    <p class="fs-4 brown starpoint">★★★★★</p>
-                    <p>관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트 관람평 테스트</p>
-                    <p class="brown reviewdate">2022.08.10</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a href="">
-                      <div class="info info-sub">
-                        <img src="../../assets/testposter.jpg" class="img3">
-                        <div class="txt">
-                          <p class="fs-6 fw-bold">화난남자</p>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                  <td class="reviewtxt end">
-                    <p class="fs-4 brown starpoint">★★★★☆</p>
-                    <p>화내지 마세요</p>
-                    <p class="brown reviewdate">2022.08.10</p>
+                    <p class="fs-4 brown starpoint">{{ item.review_grade }}</p>
+                    <p>{{ item.review_content }}</p>
+                    <p class="brown reviewdate">{{ item.review_regdate }}</p>
                   </td>
                 </tr>
               </tbody>
@@ -73,29 +57,26 @@
         </div>
         <!-- 페이징 -->
         <div id="mypaging">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Previous">
-                  <span aria-hidden="true">
-                    &laquo;
-                  </span>
-                </a>
-              </li>
-              <li class="page-item select"><a class="page-link" href="">1</a></li>
-              <li class="page-item"><a class="page-link" href="">2</a></li>
-              <li class="page-item"><a class="page-link" href="">3</a></li>
-              <li class="page-item"><a class="page-link" href="">4</a></li>
-              <li class="page-item"><a class="page-link" href="">5</a></li>
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Next">
-                  <span aria-hidden="true">
-                    &raquo;
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+
+          <p v-if="startPage>5"
+            @click="movePage(pageNum-1)">
+            [이전]
+          </p>
+          <p v-if="startPage<5" class="not"> [이전] </p>
+
+          <div v-for="index in ((endPage-startPage)+1)" :key="index">
+            <p :class="{active:startPage+(index-1)==pageNum}"
+              @click="movePage(startPage+(index-1))">
+              {{startPage+(index-1)}} 
+            </p>
+          </div>
+
+          <p v-if="endPage<pageCnt"
+            @click="movePage(pageNum+1)">
+            [다음] 
+          </p>
+          <p v-if="endPage>=pageCnt" class="not"> [다음] </p>
+
         </div>
       </div>
     </div>
@@ -170,7 +151,7 @@ export default {
       var point = this.member.point;
       this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-      
+      this.getList();
 
     })
     .catch(error => {
@@ -181,6 +162,47 @@ export default {
   methods: {
 
     // 후기내역 가져오기
+    async getList() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/review/list/'
+          + this.member.num + '/'
+          + this.pageNum
+        ).then(function(resp){
+          if(resp.status == 200) {
+
+            this.list = resp.data.list;
+            this.listCnt = resp.data.listCnt;
+            this.startPage = resp.data.startPage;
+            this.endPage = resp.data.endPage;
+            this.pageCnt = resp.data.pageCnt;
+
+            for(let i = 0 ; i < this.list.length ; i++) {
+
+              // 후기 작성일 yyyy-mm-dd 형식으로 변환해서 저장
+              var review_regdate = new Date(this.list[i].review_regdate);
+              this.list[i].review_regdate = review_regdate.getFullYear() + "-" + ("0" + (review_regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + review_regdate.getDate()).slice(-2);
+              
+              // 별점 ★으로 변환해서 저장
+              var star = this.list[i].review_grade;
+              switch(star) {
+                case 0: this.list[i].review_grade = '☆☆☆☆☆'; break;
+                case 1: this.list[i].review_grade = '★☆☆☆☆'; break;
+                case 2: this.list[i].review_grade = '★★☆☆☆'; break;
+                case 3: this.list[i].review_grade = '★★★☆☆'; break;
+                case 4: this.list[i].review_grade = '★★★★☆'; break;
+                case 5: this.list[i].review_grade = '★★★★★'; break;
+              }
+
+            }
+
+          } else {
+            alert('axios 에러');
+          }
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    }
     
   }
 }
@@ -398,21 +420,28 @@ export default {
       }
     }
   }
-  #mypaging {
+  #mypaging{
     display: flex;
     justify-content: center;
-    .select {
-      font-weight: bold;
-    }
-    li {
-      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
-        background: transparent;
-        border: none;
-        box-shadow: none;
+    margin: 16px 4px;
+    p {
+      padding: 0 8px;
+      color: $black;
+      cursor: pointer;
+      &.active {
+        color: #D67747;
+        font-weight: bold;
+        cursor: default;
       }
-      a:hover {
-        color: $brown;
-        opacity: 50%;
+      &:hover {
+        font-weight: bold;
+      }
+      &.not {
+        color: #ccc;
+        cursor: default;
+      }
+      &.not:hover {
+        font-weight: 400;
       }
     }
   }
