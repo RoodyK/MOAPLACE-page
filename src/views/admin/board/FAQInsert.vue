@@ -63,43 +63,37 @@ export default {
         }
     },
     created() {
-        this.loginInfo(); // 회원번호 가져오기
-        this.sortList(); // 구분목록 가져오기
+        this.pageLoad();
     },
     methods: {
-        loginInfo() { // 로그인 정보 가져오기
+        async pageLoad() { 
             let token = localStorage.getItem("access_token");
             if(token == null) return;
+        
             const config = {
                 headers: {
                 "Authorization" : token
                 }
             }
-            axios.get("/moaplace.com/users/login/member/info", config)
-            .then(response => {
-                let data = response.data;
-                this.forms.member_num = data.member_num
-                console.log(this.forms.member_num);
-            })
-            .catch(error => {
-                console.log(error.message);
-            })
+            // 로그인 된 관리자 정보
+            await axios.get("/moaplace.com/users/login/member/info", config)
+                        .then(response => {
+                            let data = response.data;
+                            this.forms.member_num = data.member_num;
+                            console.log(this.forms.member_num);
+                        })
+                        .catch(error => {
+                            console.log(error.message);
+                        })
+            // 구분목록
+            await axios.get('/moaplace.com/board/sort/list')
+                        .then(resp => {
+                            this.sort_list = resp.data;
+                        })
+                        .catch(error => {
+                            console.log(error.message);
+                        })
         },
-        async sortList() { // 구분목록 불러오기
-            try {
-                await axios.get('/moaplace.com/board/sort/list').then(function(resp){
-                    if(resp.data!=null || resp.data!=''){
-                    this.sort_list = resp.data;
-
-                    } else {
-                        alert('구분목록 로딩에 실패하였습니다.');
-                    }
-                }.bind(this));
-
-            } catch (error) {
-                console.log(error);
-            }                
-        },         
         checkForm() { 
             // 입력 체크
             if(this.forms.sort_num<1) {
@@ -113,10 +107,6 @@ export default {
             if(this.forms.faq_content==null || this.forms.faq_content==''){
                 alert("내용을 입력하세요.");
                 return;
-
-            } else if (this.forms.faq_content.length<10) {
-                alert("내용은 10자 이상 입력하세요.");
-                return;
             }
 
             // 데이터 제출
@@ -124,19 +114,22 @@ export default {
         },
         faqInsert(){ // 데이터 제출
             axios.post('/moaplace.com/admin/faq/insert', JSON.stringify(this.forms),{
-                headers: {
-                'Content-Type' : 'application/json'}
-            }).then(function(resp){
+                    headers: {'Content-Type' : 'application/json'}
+                })
+                .then(resp => {
+                    if(resp.data!='fail'){ 
+                        console.log(resp.data);
+                        alert('자주 묻는 질문이 등록되었습니다.');
+                        this.$router.push({name:'adminFaqList'});
 
-                if(resp.data!='fail'){ // 등록 성공하면 리스트로 이동
-                    console.log(resp.data);
-                    alert('자주 묻는 질문이 등록되었습니다.');
-                    this.$router.push({name:'adminFaqList'});
-
-                } else { // 등록 실패하면 알림창
-                    alert('자주 묻는 질문 등록에 실패하였습니다. 다시 시도해주세요.');
-                }
-            }.bind(this));      
+                    } else {
+                        alert('자주 묻는 질문 등록에 실패하였습니다. 다시 시도해주세요.');
+                        return
+                    }
+                })
+                .catch(error => {
+                    console.log(error.message);
+                })
         }
     }
 }

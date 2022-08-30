@@ -68,11 +68,11 @@
 
       <!-- 페이징 -->
       <div id="mypaging">
-          <p v-if="startPage>5"
-            @click="movePage(pageNum-1)" class="act">
-            [이전]
-          </p>
-          <p v-if="startPage<5" class="noActive"> [이전] </p>
+        <p v-if="startPage>5"
+          @click="movePage(pageNum-1)" class="act">
+          [이전]
+        </p>
+        <p v-if="startPage<=5" class="noActive"> [이전] </p>
 
         <div v-for="index in ((endPage-startPage)+1)" :key="index">
           <p :class="{active:startPage+(index-1)==pageNum}"
@@ -81,11 +81,11 @@
           </p>
         </div>
 
-          <p v-if="endPage<pageCnt"
-            @click="movePage(pageNum+1)" class="act">
-            [다음] 
-          </p>
-          <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
+        <p v-if="endPage<pageCnt"
+          @click="movePage(pageNum+1)" class="act">
+          [다음] 
+        </p>
+        <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
       </div>
 
     </div>  
@@ -109,11 +109,11 @@ export default {
   data() {
     return {
       member_num:0,
+      list: [], // 문의글 리스트
+      listCnt: 0, // 전체 문의글 개수
       pageNum: 1, // 현재 페이지
       keyword:'', // 검색어
       newKeyword: '', // 검색어 변경
-      list: [], // 문의글 리스트
-      listCnt: 0, // 전체 문의글 개수
       startPage:1, // 페이지 시작번호
       endPage:1, // 페이지 마지막번호
       pageCnt:1, // 전체 페이지 개수
@@ -127,53 +127,70 @@ export default {
       this.keyword = this.$route.params.keyword;
     }
     console.log(this.pageNum, this.keyword);
-    this.qnaList(); // 리스트 불러오기
+
+    this.qnaList();
   },
   methods: { 
     async qnaList() {
-      let token = localStorage.getItem("access_token");
+      if (this.member_num < 1) {
+        let token = localStorage.getItem("access_token");
         if(token == null) return;
+          
         const config = {
           headers: {
             "Authorization" : token
           }
         }
-      try { 
+        // 로그인 회원정보
         await axios.get("/moaplace.com/users/login/member/info", config)
-        .then(response => {
-          let data = response.data;
-          this.member_num = data.member_num;
-          console.log(this.member_num);
-        })
-        .catch(error => {
-          console.log(error.message);
-        })
-  
-        await axios.get("/moaplace.com/board/qna/list", {params:
-          { member_num:this.member_num,
-            pageNum:this.pageNum,
-            keyword:this.keyword}
-        }).then(function(resp){
-
-          if(resp.status == 200) {
-            this.pageNum = resp.data.pageNum, // 페이지 번호
-            this.keyword = resp.data.keyword, // 검색어
-            this.newKeyword = resp.data.keyword, // 검색어 변경
-            this.list = resp.data.list, // 문의글 리스트
-            this.listCnt = resp.data.listCnt, // 전체 문의글 개수
-            this.startPage = resp.data.startPage, // 페이지 시작번호
-            this.endPage = resp.data.endPage, // 페이지 마지막번호
-            this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
-
-          } else {
-            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-          }
-        }.bind(this));
-      } catch (error) {
-        console.log(error);
+                  .then(response => {
+                    let data = response.data;
+                    this.member_num = data.member_num;
+                    console.log(this.member_num);
+                  })
+                  .catch(error => {
+                      console.log(error.message);
+                  })
       }
+      // 문의글 리스트
+      await axios.get("/moaplace.com/board/qna/list", 
+                    { params:
+                            { member_num: this.member_num,
+                              pageNum: this.pageNum,
+                              keyword: this.keyword  }
+                  })
+                 .then(resp => {
+                    this.list = resp.data.list, // 문의글 리스트
+                    this.listCnt = resp.data.listCnt, // 전체 문의글 개수
+                    this.pageNum = resp.data.pageNum, // 페이지 번호
+                    this.keyword = resp.data.keyword, // 검색어
+                    this.newKeyword = resp.data.keyword, // 검색어 변경
+                    this.startPage = resp.data.startPage // 페이지 시작번호
+
+                    if(resp.data.endPage < 1){
+                      this.endPage = 1,
+                      this.pageCnt = 1
+                    } else {
+                      this.endPage = resp.data.endPage, // 페이지 마지막번호
+                      this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                    }
+                    console.log(this.startPage, this.endPage, this.pageCnt);
+                  })
+
+                 .catch (error => {
+                    console.log(error);
+                  })
     },
     searchList(){
+      if(this.field=='' || this.field==null) {
+        alert('검색 구분을 선택하세요.')
+        return;
+      }
+      if(this.newKeyword=='' || this.newKeyword==null){
+        alert('검색어를 입력하세요.')
+        return;
+      } 
+      
       this.pageNum = 1;
       this.keyword = this.newKeyword; // 검색어 변경
       this.qnaList();
@@ -300,11 +317,6 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-      &:hover {
-        background-color: rgb(249,249,249);
-        color: $brown;
-        cursor: pointer;
-      }
     }
     thead {
       th {
@@ -314,25 +326,34 @@ export default {
       }
     }
     tbody{
-      td {
-        padding: 20px 0;
-        vertical-align : middle;
+      tr{
+        td {
+          padding: 20px 0;
+          vertical-align : middle;
+        }
+        &:hover {
+          background-color: rgb(249,249,249);
+          color: $brown;
+          cursor: pointer;
+        }
       }
     }
     .empty-list{
       border-bottom: 1px solid rgba($black, 0.1);
-      height:150px;
+      height: 160px;
+      color: rgba($black, 0.7);
       p {
         vertical-align: middle;
         margin-bottom:0;
         i{
+          vertical-align: middle;
           margin-right: 8px;
         }
       }
       &:hover {
         cursor: default;
-        background: none;
-        color:$black;
+        background-color: #fff;
+        color: rgba($black, 0.7);
       }
     }
   }
