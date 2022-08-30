@@ -7,7 +7,7 @@
 
                 <div class="btnUpBox">
                   <button>삭제</button>
-                  <button>수정</button>
+                  <button @click="updateDetail(list.num)">수정</button>
                 </div>
 
                 <div class="titleBox">
@@ -31,16 +31,24 @@
                                 <td colspan="2">{{list.status=='Y'?'진행중':'종료'}}</td>
                             </tr>
                             <tr>
-                                <th>러닝타임</th>
-                                <td colspan="3">{{list.running_time}}분</td>
-                                <th>인터미션</th>
-                                <td colspan="3">{{list.intermission}}분</td>
+                                <th>R석 가격</th>
+                                <td colspan="2">{{list.rprice}} 원</td>
+                                <th>S석 가격</th>
+                                <td colspan="2">{{list.sprice}} 원</td>
+                                <th>A석 가격</th>
+                                <td colspan="2">{{list.aprice}} 원</td>
                             </tr>
                             <tr>
                                 <th>총좌석수</th>
                                 <td colspan="3">{{list.seats}}</td>
                                 <th>상연등급</th>
                                 <td colspan="3">{{list.age}}</td>
+                            </tr>
+                            <tr>
+                                <th>러닝타임</th>
+                                <td colspan="3">{{list.runningTime}}분</td>
+                                <th>인터미션</th>
+                                <td colspan="3">{{list.intermission}}분</td>
                             </tr>
                             <tr>
                                 <th>공연시작일</th>
@@ -77,7 +85,7 @@
 
                 <div class="btnBox">
                     <button @click="goList">이전</button>
-                    <button>수정</button>
+                    <button @click="updateDetail(list.num)">수정</button>
                     <button>삭제</button>
                 </div>
               </div>
@@ -93,21 +101,34 @@
                 },
                 data() {
                     return {
-                        showNum:'',
-                        list:[]
+                      showNum:'',
+                      list:[],
+                      rSeat:'',
+                      sprice:'',
+                      aprice:'',
+                      selectField: this.$route.params.field,
+                      search: this.$route.params.search,
+                      pageNum: this.$route.params.pageNum,
+                      status: this.$route.params.status
                     }
                 },
-
+                
                 mounted(){
 
-                  this.viewDetail(this.$route.params.showNum);
+                  this.viewDetail(
+                    this.$route.params.showNum);
+                    console.log("pn",this.pageNum)
                 },
 
                 methods:{
                     viewDetail(num){
-                      axios.get('/moaplace.com/admin/show/detail/'+num).
+                      
+                      axios.get('/moaplace.com/admin/show/detail/'+ num + '/' + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
                       then(function(resp){
                           this.list=resp.data.list;
+                          this.list.rprice=resp.data.list.rprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                          this.list.sprice=resp.data.list.sprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                          this.list.aprice=resp.data.list.aprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                       }.bind(this));
                     },
 
@@ -115,12 +136,25 @@
                       this.$router.push({
                         name:'adminHallInfoList',
                         params:{
-                          selectField:'hall',
-                          search:'',
-                          pageNum:1
+                          selectField:this.selectField,
+                          search:this.search,
+                          pageNum:this.pageNum,
+                          status:this.status
                         }
                       })
-                    }
+                    },
+                    updateDetail(num){
+                      console.log("업데이트넘",num)
+                      this.$router.push(
+                        {
+                          name:'adminHallUpdate',
+                          params:{
+                            showNum:num,
+                            pageNum:this.pageNum,
+                            status:this.status,
+                            field:this.selectField,
+                            search:this.search}});
+                    },
                 }
             }
         </script>

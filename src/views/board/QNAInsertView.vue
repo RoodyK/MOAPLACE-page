@@ -27,7 +27,9 @@
             <label>구분</label><br>
             <select v-model.number="forms.sort_num">
               <option :value="0"> 분류 선택 </option>
-              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">{{sort.sort_name}} 문의</option>
+              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+              {{sort.sort_name}} 문의
+              </option>
             </select>
           </div>
 
@@ -45,17 +47,18 @@
         
         <div class="contentBox">
           <label>내용</label>
-          <textarea v-model="forms.qna_content" placeholder="문의하실 내용을 작성해주세요."></textarea>
+          <TextEditor height="300" v-model:content="forms.qna_content" contentType="text"
+           placeholder="문의하실 내용을 작성해주세요. (텍스트만 입력하실 수 있습니다.)"/>
+          <!-- <textarea v-model="forms.qna_content" placeholder="문의하실 내용을 작성해주세요."></textarea> -->
         </div>
 
         <div class="btnGroup">
           <button type="submit" @click.prevent="checkForm()">등록하기</button>
-           <button @click="$router.push({name:'qnaList'})">목록으로</button>
+          <button @click="$router.push({name:'qnaList'})">목록으로</button>
         </div>
       
       </div>
       </form>
-
     </div>
     <AppFooter/>
   </div>
@@ -66,30 +69,52 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import axios from '../../axios/axios.js'
+import TextEditor from '@/components/TextEditor.vue'
+import axios from '@/axios/axios.js'
 
 export default {
   components: {
     AppHeader,
     AppFooter,
-    SideVisual
+    SideVisual,
+    TextEditor, 
   },
   data() {
     return {
       sort_list:[], // 구분목록
-      forms: // 전송할 데이터
-        {sort_num:0, // 구분번호
-        member_num:1, // 회원번호
-        member_id:"admin", // 회원아이디
-        qna_title:"", // 제목
-        qna_content:""} // 내용
+      forms: {
+            sort_num:0, // 구분번호
+            member_num:0, // 회원번호
+            member_id:"", // 회원아이디
+            qna_title:"", // 제목
+            qna_content:"" // 내용
+      }
     }
   },
   created() {
-    // this.member_num = this.$route.state.member_num;
     this.sortList();
+    this.loginInfo();
   },
   methods: {
+    loginInfo() { // 로그인 정보 가져오기
+      let token = localStorage.getItem("access_token");
+        if(token == null) return;
+          const config = {
+            headers: {
+              "Authorization" : token
+            }
+          }
+          axios.get("/moaplace.com/users/login/member/info", config)
+               .then(response => {
+                  let data = response.data;
+                  this.forms.member_num = data.member_num;
+                  this.forms.member_id = data.member_id;
+                  console.log(this.forms.member_num, this.forms.member_id);
+              })
+               .catch(error => {
+                  console.log(error.message);
+              })
+    },    
     sortList() { // 구분목록 불러오기
       axios.get('/moaplace.com/board/sort/list').then(function(resp){
         if(resp.data!=null || resp.data!=''){
