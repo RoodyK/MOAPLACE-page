@@ -236,11 +236,6 @@ export default {
               var price = this.bkDto.booking_price;
               this.bkDto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-              // 썸네일 Blob 변환해서 저장 (수정중)
-              var bytes, blob;
-              bytes = new Uint8Array(this.bkDto.show_thumbnail.blob);
-              blob = new Blob([bytes], {type:'image'});
-              this.bkDto.show_thumbnail = URL.createObjectURL(blob);
             }
 
             this.rtExist = resp.data.rtExist; // 대관내역 존재여부
