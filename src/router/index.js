@@ -69,6 +69,9 @@ import QNAListView from '@/views/board/QNAListView.vue'
 import QNAInsertView from '@/views/board/QNAInsertView.vue'
 import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
+import AdminMemberInfo from '@/views/admin/MemberInfoView.vue'
+import AdminRentalChart from '@/views/admin/RentalChartView.vue'
+import AdminShowChart from '@/views/admin/ShowChartView.vue'
 
 
 const routes = [
@@ -412,12 +415,27 @@ const routes = [
     name: 'adminNewsInsert',
     component: AdminNewsInsert
   },
+  // 관리자 페이지 - 회원관리 / 공연, 대관 차트
+  {
+    path: '/moaplace.com/admin/member/info',
+    name: 'adminMemberInfo',
+    component: AdminMemberInfo
+  },
+  {
+    path: '/moaplace.com/admin/reserve/chart',
+    name: 'adminReserveChart',
+    component: AdminRentalChart
+  },
+  {
+    path: '/moaplace.com/admin/show/chart',
+    name: 'adminShowChart',
+    component: AdminShowChart
+  },
   {
     path: '/moaplace.com/admin/news/update/:notice',
     name: 'AdminNewsUpdate',
     component: AdminNewsUpdate
   },
-
 
   // 예매페이지
   {

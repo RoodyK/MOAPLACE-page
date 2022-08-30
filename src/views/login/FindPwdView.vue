@@ -21,7 +21,7 @@
         
       </div>
 
-      <form action="" @enter.prevent>
+      <form @enter.prevent>
         <div class="info">
           <div class="explain">
             <p>
@@ -80,6 +80,9 @@ export default {
       inputId: "",
       inputEmail: ""
     }
+  },
+  created() {
+    document.querySelector('form').reset();
   },
   methods: {
     resetPassword() {
