@@ -1,6 +1,6 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="통계관리" mediumCategory="대관 매출통계"/>
+    <SideMenu largeCategory="통계관리" mediumCategory="공연 매출통계"/>
     <main id="main">
       <div class="inner">
         <h2 class="title">공연 매출차트</h2>
@@ -106,7 +106,11 @@
           }
         }
         .choose {
-          font-size: 24px;
+          select {
+            width: 100px;
+            height: 34px;
+            font-size: 20px;
+          }
         }
       }
 

@@ -38,6 +38,10 @@
     components: {
         SideMenu
     },
+    mounted() {
+      console.log(this.fromDate);
+      console.log(typeof this.fromDate);
+    },
     data() {
       return {
         fromDate: "",
@@ -106,7 +110,11 @@
           }
         }
         .choose {
-          font-size: 24px;
+          select {
+            width: 100px;
+            height: 34px;
+            font-size: 20px;
+          }
         }
       }
 
