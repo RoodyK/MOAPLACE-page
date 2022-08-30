@@ -5,45 +5,53 @@
             <div class="inner">
                 <h2 class="title">일정정보</h2>
                 <div class="list-top">
-                    <select>
-                        <option value="hall">공연장</option>
-                        <option value="title">공연명</option>
-                        <option value="status">공연상태</option>
+                  <div class="select-list">
+                    <label for="status">공연상태</label>
+                    <select v-model="status" @change="selectStatus()">
+                        <option v-for="(item,index) in statusList" :key="index" :value="item.status" id="status">{{item.statusName}}</option>
                     </select>
-                    <input type="text">
-                        <button>
-                            검색
-                            <i class="material-icons">
-                                search
-                            </i>
-                        </button>
-                        <button class="insertBtn" @click='goInsert'>일정등록</button>
+                  </div>
+                    <div class="search-list">
+                      <select v-model="selectField">
+                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                      </select>
+                      <input type="text" :value="search" placeholder="검색어를 입력하세요.">
+                      <button @click="inputSearch($event)">
+                          검색
+                          <i class="material-icons">
+                              search
+                          </i>
+                      </button>
+                      <button class="insertBtn" @click='goInsert'>공연등록</button>
                     </div>
-                    <div class="list">
-                        <div class="t-row thead">
-                            <p>공연장</p>
-                            <p>공연명</p>
-                            <p>공연날짜</p>
-                            <p>공연회차</p>
-                            <p>공연상태</p>
-                            <p>수정</p>
-                        </div>
+                </div>
+                  <div class="list">
+                      <div class="t-row thead">
+                          <p>공연번호</p>
+                          <p>공연날짜</p>
+                          <p>공연명</p>
+                          <p>공연횟수</p>
+                          <p>공연상태</p>
+                          <p>수정</p>
+                  </div>
                         <div v-for="item in list" :key="item.num" class="t-row tbody">
-                            <p>{{item.hall}}</p>
-                            <p>{{item.title}}</p>
-                            <p>{{item.appdate}}</p>
-                            <p>{{item.count}} 회차</p>
-                            <p>{{item.status}}</p>
+                            <p @click="viewDetail(item.num)">{{item.num}}</p>
+                            <p @click="viewDetail(item.num)">{{item.showDate}}</p>
+                            <p @click="viewDetail(item.num)">{{item.title}}</p>
+                            <p @click="viewDetail(item.num)">{{item.cntDate}}</p>
+                            <p @click="viewDetail(item.num)">{{item.status=='Y'?'진행중':'종료'}}</p>
                             <p><button @click="updateDetail(item.num)">수정</button></p>
                         </div>
                         <ul class="paging">
-                            <li>[이전]</li>
-                            <li>1</li>
-                            <li>2</li>
-                            <li>3</li>
-                            <li>4</li>
-                            <li>5</li>
-                            <li>[다음]</li>
+                            
+                            <li @click="prevPage()" :class="{active : this.pageNum > 1}">
+                              [이전]</li>
+                            
+                            <li v-for="item in pageNums" :key="item" @click="movePage(item)" :class="{active : this.pageNum==item}" >
+                              {{item}}</li>
+                            
+                            <li @click="nextPage()" :class="{active : this.pageNum < pageInfo.totalPageCount}">
+                              [다음]</li>
                         </ul>
                     </div>
                 </div>
@@ -52,70 +60,48 @@
 </template>
     <script>
         import SideMenu from '@/components/admin/SideMenu.vue'
+        import axios from '@/axios/axios.js';
         export default {
             components: {
                 SideMenu
             },
             data() {
                 return {
-                    list: [
-                        {
-                            num: 7,
-                            hall: '공연장1',
-                            title: '오늘메뉴',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 1,
-                            opentime: '13:30',
-                            seats: '77/120',
-                            grade: 15
-                        }, {
-                            num: 8,
-                            hall: '공연장1',
-                            title: '치킨텐더',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '진행중',
-                            count: 2,
-                            opentime: '13:30',
-                            seats: '20/120',
-                            grade: 15
-                        }, {
-                            num: 2,
-                            hall: '공연장1',
-                            title: '꿔바로우',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 2,
-                            seats: '77/120',
-                        }, {
-                            num: 0,
-                            hall: '공연장1',
-                            title: '운동은',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
-                        }, {
-                            num: 1,
-                            hall: '공연장1',
-                            title: '언제하지',
-                            regdate: '2022.08.10',
-                            appdate: '2022.08.10',
-                            status: '공연종료',
-                            opentime: '13:30',
-                            count: 1,
-                            seats: '110/120',
-                        }
-                    ]
+                    
+                    status: '',
+                    statusList:[
+                        {status: 'all', statusName: '전체'},
+                        {status: 'Y', statusName: '진행중'},
+                        {status: 'N', statusName: '종료'}
+                    ],
+                    selectField: '',
+                    fieldList:[
+                      {field: 'showNum',fieldName:'공연번호'},
+                      {field: 'title',fieldName:'공연명'},
+                      {field: 'date',fieldName:'공연날짜'},
+                    ],
+                    search:'',
+                    pageNum:'',
+                    list: [],
+                    pageInfo:[],
+                    pageNums:[]
                 }
             },
+            mounted(){
+
+              this.viewList();
+              // this.$route.params.pageNum,
+              // this.$route.params.status,
+              // this.$route.params.selectField,
+              // this.$route.params.search);
+
+            },
             methods:{
+
+              stop(e) {
+                e.stopPropagation()
+              },
+
               goInsert(){
 
                 this.$router.push({
@@ -127,11 +113,130 @@
                     search:this.search
                     }
                   })
+
               },
+
+              pageNumbering(){
+                
+                this.pageNums.splice(0);
+
+                for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
+                    this.pageNums.push(i);
+                }
+              },
+
+              movePage(pNum){
+                axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+
+                }.bind(this))
+              },
+
+              prevPage(){
+                if(this.pageNum > 1){
+                  this.movePage(this.pageNum-1);
+                }
+              },
+
+              nextPage(){
+                if(this.pageNum < this.pageInfo.endPageNum){
+                  this.movePage(this.pageNum+1);
+                }
+              },
+
+              viewDetail(num){
+
+                this.$router.push(
+                  {
+                    name:'adminHallDetail',
+                    params:{
+                      showNum:num,
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      field:this.selectField,
+                      search:this.search
+                      }});
+              },
+
+              updateDetail(num){
+
+                console.log("업데이트넘",num)
+                this.$router.push(
+                  {
+                    name:'adminHallUpdate',
+                    params:{
+                      showNum:num,
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      field:this.selectField,
+                      search:this.search}});
+              },
+
+              inputSearch(e){
+
+                // 부모의 바로 이전 형제 요소 가져오기(input)
+                this.search=e.target.parentNode.previousSibling.value;
+                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+
+                }.bind(this))
+              },
+
+              selectStatus(){
+
+                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+
+                }.bind(this))
+              },
+
+              viewList(){
+
+                // if(pageNum!=null)this.pageNum = pageNum;
+                // if(status!=null)this.status = status;
+                // if(field!=null)this.selectField = field;
+                // if(search!=null)this.search = search;
+
+                axios.get('/moaplace.com/admin/show/schedule/list').
+                then(function(resp){
+
+                  this.list = resp.data.list;
+                  // this.status = resp.data.status;
+                  // this.selectField = resp.data.selectField;
+                  // this.search = resp.data.search;
+                  // this.pageNum = resp.data.pageNum;
+                  // this.pageInfo = resp.data.pageInfo;
+                  // this.pageNumbering();
+
+                }.bind(this))
+              }
             }
-            
         }
-    </script>
+</script>
     <style lang="scss" scoped="scoped">
         @import "@/scss/common.scss";
         nav {
@@ -168,51 +273,82 @@
                 // 관리자 페이지 레이아웃 관련 끝------------------
                 .list-top {
                     width: 100%;
-                    text-align: right;
+
                     margin-bottom: 16px;
                     position: relative;
                     font-size: 14px;
                     display: flex;
-                    justify-content: flex-end;
-                    button,
-                    select {
-                        border: none;
-                    }
-                    select {
-                        position: absolute;
-                        top: 8px;
-                        right: 288px;
-                        border-right: 1px solid #ddd;
-                        &:focus{
-                            outline: none;
-                        }
-                    }
-                    button {
-                        background: transparent;
-                        font-size: 0;
-                        position: absolute;
-                        top: 4px;
-                        right: 104px;
-                        color: rgba($black, 0.9);
-                    }
-                    input {
-                        width: 280px;
-                        box-sizing: border-box;
-                        height: 32px;
-                        padding: 4px 32px 4px 90px;
-                        &:focus{
-                            outline-color: $black;
-                        }
-                    }
-                    .insertBtn {
-                        background-color: $black;
-                        color: white;
+                    justify-content: space-between;
+                    .select-list{
+                      
+                      display: flex;
+                      justify-content: flex-start;
+                      label{
+                        display: flex;
                         font-size: 16px;
-                        width: 80px;
-                        height: 32px;
-                        position: unset;
-                        margin-left: 16px;
+                        align-items: center;
+                      }
+                      select{
+                        display: flex;
+                        justify-content: flex-start;
+                        margin-left:16px;
+                        padding: 0 8px;
+                        font-size: 16px;
+                        &:focus{
+                              outline-color: $black;
+                          }
+
+                      }
                     }
+                   .search-list{
+                      
+                      display: flex;
+                      flex-direction: left;
+                      
+                      button,
+                      select {
+                          border: none;
+                      }
+                      select {
+                          position: absolute;
+                          top: 8px;
+                          right: 320px;
+                          border-right: 1px solid #ddd;
+                          font-size: 16px;
+                          padding: 2px 8px 0 0;
+                          &:focus{
+                              outline: none;
+                          }
+                      }
+
+                      button {
+                          background: transparent;
+                          font-size: 0;
+                          position: absolute;
+                          top: 8px;
+                          right: 128px;
+                          color: rgba($black, 0.9);
+                      }
+                      input {
+                          width: 300px;
+                          box-sizing: border-box;
+                          font-size: 16px;
+                          height: 40px;
+                          padding: 4px 32px 4px 110px;
+                          &:focus{
+                              outline-color: $black;
+                          }
+                      }
+                      .insertBtn {
+                          background-color: $black;
+                          color: white;
+                          font-size: 16px;
+                          width: 104px;
+                          position: unset;
+                          margin-left: 16px;
+                          padding: 8px 0;
+                      }
+                  }
                 }
                 .list {
                     text-align: center;
@@ -220,14 +356,25 @@
                         display: flex;
                         flex-flow: row wrap;
                         padding: 8px 0;
-                        font-size: 14px;
+                        font-size: 16px;
                         &.thead {
                             background: $black;
                             color: #fff;
+                             > & :first-child{
+                              width:10%;
+                            }
+                            > & :nth-child(3){
+                              width:calc(100%/3.4);
+                            }
+                            > & :last-child{
+                              width:10%;
+                            }
                         }
                         &.tbody {
-                            padding: 24px 0;
+                            padding: 16px 0;
                             border-bottom: 1px solid rgba($black, 0.2);
+                            display: flex;
+                            align-items: center;
                             cursor: pointer;
                             &:hover {
                                 background: #eee;
@@ -236,6 +383,34 @@
                                 border: 1px solid #333;
                                 padding: 4px;
                             }
+                            &:p{
+                                display: flex;
+                                align-items: center;
+                                text-align: center;
+                                font-size: 16px;
+                                overflow: hidden;
+                                text-overflow:ellipsis;
+                                white-space:nowrap;
+                                padding: 4px;
+                            }
+                            > & :first-child{
+                              width:10%;
+                            }
+                            > & :nth-child(3){
+                              width:calc(100%/3.4);
+                            }
+                            > & :last-child{
+                              width:10%;
+                              display: flex;
+                              justify-content: center;
+                              >& button{
+                                background-color: rgb(250, 250, 250);
+                                border: 1px solid rgba(51, 51, 51, 0.2);
+                                padding: 4px 40px 4px 40px;
+                                display: flex;
+                                justify-content: center;
+                            }
+                          }
                         }
                         & > p,
                         div {
@@ -244,9 +419,11 @@
                             overflow: hidden;
                             white-space: nowrap;
                             text-overflow: ellipsis;
+                            
                             & {
                                 padding-top: 4px;
                             }
+                            
                         }
                     }
                     .paging {
@@ -255,12 +432,23 @@
                         justify-content: center;
                         margin-top: 32px;
                         li {
-                            margin: 0 8px;
-                            padding: 0 8px;
+                            margin: 0 6px;
+                            padding: 0 6px;
+                            user-select: none;
+                            cursor: pointer;
+                            &.active{
+                              color: #D67747;
+                              font-weight: bold;
+                            }
                             &:first-child,
                             &:last-child {
-                                color: $brown;
-                                font-weight: bold;
+                                color: rgba($black, 0.5);
+                                font-weight: bold;  
+                                cursor: auto;
+                                &.active{
+                                  color: $brown;
+                                  cursor: pointer;
+                                }
                             }
                         }
                     }
