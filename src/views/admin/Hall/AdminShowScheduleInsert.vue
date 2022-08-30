@@ -121,19 +121,26 @@
       watch:{
         showCount:function(newCnt){
           this.showCnt.splice(0);
+          this.showTime.splice(0);
           if(newCnt>0){
             for(let i=1;i<=newCnt;i++){
-              this.showCnt.push(i)
+              this.showCnt.push(i);
+              this.showTime.push("");
             }
           }
-        }
+        },
+
       },
       methods:{
         addTime(i,e){
-          if(this.showTime[i]!=''){
-            this.showTime[i] = e.value;
+          if(i>0 && e.value < this.showTime[i-1]){
+            alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+            e.value=""
+          }else if(this.showTime[i-1]==""){
+            alert("데이터를 회차순으로 입력하세요.")
+            e.value=""
           }else{
-            this.showTime.push(e.value)
+              this.showTime[i] = e.value;
           }
         },
         cntTime(e){
@@ -170,6 +177,7 @@
           this.yOrN();
         },
         yOrN(){
+          this.ynHideRow.splice(0);
           if(this.check=='Y'){
             this.ynHideRow=[]
           }else if(this.check=='N'){
@@ -177,7 +185,6 @@
           }
         },
         checkDate(){
-          alert(this.showTime);
           if(this.showDate <this.startDate || this.showDate > this.endDate){
             alert("공연기간을 확인하세요")
             this.showDate = ''
@@ -187,7 +194,6 @@
           }
         },
         postInsert(){
-          alert(this.showTime);
           axios.post(
             '/moaplace.com/admin/show/schedule/insert',
               JSON.stringify(
