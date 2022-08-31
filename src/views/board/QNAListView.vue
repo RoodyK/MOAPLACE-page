@@ -194,7 +194,7 @@ export default {
       this.pageNum = 1;
       this.keyword = this.newKeyword; // 검색어 변경
       this.qnaList();
-    },
+    },    
     movePage(move){
       this.pageNum = move;
       console.log(this.pageNum);
