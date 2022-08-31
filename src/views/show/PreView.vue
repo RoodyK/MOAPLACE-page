@@ -34,8 +34,8 @@
               </label>
             </div>
             <div class="search">
-              <input type="text" class="search_input" placeholder="공연명 검색">
-              <button class="search_btn"/>
+              <input type="text" class="search_input" v-model="keyword" @keydown.enter="search" placeholder="공연명 검색">
+              <button class="search_btn" @click="search"/>
             </div>
           </div>
         </div>
@@ -43,9 +43,9 @@
           <table>
             <tr>
               <td rowspan="2" id="calendar">
-                <input type="date" v-model="start_date">
+                <input type="date" v-model="start_date" @change="list">
                 -
-                <input type="date" v-model="end_date" :min="start_date">
+                <input type="date" v-model="end_date" :min="start_date" @change="list">
               </td>
               <td>
                 <div class="category_box">
@@ -57,9 +57,9 @@
                   </div>
                   <div class="category_cont">
                     <div><input type="checkbox" value="all" v-model="hall_all" @change="hall_change2"> 전체</div>
-                    <div><input type="checkbox" value="1" v-model="hall_another1" @change="hall_change1"> 모던홀</div>
-                    <div><input type="checkbox" value="2" v-model="hall_another2" @change="hall_change1"> 오케스트라홀</div>
-                    <div><input type="checkbox" value="3" v-model="hall_another3" @change="hall_change1"> 아트홀 </div>
+                    <div><input type="checkbox" value="1" v-model="hall_another1" class="hall_chk1" @change="hall_change1"> 모던홀</div>
+                    <div><input type="checkbox" value="2" v-model="hall_another2" class="hall_chk2" @change="hall_change1"> 오케스트라홀</div>
+                    <div><input type="checkbox" value="3" v-model="hall_another3" class="hall_chk3" @change="hall_change1"> 아트홀 </div>
                   </div>
                 </div>
               </td>
@@ -74,14 +74,14 @@
                     장르
                   </div>
                   <div class="category_cont">
-                    <div><input type="checkbox" value="all" v-model="categoty_all" @change="categoty_change2"> 전체</div>
-                    <div><input type="checkbox" value="1" v-model="categoty_another1" @change="categoty_change1"> 연극</div>
-                    <div><input type="checkbox" value="2" v-model="categoty_another2" @change="categoty_change1"> 뮤지컬</div>
-                    <div><input type="checkbox" value="3" v-model="categoty_another3" @change="categoty_change1"> 대중음악</div>
-                    <div><input type="checkbox" value="4" v-model="categoty_another4" @change="categoty_change1"> 기악</div>
-                    <div><input type="checkbox" value="5" v-model="categoty_another5" @change="categoty_change1"> 성악</div>
-                    <div><input type="checkbox" value="6" v-model="categoty_another6" @change="categoty_change1"> 오페라</div>
-                    <div><input type="checkbox" value="7" v-model="categoty_another7" @change="categoty_change1"> 무용</div>
+                    <div><input type="checkbox" value="all" v-model="genre_all" @change="genre_change2"> 전체</div>
+                    <div><input type="checkbox" value="1" v-model="genre_another1" class="genre_chk1" @change="genre_change1"> 연극</div>
+                    <div><input type="checkbox" value="2" v-model="genre_another2" class="genre_chk2" @change="genre_change1"> 뮤지컬</div>
+                    <div><input type="checkbox" value="3" v-model="genre_another3" class="genre_chk3" @change="genre_change1"> 대중음악</div>
+                    <div><input type="checkbox" value="4" v-model="genre_another4" class="genre_chk4" @change="genre_change1"> 기악</div>
+                    <div><input type="checkbox" value="5" v-model="genre_another5" class="genre_chk5" @change="genre_change1"> 성악</div>
+                    <div><input type="checkbox" value="6" v-model="genre_another6" class="genre_chk6" @change="genre_change1"> 오페라</div>
+                    <div><input type="checkbox" value="7" v-model="genre_another7" class="genre_chk7" @change="genre_change1"> 무용</div>
                   </div>
                 </div>
               </td>
@@ -89,15 +89,15 @@
           </table>
         </div>
       </div>
-      <div id=list>
+      <div id="list" v-if="show_list.length!=0">
         <div class="show" v-for="show in show_list" :key="show.show_num">
           <div class="img">
             <div class="pop" v-if="show.show_check=='Y'">
-              <button class="left">예매</button>
-              <button class="right">상세</button>
+              <RouterLink class="left" :to="`/moaplace.com/show/showdetail/${show.show_num}`">예매</RouterLink>
+              <RouterLink class="right" :to="`/moaplace.com/show/showdetail/${show.show_num}`">상세</RouterLink>
             </div>
             <div class="pop" v-else>
-              <button class="right">상세</button>
+              <RouterLink class="right" :to="`/moaplace.com/show/showdetail/${show.show_num}`">상세</RouterLink>
             </div>
             <img :src="show.show_thumbnail" >
           </div>
@@ -111,14 +111,27 @@
           <h5>{{show.show_name}}</h5>
         </div>
       </div>
+      <div class="list_null" v-else>
+        <h6>등록된 공연이 없습니다.</h6>
+      </div>
       <ul class="paging">
-        <li>[이전]</li>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>[다음]</li>
+        <li
+          :class="{active: pageutil.startPageNum > 1}"
+          @click="changePage('prev',$event)">
+          [이전]
+        </li>
+        <li 
+          v-for="num in pageNumbers"
+          :key="num"
+          @click="movePage(num)"
+          :class="{active: pageutil.pageNum == num}">
+          {{num}}
+        </li>
+        <li
+          :class="{active: pageutil.endPageNum < pageutil.totalPageCount}"
+          @click="changePage('next',$event)">
+          [다음]
+        </li>
       </ul>
     </div>
     <AppFooter/>
@@ -141,66 +154,103 @@ export default {
   data(){
     return{
       show_list:[],
+      pageutil:[],
+      pageNumbers:[],
+      pagenum:1,
 
       select_year:new Date().getFullYear(),
 
       today:`${new Date().getFullYear()}-${new Date().getMonth()+1 < 10 ? `0${new Date().getMonth()+1}` : new Date().getMonth()+1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate() }`,
       start_date:`${new Date().getFullYear()}-${new Date().getMonth()+1 < 10 ? `0${new Date().getMonth()+1}` : new Date().getMonth()+1}-${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate() }`,
       end_date:`${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}`,
-      
-      hall_all:true, hall_another1:false, hall_another2:false, hall_another3:false,
-      categoty_all:true, categoty_another1:false, categoty_another2:false, categoty_another3:false, categoty_another4:false, categoty_another5:false, categoty_another6:false, categoty_another7:false,
 
-      pagenum:1
+      hall_all:true, hall_another1:false, hall_another2:false, hall_another3:false,
+      hall_chk:["all"],
+      genre_all:true, genre_another1:false, genre_another2:false, genre_another3:false, genre_another4:false, genre_another5:false, genre_another6:false, genre_another7:false,
+      genre_chk:["all"],
+
+      keyword:'',
+      isSearch : false
     }
   },
   created(){
-    axios.get(`/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}`)
-      .then((resp) => {
-        this.show_list = resp.data;
-      }
-    )
+    this.list();
   },
   methods: {
+    list(){
+      const url = this.isSearch
+          ? `/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}/${this.hall_chk}/${this.genre_chk}/${this.keyword}`
+          : `/moaplace.com/preview/${this.pagenum}/${this.start_date}/${this.end_date}/${this.hall_chk}/${this.genre_chk}`;
+
+      axios.get(url)
+        .then((resp) => {
+          this.show_list = resp.data.list;
+          this.pageutil = resp.data.pageUtil;
+          this.getPageNumber();
+        }
+      )
+    },
     next(){
       this.select_year++;
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
+      this.list();
     },
     prev(){
       this.select_year--;
       document.querySelector(".all").checked=true;
       this.start_date=this.select_year+"-01-01";
       this.end_date=this.select_year+"-12-31";
+      this.list();
     },
     all(){
+      this.select_year=new Date().getFullYear();
       this.start_date=new Date().getFullYear()+"-01-01";
       this.end_date=new Date().getFullYear()+"-12-31";
-      this.select_year=new Date().getFullYear();
+      this.pagenum=1;
+      this.list();
     },
     week(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(7 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     next_week(){
       this.select_year=new Date().getFullYear();
       this.start_date=`${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(8 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(8 * 24 * 3600 * 1000)).getDate()}`;
       this.end_date=`${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(14 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(14 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     month(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(30 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(30 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     three_month(){
       this.select_year=new Date().getFullYear();
       this.start_date=this.today;
       this.end_date=`${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getFullYear()}-${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1 < 10 ? `0${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1}` : new Date(Date.now()+(90 * 24 * 3600 * 1000)).getMonth()+1}-${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate() < 10 ? `0${new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate()}` : new Date(Date.now()+(90 * 24 * 3600 * 1000)).getDate()}`;
+      this.list();
     },
     hall_change1(){
       this.hall_all=false;
+      this.hall_chk=[];
+      if(this.hall_another1) {
+        this.hall_chk.push(document.querySelector(".hall_chk1").value);
+      }
+      if(this.hall_another2){
+        this.hall_chk.push(document.querySelector(".hall_chk2").value);
+      }
+      if(this.hall_another3) {
+        this.hall_chk.push(document.querySelector(".hall_chk3").value);
+      }
+      if(!this.hall_another1 && !this.hall_another2 && !this.hall_another3) {
+        this.hall_chk=["all"];
+      }
+      this.list();
     },
     hall_change2(){
       if(this.hall_all==true){
@@ -208,20 +258,95 @@ export default {
         this.hall_another2=false;
         this.hall_another3=false;
       }
+      this.hall_chk=["all"];
+      this.list();
     },
-    categoty_change1(){
-      this.categoty_all=false;
-    },
-    categoty_change2(){
-      if(this.categoty_all==true){
-        this.categoty_another1=false;
-        this.categoty_another2=false;
-        this.categoty_another3=false;
-        this.categoty_another4=false;
-        this.categoty_another5=false;
-        this.categoty_another6=false;
-        this.categoty_another7=false;
+    genre_change1(){
+      this.genre_all=false;
+      this.genre_chk=[];
+      if(this.genre_another1) {
+        this.genre_chk.push(document.querySelector(".genre_chk1").value);
       }
+      if(this.genre_another2){
+        this.genre_chk.push(document.querySelector(".genre_chk2").value);
+      }
+      if(this.genre_another3) {
+        this.genre_chk.push(document.querySelector(".genre_chk3").value);
+      }
+      if(this.genre_another4) {
+        this.genre_chk.push(document.querySelector(".genre_chk4").value);
+      }
+      if(this.genre_another5) {
+        this.genre_chk.push(document.querySelector(".genre_chk5").value);
+      }
+      if(this.genre_another6) {
+        this.genre_chk.push(document.querySelector(".genre_chk6").value);
+      }
+      if(this.genre_another7) {
+        this.genre_chk.push(document.querySelector(".genre_chk7").value);
+      }
+      if(!this.genre_another1 && !this.genre_another2 && !this.genre_another3 && !this.genre_another4 && !this.genre_another5 && !this.genre_another6 && !this.genre_another7) {
+        this.genre_chk=["all"];
+      }
+      this.list();
+    },
+    genre_change2(){
+      if(this.genre_all==true){
+        this.genre_another1=false;
+        this.genre_another2=false;
+        this.genre_another3=false;
+        this.genre_another4=false;
+        this.genre_another5=false;
+        this.genre_another6=false;
+        this.genre_another7=false;
+      }
+      this.genre_chk=["all"];
+      this.list();
+    },
+    getPageNumber(){
+      this.pageNumbers = [];
+      for(let i = this.pageutil.startPageNum; i <= this.pageutil.endPageNum; i++){
+        this.pageNumbers.push(i);
+      }
+    },
+    changePage(where , e){
+      if(e.target.classList.contains('active')){
+        this.pagenum=1;
+
+      if(where == 'prev'){
+        this.pagenum = this.pageutil.startPageNum -1; 
+      }
+      else if(where == 'next'){
+        this.pagenum = this.pageutil.endPageNum +1;
+      }
+      else{
+        return;
+      }
+      this.movePage(this.pagenum);
+      }
+    },
+    movePage(pagenum){
+      const url = this.isSearch
+          ? `/moaplace.com/preview/${pagenum}/${this.start_date}/${this.end_date}/${this.hall_chk}/${this.genre_chk}/${this.keyword}`
+          : `/moaplace.com/preview/${pagenum}/${this.start_date}/${this.end_date}/${this.hall_chk}/${this.genre_chk}`;
+          
+      axios.get(url)
+      .then((resp) => {
+        this.show_list = resp.data.list;
+        this.pageutil = resp.data.pageUtil;
+        this.getPageNumber();
+        }
+      )
+    },
+    search(){
+      if(this.keyword !== null && this.keyword !== ""){
+        this.isSearch = true;
+        this.list();
+      }else{
+        this.isSearch = false;
+        this.list();
+        return;
+      }  
     }
   }
 }
@@ -263,13 +388,6 @@ export default {
   td{
     border: 1px solid rgba($black, 0.5);
   }
-  h6{
-    width: 70px;
-    text-align: center;
-    margin-top: 16px;
-    padding: 4px 0;
-    font-weight: bold;
-  }
   .play{
     border: 1px solid #FECB65;
     color: #FECB65;
@@ -300,15 +418,21 @@ export default {
   }
   #list {
     margin-top: 25px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
     position: relative;
     .show{
       margin-top: 25px;
-      width: calc((100% - (24px * 3)) / 4);
       h5{
         font-size: 22px;
+        font-weight: bold;
+      }
+      h6{
+        width: 70px;
+        text-align: center;
+        margin-top: 16px;
+        padding: 4px 0;
         font-weight: bold;
       }
       .img{
@@ -328,7 +452,7 @@ export default {
         background-color: rgba(black, 0.6);
         opacity: 0;
         transition: 0.3s;
-        button {
+        a {
           padding: 24px;
           border-radius: 50%;
           border: 1px solid #fff;
@@ -370,7 +494,6 @@ export default {
       background: url(@/assets/moaplace/search.png) no-repeat center;
     }
   }
-  
   table{
     margin-top: 30px;
     width: 100%;
@@ -391,6 +514,7 @@ export default {
         font-weight: bold;
         background-color: #f5f6f9;
         width: 145px;
+        outline: none;
       }
     }
   }
@@ -456,6 +580,7 @@ export default {
     flex-flow: row wrap;
     justify-content: center;
     margin-top: 32px;
+    padding-right: 2rem;
     li {
       margin: 0 6px;
       padding: 0 6px;
@@ -475,6 +600,14 @@ export default {
           cursor: pointer;
         }
       }
+    }
+  }
+  .list_null{
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 24px;
+    h6{
+      font-weight: bold;
     }
   }
 </style>
