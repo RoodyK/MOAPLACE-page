@@ -42,7 +42,7 @@
                             <tr>
                                 <th>공연횟수</th>
                                 <td colspan="5">
-                                    <input type="text" :value="showCount" class="countBox" maxlength="2" @keyup="cntTime($event.currentTarget)">
+                                    {{showCount}}
                                     회
                                 </td>
                             </tr>
@@ -61,6 +61,42 @@
                         </table>
                     </div>
                 </div>
+                <div class="hallInfo">
+                    <h3>일정정보</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>공연회차 추가</th>
+                                <td>
+                                    <button @click="addRow">등록</button>
+                                </td>
+                                <th>공연시간</th>
+                                <td><input type="time" v-model="addTime"></td>
+                                <th>공연상태</th>
+                                <td>
+                                  <select v-model="addStatus">
+                                    <option v-for="list in showStatusList" :key="list">{{list}}</option>
+                                  </select>
+                                </td>
+                            </tr>
+                            <tr v-for="(item,index) in addTimeInfo" :key="index">
+                                <th>추가된 공연</th>
+                                <td>
+                                  {{item.timeRow}}회차
+                                </td>
+                                <th>공연시간</th>
+                                <td><input type="time" :value='item.dateTime'></td>
+                                <th>공연상태</th>
+                                <td>
+                                  <select v-model="addStatus" :value="item.dateStatus">
+                                    <option v-for="list in showStatusList" :key="list">{{list}}</option>
+                                  </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                  </div>
+
 
                 <div class="btnBox">
                     <button @click="goList">이전</button>
@@ -92,6 +128,9 @@
                       timeInfo:[],
                       showCount:'',
                       bookingSeat:'',
+                      addTime:'',
+                      addStatus:'Y',
+                      addTimeInfo:[],
                       pageNum: this.$route.params.pageNum,
                       status: this.$route.params.status,
                       selectDate: this.$route.params.selectDate,
@@ -108,6 +147,13 @@
                 },
 
                 methods:{
+                  addRow(){
+                    this.addTimeInfo.push({
+                      dateTime : this.addTime,
+                      dateStatus : this.addStatus,
+                      timeRow : this.timeInfo.length+this.addTimeInfo.length+1,
+                      scheduleNum : 0})
+                  },
                   updateYN(i,e){
                     this.timeInfo[i].dateStatus = e.value;
                   },
@@ -151,10 +197,7 @@
                         this.showStatus = resp.data.showStatus
                         this.timeInfo = resp.data.arrTime
                         this.showCount = resp.data.arrTime.length
-                        this.timeInfo = resp.data.arrTime
-                        if(resp.data.using){
-                          alert("해당 일자의 공연은 예약된 좌석이 있어 수정할 수 없습니다. ")
-                        }
+
                       }.bind(this)).
                     catch(function(error){
                       if(error.response){
@@ -183,16 +226,18 @@
                             {
                               showNum:this.$route.params.showNum,
                               showDate:this.showDate,
-                              list:this.timeInfo
+                              list:this.timeInfo,
+                              addList:this.addTimeInfo
                             }),
                         {headers:{'Content-Type':'application/json'}}
                         ).then(function(resp){
-                          alert(resp.data+'개의 공연정보 수정됨')
+                          resp.data
+                          alert('공연정보 수정됨')
                           this.goList()
                         }.bind(this)).
                         catch(function(error){
                           if(error.response){
-                            alert('해당 날짜에 예약된 일정 내역이 있어 수정할 수 없습니다.')
+                            alert('공연정보 수정을 실패하였습니다.')
                           }
                         })
                     },
