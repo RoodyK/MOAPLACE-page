@@ -423,7 +423,7 @@ const routes = [
     component: BookingSelect
   },
   {
-    path: '/moaplace.com/booking/seat',
+    path: '/moaplace.com/booking/seat/:num',
     name: 'bookinseat',
     component: SeatSelect
   },
