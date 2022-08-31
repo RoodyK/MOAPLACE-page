@@ -3,61 +3,62 @@
         <SideMenu largeCategory="게시판관리" mediumCategory="FAQ"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">FAQ 관리 > 자세히보기</h2>
+                <h2 class="title">FAQ 관리</h2>
 
                 <div class="info-box">
                     <h3>상세내용</h3>
                     <div>
                         <table>
                             <tr>
-                                <th>번호</th>
-                                <td>{{faq.num}}</td>
-                            </tr>                           
-                            <tr>
                                 <th>구분</th>
-                                <td>{{faq.sort}}</td>
+                                <td>{{detail.sort_name}} 문의</td>
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td>{{faq.title}}</td>
+                                <td>{{detail.faq_title}}</td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td>{{faq.content}}</td>
+                                <td v-html="detail.faq_content"></td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <div class="info-box">
+                <div class="info-box" v-if="faq_title!=''">
                     <h3>수정하기</h3>
                     <div>
                         <table>
                             <tr>
                                 <th>구분</th>
                                 <td>
-                                    <select>
-                                        <option v-for="state in states" :key="state" :value="state">
-                                            {{state}}
+                                    <select v-model="sort_num">
+                                        <option :value="0"> 분류 선택 </option>
+                                        <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+                                        {{sort.sort_name}} 문의
                                         </option>
-                                    </select>
+                                    </select>                                    
                                 </td>
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-bind:value="faq.title"></td>
+                                <td><input type="text" v-model="faq_title"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><textarea cols="100" rows="10" v-bind:value="faq.content"></textarea></td>
+                                <td><TextEditor height="300" 
+                                                v-model:content="faq_content" 
+                                                contentType="html"/>
+                                </td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 
                 <div class="btn-box">
-                    <button @click="$router.push({name:'adminFaqList'})">이전</button>
-                    <button>수정</button>
+                    <button @click="$router.push({name:'adminFaqList'})">목록으로</button>
+                    <button @click="updateFaq()">수정하기</button>
+                    <button @click="deleteFaq()">삭제하기</button>
                 </div>
             </div>
         </main>
@@ -66,26 +67,99 @@
 
 <script>
 import SideMenu from '@/components/admin/SideMenu.vue'
+import TextEditor from '@/components/TextEditor.vue'
+import axios from '@/axios/axios.js'
+
 export default {
     components: {
-        SideMenu
+        SideMenu,
+        TextEditor
+    },
+    created() {
+        this.faq_num = this.$route.params.faq_num;
+        console.log(this.faq_num);
+
+        this.sortList();
+        this.faqDetail(); 
     },
     data() {
         return {
-            faq: {
-                num:5,
-                sort:'예매',
-                title:'예매 내역은 어떻게 확인할 수 있나요?', 
-                content:'회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.'},
-            states: [
-                    '공연',
-                    '대관',
-                    '예매',
-                    '관람',
-                    '회원',
-                    '기타'
-                ]
+            sort_list:[],            
+            detail:[],
+            sort_num:0,
+            faq_title:'',
+            faq_content:''
         }
+    },
+    methods: {
+        async sortList() {
+            await axios.get('/moaplace.com/board/sort/list')
+                        .then(resp => {
+                            this.sort_list = resp.data;
+                        })
+                        .catch(error => {
+                            console.log(error.message);
+                        })            
+        },           
+        async faqDetail() {
+            await axios.get("/moaplace.com/admin/faq/detail/"+this.faq_num)
+                        .then(resp => {
+                            this.detail = resp.data.detail;
+                            this.sort_num = resp.data.detail.sort_num;
+                            this.faq_title = resp.data.detail.faq_title;
+                            this.faq_content = resp.data.detail.faq_content;
+
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })
+        },
+        updateFaq() { // 수정하기
+            if(confirm('내용을 수정하시겠습니까?')){
+                let forms = {
+                    sort_num: this.sort_num,
+                    faq_num: this.faq_num,
+                    faq_title: this.faq_title,
+                    faq_content: this.faq_content
+                }
+                console.log(forms);
+
+                axios.post("/moaplace.com/admin/faq/update", JSON.stringify(forms),{
+                    headers: {'Content-Type' : 'application/json'}
+                })
+                .then(resp => {
+                    if(resp.data != 'fail') {
+                        console.log(resp.data);
+                        alert('FAQ가 수정되었습니다.')
+                        this.faqDetail();
+                    } else {
+                        alert('FAQ 수정에 실패하였습니다. 다시 시도해주세요.');
+                        return
+                    }
+                })
+                .catch (error => {
+                    console.log(error);
+                })                
+            } else return;
+        },
+        deleteFaq(){ // faq 삭제
+            if(confirm('해당 글을 삭제하시겠습니까?')){
+                axios.post("/moaplace.com/admin/faq/delete/"+this.faq_num)
+                     .then(resp => {
+                        if(resp.data != 'fail') {
+                            alert('FAQ가 삭제되었습니다.');
+                            this.$router.push({name:'adminFaqList'});
+
+                        } else {
+                            alert('FAQ 삭제를 실패하였습니다. 다시 시도해주세요.');
+                            return;
+                        }
+                    })
+                     .catch (error => {
+                        console.log(error);
+                    })
+            } else return;
+        }        
     }
 }
 </script>
@@ -158,11 +232,12 @@ export default {
                         
                         select {
                             border: 1px solid rgba($black,0.3);
-                            padding: 5px 65px 5px 5px;
+                            padding: 4px 8px;
+                            width: 160px;
                         }
                         input {
                             border: 1px solid rgba($black,0.3);
-                            padding: 5px;
+                            padding: 4px 12px;
                             width: 100%; 
                         }
                         textarea {
@@ -174,19 +249,19 @@ export default {
                         tr {
                             td,
                             th {
+                                vertical-align: middle;
                                 padding: 8px 16px;
                                 border-bottom: 1px solid rgba($black, 0.3);
+                                white-space: pre-line;
                             }
                             th {
                                 width: 15%;
                                 background: #eee;
                                 text-align: center;
                             }
-
-                            &:nth-child(4){
+                            &:nth-child(3){
                                 height:250px;
                             }
-
                         }
                     }
                 }
@@ -197,16 +272,19 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 button {
-                    width: calc((100% - 16px) /2);
+                    width: calc((100% - 16px) /3);
                     padding: 12px 0;
                     border: none;
-                    &:last-child {
+                    &:nth-child(2) {
                         background-color: $brown;
                         color: #fff;
                     }
+                    &:nth-child(3) {
+                        background-color: $black;
+                        color: #fff;
+                    }                    
                 }
             }
         }
-
     }
 </style>
