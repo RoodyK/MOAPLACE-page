@@ -3,7 +3,7 @@
         <SideMenu largeCategory="게시판관리" mediumCategory="1:1문의"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">1:1문의 > 상세보기</h2>
+                <h2 class="title">1:1문의</h2>
 
                 <div class="state-box">
                     <span>문의상태</span>    
@@ -51,8 +51,8 @@
                                 <td>{{detail.qna_title}}</td>
                             </tr>
                             <tr>
-                                <th>내용</th>
-                                <td>{{detail.qna_content}}</td>
+                                <th class="content">내용</th>
+                                <td v-html="detail.qna_content"></td>
                             </tr>
                             <tr>
                                 <th>문의일</th>
@@ -73,8 +73,12 @@
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor :height="300" v-model:content="answer_content" contentType="html"/></td>
+                                <td><TextEditor height="300" v-model:content="answer_content" contentType="html"/></td>
                                 <!-- <td><textarea cols="120" rows="10" v-model="answer_content"></textarea></td> -->
+                            </tr>
+                            <tr>
+                                <th>답변메일</th>
+                                <td><input type="text" v-model="email"></td>
                             </tr>
                             <tr>
                                 <th>답변일자</th>
@@ -90,12 +94,11 @@
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer.answer_title">
-                                </td>
+                                <td><input type="text" v-model="answer.answer_title"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor :height="300" v-model:content="answer.answer_content" contentType="html"/></td>
+                                <td><TextEditor height="300" v-model:content="answer.answer_content" contentType="html"/></td>
                                 <!-- <td><textarea cols="120" rows="10" v-model="answer.answer_content"></textarea></td> -->
                             </tr>
                             <tr>
@@ -108,8 +111,8 @@
                 
                 <div class="btn-box" >
                     <button @click="$router.push({name:'adminQnaList'})">목록으로</button>
-                    <button @click="checkForm()" v-if="answer==null">등록하기</button>
-                    <button @click="updateAnswer()" v-if="answer!=null">수정하기</button>
+                    <button @click="checkForm()" v-if="answer==null">답변등록</button>
+                    <button @click="updateAnswer()" v-if="answer!=null">답변수정</button>
                     <button @click="deleteAnswer()">답변삭제</button>
                     <button @click="deleteQna()">전체삭제</button>
                 </div> 
@@ -119,200 +122,195 @@
 </template>
 
 <script>
-    import SideMenu from '@/components/admin/SideMenu.vue'
-    import TextEditor from '@/components/TextEditor.vue'
-    import axios from '../../../axios/axios.js'
+import SideMenu from '@/components/admin/SideMenu.vue'
+import TextEditor from '@/components/TextEditor.vue'
+import axios from '@/axios/axios.js'
 
-    export default {
-        components: {
-            SideMenu,
-            TextEditor,
+export default {
+    components: {
+        SideMenu,
+        TextEditor,
+    },
+    data() {
+        return {
+            states: [
+                '대기중',
+                '처리중',
+                '답변완료'
+            ],
+            member: [],
+            detail: [],
+            answer: null,
+            answer_title:'',
+            answer_content:'',
+            email:''
+        }
+    },
+    created() {
+        this.qna_num = this.$route.params.qna_num;
+        console.log(this.qna_num);
+
+        this.qnaDetail();
+    },
+    methods: {
+        curday() { // 오늘날짜(=답변일)
+            return new Date().toISOString().substring(0,10);
         },
-        data() {
-            return {
-                member: [],
-                detail: [],
-                answer: null,
-                answer_title:'',
-                answer_content:'',
-                states: [
-                    '대기중',
-                    '처리중',
-                    '답변완료'
-                ]
+        async qnaDetail() {
+            await axios.get("/moaplace.com/admin/qna/detail/"+this.qna_num)
+                        .then(resp => {
+                            this.detail = resp.data.detail;
+                            this.answer = resp.data.answer;
+                            this.member = resp.data.member;
+                            this.email = resp.data.member.member_email;
+                            console.log(this.detail);
+                            console.log(this.answer);
+                            console.log(this.member);
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })
+        },
+        checkForm() { 
+            // 입력 체크
+            if(this.answer_title==null || this.answer_title==""){
+                alert("답변 제목을 입력하세요.");
+                return
             }
-        },
-        created() {
-            console.log(this.$route.params.qna_num);
-            this.qna_num = this.$route.params.qna_num;
-            this.qnaDetail(); // 문의 상세내용 불러오기
-        },
-        methods: {
-            curday() { // 오늘날짜(=답변일)
-                return new Date().toISOString().substring(0,10);
-            },
-            async qnaDetail() { // 문의 상세글 불러오기
-            try { 
-                await axios.get("/moaplace.com/admin/qna/detail/"+this.qna_num)
-                            .then(function(resp){
-
-                    if(resp.status == 200) {
-                        this.detail = resp.data.detail;
-                        this.answer = resp.data.answer;
-                        this.member = resp.data.member;
-                        console.log(this.detail);
-                        console.log(this.answer);
-                        console.log(this.member);
-
-                    } else {
-                        alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-                    }
-                }.bind(this));
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            checkForm() { 
-                // 입력 체크
-                if(this.answer_title==null || this.answer_title==""){
-                    alert("답변 제목을 입력하세요.");
-                    return;
-                }
-                if(this.answer_content==null || this.answer_content==""){
-                    alert("답변 내용을 입력하세요.");
-                    return;
-
-                // } else if (this.answer_content.length<10) {
-                //     alert("답변 내용은 10자 이상 입력하세요.");
-                //     return;
-                }
-
-                console.log(this.answer_title, this.answer_content);
-
-                // 답변 등록
+            if(this.answer_content==null || this.answer_content==""){
+                alert("답변 내용을 입력하세요.");
+                return
+            }
+            if(this.email==null || this.email==""){
+                alert("답변 메일을 입력하세요.");
+                return
+            }
+            // 이메일 정규표현식
+            var rex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/
+            if(!rex.test(this.email)){
+                alert("이메일 형식이 올바르지 않습니다.");
+                return
+            }
+            // 답변 등록
+            if(confirm('답변을 등록하시겠습니까?')){
                 this.insertAnswer();
-            },
-            async insertAnswer(){ // 답변 등록
-                var form = {
-                    qna_num: this.qna_num,
-                    answer_title: this.answer_title,
-                    answer_content: this.answer_content
-                }
-                await axios.post('/moaplace.com/admin/qna/answer/insert', JSON.stringify(form),{
-                    headers: {
-                    'Content-Type' : 'application/json'}
-                }).then(function(resp){
-
-                    if(resp.data!='fail'){ // 등록 성공하면 리스트로 이동
-                        console.log(resp.data);
-                        alert('답변이 등록되었습니다.');
-                        this.$router.push({name:'adminQnaList'});
-
-                    } else { // 등록 실패하면 알림창
-                        alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
-                        return;
-                    }
-                }.bind(this));      
-            },
-            async changeState(change, num){ // 문의글 상태 변경
-                if(confirm('해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?')){
-                    console.log(change, num);
-
-                    try { 
-                        await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
-                                   .then(function(resp){
-
-                        if(resp.status == 200) {
-                            alert('문의 상태가 변경되었습니다.')
-                            this.qnaDetail();
-
-                        } else {
-                            alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
-                        }
-                        }.bind(this));
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    return;
-                }
-            },
-            updateAnswer(){ // 답변 수정
-                if(confirm('답변을 수정하시겠습니까?')){
-                    var form = {
-                        answer_num: this.answer.answer_num,
-                        answer_title: this.answer.answer_title,
-                        answer_content: this.answer.answer_content
-                    }
-                    axios.post('/moaplace.com/admin/qna/answer/update', JSON.stringify(form),{
-                        headers: {
-                        'Content-Type' : 'application/json'}
-                    }).then(function(resp){
-
-                        if(resp.data!='fail'){ // 성공하면 리스트로 이동
-                            console.log(resp.data);
-                            alert('답변이 수정되었습니다.');
-                        this.$router.push({name:'adminQnaList'});
-
-                        } else { // 실패하면 알림창
-                            alert('답변 수정에 실패하였습니다. 다시 시도해주세요.');
-                        }
-                    }.bind(this));
-
-                } else {
-                    return;
-                }
-            },
-            async deleteQna() { // 전체 문의글 + 답변 삭제
-                if (confirm('해당 문의글과 답변을 모두 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.')){
-                    try { 
-                        await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num)
-                                .then(function(resp){
-
-                            if(resp.status == 200) {
-                                alert('문의글이 삭제되었습니다.');
+            } else return
+        },
+        async insertAnswer(){ // 답변 등록
+            let form = {
+                qna_num: this.qna_num,
+                answer_title: this.answer_title,
+                answer_content: this.answer_content,
+                email: this.email
+            }
+            console.log(form)
+            await axios.post('/moaplace.com/admin/qna/answer/insert', JSON.stringify(form), 
+                            {headers: {'Content-Type' : 'application/json'}
+                        })
+                        .then(resp => {
+                            if(resp.data!='fail'){
+                                alert('답변이 등록되었습니다.');
                                 this.$router.push({name:'adminQnaList'});
 
                             } else {
-                            alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
+                                alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
+                                return;
                             }
-                        }.bind(this));
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    return;
-                }
-            },
-            async deleteAnswer() { // 답변만 삭제
-                if (this.answer==null){
-                    alert('등록된 답변이 없습니다.');
-                    return;
-                }
-                if (confirm('해당 답변을 삭제하시겠습니까?\n문의글은 삭제되지 않습니다.')){
-                    console.log('답변삭제 번호:' + this.qna_num);
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        })
+        },
+        async changeState(change, num){ // 문의글 상태변경
+            let msg = '해당 문의글의 상태를 '+ change +'(으)로 변경하시겠습니까?';
+            if(confirm(msg)){
+                await axios.post("/moaplace.com/admin/qna/changeState/"+change+"/"+num)
+                            .then(resp => {
 
-                    try { 
-                        await axios.post("/moaplace.com/admin/qna/answer/delete/"+this.qna_num)
-                                .then(function(resp){
+                                if(resp.data!='fail') {
+                                    alert('문의 상태가 변경되었습니다.')
+                                    this.qnaDetail();
 
-                            if(resp.status == 200) {
-                                alert('해당 답변이 삭제되었습니다.');
-                                this.$router.go();
-
-                            } else {
-                            alert('답변 삭제에 실패하였습니다. 다시 시도해주세요.');
-                            }
-                        }.bind(this));
-                    } catch (error) {
-                        console.log(error);
-                    }
-                } else {
-                    return;
+                                } else {
+                                    alert('페이지 로딩에 실패하였습니다. 다시 시도해주세요.');
+                                    return;
+                                }
+                            })
+                            .catch (error => {
+                                console.log(error);
+                            })
+            } else return                           
+        },
+        async updateAnswer(){ // 답변 수정
+            if(confirm('답변을 수정하시겠습니까?')){
+                var form = {
+                    answer_num: this.answer.answer_num,
+                    answer_title: this.answer.answer_title,
+                    answer_content: this.answer.answer_content
                 }
-            }               
-        }
+                await axios.post('/moaplace.com/admin/qna/answer/update', JSON.stringify(form),{
+                                headers: {'Content-Type' : 'application/json'}
+                            })
+                            .then(resp => {
+
+                                if(resp.data!='fail'){ 
+                                    alert('답변이 수정되었습니다.');
+                                    this.$router.push({name:'adminQnaList'});
+
+                                } else {
+                                    alert('답변 수정에 실패하였습니다. 다시 시도해주세요.');
+                                    return
+                                }
+                            })
+                            .catch (error => {
+                                    console.log(error);
+                            })
+            } else return
+        },
+        async deleteQna() { // 전체 문의글 + 답변 삭제
+            let msg = '해당 문의글과 답변을 모두 삭제하시겠습니까?\n답변이 완료된 경우 답변도 함께 삭제됩니다.';
+            if (confirm(msg)){
+                await axios.post("/moaplace.com/board/qna/delete/"+this.qna_num)
+                            .then(resp => {
+                                if(resp.data!='fail'){
+                                alert('문의글이 삭제되었습니다.');
+                                this.$router.push({name:'adminQnaList'});
+
+                                } else {
+                                    alert('문의글 삭제에 실패하였습니다. 다시 시도해주세요.');
+                                    return
+                                }
+                            })
+                            .catch (error => {
+                                console.log(error);
+                            })
+            } else return;
+        },
+        async deleteAnswer() { // 답변만 삭제
+            if (this.answer==null){
+                alert('등록된 답변이 없습니다.');
+                return;
+            }
+
+            if (confirm('해당 답변을 삭제하시겠습니까?\n문의글은 삭제되지 않습니다.')){
+                await axios.post("/moaplace.com/admin/qna/answer/delete/"+this.qna_num)
+                            .then(resp => {
+                                if(resp.data != 'fail') {
+                                    alert('해당 답변이 삭제되었습니다.');
+                                    this.qnaDetail();
+
+                                } else {
+                                    alert('답변 삭제에 실패하였습니다. 다시 시도해주세요.');
+                                    return
+                                }
+                            })
+                            .catch (error => {
+                                console.log(error);
+                            })
+            } else return
+        }               
     }
+}
 </script>
 
 <style lang="scss" scoped="scoped">
@@ -394,7 +392,11 @@
                                 text-align: center;
                                 vertical-align: middle;
                             }
+                            .content {
+                                height: 300px;
+                            }
                             td{
+                                vertical-align: middle;
                                 input {
                                     border: 1px solid rgba($black,0.3);
                                     padding: 5px;

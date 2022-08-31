@@ -10,26 +10,41 @@
             <tr>
               <th>공연장</th>
               <td colspan="5">
-                <input type="radio" name="hallName" value="MHall" id="MHall" v-model="hallName"><label for="MHall">모던홀</label>
-                <input type="radio" name="hallName" value="OHall" id="OHall" v-model="hallName"><label for="OHall">오케스트라홀</label>
-                <input type="radio" name="hallName" value="AHall" id="Ahall" v-model="hallName"><label for="AHall">아트홀</label>
+                <div v-for="(item,index) in hallList" :key="index" class = "radioDiv">
+                  <input type="radio" :value="item.value" v-model="hall" :id="item.id">
+                  <label :for="item.id">{{item.value}}</label>
+                </div>
               </td>
             </tr>
             <tr>
               <th>장르</th>
               <td colspan="5">
-                <input type="radio" name="genre" v-model="genre" id="drama" value="drama"><label for="drama">연극</label>
-                <input type="radio" name="genre" v-model="genre" id="musical" value="musical"><label for="musical">뮤지컬</label>
-                <input type="radio" name="genre" v-model="genre" id="pop" value="pop"><label for="pop">대중음악</label>
-                <input type="radio" name="genre" v-model="genre" id="instrumental" value="instrumental"><label for="instrumental">기악</label>
-                <input type="radio" name="genre" v-model="genre" id="vocal" value="vocal"><label for="vocal">성악</label>
-                <input type="radio" name="genre" v-model="genre" id="dance" value="dance"><label for="dance">무용</label>
-                <input type="radio" name="genre" v-model="genre" id="opera" value="opera"><label for="opera">오페라</label>
+                <div v-for="(item,index) in genreList" :key="index" class = "radioDiv">
+                  <input type="radio" v-model="genre" :value="item.value" :id="item.id" @change="datepic">
+                  <label :for="item.id">{{item.value}}</label>
+                </div>
               </td>
             </tr>
             <tr>
               <th>공연명</th>
               <td colspan="5"><input type="text" v-model="title"></td>
+            </tr>
+            <tr>
+              <th>R석 가격</th>
+              <td>
+                <input type="text" v-model="rprice" maxlength="10" class="seatPrice" @keyup="seatRPrice($event.currentTarget)">
+                <p class="unitP">원</p>
+              </td>
+              <th>S석 가격</th>
+              <td>
+                <input type="text" v-model="sprice" maxlength="10" class="seatPrice" @keyup="seatSPrice($event.currentTarget)">
+                <p class="unitP">원</p>
+              </td>
+              <th>A석 가격</th>
+              <td>
+                <input type="text" v-model="aprice" maxlength="10" class="seatPrice" @keyup="seatAPrice($event.currentTarget)">
+                <p class="unitP">원</p>
+              </td>
             </tr>
             <tr>
               <th>공연상태</th>
@@ -40,20 +55,34 @@
                 </div>
               </td>
             </tr>
-            <tr v-html="hideRow">
+            <tr v-for="(item,index) in ynHideRow" :key="index">
+              <th>{{item.start}}</th>
+              <td colspan="2">
+                <input type="date" v-model="pauseStart">
+              </td>
+              <th>{{item.end}}</th>
+              <td colspan="2">
+                <input type="date" v-model="pauseEnd">
+              </td>
             </tr>
             <tr>
-              <th>공연날짜</th>
-              <td><input type="date" v-model="showDate"></td>
               <th>공연시작일</th>
-              <td><input type="date" v-model="regdate"></td>
+              <td colspan="2"><input type="date" v-model="regdate"></td>
               <th>공연종료일</th>
-              <td><input type="date" v-model="appdate"></td>
+              <td colspan="2"><input type="date" v-model="appdate"></td>
+            </tr>
+              <tr>
+              <th>러닝타임</th>
+              <td colspan="2"><input type="text" v-model="runningTime" maxlength="3" class="rntime" @keyup="rnTime($event.currentTarget)">
+              <p class="unitP">분</p></td>
+              <th>인터미션</th>
+              <td colspan="2"><input type="text" v-model="intermission" maxlength="3" class="rntime" @keyup="intTime($event.currentTarget)">
+              <p class="unitP">분</p></td>
             </tr>
             <tr>
               <th>상연등급</th>
               <td colspan="5">
-                <select v-model="gValue" @change="go">
+                <select v-model="gValue">
                   <option v-for="(g,index) in grade" :key="index" :value="g.value">{{g.text}}</option>
                 </select>
               </td>
@@ -61,22 +90,22 @@
             <tr>
               <th>섬네일</th>
               <td colspan="5">
-                <input type="file">
+                <input type="file" @change="thumbGo($event.currentTarget)">
                 <img :src="thumb">
               </td>
             </tr>
             <tr>
               <th>상세이미지</th>
               <td colspan="5">
-                <input type="file">
-                <img :src="detailImgs.src1">
+                <input type="file" multiple="multiple" @change="detailGo($event.currentTarget)">
+                <img v-for="(item, index) in detailImgs" :key="index" :src="item">
               </td>
             </tr>
           </table>
         </div>
         <div class="btnBox">
-          <button>취소</button>
-          <button>수정 완료</button>
+          <button @click="goList">취소</button>
+          <button @click="goUpdate">수정 완료</button>
         </div>
       </div>
     </main>
@@ -84,51 +113,221 @@
 </template>
 <script>
   import SideMenu from '@/components/admin/SideMenu.vue'
+  import axios from '@/axios/axios.js'
     export default {
       components: {
         SideMenu
       },
       data(){
         return{
-          hallName:'MHall',
-          genre:'drama',
-          title:'오보에 리사이틀',
+          showNum:'',
+          hall:'',
+          genre:'',
+          title:'',
+          rprice:'',
+          sprice:'',
+          aprice:'',
           going:true,
-          hideRow:'',
-          yn:'공연 진행중',
+          yn:'',
+          ynHideRow:[],
           pauseStart:'',
           pauseEnd:'',
-          showDate:'',
           regdate: '',
           appdate: '',
-          seats:'',
-          gValue:'all',
-          grade:[
-            {text:'전체관람가',value:'all'},
-            {text:'12세 관람가',value:'twelve'},
-            {text:'15세 관람가',value:'fifteen'},
-            {text:'청소년 관람불가',value:'adult'},
+          gValue:'',
+          runningTime:'',
+          intermission:'',
+          thumb:'',
+          detailImgs:[],
+          hallList:[
+            { id: 'MHall', value:'모던홀'},
+            { id: 'OHall', value:'오케스트라홀'},
+            { id: 'AHall', value:'아트홀'},
           ],
-          thumb:'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=dfd67de4f3055521c7f754bfdc3cb5896db30ab9edb0bb8e4f449a9903cb06fb',
-          detailImgs:{
-            src1:'https://www.sejongpac.or.kr/upload/2022/07/20220727_163335690_30277.jpg'
-          },
-          
+          genreList:[
+            { id: 'drama', value: '연극'},
+            { id: 'musical', value: '뮤지컬'},
+            { id: 'pop', value: '대중음악'},
+            { id: 'instrumental', value: '기악'},
+            { id: 'vocal', value: '성악'},
+            { id: 'opera', value: '오페라'},
+            { id: 'dance', value: '무용'},
+          ],
+          grade:[
+            {text:'전체관람가',value:'전체관람가'},
+            {text:'12세 관람가',value:'12세 관람가'},
+            {text:'15세 관람가',value:'15세 관람가'},
+            {text:'청소년 관람불가',value:'청소년관람불가'},
+          ],
+          selectField: this.$route.params.field,
+          search: this.$route.params.search,
+          pageNum: this.$route.params.pageNum,
+          status: this.$route.params.status
         }
+      },
+      mounted(){
+        this.viewDetail(
+          this.$route.params.showNum);
       },
       methods:{
         yOrN(){
-          if(this.going){
+          if(this.going==true){
             this.yn='공연 진행중'
-            this.hideRow=''
-          }else{
-            this.yn='공연 중단'
-            this.hideRow='<th>공연중단시작일</th><td colspan="2"><input type="date" v-model="pauseStart"></td><th>공연중단종료일</th><td colspan="2"><input type="date"v-model="pauseEnd"></td>'
+            this.ynHideRow=[]
+          }else if(this.going==false){
+            this.yn='공연 종료'
+            this.ynHideRow.push({start:'공연중단시작일',end:'공연중단종료일'});
           }
         },
-        datepic(){
-          alert(this.regdate)
-        }
+        thumbGo(e){
+          let fr = new FileReader();
+
+          fr.readAsDataURL(e.files[0]); 
+          fr.addEventListener('load',()=>{this.thumb=fr.result},false) 
+          
+        },
+        detailGo(e){
+          this.detailImgs.splice(0);
+          for(let i = 0; i < e.files.length ; i++){
+
+            let fr = new FileReader();
+            
+            fr.readAsDataURL(e.files[i]);
+            fr.addEventListener('load',()=>{this.detailImgs.push(fr.result)},false);
+          }
+        },
+        rnTime(e){
+
+          if(e.value.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.runningTime=e.value.replace(/[^0-9]/g,"");
+          }
+        },
+        intTime(e){
+
+          if(e.value.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.intermission=e.value.replace(/[^0-9]/g,"");
+          }
+        },
+
+        seatRPrice(e){
+
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.rprice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.rprice=e.value
+          }
+        },
+        seatSPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.sprice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.sprice=e.value
+          }
+        },
+        seatAPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.aprice=e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.aprice=e.value
+          }
+        },
+        viewDetail(num){
+                      
+          axios.get('/moaplace.com/admin/show/detail/'+ num + '/' + this.pageNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
+            then(function(resp){
+                this.showNum = resp.data.list.num;
+                this.hall = resp.data.list.hall;
+                this.genre = resp.data.list.genre;
+                this.title = resp.data.list.title;
+                this.going = resp.data.list.status=='Y'?true:false;
+                this.yn = resp.data.list.status=='Y'?'공연 진행중':'공연 종료';
+                this.pauseStart= resp.data.list.blockStartDate;
+                this.pauseEnd = resp.data.list.blockEndDate
+                this.regdate = resp.data.list.startDate;
+                this.appdate = resp.data.list.endDate;
+                this.intermission = resp.data.list.intermission;
+                this.runningTime = resp.data.list.runningTime;
+                this.gValue = resp.data.list.age;
+                this.thumb = resp.data.list.thumbnail;
+                this.detailImgs = resp.data.list.detailImgs;
+                this.rprice=resp.data.list.rprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.sprice=resp.data.list.sprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.aprice=resp.data.list.aprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.yOrN();
+            }.bind(this));
+          },
+
+        goUpdate(){
+
+          axios.post(
+            '/moaplace.com/admin/show/update',
+              JSON.stringify(
+                {
+                  showNum:this.$route.params.showNum,
+                  hall:this.hall,
+                  genre:this.genre,
+                  title:this.title,
+                  rprice: this.rprice.replace(/(,)/g,""),
+                  sprice: this.sprice.replace(/(,)/g,""),
+                  aprice: this.aprice.replace(/(,)/g,""),
+                  going:this.going==true?'Y':'N',
+                  pauseStart:this.pauseStart,
+                  pauseEnd:this.pauseEnd,
+                  startDate:this.regdate,
+                  endDate:this.appdate,
+                  showAge:this.gValue,
+                  intermission:this.intermission,
+                  runningTime:this.runningTime,
+                  showThumbnail:this.thumb,
+                  imgDetails:this.detailImgs,
+                }),
+            {
+              headers:{'Content-Type':'application/json'},
+            }
+            ).then(function(resp){
+              if(resp.data.result==true){
+                alert('공연정보 수정됨')
+                this.status = 'all'
+                this.selectField = 'title'
+                this.search = ''
+                this.pageNum = 1
+                this.goList()
+              }else{
+                alert('공연정보 수정 실패')
+              }
+
+            }.bind(this)).
+            catch(function(error){
+              if(error.response){
+                alert('공연정보를 모두 입력하세요')
+              }
+            })
+        },
+
+          goList(){
+            this.$router.push({
+              name:'adminHallInfoList',
+              params:{
+                selectField:this.selectField,
+                search:this.search,
+                pageNum:this.pageNum,
+                status:this.status
+              }
+            })
+          }
     }
   }
 </script>
@@ -175,16 +374,42 @@
                     width: 15%;
                     background: #eee;
                     text-align: center;
+                    
                   }
-
                   td{
+                     >&:nth-child(2){
+                      width:18%;
+                    }
+                    >&:nth-child(4){
+                      width:18%;
+                    }
+                    >&:nth-child(6){
+                      width:18%;
+                    }
+                    .radioDiv{
+                      display: inline;
+                    }
+                    .seatPrice{
+                      width:104px;
+                      text-align: right;
+                      padding-right: 8px;
+                    }
+                    .rntime{
+                          width:56px;
+                          text-align: right;
+                          padding-right: 8px;
+                    }
+                    .unitP{
+                      display: inline;
+                      margin-left: 8px;
+                    }                   
                     input[type=radio] {
                       padding: 4px;
                       margin-right: 16px;
                       border: none;
                       }
                       input[type=text] {
-                        border:1px solid gainsboro;
+                        border:1px solid rgba($black, 0.3);
                         padding: 8px;
                       }
                       input[type=file] {
@@ -206,9 +431,10 @@
 
                         &:checked{
                           background-color: $black;
+                          border-color: $black;
                         }
                         &:focus{
-                          border-color:gainsboro;
+                          border-color: #eee;
                           box-shadow: 0 0 0 0.25rem rgb(156 156 156 / 25%);
                           background-image:url("@/store/circle.svg")
                         }

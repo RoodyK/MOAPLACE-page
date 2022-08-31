@@ -4,7 +4,6 @@
   <SideVisual menu="FIND ID" img="login"/>
 
     <div class="inner">
-
       <div class="title">
         <h2>아이디 찾기</h2>
         <span>아이디 찾기를 위해 아래 정보를 정확하게 입력해주세요.</span>
@@ -18,31 +17,30 @@
             </RouterLink>
           </li>
         </ul>
-        
       </div>
 
-      <form action="" @enter.prevent>
+      <form action="" @submit.prevent>
         <div class="info">
           <div class="explain">
             <p>본인인증에 사용했던 이메일로 아이디를 보내드립니다.</p>
           </div>
           <div class="name">
             <label for="nameInput">이름</label>
-            <input type="text" class="nameInput" id="nameInput">
-            <div class="nameHelp help">asdasdasd</div>
+            <input type="text" class="nameInput" id="nameInput" v-model="inputName">
+            <div class="nameHelp help"></div>
           </div>
           <div class="email">
             <label for="emailInput">이메일</label>
-            <input type="text" class="emailInput" id="emailInput">
-            <div class="emailHelp help">asdasdasd</div>
+            <input type="text" class="emailInput" id="emailInput" v-model="inputEmail">
+            <div class="emailHelp help"></div>
           </div>
           <div class="info-btn">
-            <button>이메일로 아이디 전송</button>
+            <button type="button" @click="findById()">
+              이메일로 아이디 전송
+            </button>
           </div>
-
         </div>
       </form>
-
     </div>
 
     <AppFooter/>
@@ -52,7 +50,7 @@
 </template>
 
 <script>
-
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -68,13 +66,50 @@ export default {
       find: [
         {
           name: '아이디 찾기',
-          href: '/moaplace.com/login/findid'
+          href: '/moaplace.com/users/login/findid'
         },
         {
           name: '비밀번호 찾기',
-          href: '/moaplace.com/login/findpwd'
+          href: '/moaplace.com/users/login/findpwd'
         }
-      ]
+      ],
+      inputName: '',
+      inputEmail: ''
+    }
+  },
+  methods: {
+    findById() {
+      if (this.inputName == null || this.inputName == "") {
+        document.querySelector(".nameHelp").innerText = "이름을 입력하세요.";
+        return;
+      }
+      document.querySelector(".nameHelp").innerText = "";
+
+      if (this.inputEmail == null || this.inputEmail == "") {
+        document.querySelector(".emailHelp").innerText = "이메일을 입력하세요..";
+        return;
+      }
+      document.querySelector(".emailHelp").innerText = "";
+
+      const info = {
+        name: this.inputName,
+        email: this.inputEmail
+      }
+
+      axios.post("/moaplace.com/users/login/find/id",
+        JSON.stringify(info), {
+          headers: {
+            "Content-Type" : "application/json"
+          }
+      })
+      .then(response => {
+        if(response.data == "success") {
+          alert("이메일을 확인하세요.");
+        }
+      })
+      .catch(() => {
+        alert("아이디와 이메일을 다시 확인하세요.");
+      })
     }
   }
 }

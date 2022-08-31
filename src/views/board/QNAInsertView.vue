@@ -27,35 +27,37 @@
             <label>구분</label><br>
             <select v-model.number="forms.sort_num">
               <option :value="0"> 분류 선택 </option>
-              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">{{sort.sort_name}} 문의</option>
+              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+              {{sort.sort_name}} 문의
+              </option>
             </select>
           </div>
 
           <div class="nameBox">
-            <label>아이디</label><br>
-            <input type="text" v-model="forms.member_id" disabled>
+            <label>이메일</label><br>
+            <input type="text" v-model="forms.member_email" disabled>
             <input type="hidden" name="forms.member_num" value="forms.member_num">
           </div>
         </div>
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" v-model="forms.qna_title" placeholder="문의글 제목"><br>
+          <input type="text" v-model="forms.qna_title" placeholder="문의 제목"><br>
         </div>
         
         <div class="contentBox">
           <label>내용</label>
-          <textarea v-model="forms.qna_content" placeholder="문의하실 내용을 작성해주세요."></textarea>
+          <TextEditor height="300" v-model:content="forms.qna_content" contentType="html"
+           placeholder="문의하실 내용을 작성해주세요. 답변 받으실 이메일이 다른 경우 별도 기재하여 주시기 바랍니다."/>
         </div>
 
         <div class="btnGroup">
           <button type="submit" @click.prevent="checkForm()">등록하기</button>
-           <button @click="$router.push({name:'qnaList'})">목록으로</button>
+          <button @click="$router.push({name:'qnaList'})">목록으로</button>
         </div>
       
       </div>
       </form>
-
     </div>
     <AppFooter/>
   </div>
@@ -66,41 +68,61 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
-import axios from '../../axios/axios.js'
+import TextEditor from '@/components/TextEditor.vue'
+import axios from '@/axios/axios.js'
 
 export default {
   components: {
     AppHeader,
     AppFooter,
-    SideVisual
+    SideVisual,
+    TextEditor, 
   },
   data() {
     return {
       sort_list:[], // 구분목록
-      forms: // 전송할 데이터
-        {sort_num:0, // 구분번호
-        member_num:1, // 회원번호
-        member_id:"admin", // 회원아이디
-        qna_title:"", // 제목
-        qna_content:""} // 내용
+      forms: {
+            sort_num:0, // 구분번호
+            member_num:0, // 회원번호
+            member_email:"", // 회원이메일
+            qna_title:"", // 제목
+            qna_content:"" // 내용
+      }
     }
   },
   created() {
-    // this.member_num = this.$route.state.member_num;
-    this.sortList();
+    this.pageLoad();
   },
   methods: {
-    sortList() { // 구분목록 불러오기
-      axios.get('/moaplace.com/board/sort/list').then(function(resp){
-        if(resp.data!=null || resp.data!=''){
-          this.sort_list = resp.data;
-
-        } else {
-          alert('구분목록 로딩에 실패하였습니다.');
+    async pageLoad() { 
+      let token = localStorage.getItem("access_token");
+      if(token == null) return;
+        
+      const config = {
+        headers: {
+          "Authorization" : token
         }
-      }.bind(this));
+      }
+      // 로그인 회원정보
+      await axios.get("/moaplace.com/users/login/member/info", config)
+                 .then(response => {
+                  let data = response.data;
+                  this.forms.member_num = data.member_num;
+                  this.forms.member_email = data.member_email;
+                  console.log(this.forms.member_num, this.forms.member_email);
+                })
+                 .catch(error => {
+                    console.log(error.message);
+                })
+      // 구분목록
+      await axios.get('/moaplace.com/board/sort/list')
+                 .then(resp => {
+                    this.sort_list = resp.data;
+                  })
+                 .catch(error => {
+                    console.log(error.message);
+                  })
     },
-
     checkForm() { 
       // 입력 체크
       if(this.forms.sort_num<1) {
@@ -114,30 +136,31 @@ export default {
       if(this.forms.qna_content==null || this.forms.qna_content==""){
         alert("문의 내용을 입력하세요.");
         return;
-      } else if (this.forms.qna_content.length<10) {
-        alert("문의 내용은 10자 이상 입력하세요.");
-        return;
       }
 
       // 데이터 제출
-      this.qnaInsert();
+      if(confirm('문의글을 등록하시겠습니까?')){
+        this.qnaInsert();
+      } else return;
     },
 
     qnaInsert(){ // 데이터 제출
       axios.post('/moaplace.com/board/qna/insert', JSON.stringify(this.forms),{
-        headers: {
-          'Content-Type' : 'application/json'}
-      }).then(function(resp){
+              headers: {'Content-Type' : 'application/json'}})
+           .then(resp => {
 
-        if(resp.data!='fail'){ // 등록 성공하면 qna리스트로 이동
-          console.log(resp.data);
-          alert('문의글이 등록되었습니다.');
-          this.$router.push({name:'qnaList'});
+            if(resp.data!='fail'){ // 등록 성공하면 qna리스트로 이동
+              console.log(resp.data);
+              alert('문의글이 등록되었습니다.');
+              this.$router.push({name:'qnaList'});
 
-        } else { // 등록 실패하면 알림창
-          alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
-        }
-      }.bind(this));      
+            } else { // 등록 실패하면 알림창
+              alert('문의글 등록에 실패하였습니다. 다시 시도해주세요.');
+            }
+            })
+           .catch(error => {
+              console.log(error);
+            })          
     }
   }
 }

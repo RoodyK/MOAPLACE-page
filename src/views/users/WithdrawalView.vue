@@ -5,7 +5,7 @@
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <MySideMenu category="회원 탈퇴" :name="member.name" :point="member.point"/>
+      <MySideMenu category="회원 탈퇴"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -13,18 +13,20 @@
             <span class="fs-5 fw-bold">회원 탈퇴</span>
           </div>
           <div class="titledesc">
-            <p class="desctxt">
+            <div class="desctxt">
               <span class="fw-bold fs-3">주의하세요!</span>
               <br>
               <span>
                 <br>
                 탈퇴 시 회원님의 결제 내역을 포함하여 계정에 저장된 모든 정보가 영구적으로 삭제됩니다.<br>
                 한 번 삭제된 정보는 복구가 불가능하며 같은 아이디로 재가입할 수 없습니다.<br>
-                <br>
-                이상의 내용에 동의하여 탈퇴를 원하실 경우, 아래의 동의하기 버튼을 클릭해주세요.
+                <br/>
               </span>
-              <button type="button" class="btn btn-outline-secondary fw-bold mybtn2">동의하기</button>
-            </p>
+              <div><input type="checkbox" v-model="agree"> 안내사항을 모두 확인했으며 이에 동의합니다.</div>
+              <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="withdraw()">
+                탈퇴하기
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -35,7 +37,7 @@
 </template>
 
 <script>
-import axios from '@/axios/axios.js'
+import axios from "@/axios/axios.js"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
@@ -49,56 +51,35 @@ export default {
   SideVisual,
   MySideMenu
   },
-  data(){
+
+  data() {
     return {
-
-      member : {}, // 회원정보
-
+      agree: false
     }
   },
-  computed: {
-  },
-  created(){
-
-    // 회원정보조회
-    let token = localStorage.getItem("access_token");
-    if(token == null) return;
-
-    const config = {
-      headers: {
-        "Authorization" : token
+  methods: {
+    withdraw() {
+      if(this.agree == false) {
+        alert("회원탈퇴 동의 후 버튼을 눌러주세요.");
+        return;
       }
+
+      let token = localStorage.getItem("access_token");
+
+      let config = {
+        headers: {
+          Authorization : token
+        }
+      }
+
+      axios.get("/moaplace.com/users/mypage/withdrawal", config)
+      .then(response => {
+        if(response.data == "success") {
+          this.$store.dispatch("login/logout");
+        }
+      })
     }
-
-    axios.get("/moaplace.com/users/login/member/info", config)
-    .then(response => {
-      let data = response.data;
-      const info = {
-        num: data.member_num,
-        id: data.member_id,
-        pwd: data.member_pwd,
-        email: data.member_email,
-        name: data.member_name,
-        gender: data.member_gender,
-        phone: data.member_phone,
-        address: data.member_address,
-        point: data.member_point
-      }
-      // console.log(info);
-
-      this.member = info;
-      console.log("회원 정보 : ",this.member);
-
-      // 적립금 천단위 콤마형식으로 변환
-      var point = this.member.point;
-      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-
-    })
-    .catch(error => {
-      console.log(error.message);
-    })
-
-  },
+  }
 }
 </script>
 
@@ -160,6 +141,11 @@ export default {
         .desctxt {
           margin: 15px 20px;
           text-align: center;
+          input {
+            position: relative;
+            transform: scale(1.4);
+            top:3px;
+          }
         }
       }
     }

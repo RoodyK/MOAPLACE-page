@@ -30,7 +30,7 @@
           <div class="email">
             <label for="emailInput">이메일</label>
             <input type="text" class="emailInput" id="emailInput" placeholder="example@naver.com">
-            <button type="button" @click="emailAuth()">이메일 인증</button>
+            <button type="button" class="emailAuth" @click="emailAuth()">이메일 인증</button>
             <div class="emailHelp help"></div>
           </div>
           <div class="authentication">
@@ -86,7 +86,7 @@
 
 <script>
 import axios from "@/axios/axios.js"
-
+import orgAxios from "axios";
 import JoinOrder from "@/components/join/JoinOrder.vue"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -103,11 +103,60 @@ export default {
     return {
       isAuthentication: false, // 이메일 인증완료되었는지 체크
       authNumber: 0, // 인증번호
-      isDuplication: false // 아이디 중복 여부
+      isDuplication: false, // 아이디 중복 여부
+      client_id : process.env.VUE_APP_KAKAO_API_KEY,
+      redirect_uri : process.env.VUE_APP_KAKAO_REDIRECT_URI,
+      kakaoEmail : '',
+      kakaoJoin : false
     }
   },
-  mounted() {
+  created() {
+  },
+  async mounted() {
+    // console.log(new URLSearchParams(location.search).get("code"));
+    let formEl = document.querySelector("form");
+    formEl.reset();
+    
 
+    // 카카오 API 회원가입 및 로그인 처리
+    let code = new URLSearchParams(location.search).get("code");
+    if(code != null) {
+      console.log(code);
+
+      // 카카오 access_token 얻어오기
+      const response = await orgAxios.get(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.VUE_APP_KAKAO_API_KEY}&redirect_uri=${process.env.VUE_APP_KAKAO_REDIRECT_URI}&code=${code}`)
+      console.log(response.data);
+      
+      // access_token으로 정보 얻어오기
+      const kakaoInfo = await orgAxios.get(`https://kapi.kakao.com/v2/user/me`, {
+        headers: {
+          Authorization : `Bearer ${response.data.access_token}`
+        }
+      });
+      console.log(kakaoInfo.data.kakao_account.email);
+      this.kakaoEmail = kakaoInfo.data.kakao_account.email;
+      formEl.emailInput.value = this.kakaoEmail;
+      const email = {
+        email : kakaoInfo.data.kakao_account.email
+      }
+      const kakaoJoinCheck = await axios.post("/moaplace.com/users/login/api/kakao",
+        JSON.stringify(email), {
+          headers: {
+            "Content-Type" : "application/json"
+          }
+        }
+      );
+
+      let data = kakaoJoinCheck.data.result;
+      if(data != "using"){
+        this.$store.dispatch('login/kakaoLogin', data)
+      }else {
+        this.kakaoJoin = true;
+        this.isAuthentication = true;
+        document.querySelector('.emailAuth').disabled = true;
+      }
+    }
+    
   },
   methods: {
     execDaumPostcode() {
@@ -150,7 +199,6 @@ export default {
 
       axios.get("/moaplace.com/users/join/checkId/"+ idEl.value)
       .then(function(response) {
-        console.log(response.data);
         if(response.data == "duple") {
           idHelp.innerText = "중복된 아이디 입니다.";
           this.isDuplication = false;
@@ -176,21 +224,19 @@ export default {
       document.querySelector(".authentication").style.display = "block";
 
       axios.post("/moaplace.com/users/join/email/auth", {
-        email: email.value
-      }, 
-      {
+        email: email.value }, {
         headers: {
           "Authorization" : "1234"
         },
       })
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data); // 인증번호
         this.authNumber = response.data;
       });
     },
     // 이메일 인증 확인
     confirmEmailAuth() {
-      console.log(this.authNumber);
+      // console.log(this.authNumber);
       const authenticationInputEl = document.querySelector("#authenticationInput");
       const authenticationHelpEl = document.querySelector(".authenticationHelp");
 
@@ -218,9 +264,6 @@ export default {
       let address = formEl.address;
       let detailAddress = formEl.detailAddress;
       let totalAddress = "";
-
-      console.log(gender.value)
-
 
       // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
       let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
@@ -269,7 +312,7 @@ export default {
       idHelp.innerText = "";
 
       if(!regExpPassword.test(pwd.value)) {
-        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 16자 이하로 입력하세요.";
+        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 20자 이하로 입력하세요.";
         pwd.focus();
         window.scrollTo(0, 400);
         return;
@@ -333,15 +376,34 @@ export default {
         totalAddress = totalAddress + " " + detailAddress;
       }
 
-      const memberRequest = {
-        member_id: id.value,
-        member_pwd: pwd.value,
-        member_email: email.value,
-        member_name: name.value,
-        member_gender: gender.value,
-        member_birth: birth.value,
-        member_phone: phone.value,
-        member_address: totalAddress
+
+      let memberRequest;
+      if(this.kakaoJoin) {
+        memberRequest = {
+          member_num: 0,
+          member_id: id.value,
+          member_pwd: pwd.value,
+          member_email: email.value,
+          member_name: name.value,
+          member_gender: gender.value,
+          member_birth: birth.value,
+          member_phone: phone.value,
+          member_address: totalAddress,
+          api: "using"
+        }
+      }else {
+        memberRequest = {
+          member_num: 0,
+          member_id: id.value,
+          member_pwd: pwd.value,
+          member_email: email.value,
+          member_name: name.value,
+          member_gender: gender.value,
+          member_birth: birth.value,
+          member_phone: phone.value,
+          member_address: totalAddress,
+          api: "none"
+        }
       }
 
       axios.post("/moaplace.com/users/join/result",
@@ -353,6 +415,9 @@ export default {
       .then((response) => {
         console.log(response.data);
         this.$router.push("/moaplace.com/users/join/success");
+      })
+      .catch(() => {
+        alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.')
       })
 
     },

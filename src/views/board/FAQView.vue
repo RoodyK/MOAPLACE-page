@@ -9,25 +9,21 @@
 
       <!-- 상단 메뉴 -->
       <div class="headerBox">
-        <select>
-          <option value="">전체</option>
-          <option name="faq_sort" value="공연">공연 관련</option>
-          <option name="faq_sort" value="대관">대관 관련</option>
-          <option name="faq_sort" value="예매">예매 관련</option>
-          <option name="faq_sort" value="관람">관람 관련</option>
-          <option name="faq_sort" value="회원">회원 관련</option>
-          <option name="faq_sort" value="기타">기타</option>
+        <select v-model="sort_num" @change="filterList()">
+          <option value="0"> 전체 </option>
+          <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+            {{sort.sort_name}} 문의
+          </option>
         </select>
 
         <div class="searchBox">
           <div class="custom-search">
-            <input type="text" class="custom-search-input" v-model="keyword" 
+            <input type="text" class="custom-search-input" v-model="newKeyword" 
               @keyup.enter="searchList()" placeholder="검색어를 입력하세요."/>
             <i class="material-icons" @click="searchList()">
               search
             </i>
           </div>
-          <!-- 문의하기 버튼 -->
           <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
             1:1문의
           </button>
@@ -37,50 +33,179 @@
       <!-- 메인 리스트 -->
       <div
         class="faq_main"
-        v-for="(item, id) in items"
-        :key="id"
-        :class="{ active: item.isActive }"
-        @click="isMatch(id)"
+        v-for="(e, index) in list"
+        :key="index"
+        :class="{ active: e.isActive }"
+        @click="isMatch(index)"
       >
-        <div class="faq_title" @click="item.open = !item.open">
-          <span>{{ item.num }}</span
-          ><span>{{ item.sort }} 관련 </span
-          ><span class="title">{{ item.title }}</span>
-          <span class="arrow"><img src="../../assets/board/arrow.png" /></span>
+        <div class="faq_title" @click="e.open = !e.open">
+          <span>{{e.rnum}}</span>
+          <span>{{e.sort_name}} 문의 </span>
+          <span class="title">{{e.faq_title}}</span>
+          <span class="arrow"><img src="@/assets/board/arrow.png"/></span>
         </div>
 
-        <div class="faq_content" v-if="item.open">
-          {{ item.content }}
-        </div>
+        <div class="faq_content" v-if="e.open" v-html="e.faq_content"></div>
+      </div>
+
+      <!-- 리스트 내역 없을 때 -->
+      <div class="empty-list" v-if="list.length < 1">
+        <i class="material-symbols-outlined">info</i>
+        <p> FAQ 내역이 존재하지 않습니다. </p>
       </div>
 
       <!-- 페이징 -->
       <div id="mypaging">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="" aria-label="Previous">
-                <span aria-hidden="true"> &laquo; </span>
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="">1</a></li>
-            <li class="page-item"><a class="page-link" href="">2</a></li>
-            <li class="page-item"><a class="page-link" href="">3</a></li>
-            <li class="page-item"><a class="page-link" href="">4</a></li>
-            <li class="page-item"><a class="page-link" href="">5</a></li>
-            <li class="page-item">
-              <a class="page-link" href="" aria-label="Next">
-                <span aria-hidden="true"> &raquo; </span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div>
+        <p v-if="startPage>5"
+          @click="movePage(pageNum-1)" class="act">
+          [이전]
+        </p>
+        <p v-if="startPage<5" class="noActive"> [이전] </p>
 
-    <AppFooter />
+        <div v-for="index in ((endPage-startPage)+1)" :key="index">
+          <p :class="{active:startPage+(index-1)==pageNum}"
+            @click="movePage(startPage+(index-1))">
+            {{startPage+(index-1)}} 
+          </p>
+        </div>
+
+        <p v-if="endPage<pageCnt"
+          @click="movePage(pageNum+1)" class="act">
+          [다음] 
+        </p>
+        <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
+      </div>
+    
+    </div>
+    <AppFooter/>
   </div>
 </template>
+
+<script>
+import AppHeader from "@/components/AppHeader.vue";
+import AppFooter from "@/components/AppFooter.vue";
+import SideVisual from "@/components/SideVisual.vue";
+import axios from '@/axios/axios.js';
+
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+    SideVisual,
+  },
+  created() {
+    if(this.$route.params.pageNum) {
+      this.pageNum = this.$route.params.pageNum;
+    }
+    if(this.$route.params.keyword) {
+      this.keyword = this.$route.params.keyword;
+    }
+    console.log(this.pageNum, this.keyword);
+    
+    this.sortList();
+    this.faqList();
+  }, 
+  data() {
+    return {
+      sort_list: [],
+      list: [],
+      pageNum: 1, // 현재 페이지
+      keyword:'', // 검색어
+      newKeyword: '', // 검색어 변경
+      startPage:1, // 페이지 시작번호
+      endPage:1, // 페이지 마지막번호
+      pageCnt:1, // 전체 페이지 개수      
+      sort_num:0 // 필터용 구분
+    }
+  },
+  methods: {
+    async sortList() { // 구분목록 불러오기
+      await axios.get('/moaplace.com/board/sort/list')
+                 .then(resp => {
+                    this.sort_list = resp.data
+                  })
+                 .catch (error => {
+                    console.log(error);
+                  })                
+    },
+    async faqList() {
+      await axios.get("/moaplace.com/admin/faq/list", 
+                    {params:
+                      { pageNum: this.pageNum,
+                        keyword: this.keyword,
+                        sort_num: this.sort_num }
+                  })
+                 .then(resp => {
+
+                    this.list = [];
+                    resp.data.list.forEach(e => {
+                      this.list.push({
+                        rnum: e.rnum,
+                        sort_name: e.sort_name,
+                        faq_title: e.faq_title,
+                        faq_content: e.faq_content,
+                        open: false, 
+                        isActive: false
+                      }) 
+                    });
+                    console.log(this.list);
+
+                    this.field = resp.data.field, // 검색어
+                    this.keyword = resp.data.keyword, // 검색어
+                    this.newKeyword = resp.data.keyword, // 검색어 변경
+                    this.sort_num = resp.data.sort_num, // 필터용 구분번호
+                    this.pageNum = resp.data.pageNum, // 페이지 번호
+                    this.startPage = resp.data.startPage // 페이지 시작번호
+
+                    if(resp.data.endPage < 1){
+                      this.endPage = 1,
+                      this.pageCnt = 1
+                    } else {
+                      this.endPage = resp.data.endPage, // 페이지 마지막번호
+                      this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                    }
+                  })
+                 .catch (error => {
+                    console.log(error);
+                  })
+    },
+    searchList(){ // 리스트 검색
+      if(this.field=='' || this.field==null) {
+        alert('검색 구분을 선택하세요.')
+        return;
+      }
+      if(this.newKeyword=='' || this.newKeyword==null){
+        alert('검색어를 입력하세요.')
+        return;
+      } 
+      this.pageNum = 1;
+      this.keyword = this.newKeyword; // 검색어 변경
+      console.log(this.keyword, this.sort_num);
+
+      this.faqList();
+    },
+    filterList(){
+      this.pageNum = 1;
+      console.log(this.sort_num);
+
+      this.faqList();
+    },
+    movePage(move){ // 페이지 이동
+      this.pageNum = move;
+      console.log(this.pageNum);
+
+      this.faqList();
+    },    
+    isMatch(e) {
+      if (this.list[e].isActive) {
+        this.list[e].isActive = false;
+      } else {
+        this.list[e].isActive = true;
+      }
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 @import "../../scss/common.scss";
@@ -109,19 +234,17 @@
     margin-bottom: 16px;
 
     select {
-      width: 150px;
+      width: 160px;
       height: 56x;
       border-color: #ccc;
       padding: 0 28px 0 15px;
       -webkit-appearance: none;
       appearance: none;
-      background: url("../../assets/board/arrow.png") no-repeat 95% 50%/20px
-        auto;
+      background: url("../../assets/board/arrow.png") no-repeat 95% 50%/20px auto;
     }
 
     .searchBox {
       display: flex;
-
       .custom-search {
         width: 300px;
         height: 60px;
@@ -168,19 +291,21 @@
     color: $black;
     border: 1px solid #ccc;
     margin-top: -1px;
-
     .faq_title {
       width: 100%;
       padding: 25px;
       text-align: left;
-
-      &:hover {
-        background-color: rgb(249, 249, 249);
-        cursor: pointer;
-        color: #d67747;
-      }
       span {
-        margin: 20px 50px;
+        text-align: center;
+        &:first-child{
+          display:block;
+          float: left;
+          width:10%;
+        }
+        &:nth-child(2),
+        &:nth-child(3){
+          margin: 8px 48px;
+        }
       }
       .arrow {
         img {
@@ -190,15 +315,24 @@
           margin-right: 50px;
         }
       }
+      &:hover {
+        background-color: rgb(249, 249, 249);
+        cursor: pointer;
+        color: #d67747;
+      }
     }
-
     .faq_content {
       background-color: rgb(243, 241, 241);
-      padding: 50px;
+      padding: 48px;
+      p {
+        margin-bottom: 0;
+      }
     }
+    ::v-deep p{
+              margin-bottom: 0;
+            }
   }
   .faq_main.active {
-        
     .faq_title {
       color: #d67747;
     }
@@ -207,6 +341,21 @@
         transform: rotate(-180deg);
         transition: all 0.3s;
       }
+    }
+  }
+  .empty-list{
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba($black, 0.1);
+    border-bottom: 1px solid rgba($black, 0.1);
+    color: rgba($black, 0.7);
+    i{
+      margin-right:8px;
+    }
+    & > p{
+      margin-bottom: 0;
     }
   }
 
@@ -239,77 +388,3 @@
   }
 }
 </style>
-
-<script>
-import AppHeader from "@/components/AppHeader.vue";
-import AppFooter from "@/components/AppFooter.vue";
-import SideVisual from "@/components/SideVisual.vue";
-
-export default {
-  components: {
-    AppHeader,
-    AppFooter,
-    SideVisual,
-  },
-  data() {
-    return {
-      items: [
-        {
-          num: "5",
-          sort: "예매",
-          title: "예매 내역은 어떻게 확인할 수 있나요?",
-          content:
-            "회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.",
-          open: false,
-          isActive: false,
-        },
-        {
-          num: "4",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다. 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-          open: false,
-          isActive: false,
-        },
-        {
-          num: "3",
-          sort: "관람",
-          title: "공연장 내에 음식물 반입이 가능한가요?",
-          content:
-            "음식물은 일체 반입 금지되어 있습니다. 음식물은 공연장 밖에서 다 드신 후 객석으로 입장해 주시기 바랍니다.",
-          open: false,
-          isActive: false,
-        },
-        {
-          num: "2",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-          open: false,
-          isActive: false,
-        },
-        {
-          num: "1",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-          open: false,
-          isActive: false,
-        },
-      ],
-    };
-  },
-  methods: {
-    isMatch(id) {
-      if (this.items[id].isActive) {
-        this.items[id].isActive = false;
-      } else {
-        this.items[id].isActive = true;
-      }
-    },
-  },
-};
-</script>
