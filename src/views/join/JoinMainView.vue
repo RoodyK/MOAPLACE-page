@@ -1,7 +1,7 @@
 <template>
   <section class="join-all">
     <AppHeader />
-    <SideVisual menu="JOIN" img="cs"/>
+    <SideVisual menu="JOIN" img="login"/>
 
     <div class="inner">
       <div class="title">
@@ -10,57 +10,57 @@
 
       <JoinOrder order="정보입력" />
 
-      <form action="">
+      <form @submit.prevent>
         <div class="join">
           <div class="id">
             <label for="idInput">아이디</label>
-            <input type="text" class="idInput" id="idInput">
-            <div class="idHelp help">asdasdasd</div>
+            <input type="text" class="idInput" id="idInput" placeholder="6~20 영문자, 숫자만 사용" maxlength="20" @keyup="idCheck()" />
+            <div class="idHelp help"></div>
           </div>
           <div class="pwd">
             <label for="pwdInput">비밀번호</label>
-            <input type="text" class="pwdInput" id="pwdInput">
-            <div class="pwdHelp help">asdasdasd</div>
+            <input type="password" class="pwdInput" id="pwdInput" placeholder="8~20 영문자, 숫자, 특수문자를 하나이상 사용" maxlength="20" autocomplete="off">
+            <div class="pwdHelp help"></div>
           </div>
           <div class="confirmPwd">
-            <label for="confirmInput">비밀번호 확인</label>
-            <input type="text" class="confirmPwdInput" id="confirmInput">
-            <div class="confirmPwdHelp help">asdasdasd</div>
+            <label for="confirmPwdInput">비밀번호 확인</label>
+            <input type="password" class="confirmPwdInput" id="confirmPwdInput" placeholder="입력하신 비밀번호와 동일한 비밀번호를 입력하세요." maxlength="20" autocomplete="off">
+            <div class="confirmPwdHelp help"></div>
           </div>
           <div class="email">
             <label for="emailInput">이메일</label>
-            <input type="text" class="emailInput" id="emailInput">
-            <button>이메일 인증</button>
-            <div class="confirmPwdHelp help">asdasdasd</div>
+            <input type="text" class="emailInput" id="emailInput" placeholder="example@naver.com">
+            <button type="button" @click="emailAuth()">이메일 인증</button>
+            <div class="emailHelp help"></div>
           </div>
           <div class="authentication">
             <label for="authenticationInput">인증번호</label>
             <input type="text" class="authenticationInput" id="authenticationInput">
-            <button>인증번호 확인</button>
-            <div class="authenticationHelp help">asdasdasd</div>
+            <button type="button" @click="confirmEmailAuth()">인증번호 확인</button>
+            <div class="authenticationHelp help"></div>
           </div>
           <div class="name">
             <label for="nameInput">이름</label>
-            <input type="text" class="nameInput" id="nameInput">
-            <div class="nameHelp help">asdasdasd</div>
+            <input type="text" class="nameInput" id="nameInput" placeholder="1자 이상 한글만 사용" maxlength="8">
+            <div class="nameHelp help"></div>
           </div>
           <div class="gender">
             <label>성별</label>
-            <input type="radio" name="gender" id="male" checked>
+            <input type="radio" name="gender" id="male" value="male" checked>
             <label for="male">남성</label>
-            <input type="radio" name="gender" id="female">
+            <input type="radio" name="gender" id="female" value="female">
             <label for="female">여성</label>
-            <div class="genderHelp help">asdasdasd</div>
+            <div class="genderHelp help"></div>
           </div>
           <div class="birth">
             <label for="birthInput">생년월일</label>
-            <input type="text" class="birthInput" id="birthInput">
-            <div class="birthHelp help">asdasdasd</div>
+            <input type="text" class="birthInput" id="birthInput" placeholder="ex)990101" maxlength="6">
+            <div class="birthHelp help"></div>
           </div>
           <div class="phone">
             <label for="phoneInput">전화번호</label>
-            <input type="text" class="phoneInput" id="phoneInput">
-            <div class="phoneHelp help">asdasdasd</div>
+            <input type="text" class="phoneInput" id="phoneInput" placeholder="ex)000-0000-0000" maxlength="13">
+            <div class="phoneHelp help"></div>
           </div>
           <div class="address">
             <label for="addressInput">주소</label>
@@ -68,10 +68,11 @@
             <button type="button" @click="execDaumPostcode()">우편번호 찾기</button>
             <input type="text" id="address" placeholder="주소"><br>
             <input type="text" id="detailAddress" placeholder="상세주소">
+            <div class="postcodeHelp help"></div>
           </div>
           <div class="join-btn">
-            <button>취소</button>
-            <button>회원가입</button>
+            <button type="button" @click="revert()">취소</button>
+            <button type="button" @click="joinOk()">회원가입</button>
           </div>
 
         </div>
@@ -84,6 +85,8 @@
 </template>
 
 <script>
+import axios from "@/axios/axios.js"
+
 import JoinOrder from "@/components/join/JoinOrder.vue"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -98,8 +101,13 @@ export default {
   },
   data() {
     return {
-
+      isAuthentication: false, // 이메일 인증완료되었는지 체크
+      authNumber: 0, // 인증번호
+      isDuplication: false // 아이디 중복 여부
     }
+  },
+  mounted() {
+
   },
   methods: {
     execDaumPostcode() {
@@ -120,7 +128,234 @@ export default {
           document.getElementById("detailAddress").focus();
         }
       }).open();
-    }
+    },
+    // 취소 = 메인으로 이동
+    revert() {
+      this.$router.push("/moaplace.com")
+    },
+    // 아이디 중복검사
+    idCheck() {
+      const idEl = document.querySelector("#idInput");
+      const idHelp = document.querySelector(".idHelp");
+
+      // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
+      let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+
+      if(!regExpId.test(idEl.value)){
+        idHelp.innerText = "영문자 및 숫자만 사용하여 6자이상 16자 이하로 입력하세요";
+        idEl.focus();
+        return;
+      }
+      idHelp.innerText = "";
+
+      axios.get("/moaplace.com/users/join/checkId/"+ idEl.value)
+      .then(function(response) {
+        console.log(response.data);
+        if(response.data == "duple") {
+          idHelp.innerText = "중복된 아이디 입니다.";
+          this.isDuplication = false;
+        }else {
+          idHelp.innerText = "사용가능한 아이디 입니다.";
+          this.isDuplication = true;
+        }
+      }.bind(this));
+    },
+    // 이메일 인증번호 발송
+    emailAuth() {
+      let email = document.querySelector("form").emailInput;
+      let regExpEmail =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+      let emailHelp = document.querySelector(".emailHelp");
+
+      if(!regExpEmail.test(email.value)) {
+        emailHelp.innerText = "이메일 양식에 맞지 않습니다.";
+        email.focus();
+        return;
+      }
+      emailHelp.innerText = "인증번호가 전송되었습니다.";
+
+      document.querySelector(".authentication").style.display = "block";
+
+      axios.post("/moaplace.com/users/join/email/auth", {
+        email: email.value
+      }, 
+      {
+        headers: {
+          "Authorization" : "1234"
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.authNumber = response.data;
+      });
+    },
+    // 이메일 인증 확인
+    confirmEmailAuth() {
+      console.log(this.authNumber);
+      const authenticationInputEl = document.querySelector("#authenticationInput");
+      const authenticationHelpEl = document.querySelector(".authenticationHelp");
+
+      if(this.authNumber == authenticationInputEl.value) {
+        this.isAuthentication = true;
+        authenticationHelpEl.innerText = "이메일이 인증되었습니다.";
+        return;
+      }
+      authenticationHelpEl.innerText = "인증번호가 올바르지 않습니다.";
+      authenticationInputEl.focus();
+    },
+    // 회원가입 유효성 검사
+    joinOk() {
+      const formEl = document.querySelector("form");
+
+      let id = formEl.idInput;
+      let pwd = formEl.pwdInput;
+      let confirmPwd = formEl.confirmPwdInput;
+      let email = formEl.emailInput;
+      let name = formEl.nameInput;
+      let gender = formEl.gender;
+      let birth = formEl.birthInput;
+      let phone = formEl.phoneInput;
+      let postcode = formEl.postcode;
+      let address = formEl.address;
+      let detailAddress = formEl.detailAddress;
+      let totalAddress = "";
+
+      console.log(gender.value)
+
+
+      // 아이디 정규식 (영어, 숫자만 사용 6글자 이상)
+      let regExpId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/;
+      // 비밀번호 정규식(영문자, 숫자, 특수문자 하나이상 8~16글자)
+      let regExpPassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+      // 이메일 정규식
+      // let regExpEmail =  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+      // 이름 정규식(한글만 사용가능)
+      let regExpName = /^[가-힣]{2,4}$/;
+      // 생년월일 정규식 (숫자만 사용가능)
+      let regExpBirth = /^[0-9]{6}$/;
+      // 전화번호 정규식(숫자- 조합)
+      let regExpPhone = /\d{2,3}-\d{3,4}-\d{4}/g;
+      // 닉네임 정규식(숫자,한글,영문자만 사용가능)
+      // let regExpNickName = /^[0-9가-힣a-zA-Z]*$/;
+      // 우편번호 정규식(숫자만 가능)
+      let regExpPostcode = /^[0-9]{1,8}$/;
+      // 주소 정규식(숫자, 한글 공백만 가능 )
+      let regExpAddress = /^[0-9가-힣 ]{1,30}$/;
+
+
+      let idHelp = document.querySelector(".idHelp");
+      let pwdHelp = document.querySelector(".pwdHelp")
+      let confirmPwdHelp = document.querySelector(".confirmPwdHelp");
+      let emailHelp = document.querySelector(".emailHelp");
+      // let authenticationHelp = document.querySelector(".authenticationHelp");
+      let nameHelp = document.querySelector(".nameHelp");
+      // let genderHelp = document.querySelector(".genderHelp");
+      let birthHelp = document.querySelector(".birthHelp");
+      let phoneHelp = document.querySelector(".phoneHelp");
+      let postcodeHelp = document.querySelector(".postcodeHelp");
+
+      if(!regExpId.test(id.value)) {
+        idHelp.innerText = "영문자 및 숫자만 사용하여 6자이상 16자 이하로 입력하세요";
+        id.focus();
+        window.scrollTo(0, 400);
+        return;
+      }
+      idHelp.innerText = "";
+
+      if(!this.isDuplication) {
+        idHelp.innerText = "아이디 중복을 확인하세요.";
+        window.scrollTo(0, 400);
+        return;
+      }
+      idHelp.innerText = "";
+
+      if(!regExpPassword.test(pwd.value)) {
+        pwdHelp.innerText = "영문자, 숫자, 특수문자 하나이상 사용, 8자이상 16자 이하로 입력하세요.";
+        pwd.focus();
+        window.scrollTo(0, 400);
+        return;
+      }
+      pwdHelp.innerText = "";
+
+      if(pwd.value != confirmPwd.value) {
+        confirmPwdHelp.innerText = "비밀번호와 비밀번호 확인이 일치하지 않습니다."
+        confirmPwd.focus();
+        window.scrollTo(0, 400);
+        return;
+      }
+      confirmPwdHelp.innerText = "";
+
+      if(!this.isAuthentication) {
+        emailHelp.innerText = "이메일 인증을 진행하세요.";
+        email.focus();
+        window.scrollTo(0, 700);
+        return;
+      }
+      emailHelp.innerText = ""
+
+      if(!regExpName.test(name.value)) {
+        nameHelp.innerText = "이름을 양식에 맞게 입력하세요(1자 이상 한글)";
+        name.focus();
+        window.scrollTo(0, 700);
+        return;
+      }
+      nameHelp.innerText = "";
+
+      if(!regExpBirth.test(birth.value)) {
+        birthHelp.innerText = "생년월일 양식에 맞게 입력하세요 ex)990101";
+        birth.focus();
+        return;
+      }
+      birthHelp.innerText = "";
+
+      if(!regExpPhone.test(phone.value)) {
+        phoneHelp.innerText = "전화번호 양식에 맞게 입력하세요 ex)000-0000-0000"
+        phone.focus();
+        return;
+      }
+      phoneHelp.innerText = "";
+
+      if(!regExpPostcode.test(postcode.value)) {
+        postcodeHelp.innerText = "우편변호 양식이 올바르지 않습니다.";
+        postcode.focus();
+        return;
+      }
+
+      if(!regExpAddress.test(address.value)) {
+        postcodeHelp.innerText = "주소 양식이 올바르지 않습니다.";
+        address.focus();
+        return;
+      }
+      postcodeHelp.innerText = "";
+
+      // 전체 주소 합치기
+      totalAddress = postcode.value + " " + address.value;
+      if(detailAddress.value != null && detailAddress.value != "") {
+        totalAddress = totalAddress + " " + detailAddress;
+      }
+
+      const memberRequest = {
+        member_id: id.value,
+        member_pwd: pwd.value,
+        member_email: email.value,
+        member_name: name.value,
+        member_gender: gender.value,
+        member_birth: birth.value,
+        member_phone: phone.value,
+        member_address: totalAddress
+      }
+
+      axios.post("/moaplace.com/users/join/result",
+        JSON.stringify(memberRequest), {
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.$router.push("/moaplace.com/users/join/success");
+      })
+
+    },
   }
 }
 </script>
@@ -145,74 +380,7 @@ export default {
         }
       }
 
-      .regist {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 40px;
-
-        .box {
-          font-size: 1.4rem;
-          width: 180px;
-          height: 60px;
-          margin-right: 80px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: 3px solid #777;
-          box-sizing: border-box;
-          position: relative;
-
-          &.active {
-            background-color: $brown;
-            color: #fff;
-          }
-
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-      }
-
-      .line {
-        width: 700px;
-        height: 3px;
-        margin: 0 auto 100px;
-        background-color: #000;
-        position: relative;
-
-        .step {
-          width: 20px;
-          height: 20px;
-          position: absolute;
-          border-radius: 50%;
-          border: 2px solid $brown;
-          background-color: #fff;
-
-          &:nth-child(1) {
-            top: -10px;
-            left: 80px;
-          }
-
-          &:nth-child(2) {
-            top: -10px;
-            left: calc(50% - 10px);
-            background-color: $brown;
-          }
-
-          &:nth-child(3) {
-            top: -10px;
-            right: 80px;
-          }
-        }
-      }
-
       form {
-        input {
-          &:focus {
-            outline: 2px solid $brown;
-          }
-        }
-
         .join {
           width: 700px;
           display: flex;
@@ -245,12 +413,15 @@ export default {
           input[type="password"] {
             width: 75%;
             height: 60px;
-            font-size: 24px;
+            font-size: 20px;
             padding: 10px;
             color: #333;
             margin-bottom: 3px
           }
 
+          .authentication {
+            display: none;
+          }
           .email, .authentication {
             input {
               width: 50%;
@@ -310,6 +481,11 @@ export default {
               position: absolute;
               right: 0;
               top: 140px;
+            }
+            .postcodeHelp {
+              position:absolute;
+              top: 210px;
+              right: 0;
             }
           }
 

@@ -1,83 +1,85 @@
 <template>
-  <AppHeader />
-  <SideVisual menu="CUSTOMER SERVICE" img="cs" />
+  <div>
+    <AppHeader />
+    <SideVisual menu="CUSTOMER SERVICE" img="cs" title="FAQ"/>
 
-  <div class="app">
-    <h2 class="title">자주 묻는 질문(FAQ)</h2>
-    <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
+    <div class="app">
+      <h2 class="title">자주 묻는 질문(FAQ)</h2>
+      <p>문화예술을 통한 즐거움과 감동을 한 곳에 모은 공간 모아플레이스입니다.</p>
 
-    <!-- 상단 메뉴 -->
-    <div class="headerBox">
-      <select>
-        <option value="">전체</option>
-        <option name="faq_sort" value="공연">공연 관련</option>
-        <option name="faq_sort" value="대관">대관 관련</option>
-        <option name="faq_sort" value="예매">예매 관련</option>
-        <option name="faq_sort" value="관람">관람 관련</option>
-        <option name="faq_sort" value="회원">회원 관련</option>
-        <option name="faq_sort" value="기타">기타</option>
-      </select>
+      <!-- 상단 메뉴 -->
+      <div class="headerBox">
+        <select>
+          <option value="">전체</option>
+          <option name="faq_sort" value="공연">공연 관련</option>
+          <option name="faq_sort" value="대관">대관 관련</option>
+          <option name="faq_sort" value="예매">예매 관련</option>
+          <option name="faq_sort" value="관람">관람 관련</option>
+          <option name="faq_sort" value="회원">회원 관련</option>
+          <option name="faq_sort" value="기타">기타</option>
+        </select>
 
-      <div class="searchBox">
-        <div class="custom-search">
-          <input
-            type="text"
-            class="custom-search-input"
-            placeholder="검색어를 입력하세요."
-          />
+        <div class="searchBox">
+          <div class="custom-search">
+            <input type="text" class="custom-search-input" v-model="keyword" 
+              @keyup.enter="searchList()" placeholder="검색어를 입력하세요."/>
+            <i class="material-icons" @click="searchList()">
+              search
+            </i>
+          </div>
+          <!-- 문의하기 버튼 -->
+          <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
+            1:1문의
+          </button>
         </div>
-        <!-- 문의하기 버튼 -->
-        <button class="qnaBtn" @click="$router.push({ name: 'qnaInsert' })">
-          1:1문의
-        </button>
+      </div>
+
+      <!-- 메인 리스트 -->
+      <div
+        class="faq_main"
+        v-for="(item, id) in items"
+        :key="id"
+        :class="{ active: item.isActive }"
+        @click="isMatch(id)"
+      >
+        <div class="faq_title" @click="item.open = !item.open">
+          <span>{{ item.num }}</span
+          ><span>{{ item.sort }} 관련 </span
+          ><span class="title">{{ item.title }}</span>
+          <span class="arrow"><img src="../../assets/board/arrow.png" /></span>
+        </div>
+
+        <div class="faq_content" v-if="item.open">
+          {{ item.content }}
+        </div>
+      </div>
+
+      <!-- 페이징 -->
+      <div id="mypaging">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" href="" aria-label="Previous">
+                <span aria-hidden="true"> &laquo; </span>
+              </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="">1</a></li>
+            <li class="page-item"><a class="page-link" href="">2</a></li>
+            <li class="page-item"><a class="page-link" href="">3</a></li>
+            <li class="page-item"><a class="page-link" href="">4</a></li>
+            <li class="page-item"><a class="page-link" href="">5</a></li>
+            <li class="page-item">
+              <a class="page-link" href="" aria-label="Next">
+                <span aria-hidden="true"> &raquo; </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
 
-    <!-- 메인 리스트 -->
-    <div
-      class="faq_main"
-      v-for="(item, id) in items"
-      :key="id"
-      :class="{ active: item.isActive }"
-      @click="isMatch(id)"
-    >
-      <div class="faq_title" @click="item.open = !item.open">
-        <span>{{ item.num }}</span
-        ><span>{{ item.sort }} 관련 </span
-        ><span class="title">{{ item.title }}</span>
-        <span class="arrow"><img src="../../assets/board/arrow.png" /></span>
-      </div>
-
-      <div class="faq_content" v-if="item.open">
-        {{ item.content }}
-      </div>
-    </div>
-
-    <!-- 페이징 -->
-    <div id="mypaging">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="" aria-label="Previous">
-              <span aria-hidden="true"> &laquo; </span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="">1</a></li>
-          <li class="page-item"><a class="page-link" href="">2</a></li>
-          <li class="page-item"><a class="page-link" href="">3</a></li>
-          <li class="page-item"><a class="page-link" href="">4</a></li>
-          <li class="page-item"><a class="page-link" href="">5</a></li>
-          <li class="page-item">
-            <a class="page-link" href="" aria-label="Next">
-              <span aria-hidden="true"> &raquo; </span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <AppFooter />
   </div>
-
-  <AppFooter />
 </template>
 
 <style scoped lang="scss">
@@ -104,11 +106,11 @@
   .headerBox {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 
     select {
       width: 150px;
-      height: 50px;
+      height: 56x;
       border-color: #ccc;
       padding: 0 28px 0 15px;
       -webkit-appearance: none;
@@ -117,37 +119,35 @@
         auto;
     }
 
-    .custom-search {
-      width: 300px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1;
-      opacity: 1;
-    }
-    .custom-search-input {
-      width: 100%;
-      height: 100%;
-      border: 1px solid #ccc;
-      padding: 10px 50px 10px 20px;
-      outline: none;
-      background-image: url(@/assets/moaplace/search.png);
-      background-position: 260px center;
-      background-size: 25px 25px;
-      background-repeat: no-repeat;
-      padding-left: 20px;
-      box-sizing: border-box;
-      outline: none;
-    }
-
     .searchBox {
       display: flex;
 
+      .custom-search {
+        width: 300px;
+        height: 60px;
+        display: relative;
+        justify-content: center;
+        align-items: center;
+        position:relative;
+
+        .custom-search-input {
+          width: 100%;
+          height: 100%;
+          border: 1px solid #ccc;
+          padding: 10px 50px 10px 20px;
+        }
+        i {
+          position: absolute;
+          font-size: 40px;
+          color:rgba($black, 0.7);
+          top: 10px;
+          right: 10px;
+          cursor: pointer;
+        }
+      }
       .qnaBtn {
         background-color: $brown;
-        padding: 0 32px;
-        height: 50px;
+        padding: 16px 40px;
         border: 1px solid transparent;
         margin-left: 16px;
         color: white;
@@ -177,16 +177,10 @@
       &:hover {
         background-color: rgb(249, 249, 249);
         cursor: pointer;
-
-        .title {
-          color: #d67747;
-        }
+        color: #d67747;
       }
       span {
         margin: 20px 50px;
-      }
-      .title {
-        font-weight: bold;
       }
       .arrow {
         img {
@@ -204,10 +198,9 @@
     }
   }
   .faq_main.active {
+        
     .faq_title {
-      .title {
-        color: #d67747;
-      }
+      color: #d67747;
     }
     .arrow {
       img {
@@ -217,26 +210,32 @@
     }
   }
 
-  // 페이징
-  #mypaging {
+  #mypaging{
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin: 32px 0;
+    align-items: center;
 
-    ul,
-    li,
-    a,
-    span {
-      color: $black;
-      border: none;
+    .act {
+      color: $brown;
+      font-weight: bold;
     }
-  }
+    p {
+      padding: 0 6px;
+      margin: 0 6px;
+      color:$black;
+      cursor:pointer;
 
-  // 문의하기 버튼
-  .btnGroup {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 30px;
+      &.active {
+        color: #D67747;
+        font-weight: bold;
+      }
+    }
+    .noActive {
+        color:rgba($black, 0.5);
+        cursor: default;
+        font-weight: bold;
+    }
   }
 }
 </style>

@@ -1,8 +1,9 @@
 <template>
 <div>
   <AppHeader/>
-  <SideVisual menu="MOA PLACE" img="moa"/>
+  <SideVisual menu="MY PAGE" img="mypage"/>
   <div id="wrap">
+    <!-- 사용 안 하는 페이지 -->
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
       <div class="rounded left">

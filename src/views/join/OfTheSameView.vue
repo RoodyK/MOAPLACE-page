@@ -1,7 +1,7 @@
 <template>
   <section class="same">
     <AppHeader />
-    <SideVisual menu="JOIN" img="cs"/>
+    <SideVisual menu="JOIN" img="login"/>
 
     <div class="inner">
       <div class="title">
@@ -20,8 +20,8 @@
       </div>
 
       <div class="btn">
-        <button type="button">취소</button>
-        <button type="button">확인</button>
+        <button type="button" @click="revert()">취소</button>
+        <button type="button" @click="nextStep()">확인</button>
       </div>
     </div>
 
@@ -43,6 +43,23 @@ export default {
     AppHeader,
     AppFooter,
     SideVisual
+  },
+  methods: {
+    // 메인으로 돌아가기
+    revert() {
+      this.$router.push("/moaplace.com");
+    },
+    // 다음단계로 이동
+    nextStep() {
+      const checkedEl = document.querySelector("input[type='checkbox']").checked;
+      console.log(checkedEl);
+      if(checkedEl == false) {
+        alert('약관동의 후 다음 단계로 이동 가능합니다.');
+        return;
+      }
+
+      this.$router.push("/moaplace.com/users/join/main");
+    }
   }
 }
 </script>

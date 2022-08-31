@@ -1,34 +1,48 @@
 <template>
+<div>
   <AppHeader/>
-  <SideVisual menu="SHOW / TICKET" img="show"/>
+  <SideVisual menu="SHOW / TICKET" img="show" title="공연목록"/>
   <div id="wrap">
-    <div id="title">
-      <h4>웃는남자</h4>
-      <hr>
-    </div>
-    <div id="main" class="container">
+    <div id="main" class="containers">
       <div id="img">
         <img src="../../assets/smile.jpg">
       </div>
-      <div>
+      <div class="info_box">
         <div id="info">
-          <span>기간</span> 2022.06.10 (금) ~ 2022.08.22 (월)<br>
-          <span>장소</span> 오케스트라홀<br>
-          <span>시간</span> 오케스트라홀<br>
-          <span>연령</span> 전체연령가<br>
-          <span>티켓</span> R석 150,000원 / S석 120,000원 / A석 100,000원
+          <h4>웃는남자</h4>
+          <div>
+            <span>기간</span> 2022.06.10 (금) ~ 2022.08.22 (월)
+          </div>
+          <div>
+            <span>장소</span> 오케스트라홀
+          </div>
+          <div>
+            <span>시간</span> 오케스트라홀
+          </div>
+          <div>
+            <span>연령</span> 전체연령가
+          </div>
+          <div>
+            <span>티켓</span> R석 150,000원 / S석 120,000원 / A석 100,000원
+          </div>
         </div>
-        <div id="btn">
-          <button id=btn1>잔여석정보</button>
-          <button id=btn2>예매하기</button>
+        <div id="mybtn">
+          <button>관심공연</button>
+          <button>잔여석정보</button>
+          <button>예매하기</button>
         </div>
       </div>
     </div>
-    <hr>
-    <div id=nav>
-      <div id=present class="click" onclick="location.href='/moaplace.com/showdetail'">상세보기</div>
-      <div class="click" onclick="location.href='/moaplace.com/showreview'">관람평</div>
-      <div class="click" onclick="location.href='/moaplace.com/showrefund'">취소 및 환불 안내</div>
+    <div id="nav">
+      <div class="tap_on" id="tap_1">
+        <RouterLink to="/moaplace.com/show/showdetail">상세보기</RouterLink>
+      </div>
+      <div class="tap_off" id="tap_2">
+        <RouterLink to="/moaplace.com/show/review/list">관람평</RouterLink>
+      </div>
+      <div class="tap_off" id="tap_3">
+        <RouterLink to="/moaplace.com/show/showrefund">취소 및 환불 안내</RouterLink>
+      </div>
     </div>
     <div id="detail">
       <img src="../../assets/detail1.jpg">
@@ -36,6 +50,7 @@
     </div>
   </div>
   <AppFooter/>
+</div>
 </template>
 
 <script>
@@ -61,64 +76,101 @@ export default {
     margin-top: 120px;
     margin-bottom: 120px;
   }
-  h4{
-    color: $black;
-    text-align: center;
-  }
-  hr{
-    height: 3px;
-  }
   #main{
+    border-top: 2px solid rgba($black, 0.5);
+    padding-top: 50px;
     img{
-      width: 200px;
-      margin-left: 50px;
+      width: 320px;
+      box-shadow: 3px 7px 21px rgb(0 0 0 / 13%);
     }
     button{
       color: white;
       background-color: $green;
     }
   }
-  #btn{
-    margin-top: 5px;
-  }
-  #btn1{
-    margin-left: 30px;
-  }
-  #btn2{
-    margin-left: 20px;
-  }
   #nav{
+    width: 100%;
+    display: flex;
     margin-top: 50px;
-    margin-left: 110px;
     text-align: center;
-    div{
-      float: left;
-      width: 30%;
+    justify-content: space-evenly;
+    a{
+      text-decoration: none;
+      font-size: 20px;
     }
-  }
-  .click{
-    cursor: pointer;
-  }
-  #present{
-    color: $brown;
-    border-bottom: 3px solid $brown;
+    div{
+      width: 100%;
+      padding: 16px 0;
+    }
+    .tap_on{
+      background-color: $brown;
+      a{
+        color: #fff;
+      }
+    }
+    .tap_off{
+      background-color: #fff;
+      border-top: 1px solid $brown;
+      border-bottom: 1px solid $brown;
+      border-right: 1px solid $brown;
+      a{
+        color: $brown;
+      }
+    }
   }
   #detail{
     text-align: center;
     img{
+      width: 100%;
       margin-top: 50px;
     }
   }
   span{
     font-weight: bold;
+    margin-right: 16px;
   }
-  .container{
+  .containers{
     display: flex;
     align-items: stretch;
+    padding: 0 50px;
   }
-  #info{
+  .info_box{
+    width: 100%;
     margin-left: 30px;
-    font-size: 20px;
-    line-height: 50px;
+    #info{
+      div{
+        border-bottom: 1px solid rgba($black, 0.2);
+      }
+      h4{
+        font-size: 40px;
+        font-weight: bold;
+        color: $black;
+      }
+      color: $black;
+      font-size: 22px;
+      line-height: 60px;
+    }
+    #mybtn{
+      margin-top: 41px;
+      display: flex;
+      justify-content: space-between;
+      button{
+        width: calc((100% - (16px * 2)) / 3);
+        padding: 16px 0;
+        border: none;
+        background-color: $brown;
+        color:white;
+        &:first-child {
+        background-color: rgba($black, 0.6);
+        }
+        &:nth-child(2) {
+          background-color: $brown;
+        }
+        &:last-child {
+          background-color: $black;
+        }
+      }
+    }
   }
+  
 </style>

@@ -1,54 +1,11 @@
 <template>
 <div>
   <AppHeader/>
-  <SideVisual menu="MOA PLACE" img="moa"/>
+  <SideVisual menu="MY PAGE" img="mypage"/>
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <div class="rounded left">
-        <div class="top fs-6">
-          <span class="fs-4 brown">사용자</span>님, 안녕하세요.
-        </div>
-        <div class="mid fs-6 fw-bold">
-          <p>
-            현재 보유 적립금
-          </p>
-          <p class="text-end">
-            <span class="fs-3 text-end">5,000</span>원
-          </p>
-        </div>
-        <div class="bot">
-          <ul class="nav flex-column fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">마이페이지</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">내 관심 공연</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">예매내역</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-current="page" href="#">대관내역</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">관람 후기</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">1:1 문의</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">내 정보 수정</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">로그아웃</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">회원 탈퇴</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <MySideMenu category="대관내역" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -65,15 +22,15 @@
               <tbody class="fs-7">
                 <tr>
                   <th class="col-md-2 text-center descth">대관신청자</th>
-                  <td class="desctd">강아지</td>
+                  <td class="desctd">{{ dto.rental_name }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">연락처</th>
-                  <td class="desctd">010-0000-0000</td>
+                  <td class="desctd">{{ dto.rental_phone }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">E-mail</th>
-                  <td class="desctd">moa@moa.com</td>
+                  <td class="desctd">{{ dto.rental_email }}</td>
                 </tr>
               </tbody>
             </table>
@@ -86,39 +43,41 @@
               <tbody class="fs-7">
                 <tr>
                   <th class="col-md-2 text-center descth">공연명</th>
-                  <td class="desctd">우리집 고양이가 제일 귀여워</td>
+                  <td class="desctd">{{ dto.rental_title }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">공연장</th>
-                  <td class="desctd">모던홀</td>
+                  <td class="desctd">{{ dto.hall_name }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">대관희망일자</th>
-                  <td class="desctd">2022-08-25</td>
+                  <td class="desctd">{{ dto.rental_date }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">대관시작시간</th>
-                  <td class="desctd">09:00</td>
+                  <td class="desctd">{{ dto.rental_time }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">공연장르</th>
-                  <td class="desctd">무용</td>
+                  <td class="desctd">{{ dto.rental_genre }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">첨부파일</th>
-                  <td class="desctd">공연계획서.zip</td>
+                  <td class="desctd">
+                    <v-btn href="@/file/test/test.txt" download>{{ dto.rental_originfilename }}</v-btn>
+                  </td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">담당자</th>
-                  <td class="desctd">고양이박사님</td>
+                  <td class="desctd">{{ dto.rental_ownsname }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">담당자 연락처</th>
-                  <td class="desctd">010-0000-0000 / se@moa.com</td>
+                  <td class="desctd">{{ dto.rental_ownsphone }} / {{ dto.rental_ownemail }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">기타 요청사항</th>
-                  <td class="desctd">에어컨을 시원하게 틀어주세요.</td>
+                  <td class="desctd">{{ dto.rental_content }}</td>
                 </tr>
               </tbody>
             </table>
@@ -130,15 +89,14 @@
           </div>
           <div class="titledesc">
             <p class="desctxt fs-7">
-              공연계획서 확인했습니다. 대관시작시간은 9시로 하시죠. 돈 보내주세용 3333230293-092342 모아플레이스<br>
-              줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트 줄바꿈 간격 테스트
+              {{ dto.answer_content }}
             </p>
           </div>
         </div>
         <div class="text-center btnmargin">
           <p class="fs-7 brown">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">대관취소</button>
-          <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2">이전으로</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'qnaList' })">대관취소</button>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myrentallist' })">목록으로</button>
         </div>
       </div>
     </div>
@@ -148,16 +106,75 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import MySideMenu from '@/components/users/MySideMenu.vue'
 
 export default {
   name: 'MyRentalDetailView',
   components: {
   AppHeader,
   AppFooter,
-  SideVisual
+  SideVisual,
+  MySideMenu
+  },
+  data(){
+    return{
+
+      member : {}, // 회원정보
+      rental_num : 0, // 대관번호
+      dto : {}, // 대관내역 상세정보
+      answer : false, // 답변여부
+
+    }
+  },
+  created(){
+
+    this.member = this.$store.state.mypage.member;
+    
+    this.rental_num = this.$route.params.rental_num;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    
+    this.getData();
+
+  },
+  methods:{
+
+    async getData() {
+      try {
+        await axios.get('/moaplace.com/users/mypage/rental/detail/'
+          + this.rental_num
+        ).then(function(resp){
+          console.log(resp);
+          if(resp.status == 200) {
+
+            this.dto = resp.data.dto;
+
+            if(resp.data.dto.answer_content != 'null') {
+              this.answer = true;
+            }
+
+            var regdate = new Date(this.dto.regdate);
+            this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+
+            var rental_date = new Date(this.dto.rental_date);
+            this.dto.rental_date = rental_date.getFullYear() + "-" + ("0" + (rental_date.getMonth() + 1)).slice(-2) + "-" + ("0" + rental_date.getDate()).slice(-2);
+
+          } else {
+            alert('rental detail 에러');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   }
 }
 </script>
@@ -188,44 +205,6 @@ export default {
     justify-content: center;
     width: $width;
     margin: 50px;
-    .left {
-      width: 300px;
-      height: 600px;
-      background-color: white;
-      border: 2px solid #dbe2e8;
-      margin-right: 30px;
-      padding: 30px 20px;
-      .top {
-        margin-bottom: 10px;
-      }
-      .mid {
-        background-color: whitesmoke;
-        border: 2px solid #dbe2e8;
-        padding: 15px;
-        p {
-          margin: 0;
-        }
-        span {
-          color: #D67747;
-        }
-      }
-      .bot {
-        margin: 10px 0px;
-        ul li {
-          border-bottom: 1px solid #CCCCCC;
-          a {
-            color: $black;
-          }
-          a:hover {
-            color: $brown;
-            opacity: 50%;
-          }
-          .active {
-              color: $brown;
-          }
-        }
-      }
-    }
     .right {
       width: 100%;
       height: 100%;
@@ -240,6 +219,7 @@ export default {
         border-color: $brown;
         background-color: white;
         padding: 5px 50px;
+        border-radius: 0%;
         &:hover {
           color: white;
           background: $brown;
@@ -251,6 +231,7 @@ export default {
         background-color: $brown;
         padding: 5px 50px;
         margin-left: 20px;
+        border-radius: 0%;
         &:hover {
           color: $brown;
           background: white;

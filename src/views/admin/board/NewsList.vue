@@ -1,60 +1,75 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="게시판 관리" mediumCategory="FAQ" />
+    <SideMenu largeCategory="게시판관리" mediumCategory="새소식" />
     <main id="main">
       <div class="inner">
         <h2 class="title">공지 사항</h2>
-        <div class="headerBox">
-          <select>
-            <option value="">전체</option>
-            <option name="news_sort" value="공연">공연 관련</option>
-            <option name="news_sort" value="대관">대관 관련</option>
-            <option name="news_sort" value="예매">예매 관련</option>
-            <option name="news_sort" value="좌석">좌석 관련</option>
-            <option name="news_sort" value="관람">관람 관련</option>
-            <option name="news_sort" value="회원">회원 관련</option>
-            <option name="news_sort" value="주차">주차 관련</option>
-            <option name="news_sort" value="기타">기타</option>
-          </select>
-          <div class="searchBox">
-            <div class="custom-search">
-              <input
-                type="text"
-                class="custom-search-input"
-                placeholder="검색어를 입력하세요."
-              />
+        <form>
+          <div class="headerBox">
+            <select v-model="selected" @change="selectchange()">
+              <option
+                v-for="(list, sort_num) in sorts"
+                :key="sort_num"
+                :value="list.sort_num"
+              >
+                {{ list.sort_name }}
+              </option>
+            </select>
+            <div class="searchBox">
+              <div class="custom-search">
+                <select v-model="selected2">
+                  <option
+                    v-for="(f, field_value) in fieldList"
+                    :key="field_value"
+                    :value="f.field_value"
+                  >
+                    {{ f.field_name }}
+                  </option>
+                </select>
+                <input
+                  type="text"
+                  v-model="keyword"
+                  class="custom-search-input"
+                  placeholder="검색어를 입력하세요."
+                  @keydown.enter="searchlist()"
+                />
+                <button @click.prevent="searchlist()">
+                  <img src="@/assets/moaplace/search.png" />
+                </button>
+              </div>
+              <!-- 신규등록 버튼 -->
+              <button
+                class="newBtn"
+                @click="$router.push({ name: 'adminNewsInsert' })"
+              >
+                등록하기
+              </button>
             </div>
-            <!-- 신규등록 버튼 -->
-            <button class="newBtn" @click="$router.push({ name: 'faqInsert' })">
-              등록하기
-            </button>
           </div>
-        </div>
-        <div class="list">
-          <div class="t-row thead">
-            <p>번호</p>
-            <p>구분</p>
-            <p>제목</p>
-            <p>수정</p>
-            <p>삭제</p>
+          <div class="list">
+            <div class="t-row thead">
+              <p>번호</p>
+              <p>구분</p>
+              <p>제목</p>
+              <p>작성일</p>
+              <p>수정</p>
+              <p>삭제</p>
+            </div>
+            <div v-for="item in list" :key="item.num" class="t-row tbody">
+              <p>{{ item.notice_num }}</p>
+              <p>{{ item.sort_name }}</p>
+              <p>{{ item.notice_title }}</p>
+              <p>{{ item.notice_regdate }}</p>
+              <p><button>수정</button></p>
+              <p><button>삭제</button></p>
+            </div>
+            <ul class="paging">
+              <li>[이전]</li>
+              <li v-for="index in paginationList" :key="index">{{ index }}</li>
+              <li>[다음]</li>
+            </ul>
           </div>
-          <div v-for="item in list" :key="item.num" class="t-row tbody">
-            <p>{{ item.num }}</p>
-            <p>{{ item.sort }}</p>
-            <p>{{ item.title }}</p>
-            <p><button>수정</button></p>
-            <p><button>삭제</button></p>
-          </div>
-          <ul class="paging">
-            <li>[이전]</li>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-            <li>5</li>
-            <li>[다음]</li>
-          </ul>
-        </div>
+        </form>
       </div>
     </main>
   </div>
@@ -62,55 +77,116 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import axios from "@/axios/axios.js";
 export default {
   components: {
     SideMenu,
   },
   data() {
     return {
+      sorts: [
+        { sort_num: 0, sort_name: "전체" },
+        { sort_num: 1, sort_name: "공연" },
+        { sort_num: 2, sort_name: "대관" },
+        { sort_num: 3, sort_name: "예매" },
+        { sort_num: 4, sort_name: "관람" },
+        { sort_num: 5, sort_name: "회원" },
+        { sort_num: 6, sort_name: "기타" },
+      ],
+      selected: 0,
+      /* select v-model : value, option : value */
+      fieldList: [
+        { field_value: "total", field_name: "전체" },
+        { field_value: "title", field_name: "제목" },
+        { field_value: "content", field_name: "내용" },
+      ],
+      selected2: "total",
+      keyword: "",
+      member_num: 1,
       list: [
         {
-          num: "5",
-          sort: "예매",
-          title: "예매 내역은 어떻게 확인할 수 있나요?",
-          content:
-            "회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.",
-        },
-        {
-          num: "4",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다. 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-        },
-        {
-          num: "3",
-          sort: "관람",
-          title: "공연장 내에 음식물 반입이 가능한가요?",
-          content:
-            "음식물은 일체 반입 금지되어 있습니다. 음식물은 공연장 밖에서 다 드신 후 객석으로 입장해 주시기 바랍니다.",
-        },
-        {
-          num: "2",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-        },
-        {
-          num: "1",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
+          notice_num: "",
+          sort_name: "",
+          notice_title: "",
+          notice_content: "",
+          notice_regdate: "",
         },
       ],
+      pageNum: 1,
+      // 확인
+      startPageNum: "",
+      endPageNum: "",
+      totalRowCount: "",
+      startRow: "",
+      endRow: "",
+      totalPageCount: "",
     };
+  },
+  created() {
+    this.getList();
+  },
+
+  methods: {
+    getList() {
+      // alert(this.selected);
+      // alert(this.member_num);
+      axios
+        .get(
+          `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
+        )
+        .then(
+          function (resp) {
+            console.log(resp.data);
+            this.list = resp.data.list;
+            this.startPageNum = resp.data.startPageNum;
+            this.endPageNum = resp.data.endPageNum;
+            this.totalPageCount = resp.data.totalPageCount;
+            this.totalRowCount = resp.data.totalRowCount;
+            this.startRow = resp.data.startRow;
+            this.endRow = resp.data.endRow;
+            console.log("리스트 불러오기 성공");
+            // alert("this.endPageNum:" + this.endPageNum);
+            alert("this.totalRowCount:" + this.totalPageCount);
+          }.bind(this)
+        );
+    },
+    //@change 했을 때 메소드 진행
+    selectchange() {
+      this.getList();
+    },
+
+    searchlist() {
+      if (this.keyword == null || this.keyword == "") {
+        alert("검색어를 검색해주세요");
+      } else {
+        axios
+          .get(
+            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}
+                             /${this.keyword}/${this.member_num}/${this.pageNum}`
+          )
+          .then(
+            function (resp) {
+              console.log(resp.data);
+              this.list = resp.data.list;
+              console.log("리스트 불러오기 성공");
+            }.bind(this)
+          );
+      }
+    },
+  },
+  computed: {
+    paginationList() {
+      let pageList = [];
+      for (let num = this.startPageNum; num <= this.endPageNum; num++) {
+        pageList.push(num);
+      }
+      return pageList;
+    },
   },
 };
 </script>
 
-    <style lang="scss" scoped="scoped">
+<style lang="scss" scoped="scoped">
 @import "@/scss/common.scss";
 //삭제필요
 $brown: #826d5e;
@@ -153,7 +229,7 @@ nav {
       margin-bottom: 10px;
 
       select {
-        width: 150px;
+        width: 100px;
         height: 40px;
         border-color: #ccc;
         padding: 0 28px 0 15px;
@@ -163,13 +239,30 @@ nav {
           auto;
       }
       .custom-search {
-        width: 300px;
+        width: 350px;
         height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 1;
         opacity: 1;
+        position: relative;
+        select {
+          border-right: none;
+          width: 120px;
+        }
+        button {
+          position: absolute;
+          right: 14px;
+          border: none;
+          background-color: #fff;
+          background-image: url(@/assets/moaplace/search.png);
+          background-position: 260px center;
+          background-size: 25px 25px;
+          background-repeat: no-repeat;
+          padding-left: 16px;
+          box-sizing: border-box;
+        }
       }
       .custom-search-input {
         width: 100%;
@@ -177,13 +270,9 @@ nav {
         border: 1px solid #ccc;
         padding: 10px 50px 10px 20px;
         outline: none;
-        background-image: url(@/assets/moaplace/search.png);
-        background-position: 260px center;
-        background-size: 25px 25px;
-        background-repeat: no-repeat;
-        padding-left: 20px;
-        box-sizing: border-box;
+        border-left: none;
       }
+
       .searchBox {
         display: flex;
         .newBtn {
@@ -196,9 +285,7 @@ nav {
           transition: all 0.3s;
 
           &:hover {
-            border: 1px solid $black;
-            background-color: white;
-            color: $black;
+            cursor: pointer;
           }
         }
       }
@@ -235,10 +322,10 @@ nav {
             padding-top: 4px;
           }
           &:nth-child(1) {
-            width: 50px;
+            width: 5%;
           }
           &:nth-child(3) {
-            width: 600px;
+            width: 45%;
           }
 
           button {

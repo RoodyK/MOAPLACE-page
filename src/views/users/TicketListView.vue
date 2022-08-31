@@ -1,54 +1,11 @@
 <template>
 <div>
   <AppHeader/>
-  <SideVisual menu="MOA PLACE" img="moa"/>
+  <SideVisual menu="MY PAGE" img="mypage"/>
   <div id="wrap">
     <div id="box" class="black">
       <!-- 사이드 메뉴 -->
-      <div class="rounded left">
-        <div class="top fs-6">
-          <span class="fs-4 brown">사용자</span>님, 안녕하세요.
-        </div>
-        <div class="mid fs-6 fw-bold">
-          <p>
-            현재 보유 적립금
-          </p>
-          <p class="text-end">
-            <span class="fs-3 text-end">5,000</span>원
-          </p>
-        </div>
-        <div class="bot">
-          <ul class="nav flex-column fs-6">
-            <li class="nav-item">
-              <a class="nav-link" href="#">마이페이지</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">내 관심 공연</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active fw-bold" aria-cur="page" href="#">예매내역</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">대관내역</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">관람 후기</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">1:1 문의</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">내 정보 수정</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">로그아웃</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">회원 탈퇴</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <MySideMenu category="예매내역" :name="member.name" :point="member.point"/>
       <!-- 내역 -->
       <div class="rounded right">
         <div>
@@ -57,20 +14,31 @@
           </div>
           <div class="datenav fs-7 titledesc">
             <span class="">기간선택</span>
-            <table>
-              <tr>
-                <td class="datebtn select"><a href="">1주일</a></td>
-                <td class="datebtn"><a href="">1개월</a></td>
-                <td class="datebtn"><a href="">3개월</a></td>
-                <td class="datebtn"><a href="">6개월</a></td>
-              </tr>
-            </table>
+            <div class="radio_box">
+              <label class="myradio">
+                <input type="radio" name="period" value="week" @change="radioChange($event)" checked>
+                <span>1주일</span>
+              </label>
+              <label class="myradio">
+                <input type="radio" name="period" value="1month" @change="radioChange($event)">
+                <span>1개월</span>
+              </label>
+              <label class="myradio">
+                <input type="radio" name="period" value="3month" @change="radioChange($event)">
+                <span>3개월</span>
+              </label>
+              <label class="myradio">
+                <input type="radio" name="period" value="6month" @change="radioChange($event)">
+                <span>6개월</span>
+              </label>
+            </div>
             <div>
               <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
-              <button class="btn mybtn resultbtn">조회</button>
+              <button class="btn mybtn resultbtn" @click="getList()">조회</button>
             </div>
           </div>
-          <div>
+          <!-- 내역 -->
+          <div v-show="bkExist">
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
@@ -81,163 +49,85 @@
                   <th class="col col-md-1 end">상세보기</th>
                 </tr>
               </thead>
+              <!-- tbody 시작 -->
               <tbody class="fs-7">
-                <tr class="mytr">
+                <tr v-for="(item, index) in list" :key="index">
                   <td>
                     <div class="text-center">
-                      <span>220807-0000-0001</span>
+                      <span>{{ item.booking_num }}</span>
                       <br>
-                      <span class="brown">(2022.08.07)</span>
+                      <span class="brown">({{ item.regdate }})</span>
                     </div>
                   </td>
                   <td>
-                    <a href="">
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ item.booking_num }`">
                       <div class="info">
-                        <div class="img1"></div>
+                        <img :src="item.show_thumbnail" class="img1">
                         <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
+                          <p class="fs-5 fw-bold">{{ item.show_name }}</p>
+                          <table class="subtable">
                             <tr>
                               <th>장소</th>
-                              <td>공연장1</td>
+                              <td>{{ item.hall_name }}</td>
                             </tr>
                             <tr>
                               <th>날짜</th>
-                              <td>2022.08.09</td>
+                              <td>{{ item.schedule_date }}</td>
                             </tr>
                             <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
+                              <th>시간</th>
+                              <td>{{ item.schedule_time }}</td>
                             </tr>
                             <tr>
                               <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
+                              <td>{{ item.booking_seat }}</td>
                             </tr>
                           </table>
                         </div>
                       </div>
-                    </a>
+                    </RouterLink>
                   </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
+                  <td class="text-center">{{ item.booking_price }}원</td>
+                  <td class="text-center">{{ item.payment_status }}</td>
                   <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
-                  </td>
-                </tr>
-                <tr class="mytr">
-                  <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
-                    <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
-                        <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
-                  </td>
-                </tr>
-                <tr class="mytr">
-                  <td>
-                    <div class="text-center">
-                      <span>220807-0000-0001</span>
-                      <br>
-                      <span class="brown">(2022.08.07)</span>
-                    </div>
-                  </td>
-                  <td>
-                    <a href="">
-                      <div class="info">
-                        <div class="img1"></div>
-                        <div class="txt">
-                          <p class="fs-5 fw-bold">Title</p>
-                          <table>
-                            <tr>
-                              <th>장소</th>
-                              <td>공연장1</td>
-                            </tr>
-                            <tr>
-                              <th>날짜</th>
-                              <td>2022.08.09</td>
-                            </tr>
-                            <tr>
-                              <th>회차</th>
-                              <td>1회차 14:00</td>
-                            </tr>
-                            <tr>
-                              <th>좌석</th>
-                              <td>R석 A01,S석 ...</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                  <td class="text-center">250,000원</td>
-                  <td class="text-center">입금완료</td>
-                  <td class="text-center end">
-                    <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ item.booking_num }`">
+                      <button type="button" class="btn btn-outline-secondary fs-7 fw-bold mybtn">상세보기</button>
+                    </RouterLink>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
         <!-- 페이징 -->
-        <div id="mypaging">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Previous">
-                  <span aria-hidden="true">
-                    &laquo;
-                  </span>
-                </a>
-              </li>
-              <li class="page-item select"><a class="page-link" href="">1</a></li>
-              <li class="page-item"><a class="page-link" href="">2</a></li>
-              <li class="page-item"><a class="page-link" href="">3</a></li>
-              <li class="page-item"><a class="page-link" href="">4</a></li>
-              <li class="page-item"><a class="page-link" href="">5</a></li>
-              <li class="page-item">
-                <a class="page-link" href="" aria-label="Next">
-                  <span aria-hidden="true">
-                    &raquo;
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+        <div id="mypaging" v-show="bkExist">
+
+          <p v-if="startPage>5"
+            @click="movePage(pageNum-1)">
+            [이전]
+          </p>
+          <p v-if="startPage<5" class="not"> [이전] </p>
+
+          <div v-for="index in ((endPage-startPage)+1)" :key="index">
+            <p :class="{active:startPage+(index-1)==pageNum}"
+              @click="movePage(startPage+(index-1))">
+              {{startPage+(index-1)}} 
+            </p>
+          </div>
+
+          <p v-if="endPage<pageCnt"
+            @click="movePage(pageNum+1)">
+            [다음] 
+          </p>
+          <p v-if="endPage>=pageCnt" class="not"> [다음] </p>
+
         </div>
+
+        <div v-show="!bkExist" class="borderbox">
+          <span class="brown">최근 예매내역이 존재하지 않습니다.</span>
+        </div>
+
       </div>
     </div>
   </div>
@@ -246,31 +136,147 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import MySideMenu from '@/components/users/MySideMenu.vue'
 
 export default {
   name: 'MyTicketListView',
   components: {
   AppHeader,
   AppFooter,
-  SideVisual
+  SideVisual,
+  MySideMenu
   },
   data() {
     return{
-      startdate: '',
-      enddate: ''
+
+      startdate : '', // 조회 시작날짜
+      enddate : '', // 조회 끝날짜
+      period : 'week', // 기간선택 (초기 일주일전)
+
+      member : {}, // 회원정보
+      bkExist : false, // 예매내역 존재여부
+
+      pageNum : 1, // 현재 페이지
+      list : [], // 내역 리스트
+      listCnt : 0, // 전체 결과 개수
+      startPage : 0, // 페이지 시작번호
+      endPage : 0, // 페이지 끝번호
+      pageCnt : 0, // 전체 페이지 수
+      
     }
   },
   created(){
+
+    this.member = this.$store.state.mypage.member;
+
+    // 적립금 천단위 콤마형식으로 변환
+    var point = this.member.point;
+    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+    // 조회기간 yyyy-mm-dd 형식으로 변환해서 초기화
     const cur = new Date();
-    const date = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-    const weekdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
-    this.enddate = date;
-    // console.log(this.enddate);
-    this.startdate = weekdate;
-    // console.log(this.startdate);
+    this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+    this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+
+    this.getList();
+
+  },
+  methods: {
+
+    async getList() { // 기간에 해당되는 내역 출력
+      try {
+        await axios.get('/moaplace.com/users/mypage/ticket/list/' 
+          + this.$store.state.mypage.member.num + '/'
+          + this.startdate + '/'
+          + this.enddate + '/'
+          + this.pageNum
+        ).then(function(resp){
+
+          if(resp.status == 200) {
+
+            this.bkExist = resp.data.bkExist; // 예매내역 존재여부
+
+            if(this.bkExist) {
+
+              this.list = resp.data.list;
+              this.listCnt = resp.data.listCnt;
+              this.startPage = resp.data.startPage;
+              this.endPage = resp.data.endPage;
+              this.pageCnt = resp.data.pageCnt;
+
+              for(let i = 0 ; i < this.list.length ; i++) {
+
+                // 예매일, 공연일 yyyy-mm-dd 형식으로 변환해서 저장
+                var regdate = new Date(this.list[i].regdate);
+                this.list[i].regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+                var schedule_date = new Date(this.list[i].schedule_date);
+                this.list[i].schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+                
+                // 결제금액 천단위 콤마 정규식으로 저장
+                var price = this.list[i].booking_price;
+                this.list[i].booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+                // 썸네일 Blob 변환해서 저장 (맞는건지모르겠음 확인필요)
+                var bytes, blob;
+                bytes = new Uint8Array(this.list[i].show_thumbnail.blob);
+                blob = new Blob([bytes], {type:'image'});
+                this.list[i].show_thumbnail = URL.createObjectURL(blob);
+              }
+
+            }
+
+          } else {
+            alert('ticket list 에러');
+          }
+
+        }.bind(this));
+      } catch (error) {
+        console.log(error);
+      }
+
+      if( this.enddate < this.startdate ) {
+        console.log("끝날짜가 시작날짜보다 이전임(오류메세지띄워야됨)");
+        alert('기간을 다시 선택해 주세요.');
+      } else {
+        console.log("끝날짜가 시작날짜보다 뒤임(잘된거임)");
+      }
+
+    },
+
+    radioChange(event) { // 기간선택 버튼 클릭할 때마다 조회기간 변경하기
+
+      // 기간선택 버튼 클릭할 때마다 period값 변경 
+      this.period = event.target.value;
+      console.log("period : ", this.period);
+
+      // period값에 따라서 startdate 변경 + enddate 현재날짜로 초기화
+      const cur = new Date();
+      if( this.period == 'week' ) {
+        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+      } else if( this.period == '1month' ) {
+        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.startdate = cur.getFullYear()+'-'+('0'+cur.getMonth()).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+      } else if( this.period == '3month' ) {
+        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()-2)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+      } else if( this.period == '6month' ) {
+        this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+        this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()-5)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
+      }
+
+    },
+
+    movePage(move) {
+      this.pageNum = move;
+      console.log(this.pageNum);
+      this.getList();
+    }
+    
   }
 }
 </script>
@@ -304,44 +310,6 @@ export default {
     justify-content: center;
     width: $width;
     margin: 50px;
-    .left {
-      width: 300px;
-      height: 600px;
-      background-color: white;
-      border: 2px solid #dbe2e8;
-      margin-right: 30px;
-      padding: 30px 20px;
-      .top {
-        margin-bottom: 10px;
-      }
-      .mid {
-        background-color: whitesmoke;
-        border: 2px solid #dbe2e8;
-        padding: 15px;
-        p {
-          margin: 0;
-        }
-        span {
-          color: #D67747;
-        }
-      }
-      .bot {
-        margin: 10px 0px;
-        ul li {
-          border-bottom: 1px solid #CCCCCC;
-          a {
-            color: $black;
-          }
-          a:hover {
-            color: $brown;
-            opacity: 50%;
-          }
-          .active {
-              color: $brown;
-          }
-        }
-      }
-    }
     .right {
       width: 100%;
       height: 100%;
@@ -352,6 +320,7 @@ export default {
         color: $brown;
         border-color: $brown;
         background-color: white;
+        border-radius: 0%;
       }
       .mybtn:hover {
         color: white;
@@ -363,11 +332,46 @@ export default {
         align-items: center;
         margin-bottom: 10px;
       }
+      .borderbox {
+        border: 5px solid #eee;
+        margin-bottom: 30px;
+        > span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 50px;
+        }
+      }
       .titledesc {
         border: 5px solid #eee;
         margin-bottom: 30px;
         .desctxt {
           margin: 15px 20px;
+        }
+        .radio_box {
+          display: flex;
+          width: 300px;
+          input[type="radio"] {
+            display: none;
+          }
+          input[type="radio"] + span {
+            padding: 8px 20px;
+            border: 1px solid $brown;
+            border-width: 1px 1px 1px 0;
+            text-align: center;
+            cursor: pointer;
+          }
+          input[type="radio"]:checked + span {
+            background-color: $brown;
+            color: white;
+          }
+          .myradio {
+            &:first-child {
+              span {
+                border-left: 1px solid $brown;
+              }
+            }
+          }
         }
       }
       .datenav {
@@ -401,14 +405,17 @@ export default {
           color: white;
         }
         tbody {
-          td:hover {
-            background-color: rgb(249, 249, 249);
+          tr:hover{
+            > td {
+              background-color: rgb(249, 249, 249);
+            }
           }
         }
         td {
           background-color: white;
           .info {
             display: flex;
+            align-items: center;
             margin: 20px 20px;
             .img1 {
               background-color: gray;
@@ -424,12 +431,20 @@ export default {
             }
             .txt {
               p {
-                margin: 0px;
+                margin-bottom: 10px;
               }
               table td,th {
                 border: 0px;
                 background-color: transparent;
               }
+              .subtable{
+                th {
+                  font-weight: bold;
+                }
+                td {
+                  padding-left: 5px;
+                }
+              } 
             }
           }
         }
@@ -451,21 +466,28 @@ export default {
       }
     }
   }
-  #mypaging {
+  #mypaging{
     display: flex;
     justify-content: center;
-    .select {
-      font-weight: bold;
-    }
-    li {
-      a,span,a:hover,span:hover,a:focus,span:focus,a:active {
-        background: transparent;
-        border: none;
-        box-shadow: none;
+    margin: 16px 4px;
+    p {
+      padding: 0 8px;
+      color: $black;
+      cursor: pointer;
+      &.active {
+        color: #D67747;
+        font-weight: bold;
+        cursor: default;
       }
-      a:hover {
-        color: $brown;
-        opacity: 50%;
+      &:hover {
+        font-weight: bold;
+      }
+      &.not {
+        color: #ccc;
+        cursor: default;
+      }
+      &.not:hover {
+        font-weight: 400;
       }
     }
   }
