@@ -64,15 +64,15 @@
                         </div>
                         <div class="grades">
                             <span class="gradeR">R석</span>
-                            <span>{{priceR}}원</span>
+                            <span>{{priceToString(priceR)}}원</span>
                         </div>
                         <div class="grades">
                             <span class="gradeS">S석</span>
-                            <span>{{priceS}}원</span>
+                            <span>{{priceToString(priceS)}}원</span>
                         </div>
                         <div class="grades">
                             <span class="gradeA">A석</span>
-                            <span>{{priceA}}원</span>
+                            <span>{{priceToString(priceA)}}원</span>
                         </div>
                         
                     </div>
@@ -99,6 +99,8 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js';
+
 export default {
     data(){
         return{
@@ -107,37 +109,50 @@ export default {
             date: '22.08.16(화)',
             time : '1회차 14:30',
             seats:[],
-            rows: 12,//열번호
-            cols: 10,//행번호
-            priceR: '150,000',
-            priceS: '100,000',
-            priceA: '80,000',
-            gradeR: 3, //R석 행 수
-            gradeS: 4, //S석 행 수
-            gradeA: 5,//A석 행 수
+            rows: 0,//열번호
+            cols: 0,//행번호
+            priceR: 0,
+            priceS: 0,
+            priceA: 0,
+            gradeR: 0, //R석 행 수
+            gradeS: 0, //S석 행 수
+            gradeA: 0,//A석 행 수
             seatrows:[],
-            alreadySelect:[
-                'A01', 'F08', 'H07','H06'   
-            ]
+            alreadySelect:[]
         }
+    },
+    created(){
+        //좌석표 그리기
+        this.getHallInfo();
+        
+        //이미 예매된 좌석 불러오기
+        this.getBookinSeat();
     },
     mounted(){
         // 유니코드 A = 65
         for(let i = 65; i< (65+this.rows); i++){
             let row = String.fromCharCode([i]);
             this.seatrows.push(row);
-        }
+        }        
+
         setTimeout(()=>{
             //선택할 수 없는 좌석 disabled
             this.selectedSeat();
         },10);
     },
+    computed:{
+        
+    },
     methods:{
+        priceToString(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
         addSeats(e,row, index){
             // 유니코드 A = 65
             let gradeR = 65 + this.gradeR;
             let gradeS = gradeR + this.gradeS;
             let col = index < 10 ? '0'+ index : index;
+            
             //이미 예약된 좌석이 아닌것만 동작
             if(e.target.previousSibling.className != 'dis'){
                 // 선택했던 좌석 다시 클릭하면 선택 취소
@@ -196,15 +211,75 @@ export default {
         },
         selectedSeat(){
             let inputs = document.querySelectorAll(".seat > input");
+
             for(let i=0; i< this.alreadySelect.length; i++){
+
                 let seat = this.alreadySelect[i];
+
                 for(let j=0; j < inputs.length; j++){
+                    
                     if(inputs[j].id == seat){
                         inputs[j].disabled = true;
                         inputs[j].className = 'dis';
                     }
                 }   
             }
+        },
+        getBookinSeat(){
+            //vuex 활용으로 변경 필요
+            let schedule_num = this.$route.params.num;
+
+            axios
+                .get(`/moaplace.com/booking/getBookingSeat/${schedule_num}`)
+                .then(function(resp){
+                    this.alreadySelect = resp.data;
+                }
+                .bind(this));
+        },
+        async getHallInfo(){
+            //vuex 활용으로 변경 필요
+            let hall_num = 1;
+            let show_num = 166;
+
+            await axios
+                .get(`/moaplace.com/booking/getHallInfo/${hall_num}/${show_num}`)
+                .then(function(resp){
+                    let data = resp.data;
+                    
+                    this.rows = data.hall_rows;
+                    this.cols = data.hall_cols;
+
+                    //등급별 행수
+                    for(let i = 0; i < data.grades.length; i++){
+                        switch(data.grades[i].grade_seat){
+                            case 'R' : 
+                                this.gradeR = data.grades[i].seat_line; 
+                                break;
+                            case 'S' : 
+                                this.gradeS = data.grades[i].seat_line; 
+                                break;
+                            case 'A' : 
+                                this.gradeA = data.grades[i].seat_line; 
+                                break;
+                        }
+                    }
+
+                    //등급별 가격
+                    for(let i = 0; i < data.prices.length; i++){
+                        switch(data.prices[i].grade_seat){
+                            case 'R' : 
+                                this.priceR = data.prices[i].grade_price; 
+                                break;
+                            case 'S' : 
+                                this.priceS = data.prices[i].grade_price; 
+                                break;
+                            case 'A' : 
+                                this.priceA = data.prices[i].grade_price; 
+                                break;
+                        }
+                    }
+                }
+                .bind(this));
         }
     }
 }

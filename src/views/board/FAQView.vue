@@ -9,7 +9,7 @@
 
       <!-- 상단 메뉴 -->
       <div class="headerBox">
-        <select v-model="sort_num" @change="searchList()">
+        <select v-model="sort_num" @change="filterList()">
           <option value="0"> 전체 </option>
           <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
             {{sort.sort_name}} 문의
@@ -184,6 +184,12 @@ export default {
 
       this.faqList();
     },
+    filterList(){
+      this.pageNum = 1;
+      console.log(this.sort_num);
+
+      this.faqList();
+    },
     movePage(move){ // 페이지 이동
       this.pageNum = move;
       console.log(this.pageNum);
@@ -234,8 +240,7 @@ export default {
       padding: 0 28px 0 15px;
       -webkit-appearance: none;
       appearance: none;
-      background: url("../../assets/board/arrow.png") no-repeat 95% 50%/20px
-        auto;
+      background: url("../../assets/board/arrow.png") no-repeat 95% 50%/20px auto;
     }
 
     .searchBox {
@@ -286,19 +291,21 @@ export default {
     color: $black;
     border: 1px solid #ccc;
     margin-top: -1px;
-
     .faq_title {
       width: 100%;
       padding: 25px;
       text-align: left;
-
-      &:hover {
-        background-color: rgb(249, 249, 249);
-        cursor: pointer;
-        color: #d67747;
-      }
       span {
-        margin: 20px 50px;
+        text-align: center;
+        &:first-child{
+          display:block;
+          float: left;
+          width:10%;
+        }
+        &:nth-child(2),
+        &:nth-child(3){
+          margin: 8px 48px;
+        }
       }
       .arrow {
         img {
@@ -308,6 +315,11 @@ export default {
           margin-right: 50px;
         }
       }
+      &:hover {
+        background-color: rgb(249, 249, 249);
+        cursor: pointer;
+        color: #d67747;
+      }
     }
     .faq_content {
       background-color: rgb(243, 241, 241);
@@ -316,6 +328,9 @@ export default {
         margin-bottom: 0;
       }
     }
+    ::v-deep p{
+              margin-bottom: 0;
+            }
   }
   .faq_main.active {
     .faq_title {
@@ -325,11 +340,6 @@ export default {
       img {
         transform: rotate(-180deg);
         transition: all 0.3s;
-      }
-    }
-    & > .faq_content {
-        & > p {
-        margin-bottom: 0;
       }
     }
   }

@@ -57,7 +57,7 @@ import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 import AdminNewsUpdate from '@/views/admin/board/NewsUpdate.vue'
 import BookingSelect from '@/views/BookingSelect.vue'
-import BookingCnt from '@/views/BookingCntView.vue'
+import BookingCount from '@/views/BookingCountView.vue'
 import PaymentDone from '@/views/DoneView.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
 import PaymentView from '@/views/PaymentView.vue'
@@ -177,17 +177,17 @@ const routes = [
     component: preview
   },
   {
-    path: '/moaplace.com/show/showdetail',
+    path: '/moaplace.com/show/showdetail/:show_num',
     name: 'showdetail',
     component: showDetail
   },
   {
-    path: '/moaplace.com/show/review/list',
+    path: '/moaplace.com/show/review/list/:show_num',
     name: 'reviewlist',
     component: reviewList
   },
   {
-    path: '/moaplace.com/show/showrefund',
+    path: '/moaplace.com/show/showrefund/:show_num',
     name: 'showrefund',
     component: showRefund
   },
@@ -444,14 +444,14 @@ const routes = [
     component: BookingSelect
   },
   {
-    path: '/moaplace.com/booking/seat',
+    path: '/moaplace.com/booking/seat/:num',
     name: 'bookinseat',
     component: SeatSelect
   },
   {
     path: '/moaplace.com/booking/count',
     name: 'bookingCount',
-    component: BookingCnt
+    component: BookingCount
   },
   {
     path: '/moaplace.com/booking/payment',

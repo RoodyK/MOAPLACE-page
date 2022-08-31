@@ -5,48 +5,64 @@
   <div id="wrap">
     <div id="main" class="containers">
       <div id="img">
-        <img src="../../assets/smile.jpg">
+        <img :src="detail.show_thumbnail">
       </div>
       <div class="info_box">
         <div id="info">
-          <h4>웃는남자</h4>
+          <h4>{{detail.show_name}}</h4>
           <div>
-            <span>기간</span> 2022.06.10 (금) ~ 2022.08.22 (월)
+            <span>기간</span> {{start_date}} ~ {{end_date}}
           </div>
-          <div>
+          <div v-if="detail.hall_num==1">
+            <span>장소</span> 모던홀
+          </div>
+          <div v-else-if="detail.hall_num==2">
             <span>장소</span> 오케스트라홀
           </div>
-          <div>
-            <span>시간</span> 오케스트라홀
+          <div v-else-if="detail.hall_num==3">
+            <span>장소</span> 아트홀
           </div>
           <div>
-            <span>연령</span> 전체연령가
+            <span>시간</span>
+            <span v-for="s, index in schedule" :key="index">
+              {{s.schedule_date}} {{s.schedule_time}}
+            </span>
           </div>
           <div>
-            <span>티켓</span> R석 150,000원 / S석 120,000원 / A석 100,000원
+            <span>연령</span> {{detail.show_age}}
+          </div>
+          <div>
+            <span>티켓</span>
+            <span v-for="g, index in grade" :key="index">
+              {{g.grade_seat}}석 {{g.grade_price}}원
+            </span>
           </div>
         </div>
-        <div id="mybtn">
+        <div id="mybtn" v-if="login_chk==null">
+          <button  @click="this.$router.push({path: '/moaplace.com/users/login'})">관심공연</button>
+          <button v-if="check">잔여석정보</button>
+          <button v-if="check" @click="this.$router.push({path: '/moaplace.com/users/login'})">예매하기</button>
+        </div>
+        <div id="mybtn" v-else>
           <button>관심공연</button>
-          <button>잔여석정보</button>
-          <button>예매하기</button>
+          <button v-if="check">잔여석정보</button>
+          <button v-if="check">예매하기</button>
         </div>
       </div>
     </div>
     <div id="nav">
       <div class="tap_on" id="tap_1">
-        <RouterLink to="/moaplace.com/show/showdetail">상세보기</RouterLink>
+        <RouterLink :to="`/moaplace.com/show/showdetail/${this.$route.params.show_num}`">상세보기</RouterLink>
       </div>
       <div class="tap_off" id="tap_2">
-        <RouterLink to="/moaplace.com/show/review/list">관람평</RouterLink>
+        <RouterLink :to="`/moaplace.com/show/review/list/${this.$route.params.show_num}`">관람평</RouterLink>
       </div>
       <div class="tap_off" id="tap_3">
-        <RouterLink to="/moaplace.com/show/showrefund">취소 및 환불 안내</RouterLink>
+        <RouterLink :to="`/moaplace.com/show/showrefund/${this.$route.params.show_num}`">취소 및 환불 안내</RouterLink>
       </div>
     </div>
     <div id="detail">
-      <img src="../../assets/detail1.jpg">
-      <img src="../../assets/detail2.jpg">
+      <img v-for="di, index in detailimg" :key="index" :src="di.show_detail_img">
     </div>
   </div>
   <AppFooter/>
@@ -57,6 +73,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import axios from '@/axios/axios.js'
 
 export default {
   name:"ShowDetailView",
@@ -64,6 +81,105 @@ export default {
     AppHeader,
     AppFooter,
     SideVisual
+  },
+  data(){
+    return{
+      detail:[],
+      schedule:[],
+      grade:[],
+      detailimg:[],
+
+      start_date:'',
+      end_date:'',
+      
+      check:false,
+      login_chk:null
+    }
+  },
+  created(){
+    this.data();
+    this.memberinfo();
+  },
+  methods: {
+    data(){
+      let show_num=this.$route.params.show_num;
+      axios.get(`/moaplace.com/show/showdetail/${show_num}`)
+        .then((resp) => {
+          this.detail = resp.data.detail[0];
+          this.schedule = resp.data.schedule;
+          this.grade = resp.data.grade;
+          this.detailimg = resp.data.detailimg;
+
+          let show_start = new Date(resp.data.detail[0].show_start);
+          let show_end = new Date(resp.data.detail[0].show_end);
+
+          let days=["일", "월", "화", "수", "목", "금", "토"];
+
+          let show_day1 = new Date(show_start).getDay();
+          let show_day2 = new Date(show_end).getDay();
+          
+          let start_day=days[show_day1];
+          let end_day=days[show_day2];
+
+          this.start_date = `${show_start.getFullYear()}.
+            ${new Date(show_start).getMonth()+1 < 10 ? `0${new Date(show_start).getMonth()+1}` : new Date(show_start).getMonth()+1}
+            .${new Date(show_start).getDate() < 10 ? `0${new Date(show_start).getDate()}` : new Date(show_start).getDate()}
+            .(${start_day})`;
+          
+          this.end_date = `${show_end.getFullYear()}.
+            ${new Date(show_end).getMonth()+1 < 10 ? `0${new Date(show_end).getMonth()+1}` : new Date(show_end).getMonth()+1}
+            .${new Date(show_end).getDate() < 10 ? `0${new Date(show_end).getDate()}` : new Date(show_end).getDate()}
+            .(${end_day})`;
+
+          let price_comma=[];
+          for(let i=0; i<resp.data.grade.length; i++) {
+            price_comma[i] = this.numberWithCommas(resp.data.grade[i].grade_price);
+            this.grade[i].grade_price = price_comma[i];
+          }
+
+          if(resp.data.detail[0].show_check == "Y") {
+            if(resp.data.detail[0].show_end >= new Date()) {
+              this.check = true;
+            }
+          }
+        }
+      )
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    memberinfo() {
+      let token = localStorage.getItem("access_token");
+      if(token == null) return;
+      this.login_chk = token;
+
+      const config = {
+        headers: {
+          "Authorization" : token
+        }
+      }
+
+      axios.get("/moaplace.com/users/login/member/info", config)
+      .then(response => {
+        let data = response.data;
+        const info = {
+          num: data.member_num,
+          id: data.member_id,
+          pwd: data.member_pwd,
+          email: data.member_email,
+          name: data.member_name,
+          gender: data.member_gender,
+          phone: data.member_gender,
+          address: data.member_address,
+          point: data.member_point
+        }
+        console.log(data);
+        console.log(info);
+      })
+      .catch(error => {
+        console.log(error.message);
+      })
+    }
   }
 }
 </script>

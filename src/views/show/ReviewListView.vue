@@ -35,13 +35,13 @@
       </div>
       <div id="nav">
         <div class="tap_off" id="tap_1">
-          <RouterLink to="/moaplace.com/show/showdetail">상세보기</RouterLink>
+          <RouterLink :to="`/moaplace.com/show/showdetail/${this.$route.params.show_num}`">상세보기</RouterLink>
         </div>
         <div class="tap_on" id="tap_2">
-          <RouterLink to="/moaplace.com/show/review/list">관람평</RouterLink>
+          <RouterLink :to="`/moaplace.com/show/review/list/${this.$route.params.show_num}`">관람평</RouterLink>
         </div>
         <div class="tap_off" id="tap_3">
-          <RouterLink to="/moaplace.com/show/showrefund">취소 및 환불 안내</RouterLink>
+          <RouterLink :to="`/moaplace.com/show/showrefund/${this.$route.params.show_num}`">취소 및 환불 안내</RouterLink>
         </div>
       </div>
       <div class="detail">

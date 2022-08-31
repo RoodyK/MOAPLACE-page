@@ -7,7 +7,7 @@
                 
                 <div class="list-top">
                     <div class="top-1">
-                        <select v-model="sort_num" @change="searchList()">
+                        <select v-model="sort_num" @change="filterList()">
                             <option value="0"> 전체 </option>
                             <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
                             {{sort.sort_name}} 문의
@@ -183,6 +183,12 @@ export default {
             console.log(this.field, this.keyword, this.sort_num);
             this.qnaList();
         },
+        filterList(){
+            this.pageNum = 1;
+            console.log(this.sort_num);
+
+            this.faqList();
+        },        
         movePage(move){
             this.pageNum = move;
             console.log(this.pageNum);
