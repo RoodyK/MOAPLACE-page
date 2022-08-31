@@ -1,254 +1,361 @@
 <template>
-  <div id="wrap">
-    <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
-    <main id="main">
-      <div class="inner">
-        <h2 class="title">공연정보 - 공연수정</h2>
+    <div id="wrap">
+        <SideMenu largeCategory="공연관리" mediumCategory="일정정보"/>
+        <main id="main">
+            <div class="inner">
+                <h2 class="title">일정정보 - 일정수정</h2>
 
-        <div class="showInsert">
-          <table>
-            <tr>
-              <th>공연장</th>
-              <td colspan="5">
-                <input type="radio" name="hallName" value="MHall" id="MHall" v-model="hallName"><label for="MHall">모던홀</label>
-                <input type="radio" name="hallName" value="OHall" id="OHall" v-model="hallName"><label for="OHall">오케스트라홀</label>
-                <input type="radio" name="hallName" value="AHall" id="Ahall" v-model="hallName"><label for="AHall">아트홀</label>
-              </td>
-            </tr>
-            <tr>
-              <th>장르</th>
-              <td colspan="5">
-                <input type="radio" name="genre" v-model="genre" id="drama" value="drama"><label for="drama">연극</label>
-                <input type="radio" name="genre" v-model="genre" id="musical" value="musical"><label for="musical">뮤지컬</label>
-                <input type="radio" name="genre" v-model="genre" id="pop" value="pop"><label for="pop">대중음악</label>
-                <input type="radio" name="genre" v-model="genre" id="instrumental" value="instrumental"><label for="instrumental">기악</label>
-                <input type="radio" name="genre" v-model="genre" id="vocal" value="vocal"><label for="vocal">성악</label>
-                <input type="radio" name="genre" v-model="genre" id="dance" value="dance"><label for="dance">무용</label>
-                <input type="radio" name="genre" v-model="genre" id="opera" value="opera"><label for="opera">오페라</label>
-              </td>
-            </tr>
-            <tr>
-              <th>공연명</th>
-              <td colspan="5"><input type="text" v-model="title"></td>
-            </tr>
-            <tr>
-              <th>공연상태</th>
-              <td colspan="5">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" v-model="going" @change="yOrN">
-                  <label class="form-check-label" for="flexSwitchCheckChecked">{{yn}}</label>
+                <div class="btnUpBox">
+                  <button>삭제</button>
+                  <button @click="goUpdate">수정</button>
                 </div>
-              </td>
-            </tr>
-            <tr v-html="hideRow">
-            </tr>
-            <tr>
-              <th>공연날짜</th>
-              <td><input type="date" v-model="showDate"></td>
-              <th>공연시작일</th>
-              <td><input type="date" v-model="regdate"></td>
-              <th>공연종료일</th>
-              <td><input type="date" v-model="appdate"></td>
-            </tr>
-            <tr>
-              <th>상연등급</th>
-              <td colspan="5">
-                <select v-model="gValue" @change="go">
-                  <option v-for="(g,index) in grade" :key="index" :value="g.value">{{g.text}}</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>섬네일</th>
-              <td colspan="5">
-                <input type="file">
-                <img :src="thumb">
-              </td>
-            </tr>
-            <tr>
-              <th>상세이미지</th>
-              <td colspan="5">
-                <input type="file">
-                <img :src="detailImgs.src1">
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="btnBox">
-          <button>취소</button>
-          <button>수정 완료</button>
-        </div>
+
+                <div class="titleBox">
+                    <span>공연번호</span>
+                    <input type="text" v-model="showNum" readonly>
+                    <span>공연명</span>
+                    <input type="text" v-model="showTitle" readonly>
+                </div>
+                <div class="hallInfo">
+                    <h3>공연정보</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>러닝타임</th>
+                                <td>{{runningTime}}</td>
+                                <th>인터미션</th>
+                                <td>{{intermission}}</td>
+                            </tr>
+                            <tr>
+                                <th>공연날짜</th>
+                                <td>{{showDate}}</td>
+                                <th>공연상태</th>
+                                <td>{{showStatus}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="hallInfo">
+                    <h3>일정정보</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>공연횟수</th>
+                                <td colspan="5">
+                                    <input type="text" :value="showCount" class="countBox" maxlength="2" @keyup="cntTime($event.currentTarget)">
+                                    회
+                                </td>
+                            </tr>
+                            <tr v-for="(item,index) in timeInfo" :key="index">
+                                <th>공연회차별정보</th>
+                                <td>{{item.timeRow}}회차</td>
+                                <th>공연시간</th>
+                                <td><input type="time" :value='item.dateTime' @change="updateTime(index,$event.currentTarget)"></td>
+                                <th>공연상태</th>
+                                <td>
+                                  <select :value="item.dateStatus" @change="updateYN(index,$event.currentTarget)">
+                                    <option v-for="list in showStatusList" :key="list">{{list}}</option>
+                                  </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="btnBox">
+                    <button @click="goList">이전</button>
+                    <button @click="goUpdate">수정</button>
+                    <button>삭제</button>
+                </div>
+              </div>
+          </main>
       </div>
-    </main>
-  </div>
 </template>
-<script>
-  import SideMenu from '@/components/admin/SideMenu.vue'
-    export default {
-      components: {
-        SideMenu
-      },
-      data(){
-        return{
-          hallName:'MHall',
-          genre:'drama',
-          title:'오보에 리사이틀',
-          going:true,
-          hideRow:'',
-          yn:'공연 진행중',
-          pauseStart:'',
-          pauseEnd:'',
-          showDate:'',
-          regdate: '',
-          appdate: '',
-          seats:'',
-          gValue:'all',
-          grade:[
-            {text:'전체관람가',value:'all'},
-            {text:'12세 관람가',value:'twelve'},
-            {text:'15세 관람가',value:'fifteen'},
-            {text:'청소년 관람불가',value:'adult'},
-          ],
-          thumb:'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=dfd67de4f3055521c7f754bfdc3cb5896db30ab9edb0bb8e4f449a9903cb06fb',
-          detailImgs:{
-            src1:'https://www.sejongpac.or.kr/upload/2022/07/20220727_163335690_30277.jpg'
-          },
-          
-        }
-      },
-      methods:{
-        yOrN(){
-          if(this.going){
-            this.yn='공연 진행중'
-            this.hideRow=''
-          }else{
-            this.yn='공연 중단'
-            this.hideRow='<th>공연중단시작일</th><td colspan="2"><input type="date" v-model="pauseStart"></td><th>공연중단종료일</th><td colspan="2"><input type="date"v-model="pauseEnd"></td>'
-          }
-        },
-        datepic(){
-          alert(this.regdate)
-        }
-    }
-  }
-</script>
-<style lang="scss" scoped>
-  @import "@/scss/common.scss";
-  // --------관리자 페이지 레이아웃 시작--------
-    #wrap::v-deep {
-        padding-left: 240px;
-        background: #f7f9fa;
-        #main {
-          width: 100%;
-          min-height: 100vmin;
-          padding: 32px;
-          box-sizing: border-box;
-          .inner {
-              width: $width;
-              min-height: 650px;
-              margin: 0 auto;
-              border: 1px solid rgba($black, 0.5);
-              background: #fff;
-              padding: 32px;
-              h2.title {
-                  font-size: 24px;
-                  padding-bottom: 16px;
-                  border-bottom: 1px solid rgba($black, 0.5);
-                  margin-bottom: 16px;
-              }
-          }
-          // --------관리자 페이지 레이아웃 끝, 등록페이지 시작--------
-          .showInsert {
-            margin: 32px 0;
-              table {
-                border-collapse: collapse;
-                width: 100%;
-                border-top: 1px solid rgba($black,0.3);
-                border-width: 1px 0;
-                tr {
-                  td,
-                  th {
-                    padding: 8px 16px;
-                    border-bottom: 1px solid rgba($black, 0.3);
-                  }
-                  th {
-                    width: 15%;
-                    background: #eee;
-                    text-align: center;
-                  }
+        <script>
+            import SideMenu from '@/components/admin/SideMenu.vue'
+            import axios from '@/axios/axios.js';
 
-                  td{
-                    input[type=radio] {
-                      padding: 4px;
-                      margin-right: 16px;
-                      border: none;
-                      }
-                      input[type=text] {
-                        border:1px solid gainsboro;
-                        padding: 8px;
-                      }
-                      input[type=file] {
-                        margin-bottom: 8px;
-                      }
-                      input[type=date] {
-                        padding: 8px;
-                      }
-                      img{
-                        width: calc(80%/1);
-                      }
-                      select{
-                        padding: 8px;
-                      }
-                      .form-check-input{
-                        padding: 11px;
-                        width: 44px;
-                        margin-top: 9px;
+            export default {
 
-                        &:checked{
-                          background-color: $black;
-                        }
-                        &:focus{
-                          border-color:gainsboro;
-                          box-shadow: 0 0 0 0.25rem rgb(156 156 156 / 25%);
-                          background-image:url("@/store/circle.svg")
-                        }
-                      }
-                      .form-check-label{
-                        padding: 8px;
-                      }
+                components: {
+                    SideMenu
+                },
+
+                data() {
+                    return {
+                      showNum:'',
+                      showtitle:'',
+                      runningTime:'',
+                      intermission:'',
+                      showDate:'',
+                      showStatusList:['Y','N'],
+                      timeInfo:[],
+                      showCount:'',
+                      bookingSeat:'',
+                      pageNum: this.$route.params.pageNum,
+                      status: this.$route.params.status,
+                      selectDate: this.$route.params.selectDate,
+                      selectField: this.$route.params.field,
+                      search: this.$route.params.search,
                     }
-                    &:nth-child(3){
-                      input[type=text] {
-                        width:100%
+                },
+
+                mounted(){
+                  this.viewDetail(
+                    this.$route.params.showNum,
+                    this.$route.params.showDate);
+                    // console.log("넘어온 데이터 "+this.$route.params.showNum,this.$route.params.showDate)
+                },
+
+                methods:{
+                  updateYN(i,e){
+                    this.timeInfo[i].dateStatus = e.value;
+                  },
+                  updateTime(i,e){
+                      if(i>0 && e.value < this.timeInfo[i-1].dateTime){
+                        alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+                        e.value=""
+                      }else if(this.timeInfo[i-1].dateTime==""){
+                        alert("데이터를 회차순으로 입력하세요.")
+                        e.value=""
+                      }else{
+                          this.timeInfo[i].dateTime = e.value;
                       }
-                    &:nth-child(7){
-                      input[type=text] {
-                        width:150px;
+                  },
+                    cntTime(e){
+                        if(e.value.search(/[^0-9]/g)!=-1){
+                            alert('숫자(정수)만 입력하세요');
+                            e.value="";
+                        }else{
+                          if(this.showCount > e.value){
+                            console.log(e.value)
+                            this.timeInfo = this.timeInfo.slice(0,e.value)
+                            console.log(this.timeInfo)
+                            this.showCount = e.value
+                          }else if(this.showCount < e.value){
+                            for(let i = this.showCount; i < e.value ;i++){
+                              this.timeInfo.push({timeRow:i+1,dateTime:'',dateStatus:''})
+                              this.showCount = e.value;
+                            }
+                          }
+                        }
+                    },
+                    viewDetail(num,showDate){
+                      axios.get('/moaplace.com/admin/show/schedule/updateView/'+ num + '/'+ showDate).
+                      then(function(resp){
+                        this.showNum = resp.data.showNum
+                        this.showTitle = resp.data.showtitle
+                        this.runningTime = resp.data.runningTime
+                        this.intermission = resp.data.intermission
+                        this.showDate = resp.data.showDate
+                        this.showStatus = resp.data.showStatus
+                        this.timeInfo = resp.data.arrTime
+                        this.showCount = resp.data.arrTime.length
+                        this.timeInfo = resp.data.arrTime
+                        if(resp.data.using){
+                          alert("해당 일자의 공연은 예약된 좌석이 있어 수정할 수 없습니다. ")
+                        }
+                      }.bind(this)).
+                    catch(function(error){
+                      if(error.response){
+                        alert('공연정보를 모두 입력하세요')
                       }
-                    }
-                  }
-                  label{
-                      margin-right:16px;
-                  }
+                    })
+                  },
+
+                    goList(){
+                      this.$router.push({
+                        name:'adminShowScheduleList',
+                        params:{
+                          selectField:this.selectField,
+                          search:this.search,
+                          selectDate:this.selectDate,
+                          pageNum:this.pageNum,
+                          status:this.status
+                        }
+                      })
+                    },
+                    goUpdate(){
+
+                      axios.post(
+                        '/moaplace.com/admin/show/schedule/update',
+                          JSON.stringify(
+                            {
+                              showNum:this.$route.params.showNum,
+                              showDate:this.showDate,
+                              list:this.timeInfo
+                            }),
+                        {headers:{'Content-Type':'application/json'}}
+                        ).then(function(resp){
+                          alert(resp.data+'개의 공연정보 수정됨')
+                          this.goList()
+                        }.bind(this)).
+                        catch(function(error){
+                          if(error.response){
+                            alert('해당 날짜에 예약된 일정 내역이 있어 수정할 수 없습니다.')
+                          }
+                        })
+                    },
                 }
-              }
-            }
-          //-------수정페이지 끝, 수정버튼 시작--------
-          .btnBox {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            button {
-              width: calc((100% - 16px) /2);
-              padding: 12px 0;
-              border: none;
-              &:last-child {
-                background-color: $black;
-                color: #fff;
-              }
-            }
-          }
 
-        }
-      }
-</style>
+            }
+        </script>
+        <style lang="scss" scoped="scoped">
+            @import "@/scss/common.scss";
+            // --------관리자 페이지 레이아웃 시작--------
+            #wrap {
+                padding-left: 240px;
+                background: #f7f9fa;
+                #main {
+                    width: 100%;
+                    min-height: 100vh;
+                    padding: 32px;
+                    box-sizing: border-box;
+                    .inner {
+                        width: $width;
+                        min-height: 650px;
+                        margin: 0 auto;
+                        border: 1px solid rgba($black, 0.5);
+                        background: #fff;
+                        padding: 32px;
+                        h2.title {
+                            font-size: 24px;
+                            padding-bottom: 16px;
+                            border-bottom: 1px solid rgba($black, 0.5);
+                            margin-bottom: 16px;
+                        }
+                    }
+                    // --------관리자 페이지 레이아웃 끝, 버튼박스 시작--------
+                    .btnUpBox{
+                      width: 100%;
+                      display: flex;
+                      flex-direction: row-reverse;
+                      button {
+                          width: 96px;
+                          height: 32px;
+                          padding: 4px 0;
+                          border: none;
+                          margin-bottom:16px;
+                          background-color: $black;
+                          color:white;
+                          &:last-child{
+                            margin-right: 16px;
+                          }
+                      }
+                    }
+
+                    // --------버튼박스 끝, 타이틀박스 시작 ----------------
+                    .titleBox {
+                        width: 100%;
+                        border: 1px solid rgba($black, 0.5);
+                        padding: 8px 16px;
+                        span {
+                            border-right: 1px solid rgba($black, 0.5);
+                            padding-right: 16px;
+                            margin-right: 16px;
+                            font-weight: bold;
+                        }
+                        input[type=text] {
+                            padding: 4px;
+                            margin-right: 16px;
+                            border: none;
+                            width: 56px;
+                            &:focus{
+                              outline: none;
+                            }
+                            &:nth-child(4) {
+                                width: calc(100%/1.4);
+                            }
+                        }
+                    }
+                    // --------타이틀박스 끝, 공연정보테이블 시작--------
+                   
+                    // --------타임박스 끝, 공연정보 시작--------
+                    .hallInfo {
+                        margin: 32px 0;
+                        h3 {
+                            font-size: 20px;
+                            margin-bottom: 16px;
+                        }
+                        div {
+                            border-top: 1px solid $black;
+                            padding-top: 16px;
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                border-top: 1px solid rgba($black,0.3);
+                                border-width: 1px 0;
+                                tr {
+                                    td,
+                                    th {
+                                        padding: 8px 16px;
+                                        border-bottom: 1px solid rgba($black, 0.3);
+                                    }
+                                    th {
+                                        width: 15%;
+                                        background: #eee;
+                                        text-align: center;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    // --------공연정보 끝, 이미지 시작--------
+                    .image {
+                        margin: 32px 0;
+                        h3 {
+                            font-size: 20px;
+                            margin-bottom: 16px;
+                        }
+                        div {
+                            border-top: 1px solid $black;
+                            padding-top: 16px;
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                border-top: 1px solid rgba($black,0.3);
+                                border-width: 1px 0;
+
+                                tr {
+                                    td,
+                                    th {
+                                        padding: 8px 16px;
+                                        border-bottom: 1px solid rgba($black, 0.3);
+                                    }
+                                    th {
+                                        width: 15%;
+                                        background: #eee;
+                                        text-align: center;
+                                    }
+                                    text-align: center;
+                                    img{
+                                          width: calc(80%/1);
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    // --------이미지 끝, 버튼 영역 시작--------
+                    .btnBox {
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        button {
+                            width: calc((100% - 16px) /3);
+                            padding: 12px 0;
+                            border: none;
+                            &:nth-child(2){
+                              background-color: $black;
+                              color: #fff;
+                            }
+                            &:last-child {
+                                background-color: $black;
+                                color: #fff;
+                            }
+                        }
+                    }
+
+                }
+            }
+        </style>
