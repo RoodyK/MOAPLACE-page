@@ -179,17 +179,17 @@ const routes = [
     component: preview
   },
   {
-    path: '/moaplace.com/show/showdetail',
+    path: '/moaplace.com/show/showdetail/:show_num',
     name: 'showdetail',
     component: showDetail
   },
   {
-    path: '/moaplace.com/show/review/list',
+    path: '/moaplace.com/show/review/list/:show_num',
     name: 'reviewlist',
     component: reviewList
   },
   {
-    path: '/moaplace.com/show/showrefund',
+    path: '/moaplace.com/show/showrefund/:show_num',
     name: 'showrefund',
     component: showRefund
   },
