@@ -3,7 +3,7 @@
     <SideMenu largeCategory="게시판 관리" mediumCategory="새소식" />
     <main id="main">
       <main class="inner">
-        <h2 class="title">공지사항 - 신규 등록</h2>
+        <h2 class="title">공지사항 - 공지 수정</h2>
 
         <div class="info-box">
           <div>
@@ -27,19 +27,16 @@
                   <div class="t-row">
                     <div>제목</div>
                     <div>
-                      <input type="text" v-model="title" id="title" />
+                      <input type="text" v-model="notice_title" id="title" />
                     </div>
                   </div>
                   <div class="t-row">
                     <div>내용</div>
                     <div>
-                      <TextEditor
-                        height="300"
+                      <textarea
                         id="content"
-                        v-model:content="content"
-                        contentType="html"
-                        placeholder="내용입력란"
-                      />
+                        v-model="notice_content"
+                      ></textarea>
                     </div>
                   </div>
                   <div class="t-row">
@@ -53,12 +50,14 @@
                         multiple
                       />
                       <div class="file-box">
-                        <label for="file">첨부파일 등록</label>
+                        <label for="file">첨부파일 추가</label>
                         <ul>
                           <li
-                            v-for="(filelist, index) in fileList"
+                            v-for="(filelist, index) in filelist"
                             :key="index"
                           >
+                            {{ filelist.notice_orgfile }}
+
                             {{ filelist.name }}
                             <button @click.prevent="deletefile1(index)">
                               <img src="@/assets/admin/remove.png" />
@@ -68,7 +67,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="btn-box">
+                  <div class="footer">
                     <button
                       class="page"
                       @click="$router.push({ name: 'adminNewsList' })"
@@ -76,8 +75,9 @@
                       이전
                     </button>
                     <button class="submit" @click.prevent="checkForm()">
-                      등록
+                      수정
                     </button>
+                    <button class="delete">삭제</button>
                   </div>
                 </form>
               </div>
@@ -91,13 +91,11 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
-import TextEditor from "@/components/TextEditor.vue";
 import axios from "@/axios/axios.js";
 
 export default {
   components: {
     SideMenu,
-    TextEditor,
   },
   data() {
     return {
@@ -110,46 +108,63 @@ export default {
         { sort_num: 5, sort_name: "회원" },
         { sort_num: 6, sort_name: "기타" },
       ],
-      fileList: [],
-      content: "",
-      title: "",
-      selected: 0,
+
+      filelist: [],
+      notice_num: "",
+      notice_title: "",
+      notice_content: "",
+      notice_detail_num: "",
+      filename: "",
+      selected: "",
     };
   },
+  created() {
+    this.notice_num = this.$route.params.notice;
+    console.log("mounted: ", this.notice_num);
+    this.getupdate();
+  },
 
+  /*리스트 바인딩 하여 넘버 얻어오는 거 정리 */
   methods: {
-    deletefile1(index) {
-      /*splice 그 인덱스부터 1개 삭제 , form 안 buttom prevent 처리 */
-      // alert(index);
-      this.fileList.splice(index, 1);
-      // alert("aaa");
+    getupdate() {
+      axios.get(`/moaplace.com/admin/news/update/${this.notice_num}`).then(
+        function (resp) {
+          // console.log(resp.data);
+          this.filelist = resp.data.filelist;
+          this.notice_title = resp.data.notice_title;
+          this.notice_content = resp.data.notice_content;
+          this.selected = resp.data.sort_num;
+
+          console.log("파일리스트", this.filelist);
+        }.bind(this)
+      );
     },
-    // vueselect() {
-    //   console.log(this.selected);
-    // },
+    deletefile1(index) {
+      this.filelist.splice(index, 1);
+    },
 
     selectFile() {
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         /* 데이터 전송 리스트에 담기 */
-        this.fileList.push(this.$refs.files.files[i]);
+        this.filelist.push(this.$refs.files.files[i]);
       }
       /*파일 크기 제한*/
-      if (this.fileList.length > 5) {
+      if (this.filelist.length > 5) {
         alert("최대 가능한 첨부 파일 개수는 5개입니다.");
-        this.fileList.splice(0, this.fileList.length);
+        this.filelist.splice(0, this.filelist.length);
         return;
       }
-      console.log(this.fileList);
-      console.log(this.fileList.length);
+      console.log(this.filelist);
+      console.log(this.filelist.length);
     },
 
     savefile() {
       var formData = new FormData();
       formData.append("sort_num", this.selected);
-      formData.append("content", this.content);
-      formData.append("title", this.title);
-      this.fileList.forEach(function (fileList) {
-        formData.append("files", fileList);
+      formData.append("content", this.notice_content);
+      formData.append("title", this.notice_title);
+      this.filelist.forEach(function (filelist) {
+        formData.append("files", filelist);
       });
       return formData;
     },
@@ -159,36 +174,42 @@ export default {
         alert("구분을 선택하세요");
         return;
       }
-      if (this.title == null || this.title == "") {
+      if (this.notice_title == null || this.notice_title == "") {
         alert("제목을 입력하세요");
         return;
       }
-      if (this.content == null || this.content == "") {
+      if (this.notice_content == null || this.notice_content == "") {
         alert("내용을 입력하세요");
         return;
       }
 
-      this.insertnews();
+      this.updatenews();
     },
 
-    insertnews() {
+    updatenews() {
       console.log(this.selected);
       console.log(this.savefile());
+      alert(this.filelist);
+      alert(this.filelist.length);
       axios
-        .post("/moaplace.com/admin/news/insert", this.savefile(), {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          `/moaplace.com/admin/news/udpate/${this.notice_num}`,
+          this.savefile(),
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then(
           function (resp) {
             if (resp.data === "success") {
-              alert("등록이 완료되었습니다");
+              alert("수정이 완료되었습니다");
               this.$router.push({ name: "adminNewsList" });
-              console.log("등록성공");
+              console.log("수정성공");
             } else {
-              alert("등록이 실패되었습니다. 다시 확인해주세요");
-              console.log("등록실패");
+              alert("수정이 실패되었습니다. 다시 확인해주세요");
+              console.log("수정실패");
             }
           }.bind(this)
         );
@@ -235,7 +256,7 @@ nav {
     // 관리자 페이지 레이아웃 관련 끝------------------
 
     .con {
-      padding: 0 0 50px 0;
+      padding: 0 0 150px 0;
       width: 100%;
       box-sizing: border-box;
       .inner_wrap {
@@ -306,18 +327,23 @@ nav {
             }
           }
         }
-        .btn-box {
-          width: 100%;
+        .footer {
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           margin-top: 32px;
           button {
-            width: calc((100% - 16px) / 2);
-            padding: 12px 0;
+            margin-right: 16px;
+            color: #f1f1f1;
+            padding: 10px 42px;
             border: none;
-            &:last-child {
+            &:first-child {
+              background-color: rgba($black, 0.6);
+            }
+            &:nth-child(2) {
               background-color: $brown;
-              color: #fff;
+            }
+            &:last-child {
+              background-color: $black;
             }
           }
         }
