@@ -70,12 +70,10 @@
               </p>
               <p>{{ i.notice_regdate }}</p>
               <p>
-                <button>
-                  <RouterLink
-                    :to="`/moaplace.com/admin/news/update/${i.notice_num}`"
-                    >수정</RouterLink
-                  >
-                </button>
+                <RouterLink
+                  :to="`/moaplace.com/admin/news/update/${i.notice_num}`"
+                  ><button>수정</button></RouterLink
+                >
               </p>
               <p><button @click="deletenews(i.notice_num)">삭제</button></p>
             </div>
@@ -254,7 +252,7 @@ export default {
       if (this.startPageNum < 6) {
         alert("첫 페이지입니다.");
       } else {
-        this.movePage(this.endPageNum - 1);
+        this.movePage(this.startPageNum - 1);
       }
     },
     nextPage() {

@@ -33,9 +33,13 @@
                   <div class="t-row">
                     <div>내용</div>
                     <div>
-                      <textarea id="content" v-model="content">
-내용입력란</textarea
-                      >
+                      <TextEditor
+                        height="300"
+                        id="content"
+                        v-model:content="content"
+                        contentType="html"
+                        placeholder="내용입력란"
+                      />
                     </div>
                   </div>
                   <div class="t-row">
@@ -64,8 +68,13 @@
                       </div>
                     </div>
                   </div>
-                  <div class="footer">
-                    <button class="page">이전</button>
+                  <div class="btn-box">
+                    <button
+                      class="page"
+                      @click="$router.push({ name: 'adminNewsList' })"
+                    >
+                      이전
+                    </button>
                     <button class="submit" @click.prevent="checkForm()">
                       등록
                     </button>
@@ -82,11 +91,13 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import TextEditor from "@/components/TextEditor.vue";
 import axios from "@/axios/axios.js";
 
 export default {
   components: {
     SideMenu,
+    TextEditor,
   },
   data() {
     return {
@@ -224,7 +235,7 @@ nav {
     // 관리자 페이지 레이아웃 관련 끝------------------
 
     .con {
-      padding: 0 0 150px 0;
+      padding: 0 0 50px 0;
       width: 100%;
       box-sizing: border-box;
       .inner_wrap {
@@ -295,23 +306,18 @@ nav {
             }
           }
         }
-        .footer {
+        .btn-box {
+          width: 100%;
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
           margin-top: 32px;
           button {
-            margin-right: 16px;
-            color: #f1f1f1;
-            padding: 10px 42px;
+            width: calc((100% - 16px) / 2);
+            padding: 12px 0;
             border: none;
-            &:first-child {
-              background-color: rgba($black, 0.6);
-            }
-            &:nth-child(2) {
-              background-color: $brown;
-            }
             &:last-child {
-              background-color: $black;
+              background-color: $brown;
+              color: #fff;
             }
           }
         }

@@ -166,9 +166,6 @@ export default {
           this.startRow = resp.data.startRow;
           this.endRow = resp.data.endRow;
           console.log("리스트 불러오기 성공");
-
-          // alert("this.endPageNum:" + this.endPageNum);
-          //alert("this.totalRowCount:" + this.totalPageCount);
         }.bind(this)
       );
     },
@@ -183,7 +180,7 @@ export default {
         this.isSearch = true;
         axios
           .get(
-            `/moaplace.com/moaplace/news/list/${this.selected2}/${this.pageNum}`
+            `/moaplace.com/moaplace/news/list/${this.selected2}/${this.keyword}/${this.pageNum}`
           )
           .then(
             function (resp) {
@@ -204,7 +201,7 @@ export default {
       if (this.startPageNum < 6) {
         alert("첫 페이지입니다.");
       } else {
-        this.movePage(this.endPageNum - 1);
+        this.movePage(this.startPageNum - 1);
       }
     },
     nextPage() {
@@ -285,11 +282,7 @@ $brown: #826d5e;
       float: right;
       padding: 0 26px 0;
       position: absolute;
-      &:hover {
-        border: 1px solid $black;
-        background-color: white;
-        color: $black;
-      }
+      border: none;
     }
   }
   .table {

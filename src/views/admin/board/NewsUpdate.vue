@@ -52,11 +52,14 @@
                       <div class="file-box">
                         <label for="file">첨부파일 추가</label>
                         <ul>
-                          <li v-for="(list, index) in filelist" :key="index">
-                            {{ list.notice_orgfile }}
-                            <button
-                              @click="deletefile1(list.notice_detail_num)"
-                            >
+                          <li
+                            v-for="(filelist, index) in filelist"
+                            :key="index"
+                          >
+                            {{ filelist.notice_orgfile }}
+
+                            {{ filelist.name }}
+                            <button @click.prevent="deletefile1(index)">
                               <img src="@/assets/admin/remove.png" />
                             </button>
                           </li>
@@ -123,39 +126,6 @@ export default {
 
   /*리스트 바인딩 하여 넘버 얻어오는 거 정리 */
   methods: {
-    deletefile1(notice_detail_num) {
-      console.log("파일 넘버", notice_detail_num);
-      axios
-        .get(`/moaplace.com/admin/news/filedelete/${notice_detail_num}`)
-        .then(
-          function (resp) {
-            if (resp.data == 1) {
-              alert("파일이 삭제되었습니다.");
-              this.$router.push({ name: "AdminNewsUpdate" });
-            } else {
-              alert("파일 삭제를 실패하였습니다.");
-              this.$router.push({ name: "AdminNewsUpdate" });
-            }
-          }.bind(this)
-        );
-      this.fileList.splice(notice_detail_num, 1);
-    },
-
-    selectFile() {
-      for (let i = 0; i < this.$refs.files.files.length; i++) {
-        /* 데이터 전송 리스트에 담기 */
-        this.fileList.push(this.$refs.files.files[i]);
-      }
-      /*파일 크기 제한*/
-      if (this.fileList.length > 5) {
-        alert("최대 가능한 첨부 파일 개수는 5개입니다.");
-        this.fileList.splice(0, this.fileList.length);
-        return;
-      }
-      console.log(this.fileList);
-      console.log(this.fileList.length);
-    },
-
     getupdate() {
       axios.get(`/moaplace.com/admin/news/update/${this.notice_num}`).then(
         function (resp) {
@@ -169,13 +139,32 @@ export default {
         }.bind(this)
       );
     },
+    deletefile1(index) {
+      this.filelist.splice(index, 1);
+    },
+
+    selectFile() {
+      for (let i = 0; i < this.$refs.files.files.length; i++) {
+        /* 데이터 전송 리스트에 담기 */
+        this.filelist.push(this.$refs.files.files[i]);
+      }
+      /*파일 크기 제한*/
+      if (this.filelist.length > 5) {
+        alert("최대 가능한 첨부 파일 개수는 5개입니다.");
+        this.filelist.splice(0, this.filelist.length);
+        return;
+      }
+      console.log(this.filelist);
+      console.log(this.filelist.length);
+    },
+
     savefile() {
       var formData = new FormData();
       formData.append("sort_num", this.selected);
       formData.append("content", this.notice_content);
       formData.append("title", this.notice_title);
-      this.fileList.forEach(function (fileList) {
-        formData.append("files", fileList);
+      this.filelist.forEach(function (filelist) {
+        formData.append("files", filelist);
       });
       return formData;
     },
@@ -194,27 +183,33 @@ export default {
         return;
       }
 
-      this.insertnews();
+      this.updatenews();
     },
 
-    insertnews() {
+    updatenews() {
       console.log(this.selected);
       console.log(this.savefile());
+      alert(this.filelist);
+      alert(this.filelist.length);
       axios
-        .post("/moaplace.com/admin/news/insert", this.savefile(), {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          `/moaplace.com/admin/news/udpate/${this.notice_num}`,
+          this.savefile(),
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then(
           function (resp) {
             if (resp.data === "success") {
-              alert("등록이 완료되었습니다");
+              alert("수정이 완료되었습니다");
               this.$router.push({ name: "adminNewsList" });
-              console.log("등록성공");
+              console.log("수정성공");
             } else {
-              alert("등록이 실패되었습니다. 다시 확인해주세요");
-              console.log("등록실패");
+              alert("수정이 실패되었습니다. 다시 확인해주세요");
+              console.log("수정실패");
             }
           }.bind(this)
         );
