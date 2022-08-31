@@ -98,7 +98,15 @@ export default {
         sort : "rental_name",
         keyword : "",
         isSearch : false,
-        states : ['신청완료','서류심사','신청거절', '입금대기', '예약취소', '사용완료'],
+        states: [
+                    '신청완료',
+                    '서류심사',
+                    '신청거절',
+                    '입금대기',
+                    '입금완료',
+                    '예약취소',
+                    '사용완료'
+                ],  
         pageNumbers : []
       }
     },
@@ -203,7 +211,7 @@ export default {
         let state = this.list[e].rental_state;
         let title = this.list[e].rental_title;
         axios
-          .get(`/moaplace.com/admin/rental/update/${num}/${state}`)
+          .get(`/moaplace.com/admin/rental/update/state/${num}/${state}`)
           .then(function(resp){
             if(resp.data == 'success'){
               alert( "공연명 : '" +title + "'의 진행상태 변경을 완료했습니다.");    

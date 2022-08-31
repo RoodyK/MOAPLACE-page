@@ -311,7 +311,7 @@ import axios from '@/axios/axios.js'
       validator(){
         let isEmpty = /.{1,}/;
         let isEmail =/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/; // 길이까지 확실한 검증
-        let isPhone = /^\d{3}-\d{3,4}-\d{4}$/; // 휴대폰 번호
+        let isPhone = /^\d{2,3}-\d{3,4}-\d{4}$ /;// 휴대폰 번호
         const rental_phone = this.form.rental_phone[0] + "-" + this.form.rental_phone[1] + "-" + this.form.rental_phone[2];
         const rental_email = this.form.rental_email[0] + "@" + this.form.rental_email[1];
         const rental_ownsphone = this.form.rental_ownsphone[0] + "-" + this.form.rental_ownsphone[1] + "-" + this.form.rental_ownsphone[2];

@@ -57,7 +57,7 @@ import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
 import BookingSelect from '@/views/BookingSelect.vue'
-import BookingCnt from '@/views/BookingCntView.vue'
+import BookingCount from '@/views/BookingCountView.vue'
 import PaymentDone from '@/views/DoneView.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
 import PaymentView from '@/views/PaymentView.vue'
@@ -120,7 +120,7 @@ const routes = [
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/users/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword/:id',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
@@ -328,7 +328,7 @@ const routes = [
     component: AdminFAQListView
   },
   {
-    path: '/moaplace.com/admin/faq/detail',
+    path: '/moaplace.com/admin/faq/detail/:faq_num',
     name: 'adminFaqDetail',
     component: AdminFAQDetailView
   },
@@ -430,7 +430,7 @@ const routes = [
   {
     path: '/moaplace.com/booking/count',
     name: 'bookingCount',
-    component: BookingCnt
+    component: BookingCount
   },
   {
     path: '/moaplace.com/booking/payment',

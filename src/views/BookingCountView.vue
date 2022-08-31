@@ -12,95 +12,138 @@
                 <i class="material-symbols-outlined">close</i>
             </button>
         </header>
+
         <main>
             <div class="content">
-                <div class="cnt-info" v-if="ticketCnt[0].cnt>0"> 
-                    <div class="cnt-title"> {{ticketCnt[0].grade}}석 {{ticketCnt[0].cnt}}매 중 {{ticketCnt[0].choiceA + ticketCnt[0].choiceY}}매를 선택하였습니다.</div>
+                <div class="cnt-info" v-if="cnt[0].cnt>0"> 
+                    <div class="cnt-title">
+                        {{cnt[0].grade}}석 {{cnt[0].cnt}}매 중 {{cnt[0].choiceA + cnt[0].choiceY}}매를 선택하였습니다.
+                    </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 일반 </p> 
-                            <p> {{ticketCnt[0].priceA}}원 </p>
+                            <p> {{ formatPrice(cnt[0].priceA) }}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[0].choiceA">
-                                <button @click="plus(e)"><i class="material-symbols-outlined">add</i></button>
-                                <button @click="minus(e)"><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[0].choiceA">
+                                    <button @click="plus($event, 0)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 청소년 </p> 
-                            <p> {{ticketCnt[0].priceY}}원 </p>
+                            <p> {{formatPrice(cnt[0].priceY)}}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[0].choiceY">
-                                <button><i class="material-symbols-outlined">add</i></button>
-                                <button><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[0].choiceY">
+                                    <button @click="plus($event, 0)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                 </div>
 
-                <div class="cnt-info" v-if="ticketCnt[1].cnt>0"> 
-                    <div class="cnt-title"> {{ticketCnt[1].grade}}석 {{ticketCnt[1].cnt}}매 중 {{ticketCnt[1].choiceA + ticketCnt[1].choiceY}}매를 선택하였습니다.</div>
+                <div class="cnt-info" v-if="cnt[1].cnt>0">
+                    <div class="cnt-title">
+                        {{cnt[1].grade}}석 {{cnt[1].cnt}}매 중 {{cnt[1].choiceA + cnt[1].choiceY}}매를 선택하였습니다.
+                    </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 일반 </p> 
-                            <p> {{ticketCnt[1].priceA}}원 </p>
+                            <p> {{formatPrice(cnt[1].priceA)}}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[1].choiceA">
-                                <button><i class="material-symbols-outlined">add</i></button>
-                                <button><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[1].choiceA">
+                                    <button @click="plus($event, 1)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 청소년 </p> 
-                            <p> {{ticketCnt[1].priceY}}원 </p>
+                            <p> {{formatPrice(cnt[0].priceY)}}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[1].choiceY">
-                                <button><i class="material-symbols-outlined">add</i></button>
-                                <button><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[1].choiceY">
+                                    <button @click="plus($event, 1)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                 </div>
 
-                <div class="cnt-info" v-if="ticketCnt[2].cnt>0"> 
-                    <div class="cnt-title"> {{ticketCnt[2].grade}}석 {{ticketCnt[2].cnt}}매 중 {{ticketCnt[2].choiceA + ticketCnt[2].choiceY}}매를 선택하였습니다.</div>
+                <div class="cnt-info" v-if="cnt[2].cnt>0"> 
+                    <div class="cnt-title">
+                        {{cnt[2].grade}}석 {{cnt[2].cnt}}매 중 {{cnt[2].choiceA + cnt[2].choiceY}}매를 선택하였습니다.
+                    </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 일반 </p> 
-                            <p> {{ticketCnt[2].priceA}}원 </p>
+                            <p> {{formatPrice(cnt[2].priceA)}}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[2].choiceA">
-                                <button><i class="material-symbols-outlined">add</i></button>
-                                <button><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[2].choiceA">
+                                    <button @click="plus($event, 2)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                     <div class="cnt-ticket">
                         <div class="cnt-1">
                             <p> 청소년 </p> 
-                            <p> {{ticketCnt[2].priceY}}원 </p>
+                            <p> {{formatPrice(cnt[2].priceY)}}원 </p>
                             <p>
-                                <span><input type="text" v-model.number="ticketCnt[2].choiceY">
-                                <button><i class="material-symbols-outlined">add</i></button>
-                                <button><i class="material-symbols-outlined">remove</i></button></span>
+                                <span>
+                                    <input type="text" v-model.number="cnt[2].choiceY">
+                                    <button @click="plus($event, 2)">
+                                        <i class="material-symbols-outlined">add</i>
+                                    </button>
+                                    <button @click="minus($event)">
+                                        <i class="material-symbols-outlined">remove</i>
+                                    </button>
+                                </span>
                                 매
                             </p>
                         </div>
-                        <div class="cnt-2"><button>정정</button></div>
+                        <div class="cnt-2"><button @click="clear($event)">정정</button></div>
                     </div>
                 </div>    
             </div>
@@ -131,7 +174,7 @@
                     </div>
                     <div class="pay-info">
                         <div class="pay-title"> 총 결제금액 </div> 
-                        <div class="pay-amount"> 10,000 원 </div>
+                        <div class="pay-amount"> {{formatPrice(totalPrice)}} 원 </div>
                     </div>
                 </div>
             </aside>
@@ -146,8 +189,8 @@
                     <i class="material-symbols-outlined">arrow_right_alt</i>
                 </button>
             </div>
-
         </main>
+
     </div>
   </div>
 </template>
@@ -155,13 +198,13 @@
 <script>
 export default {
     mounted(){
-        this.seats.filter((e) => {
+        this.seats.filter(e => {
             switch(e.grade) {
-                case 'R' : this.ticketCnt[0].cnt++;
+                case 'R' : this.cnt[0].cnt++;
                             break;
-                case 'S' : this.ticketCnt[1].cnt++;
+                case 'S' : this.cnt[1].cnt++;
                             break;
-                case 'A' : this.ticketCnt[2].cnt++;
+                case 'A' : this.cnt[2].cnt++;
                             break; 
             }
         })
@@ -178,18 +221,55 @@ export default {
                 {grade: 'S', row: 'A', cols: '02'},
                 {grade: 'A', row: 'B', cols: '01'}
             ],
-            ticketCnt: [
-                {grade:'R', cnt:0, priceA:'150,000', priceY:'135,000', choiceA:0, choiceY:0},
-                {grade:'S', cnt:0, priceA:'100,000', priceY:'90,000', choiceA:0, choiceY:0},
-                {grade:'A', cnt:0, priceA:'80,000', priceY:'72,000', choiceA:0, choiceY:0}]
+            cnt: [
+                {grade:'R', cnt:0, priceA:150000, priceY:135000, choiceA:0, choiceY:0},
+                {grade:'S', cnt:0, priceA:100000, priceY:90000, choiceA:0, choiceY:0},
+                {grade:'A', cnt:0, priceA:80000, priceY:72000, choiceA:0, choiceY:0}]
+        }
+    },
+    computed: {
+        totalPrice() {
+            let r = (this.cnt[0].priceA * this.cnt[0].choiceA) 
+                  + (this.cnt[0].priceY * this.cnt[0].choiceY);
+            let s = (this.cnt[1].priceA * this.cnt[1].choiceA) 
+                  + (this.cnt[1].priceY * this.cnt[1].choiceY);
+            let a = (this.cnt[2].priceA * this.cnt[2].choiceA) 
+                  + (this.cnt[2].priceY * this.cnt[2].choiceY);
+            return r + s + a;
         }
     },
     methods:{
-        plus(e){
-            console.log(e.target);
+        formatPrice(n){
+            return n.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        },
+        plus(e, n){
+            let el = e.currentTarget.parentElement.children[0];
+            let tot = this.cnt[n].choiceA + this.cnt[n].choiceY;
+            console.log(tot);
+
+            if(tot == this.cnt[n].cnt){
+                return;
+            } else {
+                el.value++;
+            }
+            el.dispatchEvent(new Event('input'));
         },
         minus(e){
-            console.log(e.target);
+            let el = e.currentTarget.parentElement.children[0];
+            console.log(el);
+
+            if(el.value<1){
+                return;
+            } else {
+                el.value--;
+            }
+            el.dispatchEvent(new Event('input'));
+        },
+        clear(e){
+            let el = e.currentTarget.parentElement.previousSibling.children[2].children[0].children[0];
+            console.log(el);
+            el.value = 0;
+            el.dispatchEvent(new Event('input'));
         }
     }
 }
