@@ -114,7 +114,7 @@ export default {
       member : {}, // 회원정보
       booking_num : 0, // 예매번호
       dto : {}, // 예매내역 상세정보
-      cancle : true, // 예매취소 가능여부
+      cancle : false, // 예매취소 가능여부
 
     }
   },
@@ -175,6 +175,10 @@ export default {
 
             this.dto = resp.data.dto;
             this.cancle = resp.data.cancle;
+
+            if(this.dto.payment_status == '결제취소') {
+              this.cancle = false;
+            }
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
