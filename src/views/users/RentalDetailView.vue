@@ -132,15 +132,47 @@ export default {
   },
   created(){
 
-    this.member = this.$store.state.mypage.member;
-    
     this.rental_num = this.$route.params.rental_num;
 
-    // 적립금 천단위 콤마형식으로 변환
-    var point = this.member.point;
-    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    
-    this.getData();
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
+
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      this.getData();
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
 
   },
   methods:{
