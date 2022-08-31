@@ -35,7 +35,7 @@
                           <p>공연상태</p>
                           <p>수정</p>
                   </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody">
+                        <div v-for="(item,index) in list" :key="index" class="t-row tbody">
                             <p @click="viewDetail(item.num)">{{item.num}}</p>
                             <p @click="viewDetail(item.num)">{{item.hall}}</p>
                             <p @click="viewDetail(item.num)">{{item.title}}</p>
@@ -132,7 +132,7 @@
               movePage(pNum){
                 axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
                 then(function(resp){
-
+                  
                   this.list = resp.data.list;
                   this.status = resp.data.status;
                   this.selectField = resp.data.selectField;
