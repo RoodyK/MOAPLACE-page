@@ -5,19 +5,19 @@
       <div class="inner">
         <h2 class="title">공지사항 - 자세히보기</h2>
         <div class="info-box">
-          <div v-for="(i, index) in news.splice(0, 1)" :key="index">
+          <div>
             <table>
               <tr>
                 <th>번호</th>
-                <td>{{ i.notice_num }}</td>
+                <td>{{ this.notice_num }}</td>
               </tr>
               <tr>
                 <th>구분</th>
-                <td>{{ i.sort_name }}</td>
+                <td>{{ this.sort_name }}</td>
               </tr>
               <tr>
                 <th>제목</th>
-                <td>{{ i.notice_title }}</td>
+                <td>{{ this.notice_title }}</td>
               </tr>
               <tr>
                 <th>첨부파일</th>
@@ -33,14 +33,21 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="2">{{ i.notice_content }}</td>
+                <td colspan="2">
+                  <div class="content-box">
+                    <TextEditor
+                      height="300"
+                      v-html="this.notice_content"
+                    ></TextEditor>
+                  </div>
+                </td>
               </tr>
             </table>
           </div>
         </div>
         <div class="btn-box">
           <button @click="$router.push({ name: 'adminNewsList' })">이전</button>
-          <button>삭제</button>
+          <button @click="deletenews(this.notice_num)">삭제</button>
         </div>
       </div>
     </main>
@@ -56,19 +63,13 @@ export default {
   },
   data() {
     return {
-      news: [
-        {
-          notice_num: "",
-          sort_name: "",
-          notice_title: "",
-          notice_content: "",
-          notice_orgfile: "",
-        },
-      ],
+      notice_num: "",
+      notice_title: "",
+      notice_content: "",
+      notice_detail_num: "",
+      sort_name: "",
       filelist: [],
       member_num: 1,
-      notice_num: "",
-      notice_detail_num: "",
     };
   },
   //렌더링 되기 전에 메소드 실행시켜주는 게 좋다. created -> mounted 순으로 실행되는 것
@@ -96,10 +97,11 @@ export default {
         .then(
           function (resp) {
             // console.log(resp.data);
-            this.news = resp.data.list;
             this.filelist = resp.data.filelist;
-
-            console.log(this.news);
+            this.notice_title = resp.data.notice_title;
+            this.notice_content = resp.data.notice_content;
+            this.selected = resp.data.sort_num;
+            this.sort_name = resp.data.sort_name;
             console.log("파일리스트", this.filelist);
             // this.news.notice_num = resp.data.notice_num;
             // console.log(this.news.notice_num);
@@ -108,7 +110,22 @@ export default {
     },
     download(notice_detail_num) {
       console.log("파일넘버:", notice_detail_num);
-      window.location = `/moaplace.com/admin/news/file/download/${notice_detail_num}`;
+      window.location = `http://localhost:9090/moaplace.com/admin/news/file/download/${notice_detail_num}`;
+    },
+    deletenews(notice_num) {
+      console.log("파일넘버:", notice_num);
+      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`).then(
+        function (resp) {
+          if (resp.data == 1) {
+            alert("목록을 삭제하였습니다.");
+            this.$router.push({ name: "adminNewsList" });
+            console.log("삭제성공");
+          } else {
+            alert("삭제가 실패되었습니다. 다시 확인해주세요");
+            console.log("삭제실패");
+          }
+        }.bind(this)
+      );
     },
   },
 };
@@ -175,6 +192,16 @@ nav {
               height: 250px;
               td {
                 padding: 16px 16px;
+              }
+            }
+            .content-box {
+              width: 100%;
+              border: 1px solid rgba($black, 0.3);
+              padding: 32px;
+              border: none;
+
+              ::v-deep img {
+                max-width: 100%;
               }
             }
           }
