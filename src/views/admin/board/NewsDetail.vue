@@ -30,6 +30,7 @@
                       {{ list.notice_orgfile }}
                     </li>
                   </ul>
+                  <ul></ul>
                 </td>
               </tr>
               <tr>
@@ -195,11 +196,7 @@ nav {
               }
             }
             .content-box {
-              width: 100%;
-              border: 1px solid rgba($black, 0.3);
-              padding: 32px;
-              border: none;
-
+              padding: 0;
               ::v-deep img {
                 max-width: 100%;
               }
