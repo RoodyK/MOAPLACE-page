@@ -34,7 +34,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ bkDto.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/show/showdetail/${ bkDto.show_num }`">
                       <div class="info">
                         <img :src="bkDto.show_thumbnail" class="img1">
                         <div class="txt">

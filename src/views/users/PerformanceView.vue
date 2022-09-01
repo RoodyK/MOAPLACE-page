@@ -33,7 +33,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/`">
+                    <RouterLink :to="`/moaplace.com/show/showdetail/${ item.show_num }`">
                       <div class="info">
                         <img :src="item.show_thumbnail" class="img2">
                         <div class="txt">

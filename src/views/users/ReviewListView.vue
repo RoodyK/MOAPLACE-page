@@ -36,7 +36,7 @@
               <tbody class="fs-7">
                 <tr v-for="(item,index) in list" :key="index">
                   <td>
-                    <RouterLink :to="`/moaplace.com/`">
+                    <RouterLink :to="`/moaplace.com/show/showdetail/${ item.show_num }`">
                       <div class="info info-sub">
                         <img :src="item.show_thumbnail" class="img3">
                         <div class="txt">
