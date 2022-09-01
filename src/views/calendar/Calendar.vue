@@ -120,7 +120,7 @@
                                 <div><p>{{modalTerm}}</p></div>
                               </div>
                               <div>
-                                <a href="#">자세히 보기</a>
+                                <a href="#" @click="goDetail(this.modalNum)" data-bs-dismiss="modal">자세히 보기</a>
                               </div>
                             </div>
                         </div>
@@ -280,7 +280,13 @@ import axios from '@/axios/axios.js';
                       .then(function(resp){
                         this.posterImg = resp.data
                       }.bind(this))
+                    },
 
+                    goDetail(num){
+                      this.$router.push({
+                      name:'showdetail',
+                      params:{show_num:num}
+                        })
                     }
                 }
             }
