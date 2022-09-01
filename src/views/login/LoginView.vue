@@ -31,20 +31,33 @@
         </div>
       </div>
 
-      <div class="kakao-login">
-        
-        <button type="button" @click="local()">
+      <!-- <div class="kakao-login">
+        <button type="button" @click="kakaoLogin()">
           <div class="img"></div>
           <p>Kakao 로그인</p>
         </button>
+      </div> -->
+
+      <div class="kakao-login">
+        <a :href="kakaoLogin">
+          <div class="img"></div>
+          <p>Kakao 로그인</p>
+        </a>
       </div>
 
-      <div class="google-login">
+      <!-- <div class="google-login">
         <button>
           <div class="img"></div>
           <p>Google 로그인</p>
         </button>
-      </div>
+      </div> -->
+
+      <!-- <div class="google-login">
+        <a>
+          <div class="img"></div>
+          <p>Google 로그인</p>
+        </a>
+      </div> -->
       
     </div>
     <AppFooter/>
@@ -64,6 +77,7 @@ export default {
     SideVisual
   },
   mounted() {
+    document.querySelector('form').reset();
   },
   data() {
     return {
@@ -82,13 +96,17 @@ export default {
           name : '회원가입',
           href : '/moaplace.com/users/join/same'
         }
-      ]
+      ],
+      client_id : process.env.VUE_APP_KAKAO_API_KEY,
+      redirect_uri : process.env.VUE_APP_KAKAO_REDIRECT_URI
+    }
+  },
+  computed: {
+    kakaoLogin() {
+      return `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&response_type=code&scope=account_email,gender`
     }
   },
   methods: {
-    local() {
-      console.log(localStorage.getItem("access_token"))
-    },
     async isLogin() {
       if(this.loginId == null || this.loginId == "") {
         alert("아이디를 입력하세요.");
@@ -172,9 +190,10 @@ export default {
     }
 
     .kakao-login, .google-login {
-      
       margin: 0 auto;
-      button {
+      a {
+        color: $black;
+        display: block;
         width: 400px;
         height: 70px;
         border: none;
@@ -184,6 +203,7 @@ export default {
         position: relative;
         box-shadow: 2px 3px 5px #ccc;
         p {
+          height: 70px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -192,8 +212,8 @@ export default {
       }
     }
     .kakao-login {
-      margin-bottom: 20px;
-      button {
+      margin-bottom: 100px;
+      a {
         background-color: #FEE500;
         .img {
           width: 40px;
@@ -206,21 +226,22 @@ export default {
         }
       }
     }
-    .google-login {
-      margin-bottom: 100px;
-      button {
-        background-color: #fff;
-        .img {
-          width: 55px;
-          height: 50px;
-          background: url(@/assets/login/google-login.jpg) no-repeat;
-          background-size: cover;
-          position: absolute;
-          top: 10px;
-          left: 12px;
-        }
-      }
-    }
+
+    // .google-login {
+    //   margin-bottom: 100px;
+    //   a {
+    //     background-color: #fff;
+    //     .img {
+    //       width: 55px;
+    //       height: 50px;
+    //       background: url(@/assets/login/google-login.jpg) no-repeat;
+    //       background-size: cover;
+    //       position: absolute;
+    //       top: 10px;
+    //       left: 12px;
+    //     }
+    //   }
+    // }
   }
 }
 

@@ -1,20 +1,20 @@
 <template>
     <div id="wrap">
-        <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+        <SideMenu largeCategory="공연관리" mediumCategory="일정정보"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">공연정보 - 공연상세</h2>
+                <h2 class="title">일정정보 - 일정상세</h2>
 
                 <div class="btnUpBox">
                   <button>삭제</button>
-                  <button>수정</button>
+                  <button @click="updateDetail(detailInfo.num,detailInfo.showDate)">수정</button>
                 </div>
 
                 <div class="titleBox">
                     <span>공연번호</span>
-                    <input type="text" v-model="list.num" readonly>
+                    <input type="text" v-model="detailInfo.num" readonly>
                     <span>공연명</span>
-                    <input type="text" v-model="list.title" readonly>
+                    <input type="text" v-model="detailInfo.title" readonly>
                 </div>
 
                 <div class="hallInfo">
@@ -22,66 +22,28 @@
                     <div>
                         <table>
                             <tr>
-                                <th>공연장</th>
-                                <td>{{list.hall}}</td>
-                                <th>공연장르</th>
-                                <td>클래식</td>
-                                <th>공연상태</th>
-                                <td colspan="3">{{list.status}}</td>
-                            </tr>
-                            <tr>
                                 <th>공연날짜</th>
-                                <td>{{list.date}}</td>
-                                <th>시작시간</th>
-                                <td>{{list.opentime}}</td>
-                                <th>러닝타임</th>
-                                <td>{{list.running_time}}분</td>
-                                <th>인터미션</th>
-                                <td>{{list.intermission}}분</td>
+                                <td colspan="5">{{detailInfo.showDate}}</td>
                             </tr>
                             <tr>
-                                <th>공연시작일</th>
-                                <td colspan="3">{{list.regdate}}</td>
-                                <th>공연종료일</th>
-                                <td colspan="3">{{list.appdate}}</td>
+                                <th>공연횟수</th>
+                                <td colspan="5">{{timeInfo.length}}</td>
                             </tr>
-                            <tr>
-                                <th>공연중단시작일</th>
-                                <td colspan="3">2022-08-10</td>
-                                <th>공연중단종료일</th>
-                                <td colspan="3">2022-08-15</td>
-                            </tr>
-                            <tr>
-                                <th>총좌석수</th>
-                                <td>120</td>
-                                <th>잔여좌석수</th>
-                                <td>0</td>
-                                <th>상연등급</th>
-                                <td colspan="3">15세</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="image">
-                    <h3>공연 이미지</h3>
-                    <div>
-                        <table>
-                            <tr>
-                                <th>섬네일</th>
-                                <td><img src="https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=dfd67de4f3055521c7f754bfdc3cb5896db30ab9edb0bb8e4f449a9903cb06fb"></td>
-                               </tr>
-                               <tr>
-                               <th>상세이미지</th>
-                                <td><img src="https://www.sejongpac.or.kr/upload/2022/07/20220727_163335690_30277.jpg"></td>
+                            <tr v-for="(item,index) in timeInfo" :key="index">
+                                <th>공연회차별정보</th>
+                                <td>{{item.timeRow}}회차</td>
+                                <th>공연시간</th>
+                                <td>{{item.dateTime}}</td>
+                                <th>공연상태</th>
+                                <td>{{item.dateStatus}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
                 <div class="btnBox">
-                    <button>이전</button>
-                    <button>수정</button>
+                    <button @click="goList">이전</button>
+                    <button @click="updateDetail(detailInfo.num,detailInfo.showDate)">수정</button>
                     <button>삭제</button>
                 </div>
               </div>
@@ -90,6 +52,7 @@
 </template>
         <script>
             import SideMenu from '@/components/admin/SideMenu.vue'
+            import axios from '@/axios/axios.js';
             export default {
                 components: {
                     SideMenu
@@ -97,21 +60,54 @@
 
                 data() {
                     return {
-                        list:{
-                                num: 11111,
-                                title: '아무튼 엄청 긴 공연제목-아무튼 엄청 긴 공연제목',
-                                hall: '오케스트라홀',
-                                status: '진행중',
-                                regdate: '2022.08.02',
-                                appdate: '2022.08.22',
-                                date: '2022.08.07',
-                                running_time: 120,
-                                opentime: '13:30',
-                                intermission: 20,
-                                seats: '110/120',
-                                grade: 15
-                            }
+                      showNum:'',
+                      detailInfo:[],
+                      timeInfo:[],
+                      pageNum: this.$route.params.pageNum,
+                      status: this.$route.params.status,
+                      selectDate: this.$route.params.selectDate,
+                      selectField: this.$route.params.field,
+                      search: this.$route.params.search,
                     }
+                },
+
+                mounted(){
+                  this.viewDetail(
+                    this.$route.params.showNum,
+                    this.$route.params.showDate);
+                },
+
+                methods:{
+                   viewDetail(num,showDate){
+                      
+                      axios.get('/moaplace.com/admin/show/schedule/detail/'+ num + '/'+ showDate).
+                      then(function(resp){
+                        resp.data
+                          this.detailInfo = resp.data.detailInfoDTO;
+                          this.timeInfo = resp.data.arrTime;
+                          console.log(resp.data.arrTime)
+                      }.bind(this));
+                    },
+                    goList(){
+                      this.$router.push({
+                        name:'adminShowScheduleList',
+                        params:{
+                          selectField:this.selectField,
+                          search:this.search,
+                          selectDate:this.selectDate,
+                          pageNum:this.pageNum,
+                          status:this.status
+                        }
+                      })
+                    },
+                    updateDetail(num,showDate){
+                      this.$router.push(
+                          {
+                          name:'adminShowScheduleUpdate',
+                          params:{
+                            showNum:num,
+                            showDate:showDate}});
+                      },
                 }
 
             }

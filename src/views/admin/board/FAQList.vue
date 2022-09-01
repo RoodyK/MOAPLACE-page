@@ -5,32 +5,25 @@
       <div class="inner">
         <h2 class="title">FAQ 관리</h2>
 
-        <div class="headerBox">
-          <select>
-            <option value="">전체</option>
-            <option name="faq_sort" value="공연">공연 관련</option>
-            <option name="faq_sort" value="대관">대관 관련</option>
-            <option name="faq_sort" value="예매">예매 관련</option>
-            <option name="faq_sort" value="관람">관람 관련</option>
-            <option name="faq_sort" value="회원">회원 관련</option>
-            <option name="faq_sort" value="기타">기타</option>
-          </select>
+        <div class="list-top">
+          <div class="top-1">
+            <select v-model="sort_num" @change="filterList()">
+              <option value="0"> 전체 </option>
+              <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
+                {{sort.sort_name}} 문의
+              </option>
+            </select>
+          </div>
 
-          <div class="searchBox">
-            <div class="custom-search">
-              <input
-                type="text"
-                class="custom-search-input"
-                placeholder="검색어를 입력하세요."
-              />
-            </div>
-            <!-- 신규등록 버튼 -->
-            <button
-              class="newBtn"
-              @click="$router.push({ name: 'adminFaqInsert' })"
-            >
-              등록하기
-            </button>
+          <div class="top-2">
+            <select v-model="field">
+              <option value="">검색구분</option>
+              <option value="faq_title">제목</option>
+              <option value="faq_content">내용</option>
+            </select>
+            <input type="text" v-model="newKeyword" @keyup.enter="searchList()">
+            <i class="material-icons"  @click="searchList()">search</i>
+            <button @click="$router.push({name:'adminFaqInsert'})">FAQ등록</button>
           </div>
         </div>
 
@@ -42,83 +35,187 @@
             <p>상세보기</p>
             <p>삭제</p>
           </div>
-          <div v-for="item in list" :key="item.num" class="t-row tbody">
-            <p>{{ item.num }}</p>
-            <p>{{ item.sort }}</p>
-            <p>{{ item.title }}</p>
+          <div v-for="i in list" :key="i" class="t-row tbody" 
+          @click="$router.push({name:'adminFaqDetail', params: {faq_num: i.faq_num}})">
+            <p>{{ i.rnum }}</p>
+            <p>{{ i.sort_name }} 문의 </p>
+            <p>{{ i.faq_title }}</p>
             <p>
-              <button @click="$router.push({ name: 'adminFaqDetail' })">
+              <button @click="$router.push({name:'adminFaqDetail', params: {faq_num: i.faq_num}})">
                 상세보기
               </button>
             </p>
-            <p><button>삭제</button></p>
+            <p @click.prevent="prevent($event)">
+              <button @click="deleteFaq(i.rnum, i.faq_num)">삭제</button>
+            </p>
           </div>
-          <ul class="paging">
-            <li>[이전]</li>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-            <li>5</li>
-            <li>[다음]</li>
-          </ul>
+
+          <!-- 리스트 내역 없을 때 -->
+          <div class="empty-list" v-if="list.length < 1">
+            <i class="material-symbols-outlined">info</i>
+            <p> FAQ 내역이 존재하지 않습니다. </p>
+          </div>
+
+          <!-- 페이징 -->
+          <div id="mypaging">
+            <p v-if="startPage>5"
+              @click="movePage(pageNum-1)" class="act">
+              [이전]
+            </p>
+            <p v-if="startPage<5" class="noActive"> [이전] </p>
+
+            <div v-for="index in ((endPage-startPage)+1)" :key="index">
+              <p :class="{active:startPage+(index-1)==pageNum}"
+                @click="movePage(startPage+(index-1))">
+                {{startPage+(index-1)}} 
+              </p>
+            </div>
+
+            <p v-if="endPage<pageCnt"
+              @click="movePage(pageNum+1)" class="act">
+              [다음] 
+            </p>
+            <p v-if="endPage>=pageCnt" class="noActive"> [다음] </p>
+          </div>
+
         </div>
       </div>
     </main>
   </div>
 </template>
-
-    <script>
+<script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import axios from '@/axios/axios.js'
+
 export default {
   components: {
     SideMenu,
   },
   data() {
     return {
-      list: [
-        {
-          num: "5",
-          sort: "예매",
-          title: "예매 내역은 어떻게 확인할 수 있나요?",
-          content:
-            "회원 로그인 후 마이페이지 예매내역 조회페이지에서 확인하실 수 있습니다.",
-        },
-        {
-          num: "4",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다. 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-        },
-        {
-          num: "3",
-          sort: "관람",
-          title: "공연장 내에 음식물 반입이 가능한가요?",
-          content:
-            "음식물은 일체 반입 금지되어 있습니다. 음식물은 공연장 밖에서 다 드신 후 객석으로 입장해 주시기 바랍니다.",
-        },
-        {
-          num: "2",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-        },
-        {
-          num: "1",
-          sort: "관람",
-          title: "공연 시작 몇 분 전부터 입장 가능한가요?",
-          content:
-            "일반적으로 공연시작 30분 전부터는 객석에 입장이 가능하며, 원활한 공연 진행을 위해 늦어도 공연시작 10분 전까지는 입장하여 주시기 바랍니다.",
-        },
-      ],
-    };
+      sort_list:[],
+      list: [],
+      field:'', // 검색필드
+      keyword:'', // 검색어
+      newKeyword:'', // 검색어 변경
+      pageNum: 1, // 현재 페이지
+      startPage:1, // 페이지 시작번호
+      endPage:1, // 페이지 마지막번호
+      pageCnt:1, // 전체 페이지 개수
+      sort_num:0 // 필터용 구분번호
+    }
   },
-};
+  created() {
+    if(this.$route.params.pageNum) {
+      this.pageNum = this.$route.params.pageNum;
+    }
+    if(this.$route.params.keyword) {
+      this.keyword = this.$route.params.keyword;
+      this.field = this.$route.params.field;
+    }
+    console.log(this.pageNum, this.field, this.keyword);
+    
+    this.sortList();
+    this.faqList(); // 리스트 불러오기
+  },
+  methods: {
+    async sortList() {
+      await axios.get('/moaplace.com/board/sort/list')
+                  .then(resp => {
+                    this.sort_list = resp.data;
+                  })
+                  .catch (error => {
+                    console.log(error);
+                  })
+    },            
+    async faqList() {
+      await axios.get("/moaplace.com/admin/faq/list", 
+                    { params:
+                      { pageNum: this.pageNum,
+                        field: this.field,
+                        keyword: this.keyword,
+                        sort_num: this.sort_num }
+                  })
+                  .then(resp => {
+                    this.list = resp.data.list // 리스트
+
+                    if(resp.data.field=='all'){
+                      this.field = ''
+                    } else {
+                      this.field = resp.data.field // 검색필드
+                    }
+
+                    this.keyword = resp.data.keyword, // 검색어
+                    this.newKeyword = resp.data.keyword, // 검색어 변경
+                    this.sort_num = resp.data.sort_num, // 필터용 구분번호
+                    this.pageNum = resp.data.pageNum, // 페이지 번호
+                    this.startPage = resp.data.startPage // 페이지 시작번호
+
+                    if(resp.data.endPage < 1){
+                      this.endPage = 1,
+                      this.pageCnt = 1
+                    } else {
+                      this.endPage = resp.data.endPage, // 페이지 마지막번호
+                      this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
+                    }
+                  }) 
+                  .catch (error => {
+                    console.log(error);
+                  })
+    },
+    searchList(){ // 리스트 검색
+      if(this.field=='' || this.field==null) {
+        alert('검색 구분을 선택하세요.')
+        return;
+      }
+      if(this.newKeyword=='' || this.newKeyword==null){
+        alert('검색어를 입력하세요.')
+        return;
+      } 
+      this.keyword = this.newKeyword; // 검색어 변경
+      this.pageNum = 1;
+      console.log(this.field, this.keyword, this.sort_num);
+
+      this.faqList();
+    },
+    filterList(){
+      this.pageNum = 1;
+      console.log(this.sort_num);
+
+      this.faqList();
+    },    
+    movePage(move){ // 페이지 이동
+      this.pageNum = move;
+      console.log(this.pageNum);
+
+      this.faqList();
+    },
+    async deleteFaq(rnum, faq_num){ // faq 삭제
+      if(confirm('FAQ '+rnum+'번을 삭제하시겠습니까?')){
+        await axios.post("/moaplace.com/admin/faq/delete/"+faq_num)
+                   .then(resp => {
+                      if(resp.data!='fail') {
+                        alert('FAQ가 삭제되었습니다.');
+                        this.faqList();
+
+                      } else {
+                        alert('FAQ 삭제를 실패하였습니다. 다시 시도해주세요.');
+                        return;
+                      }
+                    })
+                   .catch (error => {
+                      console.log(error);
+                    })
+      } else return;
+    },
+    prevent(e) {
+      e.stopPropagation();
+    }    
+  }
+}
 </script>
 
-    <style lang="scss" scoped="scoped">
+<style lang="scss" scoped="scoped">
 @import "@/scss/common.scss";
 //삭제필요
 $brown: #826d5e;
@@ -154,63 +251,56 @@ nav {
       }
     }
     // 관리자 페이지 레이아웃 관련 끝------------------
-    .headerBox {
-      display: flex;
+    .list-top {
+      width: 100%;
+      margin-bottom: 16px;
+      display:flex;
       justify-content: space-between;
-      margin-top: 50px;
-      margin-bottom: 10px;
+      font-size: 14px;
 
-      select {
-        width: 150px;
-        height: 40px;
-        border-color: #ccc;
-        padding: 0 28px 0 15px;
-        -webkit-appearance: none;
-        appearance: none;
-        background: url("../../../assets/board/arrow.png") no-repeat 95% 50%/20px
-          auto;
-      }
-      .custom-search {
-        width: 300px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1;
-        opacity: 1;
-      }
-      .custom-search-input {
-        width: 100%;
-        height: 100%;
-        border: 1px solid #ccc;
-        padding: 10px 50px 10px 20px;
-        outline: none;
-        background-image: url(@/assets/moaplace/search.png);
-        background-position: 260px center;
-        background-size: 25px 25px;
-        background-repeat: no-repeat;
-        padding-left: 20px;
+      .top-1 {
+        width:120px;
         box-sizing: border-box;
-        outline: none;
-      }
-      .searchBox {
-        display: flex;
-        .newBtn {
-          background-color: $black;
-          padding: 0 32px;
-          height: 40px;
-          border: none;
-          margin-left: 16px;
-          color: white;
-          transition: all 0.3s;
-
-          &:hover {
-            border: 1px solid $black;
-            background-color: white;
-            color: $black;
+        border: 1px solid rgba($black, 0.5);
+                        
+        & > select {
+          width:100%;
+          height: 100%;
+          padding:0 12px;
+          border:none;
           }
-        }
       }
+      .top-2 {
+        position: relative;
+        & > select {
+          position: absolute;
+          top: 50%;
+          right: 320px;
+          transform: translateY(-50%);
+          border:none;
+          padding-right: 4px;
+        }
+        input {
+          width: 300px;
+          box-sizing: border-box;
+          padding: 4px 48px 4px 100px;
+        }
+        & > i {
+          background: transparent;
+          position: absolute;
+          top: 4px;
+          right: 120px;
+          color: rgba($black, 0.9);
+          cursor:pointer;
+        }
+        button {
+          border: none;
+          padding: 6px 24px;
+          margin-left: 8px;
+          background-color: $black;
+          color:#eee;
+        }
+      } 
     }
 
     .list {
@@ -228,10 +318,10 @@ nav {
         &.tbody {
           padding: 16px 0;
           border-bottom: 1px solid rgba($black, 0.2);
-          // cursor: pointer;
-          // &:hover {
-          //     background: #eee;
-          // }
+          cursor: pointer;
+          &:hover {
+              background: #eee;
+          }
         }
         & > p,
         div {
@@ -261,19 +351,42 @@ nav {
           }
         }
       }
-      .paging {
+      .empty-list{
+        height: 160px;
         display: flex;
-        flex-flow: row wrap;
         justify-content: center;
-        margin-top: 32px;
-        li {
-          margin: 0 8px;
-          padding: 0 8px;
-          &:first-child,
-          &:last-child {
-            color: $brown;
-            font-weight: bold;
+        align-items: center;
+        border-bottom: 1px solid rgba($black, 0.1);
+        color: rgba($black, 0.7);
+        i{
+          margin-right:8px;
+        }
+      }
+      #mypaging{
+        display: flex;
+        justify-content: center;
+        margin: 32px 0;
+        align-items: center;
+
+        .act {
+          color: $brown;
+          font-weight: bold;
+        }
+        p {
+          padding : 0 6px;
+          margin: 0 6px;
+          color:$black;
+          cursor:pointer;
+
+        &.active {
+          color: #D67747;
+          font-weight: bold;
           }
+        }
+        .noActive {
+          color:rgba($black, 0.5);
+          cursor: default;
+          font-weight: bold;
         }
       }
     }

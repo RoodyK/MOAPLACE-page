@@ -45,27 +45,27 @@ export default {
         navigations:[
           {
             name: '통계관리',
-            href: '/',
+            href: '/moaplace.com/admin/show/chart',
             isActive: false,
             subMenu:[
               {
-                name:'대관 매출통계',
-                href:'/',
+                name: '공연 매출통계',
+                href: '/moaplace.com/admin/show/chart',
               },
               {
-                name:'공연 매출통계',
-                href:'/',
+                name: '대관 매출통계',
+                href: '/moaplace.com/admin/reserve/chart',
               }
             ]
           },
           {
             name: '회원관리',
-            href: '/',
+            href: '/moaplace.com/admin/member/info',
             isActive: false,
             subMenu:[
               {
-                name:'회원정보',
-                href:'/'
+                name: '회원정보',
+                href: '/moaplace.com/admin/member/info'
               }
             ]
           },

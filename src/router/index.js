@@ -16,7 +16,6 @@ import moaplaceGuideView3 from '../views/moaplace/GuideView3.vue'
 import moaplaceNaviView from '../views/moaplace/NaviView.vue'
 import moaplaceMoaNews from '../views/moaplace/MoaNews.vue'
 import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
-import moaplaceMoaUpdate from '../views/moaplace/MoaUpdate.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
 import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
@@ -56,8 +55,9 @@ import AdminQNADetailView from '@/views/admin/board/QNADetail.vue'
 import AdminNewsList from '@/views/admin/board/NewsList.vue'
 import AdminNewsDetail from '@/views/admin/board/NewsDetail.vue'
 import AdminNewsInsert from '@/views/admin/board/NewsInsert.vue'
+import AdminNewsUpdate from '@/views/admin/board/NewsUpdate.vue'
 import BookingSelect from '@/views/BookingSelect.vue'
-import BookingCnt from '@/views/BookingCntView.vue'
+import BookingCount from '@/views/BookingCountView.vue'
 import PaymentDone from '@/views/DoneView.vue'
 import SeatSelect from '@/views/SeatSelect.vue'
 import PaymentView from '@/views/PaymentView.vue'
@@ -69,6 +69,9 @@ import QNAListView from '@/views/board/QNAListView.vue'
 import QNAInsertView from '@/views/board/QNAInsertView.vue'
 import QNADetailView from '@/views/board/QNADetailView.vue'
 import QNAUpdateView from '@/views/board/QNAUpdateView.vue'
+import AdminMemberInfo from '@/views/admin/MemberInfoView.vue'
+import AdminRentalChart from '@/views/admin/RentalChartView.vue'
+import AdminShowChart from '@/views/admin/ShowChartView.vue'
 
 
 const routes = [
@@ -120,7 +123,7 @@ const routes = [
     component: FindPwdView
   },
   {
-    path: '/moaplace.com/users/login/newpassword',
+    path: '/moaplace.com/users/login/newpassword/:id',
     name: 'setNewPassword',
     component: SetNewPasswordView
   },
@@ -157,14 +160,9 @@ const routes = [
     component: moaplaceMoaNews
   },
   {
-    path: '/moaplace.com/moaplace/news/detail',
+    path: '/moaplace.com/moaplace/news/detail/:notice',
     name: 'moaplaceMoaDetail',
     component: moaplaceMoaDetail
-  },
-  {
-    path: '/moaplace.com/moaplace/news/update',
-    name: 'moaplaceMoaUpdate',
-    component: moaplaceMoaUpdate
   },
 
   // 공연목록
@@ -328,7 +326,7 @@ const routes = [
     component: AdminFAQListView
   },
   {
-    path: '/moaplace.com/admin/faq/detail',
+    path: '/moaplace.com/admin/faq/detail/:faq_num',
     name: 'adminFaqDetail',
     component: AdminFAQDetailView
   },
@@ -400,13 +398,15 @@ const routes = [
     name: 'adminTicketDetail',
     component: AdminTicketDetail
   },
+
+  //관리자 기능- 새소식
   {
     path: '/moaplace.com/admin/news/list',
     name: 'adminNewsList',
     component: AdminNewsList
   },
   {
-    path: '/moaplace.com/admin/news/detail',
+    path: '/moaplace.com/admin/news/detail/:member_num/:notice_num',
     name: 'adminNewsDetail',
     component: AdminNewsDetail
   },
@@ -414,6 +414,27 @@ const routes = [
     path: '/moaplace.com/admin/news/insert',
     name: 'adminNewsInsert',
     component: AdminNewsInsert
+  },
+  // 관리자 페이지 - 회원관리 / 공연, 대관 차트
+  {
+    path: '/moaplace.com/admin/member/info',
+    name: 'adminMemberInfo',
+    component: AdminMemberInfo
+  },
+  {
+    path: '/moaplace.com/admin/reserve/chart',
+    name: 'adminReserveChart',
+    component: AdminRentalChart
+  },
+  {
+    path: '/moaplace.com/admin/show/chart',
+    name: 'adminShowChart',
+    component: AdminShowChart
+  },
+  {
+    path: '/moaplace.com/admin/news/update/:notice',
+    name: 'AdminNewsUpdate',
+    component: AdminNewsUpdate
   },
 
   // 예매페이지
@@ -423,14 +444,14 @@ const routes = [
     component: BookingSelect
   },
   {
-    path: '/moaplace.com/booking/seat',
+    path: '/moaplace.com/booking/seat/:num',
     name: 'bookinseat',
     component: SeatSelect
   },
   {
     path: '/moaplace.com/booking/count',
     name: 'bookingCount',
-    component: BookingCnt
+    component: BookingCount
   },
   {
     path: '/moaplace.com/booking/payment',

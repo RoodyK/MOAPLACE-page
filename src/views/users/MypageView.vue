@@ -160,15 +160,52 @@ export default {
   },
   created(){
 
-    this.member = this.$store.state.mypage.member;
+    
 
-    // 적립금 천단위 콤마형식으로 변환
-    var point = this.member.point;
-    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    console.log(this.member);
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    // 로그인 여부 확인
+    if(token == null) {
+      this.$router.push('/moaplace.com/');
+      return;
+    }
 
-    // 가장 최근 예매내역, 대관내역 1건씩 조회
-    this.getUserData();
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      // 가장 최근 예매내역, 대관내역 1건씩 조회
+      this.getUserData();
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
 
   },
   mounted(){
@@ -177,12 +214,13 @@ export default {
 
     async getUserData() {
       try {
-        await axios.get('/moaplace.com/users/mypage/' + this.$store.state.mypage.member.num
+        await axios.get('/moaplace.com/users/mypage/' + this.member.num
         ).then(function(resp){
 
           if(resp.status == 200) {
 
             this.bkExist = resp.data.bkExist; // 예매내역 존재여부
+            console.log("bkExist:",this.bkExist);
             if(this.bkExist) {
               this.bkDto = resp.data.bkDto; // 가장 최근 예매내역
               
@@ -198,11 +236,6 @@ export default {
               var price = this.bkDto.booking_price;
               this.bkDto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-              // 썸네일 Blob 변환해서 저장 (수정중)
-              var bytes, blob;
-              bytes = new Uint8Array(this.bkDto.show_thumbnail.blob);
-              blob = new Blob([bytes], {type:'image'});
-              this.bkDto.show_thumbnail = URL.createObjectURL(blob);
             }
 
             this.rtExist = resp.data.rtExist; // 대관내역 존재여부

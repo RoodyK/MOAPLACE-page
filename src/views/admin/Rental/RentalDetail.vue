@@ -7,7 +7,7 @@
 
                 <div class="state-box"  v-if="exists">
                     <span>진행 상황</span>
-                    <select v-model = "details.rental_state">
+                    <select v-model = "details.rental_state" @change="changeState('state')">
                         <option v-for="state in states" :key="state" :value="state">
                             {{state}}
                         </option>
@@ -37,7 +37,7 @@
                 <div class="info-box">
                     <h3>공연 정보</h3>
                     <div>
-                        <table  v-if="exists">
+                        <table v-if="exists">
                             <tr>
                                 <th>공연명</th>
                                 <td>{{details.rental_title}}</td>
@@ -48,16 +48,42 @@
                             </tr>
                             <tr>
                                 <th>대관희망일자</th>
-                                <td>{{details.rental_date}}</td>
+                                <td>
+                                    <div class="editalble-box" v-if="dateEdit">
+                                        <span>{{details.rental_date}}</span>
+                                        <div>
+                                            <button @click="dateEdit = false">수정</button>
+                                        </div>
+                                    </div>
+                                    <div  class="editalble-box" v-if="!dateEdit">
+                                        <input type="date" v-model="updateDate" :min="getToday()">
+                                        <div>
+                                            <button @click="changeState('date'), dateEdit = true">저장</button>
+                                            <button  @click="dateEdit = true">취소</button>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>대관시작시간</th>
                                 <td>
-                                    <select v-model="details.rental_time">
-                                        <option v-for="time in times" :key="time" :value="time">
-                                            {{time}}
-                                        </option>
-                                    </select>
+                                    <div class="editalble-box" v-if="timeEdit">
+                                        <span>{{details.rental_time}}</span>
+                                        <div>
+                                            <button @click="timeEdit = false">수정</button>
+                                        </div>
+                                    </div>
+                                    <div class="editalble-box" v-if="!timeEdit">
+                                        <select v-model="updateTime">
+                                            <option v-for="time in times" :key="time" :value="time">
+                                                {{time}}
+                                            </option>
+                                        </select>
+                                        <div>
+                                            <button @click="changeState('time'), timeEdit = true">저장</button>
+                                            <button  @click="timeEdit = true">취소</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -68,7 +94,7 @@
                                 <th>첨부파일</th>
                                 <td>
                                     <a href="#">{{details.rental_originfilename}}</a>
-                                    <span>{{formatBytes(details.rental_filesize)}}</span>
+                                    <span class="filesize">({{formatBytes(details.rental_filesize)}})</span>
                                 </td>
                             </tr>
                             <tr>
@@ -87,15 +113,8 @@
                     </div>
                 </div>
 
+                <RentalAnswer/>
                 
-                <div class="answer-box">
-                    <h3>답변</h3>
-                    <TextEditor height="300" v-model:content="answer_content" contentType="html"></TextEditor>
-                </div>
-                <div class="btn-box">
-                    <button>이전</button>
-                    <button>저장</button>
-                </div>
             </div>
         </main>
     </div>
@@ -103,13 +122,13 @@
 
 <script>
     import SideMenu from '@/components/admin/SideMenu.vue'
-    import TextEditor from '@/components/TextEditor.vue'
+    import RentalAnswer from '@/components/admin/RentalAnswer.vue'
     import axios from '@/axios/axios.js'
 
     export default {
         components: {
             SideMenu,
-            TextEditor
+            RentalAnswer
         },
         data() {
             return {
@@ -133,33 +152,52 @@
                     '서류심사',
                     '신청거절',
                     '입금대기',
+                    '입금완료',
                     '예약취소',
                     '사용완료'
                 ],
                 details:[],
-                answer_content: "",
                 exists : true,
+                dateEdit : true,
+                timeEdit : true,
+                updateDate : "", //날짜 수정시 전달될 정보
+                updateTime : "", //시간 수정시 전달될 정보
             }
         },
-        mounted(){
-            console.log("rental_num : " + this.$route.params.id );
-            this.getDetail();
+        created(){
+            this.getDetail();            
+        },
+        computed:{
+            setRentalNum(){
+                return this.details.rental_num;
+            }
         },
         methods:{
             getDetail(){
-                let rental_num = this.$route.params.id
+                let rental_num = this.$route.params.id;
                 axios
                     .get(`/moaplace.com/admin/rental/detail/${rental_num}`)
                     .then(function(resp){
                         if(resp.data.result == 'success'){
+        
                             this.details  = resp.data.vo;
-                            console.log(this.details);
+                            this.updateDate = this.details.rental_date;
+                            this.updateTime = this.details.rental_time;
+        
                         }else{
-                            this.exists = false;
+                            this.exists = false; //존재하지 않는 신청서일 때
                         }
                     }
                     .bind(this)
                 )
+            },
+            getToday(){
+                let today = new Date();
+                let year = today.getFullYear();
+                let month = today.getMonth()+1;
+                let date = today.getDate();
+
+                return year + "-" + (month >=10 ? month :'0' + month) + "-" + (date >=10 ? date : '0' + date); 
             },
             formatBytes(bytes, decimals = 2) {
                 //파일 크기 변환
@@ -179,15 +217,47 @@
                     case 2 : return "오케스트라홀"; 
                     case 3 : return "아트홀"; 
                 }
-            }
+            },
+            changeState(column){
+                let state = "";
+                switch(column)
+                {
+                    case "date": state = this.updateDate; break;
+                    case "time": state = this.updateTime; break;
+                    case "state" : state = this.details.rental_state; break;
+                }
+                axios
+                    .get(`/moaplace.com/admin/rental/update/${column}/${this.details.rental_num}/${state}`)
+                    .then(function(resp){
+                        if(resp.data == 'success'){
+                            if(column == "date")
+                            {
+                                alert( "대관희망 일자 변경을 완료했습니다."); 
+                                this.details.rental_date = this.updateDate;
+                            }
+                            else if(column == "time")
+                            {
+                                alert( "대관시간 변경을 완료했습니다.");
+                                this.details.rental_time = this.updateTime;
+                            }else if(column == "state"){
+                                alert( "진행상태 변경을 완료했습니다.");
+                            }
+                            
+                        }else{
+                            alert( "수정을 실패했습니다.");    
+                        }
+                    }
+                    .bind(this)
+                );
+            },
+            
         }
     }
 </script>
 
 <style lang="scss" scoped="scoped">
     @import "@/scss/common.scss";
-    //삭제필요
-    $brown: #826D5E;
+
     nav {
         display: none !important;
     }
@@ -242,7 +312,7 @@
                     font-size: 20px;
                     margin-bottom: 16px;
                 }
-                div {
+                & > div {
                     border-top: 1px solid $black;
                     padding-top: 16px;
                     table {
@@ -256,44 +326,45 @@
                             th {
                                 padding: 8px 16px;
                                 border-bottom: 1px solid rgba($black, 0.3);
+                                .filesize{
+                                    font-size: 14px;
+                                    padding-left: 8px;
+                                }
+                                input[type="date"]{
+                                    padding-left: 8px;
+                                }
                             }
                             th {
                                 width: 15%;
                                 background: #eee;
                                 text-align: center;
                             }
-
+                            .editalble-box{
+                                display: flex;
+                                align-items: center;
+                                & > *:first-child{
+                                    margin-right: 8px;
+                                }
+                                button{
+                                    border: none;
+                                    padding: 4px 16px;
+                                    background: $brown;
+                                    color: #fff;
+                                    & + button{
+                                        margin-left: 8px;
+                                        background: rgba($black, 0.5);
+                                    }
+                                }
+                                select{
+                                    padding: 5px 8px;
+                                }
+                            }
                         }
                     }
                 }
 
             }
-            .answer-box {
-                margin-bottom: 32px;
-                h3 {
-                    font-size: 20px;
-                    margin-bottom: 16px;
-                }
-                textarea {
-                    width: 100%;
-                    border-color: rgba($black, 0.3);
-                    padding: 16px;
-                }
-            }
-            .btn-box {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                button {
-                    width: calc((100% - 16px) /2);
-                    padding: 12px 0;
-                    border: none;
-                    &:last-child {
-                        background-color: $brown;
-                        color: #fff;
-                    }
-                }
-            }
+            
         }
 
     }

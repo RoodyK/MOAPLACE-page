@@ -1,7 +1,7 @@
 <template>
   <div class="containers">
     <AppHeader />
-    <SideVisual menu="MOA PLACE" img="moa" title="새소식"/>
+    <SideVisual menu="MOA PLACE" img="moa" title="새소식" />
     <div class="title inner_wrap">
       <p class="tit">새소식</p>
       <p class="txt">
@@ -11,27 +11,68 @@
     <div class="con">
       <div class="inner_wrap">
         <div class="header">
-          <div class="header_tit">[말머리]제모오오오오옥...</div>
+          <div class="header_tit">
+            [{{ this.sort_name }}]{{ this.notice_title }}
+          </div>
           <div class="header_txt">
             <div class="inner">
+              <div>
+                <div class="inner-tit">작성일</div>
+                <div>{{ this.notice_regdate }}</div>
+              </div>
+              <div>
+                <div class="inner-tit">조회수</div>
+                <div>{{ this.notice_hit }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="header_txt">
+            <div class="inner2">
               <div>첨부파일</div>
-              <div>..........파일명.....</div>
+              <div>
+                <ul>
+                  <li v-for="(list, index) in filelist" :key="index">
+                    <button @click.prevent="download(list.notice_detail_num)">
+                      <img src="@/assets/admin/download.png" />
+                    </button>
+                    {{ list.notice_orgfile }}
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="inner2">
-              <div>작성일</div>
-              <div>2022-08-11</div>
-            </div>
-            <div class="inner2">
-              <div>조회수</div>
-              <div>1</div>
+          </div>
+          <div class="content">
+            <div class="content-box">
+              <TextEditor
+                height="300"
+                v-html="this.notice_content"
+              ></TextEditor>
             </div>
           </div>
         </div>
-        <div class="content">내용</div>
         <div class="pageinfo">
           <ul class="pagenation">
-            <li>이전글<a href="">이전 글 내용입니다.</a></li>
-            <li>다음글<a href="">다음 글 내용입니다.</a></li>
+            <li v-if="this.next1 == null" class="disabled">
+              <span>다음글</span> <span>다음글이 없습니다</span>
+            </li>
+            <li
+              v-if="this.next1 != null"
+              class="abled"
+              @click="gonext(next1_num)"
+            >
+              <span>다음글</span> <span>{{ this.next1.notice_title }}</span>
+            </li>
+            <li v-if="this.prev1 == null" class="disabled">
+              <span>이전글</span> <span>이전글이 없습니다</span>
+            </li>
+
+            <li
+              v-if="this.prev1 != null"
+              class="abled"
+              @click="goprev(prev1_num)"
+            >
+              <span>이전글</span> <span>{{ this.prev1.notice_title }}</span>
+            </li>
           </ul>
         </div>
         <div class="footer">
@@ -52,12 +93,109 @@
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import SideVisual from "@/components/SideVisual.vue";
+import axios from "@/axios/axios.js";
 
 export default {
   components: {
     AppHeader,
     AppFooter,
     SideVisual,
+  },
+  data() {
+    return {
+      notice_num: "",
+      notice_title: "",
+      notice_content: "",
+      notice_detail_num: "",
+      notice_regdate: "",
+      notice_hit: "",
+      sort_name: "",
+      filelist: [],
+      next1_num: "",
+      next1: {},
+      prev1: {},
+    };
+  },
+  created() {
+    this.notice_num = this.$route.params.notice;
+    console.log("created: ", this.notice_num);
+    this.getdetail();
+  },
+
+  methods: {
+    getdetail() {
+      console.log("메소드 notice_num", this.notice_num);
+      console.log("메소드 notice_detail_num", this.notice_detail_num);
+      axios.get(`/moaplace.com/moaplace/news/detail/${this.notice_num}`).then(
+        function (resp) {
+          this.filelist = resp.data.filelist;
+          this.notice_title = resp.data.notice_title;
+          this.notice_content = resp.data.notice_content;
+          this.selected = resp.data.sort_num;
+          this.sort_name = resp.data.sort_name;
+          this.notice_regdate = resp.data.notice_regdate;
+          this.notice_hit = resp.data.notice_hit;
+
+          this.next1 = resp.data.next;
+          this.prev1 = resp.data.prev;
+
+          /* 다음글 정보가 null 값인지 확인*/
+
+          console.log("다음글정보:", resp.data.next);
+
+          console.log("날짜", this.notice_regdate);
+
+          console.log("파일리스트", this.filelist);
+          console.log("이전글정보:", resp.data.prev);
+        }.bind(this)
+      );
+    },
+    gonext() {
+      if (this.next1 != null) {
+        axios
+          .get(`/moaplace.com/moaplace/news/detail/${this.next1.notice_num}`)
+          .then(
+            function (resp) {
+              this.filelist = resp.data.filelist;
+              this.notice_title = resp.data.notice_title;
+              this.notice_content = resp.data.notice_content;
+              this.selected = resp.data.sort_num;
+              this.sort_name = resp.data.sort_name;
+              this.notice_regdate = resp.data.notice_regdate;
+              this.notice_hit = resp.data.notice_hit;
+
+              this.next1 = resp.data.next;
+              this.prev1 = resp.data.prev;
+              console.log("페이지 이동 성공", resp.data);
+            }.bind(this)
+          );
+      }
+    },
+    goprev() {
+      if (this.prev1 != null) {
+        axios
+          .get(`/moaplace.com/moaplace/news/detail/${this.prev1.notice_num}`)
+          .then(
+            function (resp) {
+              this.filelist = resp.data.filelist;
+              this.notice_title = resp.data.notice_title;
+              this.notice_content = resp.data.notice_content;
+              this.selected = resp.data.sort_num;
+              this.sort_name = resp.data.sort_name;
+              this.notice_regdate = resp.data.notice_regdate;
+              this.notice_hit = resp.data.notice_hit;
+
+              this.next1 = resp.data.next;
+              this.prev1 = resp.data.prev;
+              console.log("페이지 이동 성공", resp.data);
+            }.bind(this)
+          );
+      }
+    },
+    download(notice_detail_num) {
+      console.log("파일넘버:", notice_detail_num);
+      window.location = `http://localhost:9090/moaplace.com/admin/news/file/download/${notice_detail_num}`;
+    },
   },
 };
 </script>
@@ -94,37 +232,44 @@ $brown: #826d5e;
   .inner_wrap {
     width: 1100px;
     .header {
-      padding: 10px 15px;
       .header_tit {
         border-top: 2px solid $black;
         border-bottom: 2px solid rgba($black, 0.5);
         font-size: 25px;
         font-weight: 700;
-        padding: 15px 15px;
-        margin-left: 5px;
+        padding: 15px 20px;
       }
       .header_txt {
         display: flex;
-        justify-content: space-between;
-        padding: 15px 20px;
-        font-size: 17px;
+        // justify-content: space-between;
+        padding: 10px 20px;
         border-bottom: 1px solid rgba($black, 0.5);
         .inner {
           display: flex;
+          .inner-tit {
+            font-weight: bold;
+          }
+
           div:first-child {
-            font-weight: 700;
+            width: 30%;
+            display: contents;
           }
           div:last-child {
-            width: 400px;
-            margin-left: 20px;
-            margin-right: 200px;
+            margin-left: 16px;
+            display: flex;
+            & > div {
+              width: 500px;
+            }
           }
         }
         .inner2 {
-          display: flex;
+          display: contents;
           div:first-child {
-            font-weight: 700;
-            margin-right: 16px;
+            font-weight: bold;
+          }
+          button {
+            background: none;
+            border: none;
           }
         }
       }
@@ -133,17 +278,37 @@ $brown: #826d5e;
       height: auto;
       min-height: 400px;
       border-bottom: 1px solid rgba($black, 0.5);
-      padding: 10px 30px;
-      margin-left: 10px;
+      padding: 15px 20px;
+      .content-box {
+        width: 100%;
+        border: 1px solid rgba($black, 0.3);
+        padding: 8px;
+        border: none;
+        ::v-deep img {
+          max-width: 100%;
+        }
+      }
     }
     .pageinfo {
       border-bottom: 1px solid rgba($black, 0.5);
-      padding: 10px 0 0 0;
       .pagenation {
         list-style: none;
+        margin: 0;
+        padding: 8px 20px;
+
         li {
           display: flex;
           padding: 3px 0;
+          cursor: pointer;
+          &:hover {
+            /* 자기자신 */ /* &:first-child */
+            color: $brown;
+          }
+
+          &.disabled {
+            color: rgba($black, 0.5);
+            cursor: default;
+          }
 
           &:first-child {
             &::before {
@@ -164,18 +329,14 @@ $brown: #826d5e;
               background-size: 100%;
             }
           }
+          span {
+            padding: 4px 8px;
+          }
 
           a {
             padding: 0 8px;
             text-decoration: none;
             color: $black;
-          }
-          &:hover {
-            /* 자기자신 */ /* &:first-child */
-            color: $brown;
-            a {
-              color: $brown;
-            }
           }
         }
       }
@@ -184,7 +345,7 @@ $brown: #826d5e;
       padding: 20px 0;
       button {
         float: right;
-        margin-right: 5px;
+        margin-top: 8px;
         padding: 10px 25px;
         background-color: $brown;
         color: white;

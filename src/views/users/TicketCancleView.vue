@@ -79,7 +79,7 @@
           </div>
           <div class="text-center btnmargin">
             <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">이전</button>
-            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2" @click.prevent="pwdCheck()">예매취소</button>
+            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2" @click.prevent="cancleOk()">예매취소</button>
           </div>
           <div class="desc">
             <p class="desctitle brown fw-bold">결제수단별 환불 방법</p>
@@ -137,24 +137,62 @@ export default {
       dto : {},
       pwd : '',
 
+      // 인증된 접근인지 체크
+      userAuth : false,
+
     }
   },
   created(){
 
-    this.member = this.$store.state.mypage.member;
+    // this.member = this.$store.state.mypage.member;
 
-    this.booking_num = this.$route.params.booking_num;
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
 
-    // 적립금 천단위 콤마형식으로 변환
-    var point = this.member.point;
-    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
 
-    this.getData();
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_gender,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      this.getData();
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
 
   },
   methods:{
 
     async getData() {
+
+      this.booking_num = this.$route.params.booking_num;
+
       try {
         await axios.get('/moaplace.com/users/mypage/ticket/cancle/'
           + this.booking_num
@@ -162,16 +200,35 @@ export default {
 
           if(resp.status == 200) {
 
-            this.dto = resp.data.dto;
+            // 1. 예매번호 넘기고 회원번호 받아와서 로그인한 회원의 예매정보인지 체크
+            // 2. 예매취소 가능한 상태인지 체크
+            var member_num = resp.data.member_num;
 
-            var regdate = new Date(this.dto.regdate);
-            this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+            if(member_num == this.member.num) {
+              console.log("받아온 회원번호 : " + member_num);
+              this.userAuth = true;
 
-            var schedule_date = new Date(this.dto.schedule_date);
-            this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+              if(resp.data.cancle == true) {
+                this.dto = resp.data.dto;
 
-            var price = this.dto.booking_price;
-            this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+                var regdate = new Date(this.dto.regdate);
+                this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
+
+                var schedule_date = new Date(this.dto.schedule_date);
+                this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
+
+                var price = this.dto.booking_price;
+                this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+              
+              } else {
+                alert('잘못된 접근입니다. (취소 불가능한 예매내역에 접근)');
+                this.$router.push('/moaplace.com/');
+              }
+
+            } else {
+              alert('잘못된 접근입니다. (다른 회원의 예매내역에 접근)');
+              this.$router.push('/moaplace.com/');
+            }
 
           } else {
             alert('ticket cancle 에러');
@@ -183,39 +240,35 @@ export default {
       }
     },
 
-    pwdCheck() {
-
-      console.log(this.pwd);
+    // 비밀번호 체크 + 맞으면 예매취소 실행하는 메소드
+    cancleOk() {
+      console.log("입력한 패스워드 : ", this.pwd);
       console.log(this.$store.state.mypage.member.pwd);
 
-      if(this.pwd == this.$store.state.mypage.member.pwd) {
-
-        this.cancleOk();
-
-      } else {
-
-        alert('비밀번호가 틀렸습니다.');
-
+      const cancleData = {
+        booking_num : this.booking_num,
+        member_id : this.member.id,
+        member_pwd : this.pwd
       }
 
-    },
-
-    // 비밀번호 맞으면 예매취소 실행하는 메소드
-    cancleOk() {
-      axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(this.booking_num), {
+      axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(cancleData), {
         headers: {
           "Content-Type": `application/json`,
         }
       }).then((resp) => {
+
         if(resp.data == "success") {
 
           alert('예매취소가 완료되었습니다.');
           this.$router.push('/moaplace.com/users/mypage/ticket/list');
 
-        } else {
-          alert('cancleOk() 에러');
+        } else if(resp.data == "failA") {
+          alert('비밀번호는 일치하지만 업데이트가 정상적으로 되지 않았습니다.');
+        } else if(resp.data == "failB") {
+          alert('비밀번호가 일치하지 않습니다.');
         }
-      })
+      });
+
     }
 
   }

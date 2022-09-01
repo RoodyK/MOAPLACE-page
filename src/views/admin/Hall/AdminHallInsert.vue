@@ -33,17 +33,22 @@
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td colspan="3"><input type="date" v-model="regdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="regdate" @change="addStartDate">
+                </td>
             </tr>
             <tr>
               <th>공연종료일</th>
-              <td colspan="3"><input type="date" v-model="appdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="appdate" @change="addEndDate">
+                </td>
             </tr>
             <tr>
               <th>러닝타임</th>
-              <td><input type="text" v-model.number="runningTime" class="rntime">분</td>
+              <td><input type="text" v-model="runningTime" maxlength="3" class="rntime">
+              <p class="unitP">분</p></td>
               <th>인터미션</th>
-              <td><input type="text" v-model.number="intermission" class="rntime">분</td>
+              <td><input type="text" v-model="intermission" maxlength="3" class="rntime"><p class="unitP">분</p></td>
             </tr>
             <tr>
               <th>상연등급</th>
@@ -62,19 +67,22 @@
             <tr>
               <th>R석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="rPrice" class="seatPrice">원
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatRPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>S석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="sPrice" class="seatPrice">원
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatSPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>A석 가격</th>
               <td colspan="3">
-                <input type="text" v-model.number="aPrice" class="seatPrice">원
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatAPrice($event.currentTarget)">
+                <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
@@ -94,8 +102,14 @@
           </table>
         </div>
         <div class="btnBox">
-          <button @click="goList">취소</button>
-          <button @click="postInsert">등록</button>
+          <button @click="goList">
+            취소</button>
+          <button @click="postInsert(
+            this.pageNum,
+            this.status,
+            this.field,
+            this.search)">
+            등록</button>
         </div>
       </div>
     </main>
@@ -120,9 +134,9 @@
           gValue:'전체관람가',
           grade:[
             {text:'전체관람가',value:'전체관람가'},
-            {text:'12세 관람가',value:'12세'},
-            {text:'15세 관람가',value:'15세'},
-            {text:'청소년 관람불가',value:'청소년'},
+            {text:'12세 관람가',value:'12세 관람가'},
+            {text:'15세 관람가',value:'15세 관람가'},
+            {text:'청소년 관람불가',value:'청소년관람불가'},
           ],
           yornValue:'Y',
           rPrice:'',
@@ -130,24 +144,38 @@
           aPrice:'',
           yorn:[{text:'진행중',value:'Y'},{text:'상연중지',value:'N'}],
           thumb:'',
-          detailImgs:[]
+          detailImgs:[],
+          selectField: this.$route.params.field,
+          search: this.$route.params.search,
+          pageNum: this.$route.params.pageNum,
+          status: this.$route.params.status
         }
       },
+
+      filters:{
+        comma(val){
+          return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      },
+
       watch:{
-        runningTime(newV){
-          if(isNaN(newV)){
-            alert('숫자만 입력하세요');
-            this.runningTime='';
+        runningTime(newV,oldV){
+
+          if(newV.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.runningTime=oldV;
           }
         },
-        intermission(newV){
-          if(isNaN(newV)){
-            alert('숫자만 입력하세요');
-            this.runningTime='';
+        intermission(newV,oldV){
+
+          if(newV.search(/[^0-9]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            this.intermission=oldV;
           }
         }
       },
       methods:{
+
         thumbGo(e){
           let fr = new FileReader();
 
@@ -170,59 +198,112 @@
         },
 
         postInsert(){
-          // let formData=new FormData();
-          // formData.append('thumb',this.thumb);
-          // for(let i=0;i<this.detailImgs.length;i++){
-          //   formData.append('details',this.detailImgs[i]);
-          // }
-          // formData.append('dto',);
-        axios.post(
-          '/moaplace.com/admin/show/insertShow',
-          JSON.stringify(
-            {
-            genre_num:this.genre,
-            hall_num:this.hall,
-            show_name:this.title,
-            show_start:this.regdate,
-            show_end:this.appdate,
-            show_check:this.yornValue,
-            show_age:this.gValue,
-            intermission:this.intermission,
-            running_time:this.runningTime,
-            show_thumbnail:this.thumb,
-            show_detail_img:this.detailImgs,
-            rprice: this.rPrice,
-            sprice: this.sPrice,
-            aprice: this.aPrice
-          }),
-          {
-            headers:{'Content-Type':'application/json'},
-          }
-          ).then(function(resp){
-            if(resp.data.result==true){
-              alert('공연정보 등록됨')
-              this.goList()
-            }else{
-              alert('공연정보 등록 실패')
-            }
 
-          }.bind(this)).
-          catch(function(error){
-            if(error.response){
-              alert('공연정보를 모두 입력하세요')
+          axios.post(
+            '/moaplace.com/admin/show/insert',
+              JSON.stringify(
+                {
+                  genre_num:this.genre,
+                  hall_num:this.hall,
+                  show_name:this.title,
+                  show_start:this.regdate,
+                  show_end:this.appdate,
+                  show_check:this.yornValue,
+                  show_age:this.gValue,
+                  intermission:this.intermission,
+                  running_time:this.runningTime,
+                  show_thumbnail:this.thumb,
+                  show_detail_img:this.detailImgs,
+                  rprice: this.rPrice.replace(/(,)/g,""),
+                  sprice: this.sPrice.replace(/(,)/g,""),
+                  aprice: this.aPrice.replace(/(,)/g,""),
+                  pageNum:this.pageNum,
+                  status:this.status,
+                  field:this.selectField,
+                  search:this.search
+                }),
+            {
+              headers:{'Content-Type':'application/json'},
             }
-          })
+            ).then(function(resp){
+              if(resp.data.result==true){
+                alert('공연정보 등록됨')
+                this.status = resp.data.status;
+                this.selectField = resp.data.selectField;
+                this.search = resp.data.search;
+                this.pageNum = resp.data.pageNum;
+                this.goList()
+              }else{
+                alert('공연정보 등록 실패')
+              }
+
+            }.bind(this)).
+            catch(function(error){
+              if(error.response){
+                alert('공연정보를 모두 입력하세요')
+              }
+            })
       },
       goList(){
+
         this.$router.push({
           name:'adminHallInfoList',
           params:{
-            selectField:'hall',
-            search:'',
-            pageNum:1
+            selectField:this.selectField,
+            search:this.search,
+            pageNum:this.pageNum,
+            status:this.status
           }
           })
+        },
+        addStartDate(){
+          if(this.regdate < new Date().toISOString().substr(0, 10)){
+            alert("공연시작일은 현재 날짜보다 앞으로 설정할 수 없습니다.")
+            this.regdate=new Date().toISOString().substr(0, 10)
+          }
+        },
+        addEndDate(){
+          if(this.appdate < this.regdate){
+            alert("공연종료일은 공연시작일보다 뒤의 날짜여야 합니다.")
+            this.appdate=''
+          }
+
+        },
+        seatRPrice(e){
+
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.rPrice = e.value.replace(/(,)/g,"")
+          }
+        },
+        seatSPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value = e.value.replace(/(,)/g,"");
+            e.value = e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.sPrice = e.value.replace(/(,)/g,"")
+          }
+        },
+        seatAPrice(e){
+          
+          if(e.value.search(/[^0-9(,)]/g)!=-1){
+            alert('숫자(정수)만 입력하세요');
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
+          }else{
+            e.value=e.value.replace(/(,)/g,"");
+            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.aPrice = e.value.replace(/(,)/g,"")
+          }
         }
+        
+
     }
   }
 </script>
@@ -276,13 +357,28 @@
                       margin-right: 16px;
                       border: none;
                       }
+                      .rntime{
+                          width:56px;
+                          text-align: right;
+                          padding-right: 8px;
+                        }
+                      .seatPrice{
+                        width:104px;
+                        text-align: right;
+                        padding-right: 8px;
+                      }
                       input[type=text] {
                         border: 1px solid gainsboro;
+                        
                       }
                       img{
                         width: 240px;
                         display: block;
                         margin-top:8px;
+                      }
+                      .unitP{
+                        display: inline;
+                        margin-left: 8px;
                       }
                     }
                     &:nth-child(3){

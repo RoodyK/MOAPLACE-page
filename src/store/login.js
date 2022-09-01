@@ -15,6 +15,9 @@ export default {
   // methods 역할
   // state의 값을 변경해주는 용도 commit()을 사용해서 실행
   mutations: {
+    loginState(state){
+      state.isLogin = true;
+    },
     loginSuccess(state, payload) {
       state.isLogin = true;
       state.userInfo = payload
@@ -30,6 +33,7 @@ export default {
   },
   // method 역할
   actions: {
+    // 일반회원 로그인
     async memberLogin({ dispatch }, payload) {
       const login = {
         member_id: payload.id,
@@ -45,7 +49,6 @@ export default {
         });
 
         let token = response.data.token;
-          // console.log("토큰", token)
           // localStorage에 토큰 저장
           localStorage.setItem("access_token", token);
           // 회원정보 읽어들이기
@@ -55,19 +58,43 @@ export default {
         alert('아이디와 비밀번호를 다시 확인하세요.')
       }
     },
+    // 카카오 로그인
+    async kakaoLogin({ dispatch }, payload) {
+      const { member_id, authority, member_email } = payload;
+
+      const info = {
+        member_id: member_id,
+        member_email: member_email,
+        authority: authority
+      }
+
+      try {
+        const response = await axios.post("/moaplace.com/users/login/api/result",
+        JSON.stringify(info), {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        let token = response.data.token;
+          // localStorage에 토큰 저장
+          localStorage.setItem("access_token", token);
+          // 회원정보 읽어들이기
+          await dispatch('getMemberRoles');
+          router.push('/moaplace.com');
+      }catch(error) {
+        alert('로그인중 에러가 발생했습니다.');
+        router.push("/moaplace.com/users/login");
+      }
+    },
+    // 사용자 권한 얻어오기
     async getMemberRoles({commit}) {
       
       let token = localStorage.getItem("access_token");
       if(token == null) return;
 
-      const config = {
-        headers: {
-          "Authorization" : token
-        }
-      }
-
       try {
-        const response = await axios.get("/moaplace.com/users/login/member/role", config);
+        const response = await axios.get("/moaplace.com/users/login/member/role");
         let data = response.data.roles;
 
         if(data == "ROLE_MEMBER") {
@@ -77,6 +104,7 @@ export default {
         }
 
         commit('updateRoles', data);
+        commit('loginState');
       }catch(error) {
         console.log(error)
       }
@@ -86,15 +114,8 @@ export default {
       let token = localStorage.getItem("access_token");
       if(token == null) return;
 
-      //헤더 설정
-      const config = {
-        headers: {
-          "Authorization" : token
-        }
-      }
-
       try {
-        const response = await axios.get("/moaplace.com/users/login/member/info", config);
+        const response = await axios.get("/moaplace.com/users/login/member/info");
 
         let data = response.data;
         // console.log(response.data);
@@ -121,8 +142,15 @@ export default {
       }
 
     },
+    checkLogin({commit}) {
+      const token = localStorage.getItem("access_token");
+      if(token == null) return;
+
+      commit('loginState');
+    },
     logout({commit}) {
       localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
       commit('logout');
       router.push("/moaplace.com");
     },
