@@ -64,7 +64,9 @@
                 <tr>
                   <th class="col-md-2 text-center descth">첨부파일</th>
                   <td class="desctd">
-                    <v-btn href="@/file/test/test.txt" download>{{ dto.rental_originfilename }}</v-btn>
+                    <span @click.prevent="download(dto.rental_num)" class="fileName">
+                      {{ dto.rental_originfilename }} 
+                    </span> ({{ dto.rental_filesize }} bytes)
                   </td>
                 </tr>
                 <tr>
@@ -79,6 +81,10 @@
                   <th class="col-md-2 text-center descth">기타 요청사항</th>
                   <td class="desctd">{{ dto.rental_content }}</td>
                 </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">진행상태</th>
+                  <td class="desctd">{{ dto.rental_state }}</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -88,14 +94,17 @@
             <span class="fs-5 fw-bold">답변</span>
           </div>
           <div class="titledesc">
-            <p class="desctxt fs-7">
+            <p class="desctxt fs-7" v-show="answer">
               {{ dto.answer_content }}
+            </p>
+            <p class="desctxt fs-7" v-show="!answer">
+              관리자의 답변이 등록되지 않았습니다.
             </p>
           </div>
         </div>
         <div class="text-center btnmargin">
-          <p class="fs-7 brown">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
-          <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'qnaList' })">대관취소</button>
+          <p class="fs-7 brown" v-show="cancle">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
+          <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'qnaList' })" v-show="cancle">대관취소</button>
           <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myrentallist' })">목록으로</button>
         </div>
       </div>
@@ -127,6 +136,7 @@ export default {
       rental_num : 0, // 대관번호
       dto : {}, // 대관내역 상세정보
       answer : false, // 답변여부
+      cancle : false, // 대관취소 가능여부
 
     }
   },
@@ -187,9 +197,17 @@ export default {
 
             this.dto = resp.data.dto;
 
-            if(resp.data.dto.answer_content != 'null') {
+            // 관리자 답변 유무 체크
+            if(this.dto.answer_content != null) {
               this.answer = true;
             }
+            // 대관취소 가능 여부 체크
+            console.log(this.dto.rental_state);
+            console.log("전",this.cancle);
+            if(this.dto.rental_state != '예약취소' && this.dto.rental_state != '사용완료') {
+              this.cancle = true;
+            }
+            console.log("후",this.cancle);
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
@@ -205,6 +223,11 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    download(rental_num) {
+      console.log("대관예약번호 : ", rental_num);
+      window.location = `http://localhost:9090/moaplace.com/users/mypage/file/download/${rental_num}`;
     }
 
   }
@@ -364,6 +387,15 @@ export default {
         }
         .desctd {
           border: 1px solid #dbe2e8;
+          > .fileName {
+            color: $brown;
+            cursor: pointer;
+            text-decoration: underline;
+            &:hover {
+              color: $brown;
+              text-decoration: none;
+            }
+          }
         }
         .end{
           border-right: 0px;
@@ -396,5 +428,6 @@ export default {
       }
     }
   }
+
 }
 </style>

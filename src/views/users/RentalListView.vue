@@ -183,9 +183,14 @@ export default {
       this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
       // 조회기간 yyyy-mm-dd 형식으로 변환해서 초기화
-      const cur = new Date();
-      this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-      this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+      let date = new Date();
+      let dateWeek = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() - 7
+      );
+      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+      this.startdate = dateWeek.getFullYear()+'-'+('0'+(dateWeek.getMonth()+1)).slice(-2)+'-'+('0'+dateWeek.getDate()).slice(-2);
 
       this.getList();
 

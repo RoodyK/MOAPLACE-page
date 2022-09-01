@@ -33,11 +33,15 @@
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td colspan="3"><input type="date" v-model="regdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="regdate" @change="addStartDate">
+                </td>
             </tr>
             <tr>
               <th>공연종료일</th>
-              <td colspan="3"><input type="date" v-model="appdate"></td>
+              <td colspan="3">
+                <input type="date" v-model="appdate" @change="addEndDate">
+                </td>
             </tr>
             <tr>
               <th>러닝타임</th>
@@ -63,21 +67,21 @@
             <tr>
               <th>R석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="rPrice" maxlength="10" class="seatPrice" @keyup="seatRPrice($event.currentTarget)">
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatRPrice($event.currentTarget)">
                 <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>S석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="sPrice" maxlength="10" class="seatPrice" @keyup="seatSPrice($event.currentTarget)">
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatSPrice($event.currentTarget)">
                 <p class="unitP">원</p>
               </td>
             </tr>
             <tr>
               <th>A석 가격</th>
               <td colspan="3">
-                <input type="text" v-model="aPrice" maxlength="10" class="seatPrice" @keyup="seatAPrice($event.currentTarget)">
+                <input type="text" maxlength="10" class="seatPrice" @keyup="seatAPrice($event.currentTarget)">
                 <p class="unitP">원</p>
               </td>
             </tr>
@@ -252,37 +256,50 @@
           }
           })
         },
+        addStartDate(){
+          if(this.regdate < new Date().toISOString().substr(0, 10)){
+            alert("공연시작일은 현재 날짜보다 앞으로 설정할 수 없습니다.")
+            this.regdate=new Date().toISOString().substr(0, 10)
+          }
+        },
+        addEndDate(){
+          if(this.appdate < this.regdate){
+            alert("공연종료일은 공연시작일보다 뒤의 날짜여야 합니다.")
+            this.appdate=''
+          }
+
+        },
         seatRPrice(e){
 
           if(e.value.search(/[^0-9(,)]/g)!=-1){
             alert('숫자(정수)만 입력하세요');
-            this.rPrice=e.value.replace(/[^0-9(,)]/g,"");
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
           }else{
             e.value=e.value.replace(/(,)/g,"");
             e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
-            this.rPrice=e.value
+            this.rPrice = e.value.replace(/(,)/g,"")
           }
         },
         seatSPrice(e){
           
           if(e.value.search(/[^0-9(,)]/g)!=-1){
             alert('숫자(정수)만 입력하세요');
-            this.sPrice=e.value.replace(/[^0-9(,)]/g,"");
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
           }else{
-            e.value=e.value.replace(/(,)/g,"");
-            e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
-            this.sPrice=e.value
+            e.value = e.value.replace(/(,)/g,"");
+            e.value = e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            this.sPrice = e.value.replace(/(,)/g,"")
           }
         },
         seatAPrice(e){
           
           if(e.value.search(/[^0-9(,)]/g)!=-1){
             alert('숫자(정수)만 입력하세요');
-            this.aPrice=e.value.replace(/[^0-9(,)]/g,"");
+            e.value = e.value.replace(/[^0-9(,)]/g,"");
           }else{
             e.value=e.value.replace(/(,)/g,"");
             e.value=e.value.replace(/\B(?=(\d{3})+(?!\d))/g,",");
-            this.aPrice=e.value
+            this.aPrice = e.value.replace(/(,)/g,"")
           }
         }
         
