@@ -439,12 +439,12 @@ const routes = [
 
   // 예매페이지
   {
-    path: '/moaplace.com/booking/select',
+    path: '/moaplace.com/booking/select/:show_num',
     name: 'bookingSelect',
     component: BookingSelect
   },
   {
-    path: '/moaplace.com/booking/seat/:num',
+    path: '/moaplace.com/booking/seat',
     name: 'bookinseat',
     component: SeatSelect
   },
