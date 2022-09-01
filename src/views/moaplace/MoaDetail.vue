@@ -58,7 +58,7 @@
             <li
               v-if="this.next1 != null"
               class="abled"
-              @click="gonext(next1_num)"
+              @click="gonext(this.next1.notice_num)"
             >
               <span>다음글</span> <span>{{ this.next1.notice_title }}</span>
             </li>
@@ -69,7 +69,7 @@
             <li
               v-if="this.prev1 != null"
               class="abled"
-              @click="goprev(prev1_num)"
+              @click="goprev(this.prev1.notice_num)"
             >
               <span>이전글</span> <span>{{ this.prev1.notice_title }}</span>
             </li>
@@ -139,6 +139,14 @@ export default {
           this.next1 = resp.data.next;
           this.prev1 = resp.data.prev;
 
+          var schedule_date = new Date(this.notice_regdate);
+          this.notice_regdate =
+            schedule_date.getFullYear() +
+            "-" +
+            ("0" + (schedule_date.getMonth() + 1)).slice(-2) +
+            "-" +
+            ("0" + schedule_date.getDate()).slice(-2);
+
           /* 다음글 정보가 null 값인지 확인*/
 
           console.log("다음글정보:", resp.data.next);
@@ -150,47 +158,42 @@ export default {
         }.bind(this)
       );
     },
-    gonext() {
-      if (this.next1 != null) {
-        axios
-          .get(`/moaplace.com/moaplace/news/detail/${this.next1.notice_num}`)
-          .then(
-            function (resp) {
-              this.filelist = resp.data.filelist;
-              this.notice_title = resp.data.notice_title;
-              this.notice_content = resp.data.notice_content;
-              this.selected = resp.data.sort_num;
-              this.sort_name = resp.data.sort_name;
-              this.notice_regdate = resp.data.notice_regdate;
-              this.notice_hit = resp.data.notice_hit;
+    gonext(next1_num) {
+      // this.notice_num = next1_num;
+      window.location = `/moaplace.com/moaplace/news/detail/${next1_num}`;
+      // if (this.next1 != null) {
 
-              this.next1 = resp.data.next;
-              this.prev1 = resp.data.prev;
-              console.log("페이지 이동 성공", resp.data);
-            }.bind(this)
-          );
-      }
+      // axios
+      //   .get(`/moaplace.com/moaplace/news/detail/${this.next1.notice_num}`)
+      //   .then(
+      //     function (resp) {
+      //       this.filelist = resp.data.filelist;
+      //       this.notice_title = resp.data.notice_title;
+      //       this.notice_content = resp.data.notice_content;
+      //       this.selected = resp.data.sort_num;
+      //       this.sort_name = resp.data.sort_name;
+      //       this.notice_regdate = resp.data.notice_regdate;
+      //       this.notice_hit = resp.data.notice_hit;
+
+      //       this.next1 = resp.data.next;
+      //       this.prev1 = resp.data.prev;
+
+      //       var schedule_date = new Date(this.notice_regdate);
+      //       this.notice_regdate =
+      //         schedule_date.getFullYear() +
+      //         "-" +
+      //         ("0" + (schedule_date.getMonth() + 1)).slice(-2) +
+      //         "-" +
+      //         ("0" + schedule_date.getDate()).slice(-2);
+      //       console.log("페이지 이동 성공", resp.data);
+      //     }.bind(this)
+      //   );
+      // }
+      // this.$route.go();
     },
-    goprev() {
-      if (this.prev1 != null) {
-        axios
-          .get(`/moaplace.com/moaplace/news/detail/${this.prev1.notice_num}`)
-          .then(
-            function (resp) {
-              this.filelist = resp.data.filelist;
-              this.notice_title = resp.data.notice_title;
-              this.notice_content = resp.data.notice_content;
-              this.selected = resp.data.sort_num;
-              this.sort_name = resp.data.sort_name;
-              this.notice_regdate = resp.data.notice_regdate;
-              this.notice_hit = resp.data.notice_hit;
-
-              this.next1 = resp.data.next;
-              this.prev1 = resp.data.prev;
-              console.log("페이지 이동 성공", resp.data);
-            }.bind(this)
-          );
-      }
+    goprev(prev1_num) {
+      // this.notice_num = prev1_num;
+      window.location = `/moaplace.com/moaplace/news/detail/${prev1_num}`;
     },
     download(notice_detail_num) {
       console.log("파일넘버:", notice_detail_num);
@@ -263,6 +266,9 @@ $brown: #826d5e;
           }
         }
         .inner2 {
+          ul {
+            margin: 0;
+          }
           display: contents;
           div:first-child {
             font-weight: bold;

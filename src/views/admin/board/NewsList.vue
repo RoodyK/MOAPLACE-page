@@ -372,6 +372,7 @@ nav {
       }
       .searchBox {
         display: flex;
+
         .newBtn {
           background-color: $black;
           padding: 0 32px;
