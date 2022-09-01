@@ -114,21 +114,53 @@ export default {
       member : {}, // 회원정보
       booking_num : 0, // 예매번호
       dto : {}, // 예매내역 상세정보
-      cancle : true, // 예매취소 가능여부
+      cancle : false, // 예매취소 가능여부
 
     }
   },
   created(){
 
-    this.member = this.$store.state.mypage.member;
-    
     this.booking_num = this.$route.params.booking_num;
 
-    // 적립금 천단위 콤마형식으로 변환
-    var point = this.member.point;
-    this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-    
-    this.getData();
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
+
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_phone,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      console.log("회원 정보 : ",this.member);
+
+      // 적립금 천단위 콤마형식으로 변환
+      var point = this.member.point;
+      this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+      this.getData();
+
+    })
+    .catch(error => {
+      console.log(error.message);
+    })
 
   },
   methods:{
@@ -143,6 +175,10 @@ export default {
 
             this.dto = resp.data.dto;
             this.cancle = resp.data.cancle;
+
+            if(this.dto.payment_status == '결제취소') {
+              this.cancle = false;
+            }
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);

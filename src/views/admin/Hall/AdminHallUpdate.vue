@@ -58,18 +58,18 @@
             <tr v-for="(item,index) in ynHideRow" :key="index">
               <th>{{item.start}}</th>
               <td colspan="2">
-                <input type="date" v-model="pauseStart">
+                <input type="date" v-model="pauseStart" @change="pauseStartTest">
               </td>
               <th>{{item.end}}</th>
               <td colspan="2">
-                <input type="date" v-model="pauseEnd">
+                <input type="date" v-model="pauseEnd" @change="pauseEndTest">
               </td>
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td colspan="2"><input type="date" v-model="regdate"></td>
+              <td colspan="2"><input type="date" v-model="regdate" @click="regdateTest"></td>
               <th>공연종료일</th>
-              <td colspan="2"><input type="date" v-model="appdate"></td>
+              <td colspan="2"><input type="date" v-model="appdate" @click="appdateTest"></td>
             </tr>
               <tr>
               <th>러닝타임</th>
@@ -169,6 +169,20 @@
         this.viewDetail(
           this.$route.params.showNum);
       },
+      watch:{
+        regdate(newV,oldV){
+          if(newV > this.appdate){
+            alert("공연종료일 이후의 날짜로 설정할 수 없습니다.")
+            this.appdate = oldV
+          }
+        },
+        appdateTest(newV,oldV){
+          if(newV < this.regdate){
+            alert("공연시작일보다 앞선 날짜로 설정할 수 없습니다.")
+            this.appdate = oldV
+          }
+        },
+      },
       methods:{
         yOrN(){
           if(this.going==true){
@@ -194,6 +208,18 @@
             
             fr.readAsDataURL(e.files[i]);
             fr.addEventListener('load',()=>{this.detailImgs.push(fr.result)},false);
+          }
+        },
+        pauseStartTest(){
+          if(this.pauseStart < this.regdate){
+            alert("공연시작일보다 앞선 날짜로 설정할 수 없습니다.")
+            this.pauseStart = ''
+          }
+        },
+        pauseEndTest(){
+          if(this.pauseEnd < this.pauseStart){
+            alert("중단시작일보다 앞선 날짜로 설정할 수 없습니다.")
+            this.pauseEnd = ''
           }
         },
         rnTime(e){

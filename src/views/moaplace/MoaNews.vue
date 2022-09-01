@@ -11,13 +11,26 @@
     <div class="con">
       <div class="inner_wrap">
         <div class="search">
-          <select id="field" class="field">
-            <option value="all">전체</option>
-            <option value="subject">제목</option>
-            <option value="content">내용</option>
+          <select v-model="selected2">
+            <option
+              v-for="(f, field_value) in fieldList"
+              :key="field_value"
+              :value="f.field_value"
+            >
+              {{ f.field_name }}
+            </option>
           </select>
-          <input type="text" name="keyword" class="keyword" />
-          <button class="btn" type="submit" />
+          <input
+            type="text"
+            v-model="keyword"
+            class="custom-search-input"
+            placeholder="검색어를 입력하세요."
+            :class="{ search: isSearch }"
+            @keydown.enter="searchList()"
+          />
+          <button :class="{ search: isSearch }" @click.prevent="searchList()">
+            <img src="@/assets/moaplace/search.png" />
+          </button>
         </div>
         <div class="content">
           <table cellpadding="0" cellspacing="0" class="table">
@@ -29,45 +42,59 @@
                 <th>작성일</th>
                 <th>조회수</th>
               </tr>
-              <tr class="important">
-                <td class="num">1</td>
-                <td>공지</td>
-                <td class="tit"><a hrf="">회원반입금지안내</a></td>
-                <td class="date">2022.08.11</td>
-                <td class="hit">0</td>
-              </tr>
-              <tr class="important">
-                <td class="num">2</td>
-                <td>대관공고</td>
+              <tr class="important" v-for="(i, index) in list" :key="index">
+                <td class="num">{{ i.notice_num }}</td>
+                <td>{{ i.sort_name }}</td>
                 <td class="tit">
-                  <a hrf=""
-                    >COVID-19 관련 안내사항
-                    길다긷랃저갸ㅐㅈ됴ㅗ갸맻료규ㅗ잼뎌ㅑ곶ㅁ댜ㅐㅊ교ㅜㅗㅈㅁ대ㅑㅊ
-                    ㄱㅈ모</a
+                  <RouterLink
+                    :to="`/moaplace.com/moaplace/news/detail/${i.notice_num}`"
+                    >{{ i.notice_title }}</RouterLink
                   >
                 </td>
-                <td class="date">2022.08.11</td>
-                <td class="hit">0</td>
-              </tr>
-              <tr class="important">
-                <td class="num">3</td>
-                <td>공지</td>
-                <td class="tit"><a hrf="">모아플레이스 대관 안내</a></td>
-                <td class="date">2022.08.11</td>
-                <td class="hit">0</td>
+                <td class="date">{{ i.notice_regdate }}</td>
+                <td class="hit">{{ i.notice_hit }}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="page">
-          <ul class="pagenation">
-            <li><a href="" class="prev">[이전]</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="" class="next">[다음]</a></li>
+          <ul class="paging">
+            <li
+              v-if="this.startPageNum < 6"
+              @click.prevent="prevPage()"
+              class="disabled"
+            >
+              [이전]
+            </li>
+            <li
+              v-if="this.startPageNum > 5"
+              @click.prevent="prevPage()"
+              class="abled"
+            >
+              [이전]
+            </li>
+            <li
+              :class="{ active: this.pageNum == n }"
+              v-for="n in paginationList"
+              :key="n"
+              @click="movePage(n)"
+            >
+              {{ n }}
+            </li>
+            <li
+              v-if="this.startPageNum + 4 < this.totalPageCount"
+              @click.prevent="nextPage()"
+              class="abled"
+            >
+              [다음]
+            </li>
+            <li
+              v-if="this.startPageNum + 5 > this.totalPageCount"
+              @click.prevent="nextPage()"
+              class="disabled"
+            >
+              [다음]
+            </li>
           </ul>
         </div>
       </div>
@@ -80,12 +107,128 @@
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import SideVisual from "@/components/SideVisual.vue";
+import axios from "@/axios/axios.js";
 
 export default {
   components: {
     AppHeader,
     AppFooter,
     SideVisual,
+  },
+  data() {
+    return {
+      fieldList: [
+        { field_value: "total", field_name: "전체" },
+        { field_value: "title", field_name: "제목" },
+        { field_value: "content", field_name: "내용" },
+      ],
+      selected2: "total",
+      keyword: "",
+      list: [
+        {
+          notice_num: "",
+          sort_name: "",
+          sort_num: "",
+          notice_title: "",
+          notice_regdate: "",
+          notice_hit: "",
+        },
+      ],
+      pageNum: 1,
+      // 확인
+      startPageNum: "",
+      endPageNum: "",
+      totalRowCount: "",
+      startRow: "",
+      endRow: "",
+      totalPageCount: "",
+      isActive: false,
+      isSearch: false,
+    };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      console.log(this.pageNum); /* 클릭하는페이지 num */
+
+      // alert(this.selected);
+      // alert(this.member_num);
+      axios.get(`/moaplace.com/moaplace/news/list/${this.pageNum}`).then(
+        function (resp) {
+          console.log(resp.data);
+          this.list = resp.data.list;
+          this.startPageNum = resp.data.startPageNum;
+          this.endPageNum = resp.data.endPageNum;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.startRow = resp.data.startRow;
+          this.endRow = resp.data.endRow;
+          console.log("리스트 불러오기 성공");
+        }.bind(this)
+      );
+    },
+    //@change 했을 때 메소드 진행
+    selectchange() {
+      this.getList();
+    },
+    searchList() {
+      if (this.keyword == null || this.keyword == "") {
+        alert("검색어를 검색해주세요");
+      } else {
+        this.isSearch = true;
+        axios
+          .get(
+            `/moaplace.com/moaplace/news/list/${this.selected2}/${this.keyword}/${this.pageNum}`
+          )
+          .then(
+            function (resp) {
+              this.list = resp.data.list;
+              this.startPageNum = resp.data.startPageNum;
+              this.endPageNum = resp.data.endPageNum;
+              this.totalPageCount = resp.data.totalPageCount;
+              this.totalRowCount = resp.data.totalRowCount;
+              this.startRow = resp.data.startRow;
+              this.endRow = resp.data.endRow;
+              console.log("검색 리스트 불러오기 성공");
+            }.bind(this)
+          );
+      }
+    },
+    // class -> css 처리용 , prevPage -> alert
+    prevPage() {
+      if (this.startPageNum < 6) {
+        alert("첫 페이지입니다.");
+      } else {
+        this.movePage(this.startPageNum - 1);
+      }
+    },
+    nextPage() {
+      if (this.startPageNum + 5 > this.totalPageCount) {
+        alert("마지막 페이지입니다.");
+      } else {
+        this.movePage(this.endPageNum + 1);
+      }
+    },
+    /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
+    movePage(n) {
+      this.pageNum = n;
+      if (this.keyword == null || this.keyword == "") {
+        this.getList();
+      } else {
+        this.searchList();
+      }
+    },
+  },
+  computed: {
+    paginationList() {
+      let pageList = [];
+      for (let num = this.startPageNum; num <= this.endPageNum; num++) {
+        pageList.push(num);
+      }
+      return pageList;
+    },
   },
 };
 </script>
@@ -139,17 +282,17 @@ $brown: #826d5e;
       float: right;
       padding: 0 26px 0;
       position: absolute;
-      &:hover {
-        border: 1px solid $black;
-        background-color: white;
-        color: $black;
-      }
+      border: none;
     }
   }
   .table {
     width: 100%;
     border-top: 2px solid $black;
     table-layout: fixed;
+    a {
+      text-decoration: none;
+      color: $black;
+    }
     tr {
       & > *:nth-child(1) {
         width: 10%;
@@ -192,40 +335,29 @@ $brown: #826d5e;
       padding: 10px 0;
     }
   }
-  .page {
-    text-align: center;
-    margin-top: 60px;
-    a {
-      &.prev {
-        color: $black;
-        margin-right: 10px;
-        text-decoration: none;
-      }
-      &.next {
-        color: $black;
-        margin-left: 10px;
-        text-decoration: none;
-      }
-    }
-    .prev:hover,
-    .next:hover {
-      color: $brown;
-    }
-    .pagenation {
-      list-style: none;
-      display: inline-block;
-      padding: 0;
-      li {
-        float: left;
-        margin-right: 10px;
-        a {
-          padding: 0 8px;
-          text-decoration: none;
-          color: $black;
-        }
-      }
-      li:hover {
+  .paging {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin-top: 32px;
+    // class -> css 처리용 , prevPage -> alert
+    li {
+      margin: 0 8px;
+      padding: 0 8px;
+      cursor: pointer;
+
+      &.abled {
         color: $brown;
+        font-weight: bold;
+      }
+      &.disabled {
+        color: rgba($black, 0.5);
+        cursor: default;
+        font-weight: bold;
+      }
+      &.active {
+        color: #d67747;
+        font-weight: bold;
       }
     }
   }

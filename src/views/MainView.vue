@@ -14,15 +14,24 @@
                         </div>
                     </div>
                     <div class="right-side">
-                        <ul class="slide-box" ref="slideWrap">
+                        <div 
+                            class="empty-list"
+                            v-if="slideExist == false">
+                            <i class="material-symbols-outlined">info</i>
+                            <p>모아플레이스에서 즐길 수 있는 공연을 준비 중 입니다.</p>
+                        </div>
+                        <ul 
+                            class="slide-box" 
+                            ref="slideWrap"  
+                            v-if="slideExist == true">
                             <li 
                                 v-for="(slide, index) in slides"
                                 :key="index"
                                 :style="{left: `${img_width * index}px`}"
                                 ref="slide">
                                 <RouterLink
-                                    :to="slide.link">
-                                    <img :src="slide.img" :alt="slide.title">
+                                    :to="`/moaplace.com/show/showdetail/${slide.show_num}`">
+                                    <img :src="slide.show_thumbnail" :alt="slide.show_name">
                                 </RouterLink>
                             </li>
                         </ul>
@@ -37,19 +46,25 @@
                         <p>모아플레이스 새소식입니다.</p>
                     </div>
                     <div class="right-side">
-                        <div class="news-box">
+                        <div 
+                            class="empty-list"
+                            v-if="newsExist == false">
+                            <i class="material-symbols-outlined">info</i>
+                            <p>모아플레이스의 새소식이 없습니다.</p>
+                        </div>
+                        <div class="news-box" v-if="newsExist == true">
                             <div class="news-row" 
                                 v-for="(news, index) in newsList" 
                                 :key="index" >
                                 <RouterLink
-                                    :to="`/moa/moaplace/news/detail?num=`+news.num">
+                                    :to="`/moaplace.com/moaplace/news/detail/${news.notice_num}`">
                                         <div class="date">
                                             <p class="day">{{news.day}}</p>
-                                            <p class="ym">{{news.ym}}</p>
+                                            <p class="ym">{{news.yearMonth}}</p>
                                         </div>
                                         <div class="text">
-                                            <h5 class="title">{{news.title}}</h5>
-                                            <p class="cont">{{news.cont}}</p>
+                                            <h5 class="title">{{news.notice_title}}</h5>
+                                            <p class="cont">{{news.notice_content}}</p>
                                         </div>
                                         
                                 </RouterLink>
@@ -66,9 +81,9 @@
     import AppHeader from '@/components/AppHeader.vue'
     import AppFooter from '@/components/AppFooter.vue'
     import MainVisual from '@/components/MainVisual.vue'
+    import axios from '@/axios/axios.js'
 
     export default {
-        name: 'TestComp',
         components: {
             AppHeader,
             AppFooter,
@@ -81,66 +96,83 @@
                 showsec02: false,
                 sec02Position: null,
                 wrapWidth : null,
-                slides:[
-                    //title: 공연제목, img : 이미지 src, link : 공연 상세보기 페이지
-                    {title: '웃는남자',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=7092ee934032e328dac3abc9fd80d8856a7ff77472074eb1dad6fba65becd736', link: '/'},
-                    {title: '사람이 사람을 만나',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa7280292381032b65d54d3d24c41c87ac16bf4&streFileNm=63f738f5ad7ac8a543771707571e14563f48942c620f71cc3fc0c508cc687eff', link:'/'},
-                    {title: 'Life is color',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802b019c0d49faba99f98cab05eaa325ea3&streFileNm=a99f0a2391d3528a7403ad233a2766cb4200ca52209836814279c2c87fbc6042', link:'/'},
-                    {title: '원더보이',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=72f89ecf18de91357de38d6e5d9a650a&streFileNm=76ab2addb389905839061454c74fb46c89887c48929b90d84e0a5bf6663d5010', link:'/'},
-                    {title: '미소 속에 비친 그대',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=75f6ed93068e6b7e60383d775a076c1f&streFileNm=4ec7c1a4135e20a5889e95c2b972d2f589887c48929b90d84e0a5bf6663d5010', link : '/'},
-                    {title: '로미오와 줄리엣',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=75f6ed93068e6b7e60383d775a076c1f&streFileNm=a56c4010a07f9621b66230e206a65f001e12075b7eaa5b50152c58156ca0b8bf', link:'/'},
-                    {title: '오케스트라를 찾아라',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=72f89ecf18de91357de38d6e5d9a650a&streFileNm=77befee0de148f40f0bd8457d662f7705780e802885c9a2e4f5ff6a995362cef', link:'/'},
-                    {title: '무용X기술',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=4be89a934171ece2726e4bf350ebfc212657b980fbf690d891fc361941a10452', link:'/'},
-                    {title: '잘란 잘란',img: 'https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa7280292381032b65d54d3d24c41c87ac16bf4&streFileNm=62a3b43c39b357abf5821c68b292dbc724078277cccf491c8dad44ed96e373b4', link:'/'},
-                ],
+                slideExist: false,
+                slides:[],
                 length: 0, //li 갯수
                 img_width : 0, //li 넓이
                 slide_width:0, //ul 전체 넓이
                 // 새소식
-                newsList:[
-                    {num: 3, ym : '2022.08', day: '15', title : '화환반입 금지 안내', cont : '건물시설 관리상 리셉션은 불가하며, 화환은 반입이 금지되어 있는 점 양지하시기 바랍니다.​'},
-                    {num: 2, ym : '2022.08', day: '10', title : 'COVID-19 관련 모아플레이스 안내사항 ', cont : ''},
-                    {num: 1, ym : '2022.07', day: '25', title : '[대관]모아플레이스 대관안내 ', cont : '안녕하세요 푸르지오아트홀 대관은 현재 위탁운영사인 스튜디오칸투스에서 위탁운영하고 있습니다. 별도..​'},
-                ]
+                newsExist: false,
+                newsList:[]
             }
         },
+        created(){
+            //슬라이드 불러오기
+            this.getRunningShow();
+            this.img_width = (((770 - (16 * 2)) / 3) + 16); //넓이 + margin값
+
+            //새소식 불러오기
+            this.getNotice();
+        },
         mounted(){
-            this.length =  this.$refs.slide.length;
-            this.img_width = this.$refs.slide[0].offsetWidth + 16; //넓이 + margin값
-            this.slide_width = this.img_width * this.length;
             //스크롤 위치 가져오기
             window.addEventListener('scroll', this.getScorollTop);
             this.sec01Position = this.$refs.sec01.offsetTop;
             this.sec02Position = this.$refs.sec02.offsetTop;
+
             //wrap width * 스크롤이 생기지 않을정도 화면이면 미리 content들 배치하기
             this.wrapWidth = this.$refs.wrap.clientWidth;
-            if(this.wrapWidth >=2305){
+            if(this.wrapWidth >= 2305){
                 this.showsec01 = true;
                 this.showsec02 = true;
             }
         },
         methods:{
+            //슬라이드 앞으로 넘기기
             goPrev(){
-                for(let i=0; i< this.length; i++){
-                    let left = this.$refs.slide[i].style.left;
-                    left = left.replace('px', '');
-                    left -= this.img_width;
-                    this.$refs.slide[i].style.left = left + 'px';
-                    if(left <= - (this.slide_width - (this.img_width * 3))){
-                        this.$refs.slide[i].style.left = this.img_width * 3 +'px';
+                
+                if(this.slideExist){
+
+                    this.slide_width = this.img_width * this.length;//ul 전체 넓이
+
+                    for(let i=0; i< this.length; i++){
+                        let left = this.$refs.slide[i].style.left;
+                        left = left.replace('px', '');
+                        left -= this.img_width;
+                        this.$refs.slide[i].style.left = left + 'px';
+                        if(left <= - (this.slide_width - (this.img_width * 3))){
+                            this.$refs.slide[i].style.left = this.img_width * 3 +'px';
+                        }
                     }
+                }
+                else{
+                    alert("진행 중인 공연이 없습니다.");
+                    return;
                 }
             },
+            //슬라이드 뒤로 넘기기
             goNext(){
-                for(let i=0; i< this.length; i++){
-                    let left = this.$refs.slide[i].style.left;
-                    left = Number(left.replace('px', ''));
-                    left += this.img_width;
-                    this.$refs.slide[i].style.left = left + 'px';
-                    if(left >= this.slide_width){
-                        this.$refs.slide[i].style.left = - 0;
+        
+                if(this.slideExist){
+
+                    this.slide_width = this.img_width * this.length;//ul 전체 넓이
+
+                    for(let i=0; i< this.length; i++){
+                        let left = this.$refs.slide[i].style.left;
+                        left = Number(left.replace('px', ''));
+                        left += this.img_width;
+                        
+                        this.$refs.slide[i].style.left = left + 'px';
+
+                        if(left >= this.slide_width){
+                            this.$refs.slide[i].style.left = - 0;
+                        }
                     }
+                }else{
+                    alert("진행 중인 공연이 없습니다.");
+                    return;
                 }
+                
             },
             getScorollTop(){
                 //현재 스크롤 위치 가져오기
@@ -152,7 +184,47 @@
                 this.showsec01 = this.sec01Position - 450 <= currentScrollPosition;
                 //sec02 위치     
                 this.showsec02 = this.sec02Position - 800 <= currentScrollPosition;
+            },
+            //진행중인 공연 가져오기
+            async getRunningShow(){
+                
+                await axios
+                    .get('/moaplace.com/main/getRunningShow')
+                    .then(function(resp){
+                        //슬라이드 초기화
+                        this.slides = [];
+
+                        if(resp.data.result == "success"){
+                            this.slides = resp.data.list;
+                            this.slideExist = true;
+                            this.length =  this.slides.length;
+                        }else{
+                            this.slideExist = false;
+                        }
+                    }
+                    .bind(this)
+                    );
+            },
+            //새소식 가져오기
+            async getNotice(){
+                
+                await axios
+                    .get('/moaplace.com/main/getNotice')
+                    .then(function(resp){
+                        //새소식 목록 초기화
+                        this.newsList = [];
+
+                        if(resp.data.result == "success"){
+                            this.newsList = resp.data.list;
+                            this.newsExist = true;
+                        }else{
+                            this.newsExist = false;
+                        }
+                    }
+                    .bind(this)
+                    );
             }
+
         }
     }
 </script>
@@ -216,6 +288,16 @@
                     }
                     .right-side{
                         width: 770px;
+                        .empty-list{
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            i{
+                                margin-right: 8px;
+                            }
+                        }
                     }
                 }
                 &.sec01{
@@ -223,15 +305,18 @@
                         height: 351px;
                         overflow: hidden;
                         .slide-box{
+                            height: 100%;
                             position: relative;
                             display: flex;
                             flex-flow: row nowrap;
                             li{
+                                height: 100%;
                                 position: absolute;
                                 overflow: hidden;
                                 margin-right: 16px;
                                 img{
                                     width: calc((770px - (16px * 2)) /3);
+                                    height: 100%;
                                     transform: scale(1);
                                     transition: all 0.3s;
                                 }

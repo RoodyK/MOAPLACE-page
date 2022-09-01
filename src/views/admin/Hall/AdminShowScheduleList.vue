@@ -22,7 +22,7 @@
                               search
                           </i>
                       </button>
-                      <button class="insertBtn" @click='goInsert'>공연등록</button>
+                      <button class="insertBtn" @click='goInsert'>일정등록</button>
                     </div>
                 </div>
                   <div class="list">
@@ -34,13 +34,13 @@
                           <p>공연상태</p>
                           <p>수정</p>
                   </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody">
-                            <p @click="viewDetail(item.num)">{{item.num}}</p>
-                            <p @click="viewDetail(item.num)">{{item.showDate}}</p>
-                            <p @click="viewDetail(item.num)">{{item.title}}</p>
-                            <p @click="viewDetail(item.num)">{{item.cntDate}}</p>
-                            <p @click="viewDetail(item.num)">{{item.status=='Y'?'진행중':'종료'}}</p>
-                            <p><button @click="updateDetail(item.num)">수정</button></p>
+                        <div v-for="(item,index) in list" :key="index" class="t-row tbody">
+                            <p @click="viewDetail(item.num,item.showDate)">{{item.num}}</p>
+                            <p @click="viewDetail(item.num,item.showDate)">{{item.showDate}}</p>
+                            <p @click="viewDetail(item.num,item.showDate)">{{item.title}}</p>
+                            <p @click="viewDetail(item.num,item.showDate)">{{item.cntDate}}</p>
+                            <p @click="viewDetail(item.num,item.showDate)">{{item.status=='Y'?'진행중':'종료'}}</p>
+                            <p><button @click="updateDetail(item.num,item.showDate)">수정</button></p>
                         </div>
                         <ul class="paging">
                             
@@ -74,26 +74,29 @@
                         {status: 'Y', statusName: '진행중'},
                         {status: 'N', statusName: '종료'}
                     ],
+
                     selectField: '',
                     fieldList:[
-                      {field: 'showNum',fieldName:'공연번호'},
-                      {field: 'title',fieldName:'공연명'},
-                      {field: 'date',fieldName:'공연날짜'},
+                        {field: 'title',fieldName:'공연명'},
+                        {field: 'showNum',fieldName:'공연번호'}
                     ],
+                    
                     search:'',
                     pageNum:'',
                     list: [],
                     pageInfo:[],
-                    pageNums:[]
+                    pageNums:[],
+                    selectDate:''
+
                 }
             },
             mounted(){
 
-              this.viewList();
-              // this.$route.params.pageNum,
-              // this.$route.params.status,
-              // this.$route.params.selectField,
-              // this.$route.params.search);
+              this.viewList(
+              this.$route.params.pageNum,
+              this.$route.params.status,
+              this.$route.params.selectField,
+              this.$route.params.search);
 
             },
             methods:{
@@ -126,17 +129,21 @@
               },
 
               movePage(pNum){
-                axios.get('/moaplace.com/admin/show/list/'+ pNum + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
-
+                console.log("전"+this.list.length)
+                axios.get('/moaplace.com/admin/show/schedule/list/' + pNum + '/'
+                  + this.status + '/' 
+                  + this.selectDate + '/' 
+                  + this.selectField + '/' + this.search).
+                  then(function(resp){
                   this.list = resp.data.list;
+                  console.log("리스트의 0번째2"+this.list[0].showDate)
                   this.status = resp.data.status;
                   this.selectField = resp.data.selectField;
                   this.search = resp.data.search;
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
-
+                  console.log("후"+this.list.length)
                 }.bind(this))
               },
 
@@ -152,41 +159,45 @@
                 }
               },
 
-              viewDetail(num){
+              viewDetail(num,date){
 
                 this.$router.push(
                   {
-                    name:'adminHallDetail',
+                    name:'adminShowScheduleDetail',
                     params:{
                       showNum:num,
+                      showDate:date,
                       pageNum:this.pageNum,
                       status:this.status,
+                      selectDate:this.selectDate,
                       field:this.selectField,
-                      search:this.search
+                      search:this.search,
                       }});
               },
 
-              updateDetail(num){
+              updateDetail(num,date){
 
-                console.log("업데이트넘",num)
                 this.$router.push(
                   {
-                    name:'adminHallUpdate',
+                    name:'adminShowScheduleUpdate',
                     params:{
                       showNum:num,
+                      showDate:date,
                       pageNum:this.pageNum,
                       status:this.status,
+                      selectDate:this.selectDate,
                       field:this.selectField,
                       search:this.search}});
               },
 
               inputSearch(e){
-
+                
                 // 부모의 바로 이전 형제 요소 가져오기(input)
                 this.search=e.target.parentNode.previousSibling.value;
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
-                then(function(resp){
-
+                
+                axios.get('/moaplace.com/admin/show/schedule/list/' + 1 +'/' 
+                  + this.status + '/'  + this.selectDate + '/' + this.selectField + '/' + this.search).
+                  then(function(resp){
                   this.list = resp.data.list;
                   this.status = resp.data.status;
                   this.selectField = resp.data.selectField;
@@ -199,8 +210,32 @@
               },
 
               selectStatus(){
+                axios.get('/moaplace.com/admin/show/schedule/list/' + 1 + '/' 
+                  + this.status + '/'  + this.selectDate + '/' + this.selectField + '/' + this.search).
+                  then(function(resp){
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering(); 
 
-                axios.get('/moaplace.com/admin/show/list'+ '/'  + 1 + '/' + this.status + '/' + this.selectField + '/' + this.search).
+                }.bind(this))
+              },
+
+              viewList(pageNum,status,field,search){
+
+                if(pageNum!=null)this.pageNum = pageNum;
+                if(status!=null)this.status = status;
+                if(field!=null)this.selectField = field;
+                if(search!=null)this.search = search;
+
+                axios.get('/moaplace.com/admin/show/schedule/list/' 
+                  + this.pageNum + '/' 
+                  + this.status + '/' 
+                  + this.selectDate + '/' 
+                  + this.selectField + '/' + this.search).
                 then(function(resp){
 
                   this.list = resp.data.list;
@@ -210,27 +245,6 @@
                   this.pageNum = resp.data.pageNum;
                   this.pageInfo = resp.data.pageInfo;
                   this.pageNumbering();
-
-                }.bind(this))
-              },
-
-              viewList(){
-
-                // if(pageNum!=null)this.pageNum = pageNum;
-                // if(status!=null)this.status = status;
-                // if(field!=null)this.selectField = field;
-                // if(search!=null)this.search = search;
-
-                axios.get('/moaplace.com/admin/show/schedule/list').
-                then(function(resp){
-
-                  this.list = resp.data.list;
-                  // this.status = resp.data.status;
-                  // this.selectField = resp.data.selectField;
-                  // this.search = resp.data.search;
-                  // this.pageNum = resp.data.pageNum;
-                  // this.pageInfo = resp.data.pageInfo;
-                  // this.pageNumbering();
 
                 }.bind(this))
               }

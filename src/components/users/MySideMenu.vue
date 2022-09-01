@@ -58,7 +58,7 @@ export default {
         },
         {
           name: '1:1 문의',
-          href: '/moaplace.com/qna/list',
+          href: '/moaplace.com/board/qna/list',
           isActive: false
         },
         {

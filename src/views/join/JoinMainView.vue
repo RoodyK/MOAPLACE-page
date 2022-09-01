@@ -154,6 +154,7 @@ export default {
         this.kakaoJoin = true;
         this.isAuthentication = true;
         document.querySelector('.emailAuth').disabled = true;
+        document.querySelector('.emailInput').setAttribute('readonly', 'true');
       }
     }
     

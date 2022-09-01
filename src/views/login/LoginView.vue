@@ -77,7 +77,7 @@ export default {
     SideVisual
   },
   mounted() {
-    
+    document.querySelector('form').reset();
   },
   data() {
     return {
@@ -192,6 +192,7 @@ export default {
     .kakao-login, .google-login {
       margin: 0 auto;
       a {
+        color: $black;
         display: block;
         width: 400px;
         height: 70px;
