@@ -7,7 +7,9 @@ export default {
     namespaced: true,
     state(){
         return{
-            show_num : 1, //공연 번호
+            show_num : 162, //공연 번호
+
+            show_thumbnail:'', //공연 섬네일
             title : "", //공연제목
             place : "", //양식 - 모던홀/오케스트라홀/아트홀
 
@@ -22,7 +24,7 @@ export default {
             alreadySelect : [], //이미 예매된 좌석
 
             seats : [], //양식 - {grade:'R', row : 'A', col : '01'} 
-            tickets:[], //양식 - {grade:'R', cnt:0, price:150000, priceY:135000, choiceA:0, choiceY:0}
+            tickets:[], //양식 - { grade:'R', count:1, priceA:150000, priceY:0, countA:0, countY:0 },
 
             total : 0, //등급별 매수에 따른 결제 금액
         }
@@ -31,7 +33,6 @@ export default {
         // 예매페이지 create되기 전에 동작
         resetShowInfo(state){
             state.show_num = 0; 
-            state.hall_num =  0; 
             state.title = ""; 
             state.place = ""; 
             state.rows = 0;
@@ -39,11 +40,6 @@ export default {
             state.priceR = 0; 
             state.priceS = 0;
             state.priceA = 0;
-        },
-        //공연명 등 조회에 필요한 번호 저장
-        setNumbers(state, payload){
-            state.show_num = payload.show_num;
-            state.hall_num = payload.hall_num;
         },
         // 공연명, 공연장, 행수, 가격 저장
         setHallInfo(state, payload){
@@ -59,7 +55,6 @@ export default {
             state.schedule_num = payload.schedule_num; 
             state.schedule_date = payload.schedule_date; 
             state.time = payload.time; 
-            
         },
         //이미 예매된 좌석 정보저장
         setAlreadySelect(state, payload){
@@ -69,9 +64,10 @@ export default {
         setSeatChoice(state, payload){
             state.seats = payload; 
         },
-        // 총계 저장
-        setTotalPrice(state, payload){
-            state.total = payload.total;
+        //예매 수량 선택 후 저장
+        updateTicket(state, payload){
+            state.tickets = payload.changeTicket;
+            state.total = payload.changeTotal;
         },
         // 예매 다시하기 클릭시 동작(모든 선택 초기화)
         resetAllChoice(state){
@@ -92,6 +88,7 @@ export default {
             state.tickets = [],
             state.total = 0; 
         },
+        
     },
     actions: {
         //공연장 정보 가져오기
