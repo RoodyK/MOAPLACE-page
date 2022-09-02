@@ -158,7 +158,7 @@
                 <div class="show-info">
                     <div class="info-row">
                         <span>장소</span>
-                        <span>{{booking[0].hall}}</span>
+                        <span>{{booking[0].place}}</span>
                     </div>
                     <div class="info-row">
                         <span>날짜</span>
@@ -166,7 +166,7 @@
                     </div>
                     <div class="info-row">
                         <span>회차</span>
-                        <span>{{booking[0].round}}</span>
+                        <span>{{booking[0].time}}</span>
                     </div>
                     <div class="info-row">
                         <span>좌석</span>
@@ -188,7 +188,7 @@
                     <i class="material-symbols-outlined">keyboard_backspace</i>
                     <span>이전</span>
                 </button>
-                <button @click="updateBooking()">
+                <button @click="goNext()">
                     <span>결제선택</span>
                     <i class="material-symbols-outlined">arrow_right_alt</i>
                 </button>
@@ -202,29 +202,42 @@
 <script>
 export default {
     created(){
-        let cnt = [0,0,0];
-        this.seats.filter(e => {
+        let countR = 0;
+        let countS = 0;
+        let countA = 0;
+        this.seats.forEach(e => {
             switch(e.grade) {
-                case 'R' : cnt[0]++;
+                case 'R' : countR++;
                            break;
-                case 'S' : cnt[1]++;
+                case 'S' : countS++;
                            break;
-                case 'A' : cnt[2]++;
+                case 'A' : countA++;
                            break;   
             }
         });
-        console.log(cnt);
-
-        let index = 0;
+        console.log("매수: ", countR, countS, countA);
+            
         this.price.forEach(e => {
-            this.changeTicket.push({
+            let temp = {
                 grade: e.grade_seat,
-                count: cnt[index++],
+                count: 0,
                 priceA: e.grade_price,
-                priceY: (e.grade_price*0.8),
+                priceY: e.grade_price*0.8,
                 countA: 0,
                 countY: 0
-            })
+            };
+
+            switch(e.grade_seat) {
+                case 'R' :  temp.count = countR;
+                            this.changeTicket.splice(0,0,temp);
+                            break;
+                case 'S' :  temp.count = countS;
+                            this.changeTicket.splice(1,0,temp);
+                            break;
+                case 'A' :  temp.count = countA;
+                            this.changeTicket.splice(2,0,temp);
+                            break;
+            }
         })
         console.log(this.changeTicket);
     },
@@ -237,9 +250,9 @@ export default {
         booking() {
             let booking = [{
                 title: this.$store.state.booking.title,
-                hall: this.$store.state.booking.hall,
+                place: this.$store.state.booking.place,
                 schedule_date: this.$store.state.booking.schedule_date,
-                round: this.$store.state.booking.round
+                time: this.$store.state.booking.time
             }]
             return booking;
         },
@@ -304,13 +317,28 @@ export default {
                 this.$router.go(-1);
             } else return;
         },
-        updateBooking(){
-            this.$store.commit('booking/updateTicket', {
-                changeTicket : this.changeTicket,
-                changeTotal : this.total
-            });
-            console.log(this.tickets);
-            this.$router.push('/moaplace.com/booking/payment');
+        goNext(){
+            let tot = 0;
+            this.changeTicket.forEach(e => {
+                tot += e.count;
+            }) // 전체 수량
+            let select = 0;
+            this.changeTicket.forEach(e => {
+                select += (e.countA + e.countY);
+            }) // 선택 수량
+
+            if(select < tot){
+                alert('잔여 매수를 모두 선택하세요.');
+                return;
+
+            } else {
+                this.$store.commit('booking/updateTicket', {
+                    changeTicket : this.changeTicket,
+                    changeTotal : this.total
+                });
+                console.log(this.tickets);
+                this.$router.push('/moaplace.com/booking/payment');
+            }
         }
     }
 }
