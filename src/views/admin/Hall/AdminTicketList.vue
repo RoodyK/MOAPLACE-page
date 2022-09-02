@@ -5,38 +5,48 @@
             <div class="inner">
                 <h2 class="title">예매관리</h2>
                 <div class="list-top">
-                    <select>
-                        <option value="hall">예매번호</option>
-                        <option value="title">회원아이디</option>
-                        <option value="status">공연명</option>
+                    <div class="select-list">
+
+                      <!-- 결제상태별 모아보기 셀렉트박스-->
+                    <label for="status">결제상태</label>
+                    <select v-model="status" @change="selectStatus()">
+                        <option v-for="item in statusList" :key="item" :value="item" id="status">{{item}}</option>
                     </select>
-                    <input type="text">
-                        <button>
-                            검색
-                            <i class="material-icons">
-                                search
-                            </i>
-                        </button>
+                  </div>
+
+                  <!-- 검색항목 셀렉트박스 -->
+                    <div class="search-list">
+                      <select v-model="selectField">
+                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
+                      </select>
+                      <input type="text" :value="search" placeholder="검색어를 입력하세요.">
+                      <button @click="inputSearch($event)">
+                          검색
+                          <i class="material-icons">
+                              search
+                          </i>
+                      </button>
                     </div>
+                </div>
                     <div class="list">
                         <div class="t-row thead">
                             <p>예매번호</p>
                             <p>회원아이디</p>
                             <p>공연제목</p>
                             <p>공연날짜</p>
-                            <p>공연회차</p>
+                            <p>공연시간</p>
                             <p>결제금액</p>
                             <p>결제일</p>
                             <p>결제상태</p>
                         </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody">
-                            <p>{{item.num}}</p>
-                            <p>{{item.id}}</p>
-                            <p>{{item.title}}</p>
-                            <p>{{item.regdate}}</p>
-                            <p>{{item.time}} 회차</p>
-                            <p>{{item.price}}</p>
-                            <p>{{item.paidDate}}</p>
+                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="bookingDetail">
+                            <p>{{item.bookingNum}}</p>
+                            <p>{{item.memberId}}</p>
+                            <p>{{item.showName}}</p>
+                            <p>{{item.scheduleDate}}</p>
+                            <p>{{item.scheduleTime}}</p>
+                            <p>{{item.bookingPrice}}</p>
+                            <p>{{item.bookingDate}}</p>
                             <p>{{item.status}}</p>
                         </div>
                         <ul class="paging">
@@ -55,62 +65,117 @@
 </template>
     <script>
         import SideMenu from '@/components/admin/SideMenu.vue'
+        import axios from '@/axios/axios.js';
         export default {
             components: {
                 SideMenu
             },
             data() {
                 return {
-                    list: [
-                        {
-                            num: 300,
-                            id:'bee',
-                            title:'b리사이틀',
-                            regdate:'2022-08-21',
-                            time:'3',
-                            paidDate:'2022-08-10',
-                            price:'30000',
-                            status:'입금대기',
-                        }, {
-                            num: 10045,
-                            id:'bee',
-                            title:'ee콘서트',
-                            regdate:'2022-08-21',
-                            time:'3',
-                            paidDate:'2022-08-10',
-                            price:'30000',
-                            status:'결제완료',
-                        }, {
-                            num: 500,
-                            id:'bee',
-                            title:'b리사이틀',
-                            regdate:'2022-08-21',
-                            time:'1',
-                            paidDate:'2022-08-10',
-                            price:'50000',
-                            status:'결제완료',
-                        }, {
-                            num: 20,
-                            id:'bee',
-                            title:'헤어질결심',
-                            regdate:'2022-08-21',
-                            time:'1',
-                            paidDate:'2022-08-10',
-                            price:'40000',
-                            status:'결제완료',
-                        }, {
-                            num: 7,
-                            id:'ttt',
-                            title:'v리사이틀',
-                            regdate:'2022-08-21',
-                            time:'1',
-                            paidDate:'2022-08-10',
-                            price:'30000',
-                            status:'입금대기',
-                        }
-                    ]
+                  list: [],
+                  pageNum:'',
+                  status: '',
+                  statusList:['전체','입금대기','결제완료','결제취소'],
+                  selectField: '',
+                  fieldList:[
+                    {field: 'bookingNum',fieldName:'예매번호'},
+                    {field: 'memberId',fieldName:'회원아이디'},
+                    {field: 'showName',fieldName:'공연제목'},
+                    {field: 'bookingDate',fieldName:'결제일'},
+                    {field: 'scheduleDate',fieldName:'공연날짜'}
+                  ],
+                  search:'',
+                  pageInfo:[],
+                  pageNums:[]
                 }
+            },
+
+            mounted(){
+
+              this.viewList(
+                this.$route.params.pageNum,
+                this.$route.params.status,
+                this.$route.params.selectField,
+                this.$route.params.search);
+              
+            },
+
+            methods:{
+
+              async viewList(pageNum,status,field,search){
+
+                console.log(pageNum)
+
+                if(pageNum!=null)this.pageNum = pageNum;
+                if(status!=null)this.status = status;
+                if(field!=null)this.selectField = field;
+                if(search!=null)this.search = search;
+
+                await axios.get('/moaplace.com/admin/ticket/list/' 
+                + this.pageNum + '/' 
+                + this.status + '/' 
+                + this.selectField + '/' 
+                + this.search)
+                .then(function(resp){
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering(); 
+                }.bind(this))
+              },
+              
+              async selectStatus(){
+
+                await axios.get('/moaplace.com/admin/ticket/list/' + 1 + '/' 
+                  + this.status + '/'  
+                  + this.selectField + '/' 
+                  + this.search)
+
+                .then(function(resp){
+
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering(); 
+
+                }.bind(this))
+              },
+
+              inputSearch(e){
+                // 부모의 바로 이전 형제 요소 가져오기(input)
+                this.search=e.target.parentNode.previousSibling.value;
+                
+                axios.get('/moaplace.com/admin/ticket/list/' + 1 + '/' 
+                  + this.status + '/'  
+                  + this.selectField + '/' 
+                  + this.search)
+                  .then(function(resp){
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+
+                }.bind(this))
+              },
+
+              pageNumbering(){
+              
+              this.pageNums.splice(0);
+              for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
+                  this.pageNums.push(i);
+                }
+              }
             }
+              
         }
     </script>
     <style lang="scss" scoped="scoped">
@@ -149,41 +214,83 @@
                 // 관리자 페이지 레이아웃 관련 끝------------------
                 .list-top {
                     width: 100%;
-                    text-align: right;
+
                     margin-bottom: 16px;
                     position: relative;
                     font-size: 14px;
-                    button,
-                    select {
-                        border: none;
-                    }
-                    select {
-                        position: absolute;
-                        top: 50%;
-                        right: 184px;
-                        transform: translateY(-50%);
-                        border-right: 1px solid #ddd;
+                    display: flex;
+                    justify-content: space-between;
+                    .select-list{
+                      
+                      display: flex;
+                      justify-content: flex-start;
+                      label{
+                        display: flex;
+                        font-size: 16px;
+                        align-items: center;
+                      }
+                      select{
+                        display: flex;
+                        justify-content: flex-start;
+                        margin-left:16px;
+                        padding: 0 8px;
+                        font-size: 16px;
                         &:focus{
-                            outline: none;
-                        }
+                              outline-color: $black;
+                          }
 
+                      }
                     }
-                    button {
-                        background: transparent;
-                        font-size: 0;
-                        position: absolute;
-                        top: 4px;
-                        right: 5px;
-                        color: rgba($black, 0.9);
-                    }
-                    input {
-                        width: 280px;
-                        box-sizing: border-box;
-                        padding: 4px 32px 4px 90px;
-                        &:focus{
-                            outline-color: $black;
-                        }
-                    }
+                   .search-list{
+                      
+                      display: flex;
+                      flex-direction: left;
+                      
+                      button,
+                      select {
+                          border: none;
+                      }
+                      select {
+                          position: absolute;
+                          top: 8px;
+                          right: 200px;
+                          border-right: 1px solid #ddd;
+                          font-size: 16px;
+                          padding: 2px 8px 0 0;
+                          &:focus{
+                              outline: none;
+                          }
+                      }
+
+                      button {
+                          background: transparent;
+                          font-size: 0;
+                          position: absolute;
+                          top: 8px;
+                          right: 8px;
+                          color: rgba($black, 0.9);
+                      }
+                      input {
+                          width: 320px;
+                          box-sizing: border-box;
+                          font-size: 16px;
+                          height: 40px;
+                          padding: 4px 32px 4px 132px;
+                          overflow: hidden;
+                          &:focus{
+                              outline-color: $black;
+                          }
+                      }
+                      .insertBtn {
+                          background-color: $black;
+                          color: white;
+                          font-size: 16px;
+                          width: 104px;
+                          position: unset;
+                          margin-left: 16px;
+                          padding: 8px 0;
+                      }
+                  }
                 }
                 .list {
                     text-align: center;
