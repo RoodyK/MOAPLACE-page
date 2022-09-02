@@ -78,10 +78,11 @@ export default {
 
         let token = response.data.token;
           // localStorage에 토큰 저장
-          localStorage.setItem("access_token", token);
-          // 회원정보 읽어들이기
-          await dispatch('getMemberRoles');
-          router.push('/moaplace.com');
+        localStorage.setItem("access_token", token);
+        // 회원정보 읽어들이기
+        await dispatch('getMemberRoles');
+        router.push('/moaplace.com');
+
       }catch(error) {
         alert('로그인중 에러가 발생했습니다.');
         router.push("/moaplace.com/users/login");
@@ -96,11 +97,11 @@ export default {
       try {
         const response = await axios.get("/moaplace.com/users/login/member/role");
         let data = response.data.roles;
-
+        
         if(data == "ROLE_MEMBER") {
-          localStorage.setItem("user", "default");
+          localStorage.setItem("user", "remr");
         }else {
-          localStorage.setItem("user", "special");
+          localStorage.setItem("user", "redm");
         }
 
         commit('updateRoles', data);

@@ -283,7 +283,7 @@ export default {
       // 우편번호 정규식(숫자만 가능)
       let regExpPostcode = /^[0-9]{1,8}$/;
       // 주소 정규식(숫자, 한글 공백만 가능 )
-      let regExpAddress = /^[0-9가-힣 ]{1,30}$/;
+      let regExpAddress = /^[0-9가-힣- ]{1,30}$/;
 
 
       let idHelp = document.querySelector(".idHelp");
