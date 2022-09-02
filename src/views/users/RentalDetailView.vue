@@ -105,6 +105,9 @@
         <div class="text-center btnmargin">
           <p class="fs-7 brown" v-show="cancle">대관취소 선택시 1:1 문의 페이지로 이동합니다.</p>
           <button type="button" class="btn btn-outline-secondary fw-bold mybtn" @click="$router.push({ name : 'qnaList' })" v-show="cancle">대관취소</button>
+          <RouterLink :to="`/moaplace.com/users/mypage/rental/update/${ rental_num }`">
+            <button type="button" class="btn btn-outline-secondary fw-bold mybtn3" v-show="cancle">신청내역 수정</button>
+          </RouterLink>
           <button type="button" class="btn btn-outline-secondary fw-bold mybtn2" @click="$router.push({ name : 'myrentallist' })">목록으로</button>
         </div>
       </div>
@@ -228,7 +231,7 @@ export default {
     download(rental_num) {
       console.log("대관예약번호 : ", rental_num);
       window.location = `http://localhost:9090/moaplace.com/users/mypage/file/download/${rental_num}`;
-    }
+    },
 
   }
 }
@@ -284,6 +287,19 @@ export default {
         color: white;
         border-color: $brown;
         background-color: $brown;
+        padding: 5px 50px;
+        margin-left: 20px;
+        border-radius: 0%;
+        &:hover {
+          color: $brown;
+          background: white;
+          border-color: $brown;
+        }
+      }
+      .mybtn3 {
+        color: white;
+        border-color: gray;
+        background-color: gray;
         padding: 5px 50px;
         margin-left: 20px;
         border-radius: 0%;
