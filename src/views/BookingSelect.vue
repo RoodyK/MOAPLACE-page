@@ -148,7 +148,6 @@ export default {
   },
 
   mounted(){
-
     this.getShow(this.$store.state.booking.show_num);
   },
 
@@ -156,7 +155,6 @@ export default {
 
     //가장 처음 화면에 뿌려줄 정보 담아오기
     async getShow(num){
-      
        await axios.get('/moaplace.com/booking/getShow/' + num)
         .then(async function(resp){
           this.showI = resp.data.list;
@@ -168,8 +166,11 @@ export default {
           await this.viewDate();
           await this.onReady();
           await this.getTop();
-        }.bind(this))
+        }.bind(this));
       
+      //공연장 정보 가져오기 (혜인)
+      this.$store.dispatch('booking/getHallInfo');
+
     },
 
     //오늘부터 공연 마지막날까지 몇 일 남았는지 일수 계산
@@ -261,6 +262,17 @@ export default {
     selectTime(e, num) {
       this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
       this.scheduleNum = num;
+  
+      let data = {
+        'schedule_num' : this.scheduleNum,
+        'schedule_date' : this.onDate,
+        'time' : this.selectCnt
+      }
+      //스케줄 업데이트(혜인)
+      this.$store.commit('booking/setScheduleInfo', data);
+      //이미 선택된 좌석 저장(혜인)
+      this.$store.dispatch('booking/getAlreadySelect');
+
     },
 
     getTop() {
@@ -275,19 +287,7 @@ export default {
 
     goNextPage(){
       if(this.selectCnt!=''){
-        let hallName = this.hallNum==1?'모던홀':this.hallNum=='2'?'아트홀':'오케스트라홀';
-        alert(this.scheduleNum)
-        this.$store.commit('booking/setSelectTime',
-        {
-          title : this.title, 
-          place : hallName,
-          schedule_num: this.scheduleNum,
-          schedule_date: this.onDate,
-          time: this.selectCnt});
-
-          this.$router.push({
-            name:'bookinseat', 
-            params:{num:this.$store.state.booking.show_num}})
+         this.$router.push({name:'bookinseat'});
       }else{
         alert('날짜와 회차를 선택하세요')
       }
