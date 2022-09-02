@@ -30,6 +30,7 @@ import MyTicketDetailView from '../views/users/TicketDetailView.vue'
 import MyTicketCancleView from '../views/users/TicketCancleView.vue'
 import MyRentalListView from '../views/users/RentalListView.vue'
 import MyRentalDetailView from '../views/users/RentalDetailView.vue'
+import MyRentalUpdateView from '../views/users/RentalUpdateView.vue'
 import MyReviewListView from '../views/users/ReviewListView.vue'
 import MyQNAListView from '../views/users/QNAListView.vue'
 import MyInfoEditView from '../views/users/InfoEditView.vue'
@@ -281,6 +282,11 @@ const routes = [
     path: '/moaplace.com/users/mypage/rental/detail/:rental_num',
     name: 'myrentaldetail',
     component: MyRentalDetailView
+  },
+  {
+    path: '/moaplace.com/users/mypage/rental/update/:rental_num',
+    name: 'myrentalupdate',
+    component: MyRentalUpdateView
   },
   {
     path: '/moaplace.com/users/mypage/review/list',
