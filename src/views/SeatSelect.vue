@@ -84,11 +84,11 @@
                 <li>선택좌석</li>
             </ul>
             <div class="btn-box">
-                <button>
+                <button @click="goPrev">
                     <i class="material-symbols-outlined">keyboard_backspace</i>
                     <span>이전</span>
                 </button>
-                <button>
+                <button @click="goNext">
                     <span>할인선택</span>
                     <i class="material-symbols-outlined">arrow_right_alt</i>
                 </button>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import axios from '@/axios/axios.js';
+
 
 export default {
     data(){
@@ -122,11 +122,11 @@ export default {
         }
     },
     created(){
+        //이미 예매된 좌석 불러오기
+        this.getBookingSeat();
+
         //좌석표 그리기
         this.getHallInfo();
-        
-        //이미 예매된 좌석 불러오기
-        this.getBookinSeat();
     },
     mounted(){
         // 유니코드 A = 65
@@ -225,61 +225,66 @@ export default {
                 }   
             }
         },
-        getBookinSeat(){
-            //vuex 활용으로 변경 필요
-            let schedule_num = this.$route.params.num;
-
-            axios
-                .get(`/moaplace.com/booking/getBookingSeat/${schedule_num}`)
-                .then(function(resp){
-                    this.alreadySelect = resp.data;
-                }
-                .bind(this));
+        getBookingSeat(){
+            this.alreadySelect = this.$store.state.booking.alreadySelect;
         },
         async getHallInfo(){
-            //vuex 활용으로 변경 필요
-            let hall_num = 1;
-            let show_num = 166;
+            
+            this.title = this.$store.state.booking.title;
+            this.place = this.$store.state.booking.place;
+            this.date = this.$store.state.booking.schedule_date;
+            this.time = this.$store.state.booking.time;
+            
+            this.rows= this.$store.state.booking.rows;
+            this.cols= this.$store.state.booking.cols;
+            
+            let gradeSeats = this.$store.state.booking.gradeSeats;
+            let gradePrice = this.$store.state.booking.gradePrice;
 
-            await axios
-                .get(`/moaplace.com/booking/getHallInfo/${hall_num}/${show_num}`)
-                .then(function(resp){
-                    let data = resp.data;
-                    
-                    this.rows = data.hall_rows;
-                    this.cols = data.hall_cols;
-
-                    //등급별 행수
-                    for(let i = 0; i < data.grades.length; i++){
-                        switch(data.grades[i].grade_seat){
-                            case 'R' : 
-                                this.gradeR = data.grades[i].seat_line; 
-                                break;
-                            case 'S' : 
-                                this.gradeS = data.grades[i].seat_line; 
-                                break;
-                            case 'A' : 
-                                this.gradeA = data.grades[i].seat_line; 
-                                break;
-                        }
-                    }
-
-                    //등급별 가격
-                    for(let i = 0; i < data.prices.length; i++){
-                        switch(data.prices[i].grade_seat){
-                            case 'R' : 
-                                this.priceR = data.prices[i].grade_price; 
-                                break;
-                            case 'S' : 
-                                this.priceS = data.prices[i].grade_price; 
-                                break;
-                            case 'A' : 
-                                this.priceA = data.prices[i].grade_price; 
-                                break;
-                        }
-                    }
+            //등급별 행수
+            for(let i = 0; i < gradeSeats.length; i++){
+                switch(gradeSeats[i].grade_seat){
+                    case 'R' : 
+                        this.gradeR = gradeSeats[i].seat_line; 
+                        break;
+                    case 'S' : 
+                        this.gradeS = gradeSeats[i].seat_line; 
+                        break;
+                    case 'A' : 
+                        this.gradeA = gradeSeats[i].seat_line; 
+                        break;
                 }
-                .bind(this));
+            }
+            //등급별 가격
+            for(let i = 0; i < gradePrice.length; i++){
+                switch(gradePrice[i].grade_seat){
+                    case 'R' : 
+                        this.priceR = gradePrice[i].grade_price; 
+                        break;
+                    case 'S' : 
+                        this.priceS = gradePrice[i].grade_price; 
+                        break;
+                    case 'A' : 
+                        this.priceA = gradePrice[i].grade_price; 
+                        break;
+                }
+            }            
+        },
+        goPrev(){
+            let chk = window.confirm("좌석 선택이 초기화됩니다.");
+            if(chk == true){
+                this.$store.commit('booking/resetSeat');
+                this.$router.go(-1);
+            }
+        },
+        goNext(){
+            if(this.seats.length > 0){
+                this.$store.commit('booking/setSeatChoice', this.seats);
+                console.log(this.$store.state.booking.seats);
+            }else{
+                alert('좌석을 선택하세요.')
+                return;
+            }
         }
     }
 }
