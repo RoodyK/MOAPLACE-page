@@ -148,7 +148,6 @@ export default {
   },
 
   mounted(){
-    
     this.getShow(this.$store.state.booking.show_num);
   },
 
@@ -156,7 +155,6 @@ export default {
 
     //가장 처음 화면에 뿌려줄 정보 담아오기
     async getShow(num){
-
        await axios.get('/moaplace.com/booking/getShow/' + num)
         .then(async function(resp){
           this.showI = resp.data.list;
@@ -172,6 +170,7 @@ export default {
       
       //공연장 정보 가져오기 (혜인)
       this.$store.dispatch('booking/getHallInfo');
+
     },
 
     //오늘부터 공연 마지막날까지 몇 일 남았는지 일수 계산
@@ -263,7 +262,7 @@ export default {
     selectTime(e, num) {
       this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
       this.scheduleNum = num;
-      
+  
       let data = {
         'schedule_num' : this.scheduleNum,
         'schedule_date' : this.onDate,
@@ -273,6 +272,7 @@ export default {
       this.$store.commit('booking/setScheduleInfo', data);
       //이미 선택된 좌석 저장(혜인)
       this.$store.dispatch('booking/getAlreadySelect');
+
     },
 
     getTop() {

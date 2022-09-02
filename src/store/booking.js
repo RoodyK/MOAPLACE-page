@@ -7,6 +7,7 @@ export default {
     namespaced: true,
     state(){
         return{
+
             show_num : 162, //공연 번호
 
             show_thumbnail:'', //공연 섬네일
@@ -41,6 +42,15 @@ export default {
             state.priceS = 0;
             state.priceA = 0;
         },
+        //좌석 선택하기 위한 정보 전송(공연명,공연장명,일정번호,공연날짜,공연시간)
+        setSelectTime(state, payload){
+            state.title = payload.title;
+            state.place = payload.place;
+            state.schedule_num = payload.schedule_num;
+            state.schedule_date = payload.schedule_date;
+            state.time = payload.time;
+        },
+
         // 공연명, 공연장, 행수, 가격 저장
         setHallInfo(state, payload){
             state.title = payload.show_name;
