@@ -8,6 +8,8 @@ export default {
     state(){
         return{
             show_num : 1, //공연 번호
+
+            show_thumbnail:'', //공연 섬네일
             title : "", //공연제목
             place : "", //양식 - 모던홀/오케스트라홀/아트홀
 
@@ -40,6 +42,16 @@ export default {
             state.priceS = 0;
             state.priceA = 0;
         },
+        //좌석 선택하기 위한 정보 전송(공연명,공연장명,일정번호,공연날짜,공연시간)
+        setSelectTime(state, payload){
+
+            state.title = payload.title;
+            state.place = payload.place;
+            state.schedule_num = payload.schedule_num;
+            state.schedule_date = payload.schedule_date;
+            state.time = payload.time;
+        },
+
         //공연명 등 조회에 필요한 번호 저장
         setNumbers(state, payload){
             state.show_num = payload.show_num;

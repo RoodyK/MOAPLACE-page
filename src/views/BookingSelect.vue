@@ -2,7 +2,7 @@
   <div id="wrap">
     <div class="inner">
       <header>
-        <button class="left">
+        <button class="left" @click="delSelect">
           <i class="material-symbols-outlined">restart_alt</i>
           <span>예매 다시하기</span>
         </button>
@@ -16,41 +16,40 @@
         <div class="info">
           <h2 class="side-title">공연</h2>
           <div class="showInfo">
-            <img :src="list.imgSrc" />
-            <p class="showTitle">{{ list.title }}</p>
+            <img :src="thumb">
+            <p class="showTitle">{{ title }}</p>
             <p>
-              기간 : {{ list.startDate.substr(5, 2) }}월
-              {{ list.startDate.substr(8, 2) }}일 ~
-              {{ list.endDate.substr(5, 2) }}월
-              {{ list.endDate.substr(8, 2) }}일
+              기간 : {{ startDate.substr(5, 2) }}월
+              {{ startDate.substr(8, 2) }}일 ~
+              {{ endDate.substr(5, 2) }}월
+              {{ endDate.substr(8, 2) }}일
             </p>
-            <p>장소 : {{ list.hall }}</p>
+            <p>장소 : {{ hallNum==1?'모던홀':hallNum=='2'?'아트홀':'오케스트라홀' }} </p>
           </div>
         </div>
         <div class="date">
           <h2 class="side-title">날짜</h2>
-          <p class="month">{{ ("0" + list.month).slice(-2) }}</p>
-          <p class="year">{{ list.year }}</p>
+
+          <!-- 달을 가져오는데 만약 한자리면 빈 자리에 앞자리부터 0을 넣는다. 
+            달을 getMonth로 가져오면 number 타입이 아니므로 padStart는 쓸 수 없다. -->
+          <p class="month">{{ ("0" + month).slice(-2) }}</p>
+          <p class="year">{{ year }}</p>
+
+          <!-- 스크롤될때마다 이벤트를 파라미터로 받는 메소드 호출 -->
           <div class="selectDate" @scroll="getScroll($event.target)">
+            <!-- 배열에 저장된 오늘부터 공연 마지막날까지의 요일과 날짜 개수만큼 버튼 생성하여 데이터 담기 -->
             <button
               v-for="(m, index) in currentMonth"
-              :key="index"
-              ref="sc"
+              :key="index" ref="sc" class="static"
               :class="{
                 sat: m.day == '토',
                 sun: m.day == '일',
-                firstDay: m.date.getDate() == '1',
-              }"
-              class="static"
+                firstDay: m.date.getDate() == '1'}"
               @click="viewTime($event.currentTarget)"
               :value="
-                m.date.getFullYear() +
+                m.date.getFullYear() +'-' +('0' + (m.date.getMonth() + 1)).slice(-2) +
                 '-' +
-                ('0' + (m.date.getMonth() + 1)).slice(-2) +
-                '-' +
-                ('0' + m.date.getDate()).slice(-2)
-              "
-            >
+                ('0' + m.date.getDate()).slice(-2)">
               {{ m.day }} {{ ("0" + m.date.getDate()).slice(-2) }}
             </button>
           </div>
@@ -63,9 +62,7 @@
               :key="index"
               :class="{ timeTable: true }"
               class="static"
-              ref="tar"
-              @click="selectTime($event.currentTarget.textContent)"
-            >
+              @click="selectTime($event.currentTarget.textContent, m.schduleNum)">
               <p>{{ m.count }}</p>
               <p>{{ m.startTime }}</p>
               <p>{{ m.seat }}</p>
@@ -75,8 +72,8 @@
             <p class="empty">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 fill="currentColor"
                 class="bi bi-info-circle"
                 viewBox="0 0 16 16"
@@ -94,11 +91,11 @@
         </div>
         <aside>
           <h2 class="side-title">구매정보</h2>
-          <h3 class="show-title">{{ list.title }}</h3>
+          <h3 class="show-title">{{ title }}</h3>
           <div class="show-info">
             <div class="info-row">
               <span>장소</span>
-              <span>{{ list.hall }}</span>
+              <span>{{ hallNum==1?'모던홀':hallNum=='2'?'아트홀':'오케스트라홀' }}</span>
             </div>
             <div class="info-row">
               <span>날짜</span>
@@ -111,7 +108,7 @@
           </div>
         </aside>
         <div class="btn-box">
-          <button>
+          <button @click="goNextPage">
             <span>좌석선택</span>
             <i class="material-symbols-outlined">arrow_right_alt</i>
           </button>
@@ -122,13 +119,11 @@
 </template>
 
 <script>
-// import dateInfo from '@/components/divT.vue'
+import axios from '@/axios/axios.js'
 export default {
-  // components: {
-  //     dateInfo
-  // },
+  
   data() {
-    ``;
+
     return {
       day: ["일", "월", "화", "수", "목", "금", "토"],
       currentMonth: [],
@@ -136,166 +131,168 @@ export default {
       firstTop: null,
       timeTable: [],
       gocl: false,
-      selectCnt: "",
-      onDate: "",
-      list: {
-        imgSrc:
-          "https://img.dtryx.com/poster/2022/06/EBFBA151-CC1E-40AD-A108-990343803DF2.small.jpg",
-        title: "헤어질 결심",
-        startDate: "2022-08-01",
-        endDate: "2022-09-15",
-        hall: "모던홀",
-        year: new Date().getFullYear(),
-        month: new Date().getMonth() + 1,
-        today: new Date().getDate(),
-        seats: 120,
-        time: [
-          {
-            showDate: "2022-08-20",
-            showTime: "13:30",
-            running: 120,
-            intermission: 20,
-            extraSeats: 30,
-          },
-          {
-            showDate: "2022-08-20",
-            showTime: "17:30",
-            running: 120,
-            intermission: 20,
-            extraSeats: 0,
-          },
-          {
-            showDate: "2022-08-21",
-            showTime: "13:30",
-            running: 120,
-            intermission: 20,
-            extraSeats: 30,
-          },
-          {
-            showDate: "2022-08-27",
-            showTime: "13:30",
-            running: 120,
-            intermission: 20,
-            extraSeats: 0,
-          },
-          {
-            showDate: "2022-09-13",
-            showTime: "13:30",
-            running: 120,
-            intermission: 20,
-            extraSeats: 30,
-          },
-        ],
-      },
-    };
+      selectCnt: '',
+      onDate: '',
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      today: new Date().getDate(),
+      title: '',
+      startDate: '',
+      endDate: '',
+      hallNum:'',
+      thumb:'',
+      seats:'',
+      scheduleNum:'',
+      showI:[]
+    }
   },
-  mounted() {
-    this.viewDate();
-    setTimeout(() => {
-      this.onReady();
-    }, 100);
+
+  mounted(){
+
+    this.getShow(this.$store.state.booking.show_num);
   },
-  filters: {
-    cntCheck() {},
-  },
+
   methods: {
-    lastDay() {
-      // 달 말일 구하기
-      return new Date(this.list.year, this.list.month, 0).getDate();
+
+    //가장 처음 화면에 뿌려줄 정보 담아오기
+    async getShow(num){
+      
+       await axios.get('/moaplace.com/booking/getShow/' + num)
+        .then(async function(resp){
+          this.showI = resp.data.list;
+          this.title = resp.data.list[0].title;
+          this.startDate = resp.data.list[0].showStart;
+          this.endDate = resp.data.list[0].showEnd;
+          this.hallNum = resp.data.list[0].hallNum;
+          this.thumb = resp.data.thumb; 
+          await this.viewDate();
+          await this.onReady();
+          await this.getTop();
+        }.bind(this))
+      
     },
-    getFormat(date) {
-      return (
-        date.getFullYear() +
-        "-" +
-        ("0" + (date.getMonth() + 1)).slice(-2) +
-        "-" +
-        ("0" + date.getDate()).slice(-2)
-      );
-    },
+
+    //오늘부터 공연 마지막날까지 몇 일 남았는지 일수 계산
     getTerm() {
       let termTo =
-        new Date(
-          this.list.endDate.substr(0, 4),
-          parseInt(this.list.endDate.substr(5, 2)) - 1,
-          this.list.endDate.substr(8, 2)
-        ).getTime() -
-        new Date(
-          this.list.year,
-          this.list.month - 1,
-          this.list.today
-        ).getTime();
-      return termTo / 86400000; //이번달 기간+다음달 1일부터 공연 마지막
+        new Date(this.endDate).getTime() - new Date().getTime();
+      return termTo / 86400000; 
     },
-    viewDate() {
-      for (
-        let i = this.list.today;
-        i <= this.list.today + this.getTerm();
-        i++
-      ) {
-        //오늘 날짜에서 마지막 공연날까지의 일수를 더한만큼 반복 (오늘 날짜부터 i 시작)
+    
+    //가져온 날짜 데이터 이용하여 요일, 날짜 배열에 저장
+   async viewDate() {
+      //오늘 날짜에서 마지막 공연날까지의 일수를 더한만큼 반복 (오늘 날짜부터 i 시작)
+      for (let i = this.today; i <= this.today + this.getTerm(); i++) {
+        //요일,날짜 형식의 배열로 남은 공연기간만큼 배열에 저장
         this.currentMonth.push({
+          //요일 저장
           day: this.day[
-            new Date(this.list.year, this.list.month - 1, i).getDay()
-          ], //요일 구하기
-          date: new Date(this.list.year, this.list.month - 1, i), //날짜 구하기
+                new Date(this.year, this.month - 1, i).getDay()], 
+          //연월일 전부 저장 
+          date: new Date(this.year, this.month - 1, i)
         });
       }
+    return this.currentMonth.length;
     },
-    onReady() {
-      let btns = document.querySelectorAll(".selectDate button");
-      for (let i = 0; i < this.list.time.length; i++) {
-        for (let j = 0; j < btns.length; j++) {
-          if (this.list.time[i].showDate == btns[j].value) {
-            btns[j].className += " on_ready";
+
+    //부모요소(date클래스 div영역) 파라미터로 받기
+    getScroll(e) {
+      // firstDay라는 이름의 클래스가 부여된 모든 요소 가져오기
+      let offTops = document.getElementsByClassName("firstDay");
+      // 해당 달의 첫번째날 개수만큼 루프
+      for (let i = 0; i < offTops.length; i++) {
+        //반복될때마다 각 달 첫번째날의 offsetTop 받아오기
+        let a = offTops[i].offsetTop;
+        //date클래스 div영역의 스크롤바 위치가 달 첫번째날 위치에서 300px 뺀 값보다 크면(첫번째날 요소가 해당 위치만큼 올라오면)
+        if (a - 300 <= e.scrollTop) {
+
+          this.month = offTops[i].value.substr(5, 2);
+
+          //만약 달 첫번째날의 해가 바뀌면
+          if (this.year != offTops[i].value.substr(0, 4)) {
+            this.year = offTops[i].value.substr(0, 4);
           }
+        //date클래스 div영역의 스크롤바 위치가 달 첫번째날 위치에서 300px 뺀 값보다 작으면(첫번째날 요소가 해당 위치 아래면)
+        } else if (this.getTop() - 300 >= e.scrollTop) {
+
+          this.month = new Date().getMonth() + 1;
         }
       }
     },
+
+    //버튼을 눌렀을 때 발생한 이벤트의 현재 요소 가지고 와서 변수에 정보 담기
     viewTime(e) {
       this.timeTable.splice(0);
+      
       let ie = 1;
       this.onDate = "";
       this.selectCnt = "";
-      for (let i = 0; i < this.list.time.length; i++) {
-        if (this.list.time[i].showDate == e.value) {
-          this.onDate =
-            e.value.substr(2, 2) +
-            "." +
-            e.value.substr(5, 2) +
-            "." +
-            e.value.substr(8, 2) +
-            "(" +
-            e.textContent.substr(0, 1) +
-            ")";
+      //가지고 온 스케줄 데이터만큼 반복
+      for (let i = 0; i < this.showI.length; i++) {
+        if (this.showI[i].scheduleDate == e.value) {
+          console.log(i + ":" + e.value)
+          //22.09.03 (요일) 형식으로 보여주기 위함 
+          this.onDate = e.value.substr(2, 2) + "." +
+            e.value.substr(5, 2) + "." + e.value.substr(8, 2) +
+            "(" + e.textContent.substr(0, 1) + ")";
           this.timeTable.push({
             count: ie++ + "회차",
-            startTime: this.list.time[i].showTime,
-            seat: this.list.time[i].extraSeats + "/" + this.list.seats,
+            startTime: this.showI[i].scheduleTime,
+            seat: this.showI[i].extraCnt + "/" + this.showI[i].seatCnt,
+            schduleNum: this.showI[i].scheduleNum
           });
         }
       }
     },
-    selectTime(e) {
-      this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
+
+    //클래스명 selectDate 붙은 모든 버튼 요소 가져와서 
+    onReady(){
+      let btns = document.querySelectorAll(".selectDate button");
+      for (let i = 0; i < this.showI.length; i++) {
+        for (let j = 0; j < btns.length; j++) {
+          if (this.showI[i].scheduleDate == btns[j].value) {
+            btns[j].className += " on_ready";
+          }
+        }
+      }
+      return this.showI.length;
     },
+    
+    selectTime(e, num) {
+      this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
+      this.scheduleNum = num;
+    },
+
     getTop() {
       return document.querySelector(".firstDay").offsetTop;
     },
-    getScroll(e) {
-      let offTops = document.getElementsByClassName("firstDay");
-      for (let i = 0; i < offTops.length; i++) {
-        let a = offTops[i].offsetTop;
-        if (a - 300 <= e.scrollTop) {
-          this.list.month = offTops[i].value.substr(5, 2);
-          if (this.list.year != offTops[i].value.substr(0, 4)) {
-            this.list.year = offTops[i].value.substr(0, 4);
-          }
-        } else if (this.getTop() - 300 >= e.scrollTop) {
-          this.list.month = new Date().getMonth() + 1;
-        }
-      }
+
+    delSelect(){
+      this.selectCnt = '',
+      this.onDate = ''
+      this.timeTable.splice(0)
     },
-  },
+
+    goNextPage(){
+      if(this.selectCnt!=''){
+        let hallName = this.hallNum==1?'모던홀':this.hallNum=='2'?'아트홀':'오케스트라홀';
+        alert(this.scheduleNum)
+        this.$store.commit('booking/setSelectTime',
+        {
+          title : this.title, 
+          place : hallName,
+          schedule_num: this.scheduleNum,
+          schedule_date: this.onDate,
+          time: this.selectCnt});
+
+          this.$router.push({
+            name:'bookinseat', 
+            params:{num:this.$store.state.booking.show_num}})
+      }else{
+        alert('날짜와 회차를 선택하세요')
+      }
+    }
+  }
 };
 </script>
 
@@ -322,7 +319,7 @@ a {
   font-family: "Roboto", "Nanum Gothic", sans-serif;
   background: rgba(#000, 0.7);
   .inner {
-    width: $width;
+    width: 1000px;
     height: 700px;
     background: #fff;
     position: absolute;
@@ -382,7 +379,6 @@ a {
         padding: 32px 16px 0 16px;
         .showInfo {
           text-align: center;
-          width: 80%;
           margin: auto;
           padding: 8px;
           padding-bottom: 80px;
@@ -467,7 +463,7 @@ a {
         .timeBase {
           margin-top: 60px;
           .empty {
-            font-size: 20px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             padding: 160px 52px;
