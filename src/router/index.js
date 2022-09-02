@@ -21,6 +21,7 @@ import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
 import reviewList from '@/views/show/ReviewListView.vue'
 import showRefund from '@/views/show/ShowRefundView.vue'
+import residualseats from '@/views/show/ResidualSeatsView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
 import MypageView from '../views/users/MypageView.vue'
@@ -190,6 +191,13 @@ const routes = [
     path: '/moaplace.com/show/showrefund/:show_num',
     name: 'showrefund',
     component: showRefund
+  },
+
+  // 잔여석
+  {
+    path: '/moaplace.com/show/residualseats/:show_num',
+    name: 'residualseats',
+    component: residualseats
   },
 
   // 대관신청
@@ -439,7 +447,7 @@ const routes = [
 
   // 예매페이지
   {
-    path: '/moaplace.com/booking/select',
+    path: '/moaplace.com/booking/select/:show_num',
     name: 'bookingSelect',
     component: BookingSelect
   },
