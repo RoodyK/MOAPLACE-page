@@ -72,8 +72,8 @@
             <p class="empty">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 fill="currentColor"
                 class="bi bi-info-circle"
                 viewBox="0 0 16 16"
@@ -319,7 +319,7 @@ a {
   font-family: "Roboto", "Nanum Gothic", sans-serif;
   background: rgba(#000, 0.7);
   .inner {
-    width: $width;
+    width: 1000px;
     height: 700px;
     background: #fff;
     position: absolute;
@@ -379,7 +379,6 @@ a {
         padding: 32px 16px 0 16px;
         .showInfo {
           text-align: center;
-          width: 80%;
           margin: auto;
           padding: 8px;
           padding-bottom: 80px;
@@ -464,7 +463,7 @@ a {
         .timeBase {
           margin-top: 60px;
           .empty {
-            font-size: 20px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             padding: 160px 52px;
