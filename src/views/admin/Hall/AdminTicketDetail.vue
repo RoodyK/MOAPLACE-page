@@ -6,7 +6,7 @@
                 <h2 class="title">예매정보 - 예매상세</h2>
 
                 <div class="btnUpBox">
-                  <button>예매취소</button>
+                  <button>예매수정</button>
                 </div>
 
                 <div class="titleBox">
@@ -80,7 +80,7 @@
 
                 <div class="btnBox">
                     <button>이전</button>
-                    <button>예매취소</button>
+                    <button>예매수정</button>
                 </div>
               </div>
           </main>

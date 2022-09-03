@@ -39,24 +39,25 @@
                             <p>결제일</p>
                             <p>결제상태</p>
                         </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="bookingDetail">
-                            <p>{{item.bookingNum}}</p>
-                            <p>{{item.memberId}}</p>
-                            <p>{{item.showName}}</p>
-                            <p>{{item.scheduleDate}}</p>
-                            <p>{{item.scheduleTime}}</p>
-                            <p>{{item.bookingPrice}}</p>
-                            <p>{{item.bookingDate}}</p>
-                            <p>{{item.status}}</p>
+                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="bookingDetail(item.bookingNum)">
+                          <p>{{item.bookingNum}}</p>
+                          <p>{{item.memberId}}</p>
+                          <p>{{item.showName}}</p>
+                          <p>{{item.scheduleDate}}</p>
+                          <p>{{item.scheduleTime}}</p>
+                          <p>{{item.bookingPrice}}</p>
+                          <p>{{item.bookingDate}}</p>
+                          <p>{{item.status}}</p>
                         </div>
                         <ul class="paging">
-                            <li>[이전]</li>
-                            <li>1</li>
-                            <li>2</li>
-                            <li>3</li>
-                            <li>4</li>
-                            <li>5</li>
-                            <li>[다음]</li>
+                            <li @click="prevPage()" :class="{active : this.pageNum > 1}">
+                              [이전]</li>
+                            
+                            <li v-for="item in pageNums" :key="item" @click="movePage(item)" :class="{active : this.pageNum==item}" >
+                              {{item}}</li>
+                            
+                            <li @click="nextPage()" :class="{active : this.pageNum < pageInfo.totalPageCount}">
+                              [다음]</li>
                         </ul>
                     </div>
                 </div>
@@ -78,11 +79,11 @@
                   statusList:['전체','입금대기','결제완료','결제취소'],
                   selectField: '',
                   fieldList:[
-                    {field: 'bookingNum',fieldName:'예매번호'},
-                    {field: 'memberId',fieldName:'회원아이디'},
-                    {field: 'showName',fieldName:'공연제목'},
-                    {field: 'bookingDate',fieldName:'결제일'},
-                    {field: 'scheduleDate',fieldName:'공연날짜'}
+                    {field: 'b.booking_num',fieldName:'예매번호'},
+                    {field: 'member_id',fieldName:'회원아이디'},
+                    {field: 'sh.show_name',fieldName:'공연제목'},
+                    {field: 'b.regdate',fieldName:'결제일'},
+                    {field: 'sc.schedule_date',fieldName:'공연날짜'}
                   ],
                   search:'',
                   pageInfo:[],
@@ -104,14 +105,12 @@
 
               async viewList(pageNum,status,field,search){
 
-                console.log(pageNum)
-
                 if(pageNum!=null)this.pageNum = pageNum;
                 if(status!=null)this.status = status;
                 if(field!=null)this.selectField = field;
                 if(search!=null)this.search = search;
 
-                await axios.get('/moaplace.com/admin/ticket/list/' 
+                await axios.get('/moaplace.com/admin/ticket/list/'
                 + this.pageNum + '/' 
                 + this.status + '/' 
                 + this.selectField + '/' 
@@ -173,7 +172,47 @@
               for(let i = this.pageInfo.startPageNum; i <= this.pageInfo.endPageNum; i++){
                   this.pageNums.push(i);
                 }
-              }
+              },
+
+              movePage(pNum){
+                axios.get('/moaplace.com/admin/ticket/list/' + pNum + '/'
+                  + this.status + '/' 
+                  + this.selectField + '/' 
+                  + this.search).
+                  then(function(resp){
+                  this.list = resp.data.list;
+                  this.status = resp.data.status;
+                  this.selectField = resp.data.selectField;
+                  this.search = resp.data.search;
+                  this.pageNum = resp.data.pageNum;
+                  this.pageInfo = resp.data.pageInfo;
+                  this.pageNumbering();
+                }.bind(this))
+              },
+
+              prevPage(){
+                if(this.pageNum > 1){
+                  this.movePage(this.pageNum-1);
+                }
+              },
+
+              nextPage(){
+                if(this.pageNum < this.pageInfo.endPageNum){
+                  this.movePage(this.pageNum+1);
+                }
+              },
+              bookingDetail(num){
+                this.$router.push(
+                  {
+                    name:'adminTicketDetail',
+                    params:{
+                      showNum:num,
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      field:this.selectField,
+                      search:this.search,
+                      }});
+              },
             }
               
         }
@@ -333,12 +372,23 @@
                         justify-content: center;
                         margin-top: 32px;
                         li {
-                            margin: 0 8px;
-                            padding: 0 8px;
+                            margin: 0 6px;
+                            padding: 0 6px;
+                            user-select: none;
+                            cursor: pointer;
+                            &.active{
+                              color: #D67747;
+                              font-weight: bold;
+                            }
                             &:first-child,
                             &:last-child {
-                                color: $brown;
-                                font-weight: bold;
+                                color: rgba($black, 0.5);
+                                font-weight: bold;  
+                                cursor: auto;
+                                &.active{
+                                  color: $brown;
+                                  cursor: pointer;
+                                }
                             }
                         }
                     }
