@@ -6,11 +6,15 @@
                 <h2 class="title">일정정보</h2>
                 <div class="list-top">
                   <div class="select-list">
+
+                    <!-- 공연상태별 모아보기 셀렉트박스 -->
                     <label for="status">공연상태</label>
                     <select v-model="status" @change="selectStatus()">
                         <option v-for="(item,index) in statusList" :key="index" :value="item.status" id="status">{{item.statusName}}</option>
                     </select>
                   </div>
+
+                  <!-- 검색항목 셀렉트박스 -->
                     <div class="search-list">
                       <select v-model="selectField">
                         <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
