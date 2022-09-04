@@ -39,7 +39,7 @@
                             <p>결제일</p>
                             <p>결제상태</p>
                         </div>
-                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="bookingDetail(item.bookingNum)">
+                        <div v-for="item in list" :key="item.num" class="t-row tbody" @click="bookingDetail(item.bookingNum,item.memberId,item.showName)">
                           <p>{{item.bookingNum}}</p>
                           <p>{{item.memberId}}</p>
                           <p>{{item.showName}}</p>
@@ -201,12 +201,14 @@
                   this.movePage(this.pageNum+1);
                 }
               },
-              bookingDetail(num){
+              bookingDetail(num,id,title){
                 this.$router.push(
                   {
                     name:'adminTicketDetail',
                     params:{
                       showNum:num,
+                      id:id,
+                      title:title,
                       pageNum:this.pageNum,
                       status:this.status,
                       field:this.selectField,

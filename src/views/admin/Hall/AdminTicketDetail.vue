@@ -11,21 +11,17 @@
 
                 <div class="titleBox">
                     <span>예매번호</span>
-                    <input type="text" v-model="list.num" readonly>
+                    <input type="text" v-model="num" readonly>
                     <span>회원아이디</span>
-                    <input type="text" v-model="list.id" readonly>
+                    <input type="text" v-model="id" readonly>
                     <span>공연명</span>
-                    <input type="text" v-model="list.title" readonly>
+                    <input type="text" v-model="title" readonly>
                 </div>
 
                 <div class="ticketInfo">
                     <h3>예매정보</h3>
                     <div>
                         <table>
-                            <tr>
-                                <th>공연장</th>
-                                <td colspan="3">{{list.hall}}</td>
-                            </tr>
                             <tr>
                                 <th>공연날짜</th>
                                 <td>{{list.regdate}}</td>
@@ -34,14 +30,11 @@
                             </tr>
                             <tr>
                                 <th>예약좌석수</th>
-                                <td colspan="3"> 총 {{list.seats.length}} 석</td>
-
+                                <td colspan="3"> 총 {{list.seats.length}} 석 (어린이 R석 1장, 성인 S석  1장)</td>
                             </tr>
-                            <tr v-for="(l,index) in list.seats" :key="index">
+                            <tr>
                                 <th>예약좌석</th>
-                                <td>{{l.seatGrade}} {{l.seat}}</td>
-                                <th>관람분류</th>
-                                <td>{{l.age}}</td>
+                                <td colspan="3">{{list.seats.seat}} </td>
                             </tr>
                         </table>
                     </div>
@@ -95,18 +88,21 @@
 
                 data() {
                     return {
-                        thumb:'https://movie-phinf.pstatic.net/20220607_129/16545872892918GA4h_JPEG/movie_image.jpg?type=m203_290_2',
+                        
+                        num:this.$route.params.showNum,
+                        id:this.$route.params.id,
+                        title:this.$route.params.title,
+                        pageNum: this.$route.params.pageNum,
+                        status: this.$route.params.status,
+                        selectDate: this.$route.params.selectDate,
+                        selectField: this.$route.params.field,
+                        search: this.$route.params.search,                        
                         list: {
-                                num: 20,
-                                id:'bee',
-                                title:'헤어질결심',
-                                hall: '오케스트라홀',
-                                genre:'오페라',
                                 regdate:'2022-08-21',
                                 time:'13:30',
                                 seats:[
-                                    {seat:'A01',seatGrade:'S석',age:'어린이'},
-                                    {seat:'A02',seatGrade:'S석',age:'성인'}
+                                    {seat:'A01',seatGrade:'S석'},
+                                    {seat:'A02',seatGrade:'S석'}
                                 ],
                                 price:'40,000',
                                 point:'2,000',
