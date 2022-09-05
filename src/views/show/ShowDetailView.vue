@@ -111,6 +111,8 @@ export default {
     window.addEventListener( 'message', (e) => {
         if( e.data.functionName === 'closeShow' )
           this.isShow = false;
+          let body = document.querySelector("body");
+          body.removeAttribute('style');
     });
   },  
   methods: {
