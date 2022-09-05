@@ -228,7 +228,6 @@ import axios from '@/axios/axios.js';
                               this.weekList.push({
                                 date : this.dateCnt++,
                                 schedule : this.filterResult});   
-                                console.log(this.filterResult)
                                 this.filterResult=[];
                               }else{
                               //첫째요일이 아니면 공백 입력
@@ -257,8 +256,8 @@ import axios from '@/axios/axios.js';
                     },
 
                     loadSchedule(){
-
-                      axios.get('/moaplace.com/show/calendar/'+ this.month)
+                      let yearMonth = this.year.toString().substr(2,2) + ("0"+this.month).slice(-2);
+                      axios.get('/moaplace.com/show/calendar/'+ yearMonth)
                       .then(function(resp){
                         this.list = resp.data.list
                         this.createMonth()
