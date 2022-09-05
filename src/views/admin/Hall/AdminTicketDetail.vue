@@ -6,7 +6,7 @@
                 <h2 class="title">예매정보 - 예매상세</h2>
 
                 <div class="btnUpBox">
-                  <button>예매수정</button>
+                  <button @click="cancleBooking()">예매취소</button>
                 </div>
 
                 <div class="titleBox">
@@ -73,7 +73,7 @@
 
                 <div class="btnBox">
                     <button @click="goList">이전</button>
-                    <button>예매수정</button>
+                    <button @click="cancleBooking()">예매취소</button>
                 </div>
               </div>
           </main>
@@ -96,10 +96,11 @@
                         pageNum: this.$route.params.pageNum,
                         status: this.$route.params.status,
                         selectField: this.$route.params.field,
-                        search: this.$route.params.search,                  
-                        list:[]
+                        search: this.$route.params.search, 
+                        list:[],
                         //주문번호 list.merchantUid
                         //결제번호 list.impUid
+                        amount:0, // 취소요청금액
                     }
                 },
 
@@ -114,10 +115,48 @@
                     axios.get('moaplace.com/admin/ticket/detail/' + bookingNum)
                     .then(function(resp){
                       this.list = resp.data.list;
+                      this.amount = resp.data.list.allticketPrice;
                       this.list.allticketPrice=resp.data.list.allticketPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                       this.list.bookingPrice=resp.data.list.bookingPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }.bind(this))
                   },
+
+                  cancleBooking() { // 예매취소
+                    if (this.list.paymentStatus!='결제취소') {
+                        if(confirm('해당 예매내역을 취소하시겠습니까?\n전체 결제금액('+this.list.allticketPrice+')이 취소됩니다.')){
+                            let forms = {
+                                imp_uid:this.list.imp_uid, // 아임포트 주문번호
+                                amount: this.amount, // 환불금액
+                                reason: '관리자 예매취소', // 환불사유
+                                booking_num: this.num // 예매번호
+                            }
+                            console.log(forms);
+
+                            axios.post("/moaplace.com/admin/booking/cancle", JSON.stringify(forms),{
+                                headers: {'Content-Type' : 'application/json'}
+                            })
+                                 .then(resp => {
+                                    if(resp.data != 'fail') {
+                                        console.log(resp.data);
+                                        alert('예매가 취소되었습니다.\n카드결제 취소는 영업일 기준 2-3일이 소요됩니다.');
+                                        this.$router.push({name:'adminTicketList'});
+
+                                    } else {
+                                        alert('예매취소 응답에 실패하였습니다. 다시 시도해주세요.');
+                                        return;
+                                    }
+                                })
+                                 .catch (error => {
+                                    alert('예매취소 서버요청에 실패했습니다. 다시 시도해주세요.');
+                                    console.log(error);
+                                })
+                            } else return;
+
+                        } else {
+                            alert('이미 취소된 예매 내역입니다.');
+                            return;
+                    }
+                 },
 
                   //예매리스트로 이동
                   goList(){
@@ -132,7 +171,6 @@
                   })
                 }
               }
-
                 
             }
         </script>
@@ -194,6 +232,9 @@
                             width: 64px;
                             &:focus{
                               outline: none;
+                            }
+                            &:nth-child(4) {
+                                width: 120px;
                             }
                             &:nth-child(6) {
                                 width: 400px;
