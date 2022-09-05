@@ -77,8 +77,6 @@ export default {
     },
     created() {
         this.faq_num = this.$route.params.faq_num;
-        console.log(this.faq_num);
-
         this.sortList();
         this.faqDetail(); 
     },
@@ -122,14 +120,12 @@ export default {
                     faq_title: this.faq_title,
                     faq_content: this.faq_content
                 }
-                console.log(forms);
 
                 axios.post("/moaplace.com/admin/faq/update", JSON.stringify(forms),{
                     headers: {'Content-Type' : 'application/json'}
                 })
                 .then(resp => {
                     if(resp.data != 'fail') {
-                        console.log(resp.data);
                         alert('FAQ가 수정되었습니다.')
                         this.faqDetail();
                     } else {

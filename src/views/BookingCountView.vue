@@ -245,7 +245,6 @@ export default {
         plus(e, n){
             let el = e.currentTarget.parentElement.children[0];
             let tot = this.cnt[n].choiceA + this.cnt[n].choiceY;
-            console.log(tot);
 
             if(tot == this.cnt[n].cnt){
                 return;
@@ -256,7 +255,6 @@ export default {
         },
         minus(e){
             let el = e.currentTarget.parentElement.children[0];
-            console.log(el);
 
             if(el.value<1){
                 return;
@@ -267,7 +265,6 @@ export default {
         },
         clear(e){
             let el = e.currentTarget.parentElement.previousSibling.children[2].children[0].children[0];
-            console.log(el);
             el.value = 0;
             el.dispatchEvent(new Event('input'));
         }

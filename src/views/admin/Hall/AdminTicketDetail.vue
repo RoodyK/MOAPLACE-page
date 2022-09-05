@@ -130,14 +130,11 @@
                                 reason: '관리자 예매취소', // 환불사유
                                 booking_num: this.num // 예매번호
                             }
-                            console.log(forms);
-
                             axios.post("/moaplace.com/admin/booking/cancle", JSON.stringify(forms),{
                                 headers: {'Content-Type' : 'application/json'}
                             })
                                  .then(resp => {
                                     if(resp.data != 'fail') {
-                                        console.log(resp.data);
                                         alert('예매가 취소되었습니다.\n카드결제 취소는 영업일 기준 2-3일이 소요됩니다.');
                                         this.$router.push({name:'adminTicketList'});
 

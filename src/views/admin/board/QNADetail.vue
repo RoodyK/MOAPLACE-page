@@ -148,8 +148,6 @@ export default {
     },
     created() {
         this.qna_num = this.$route.params.qna_num;
-        console.log(this.qna_num);
-
         this.qnaDetail();
     },
     methods: {
@@ -163,9 +161,6 @@ export default {
                             this.answer = resp.data.answer;
                             this.member = resp.data.member;
                             this.email = resp.data.member.member_email;
-                            console.log(this.detail);
-                            console.log(this.answer);
-                            console.log(this.member);
                         })
                         .catch (error => {
                             console.log(error);
@@ -203,7 +198,6 @@ export default {
                 answer_content: this.answer_content,
                 email: this.email
             }
-            console.log(form)
             await axios.post('/moaplace.com/admin/qna/answer/insert', JSON.stringify(form), 
                             {headers: {'Content-Type' : 'application/json'}
                         })
