@@ -145,7 +145,6 @@
                       <input type="text" class="file-input" v-model="dto.rental_originfilename" disabled>
                       <label for="file">첨부파일 등록</label>
                     </div>
-                    <span class="helpSpan"></span>
                   </td>
                 </tr>
                 <tr>
@@ -158,7 +157,7 @@
                 <tr>
                   <th class="col-md-2 text-center descth">담당자 연락처</th>
                   <td class="desctd">
-                    <input type="text" id="rental_ownsphone" v-model="dto.rental_ownsphone"><span class="helpSpan"></span> / <input type="text" id="rental_ownemail" v-model="dto.rental_ownemail"><span class="helpSpan"></span>
+                    <input type="text" id="rental_ownsphone" v-model="dto.rental_ownsphone"><span class="helpSpan"></span><input type="text" id="rental_ownemail" v-model="dto.rental_ownemail"><span class="helpSpan"></span>
                   </td>
                 </tr>
                 <tr>
