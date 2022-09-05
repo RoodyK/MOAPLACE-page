@@ -11,11 +11,11 @@
 
                 <div class="titleBox">
                     <span>예매번호</span>
-                    <input type="text" v-model="list.num" readonly>
+                    <input type="text" v-model="num" readonly>
                     <span>회원아이디</span>
-                    <input type="text" v-model="list.id" readonly>
+                    <input type="text" v-model="id" readonly>
                     <span>공연명</span>
-                    <input type="text" v-model="list.title" readonly>
+                    <input type="text" v-model="title" readonly>
                 </div>
 
                 <div class="ticketInfo">
@@ -23,25 +23,18 @@
                     <div>
                         <table>
                             <tr>
-                                <th>공연장</th>
-                                <td colspan="3">{{list.hall}}</td>
-                            </tr>
-                            <tr>
                                 <th>공연날짜</th>
-                                <td>{{list.regdate}}</td>
+                                <td>{{list.scheduleDate}}</td>
                                 <th>공연시작시간</th>
-                                <td>{{list.time}}</td>
+                                <td>{{list.scheduleTime}}</td>
                             </tr>
                             <tr>
                                 <th>예약좌석수</th>
-                                <td colspan="3"> 총 {{list.seats.length}} 석</td>
-
+                                <td colspan="3"> 총 {{list.bookingCount}} 석 ({{list.ticketDetail}})</td>
                             </tr>
-                            <tr v-for="(l,index) in list.seats" :key="index">
+                            <tr>
                                 <th>예약좌석</th>
-                                <td>{{l.seatGrade}} {{l.seat}}</td>
-                                <th>관람분류</th>
-                                <td>{{l.age}}</td>
+                                <td colspan="3">{{list.bookingSeat}} </td>
                             </tr>
                         </table>
                     </div>
@@ -57,17 +50,17 @@
                             </tr>
                             <tr>
                                 <th>예매가격</th>
-                                <td>{{list.price}}원</td>
+                                <td>{{list.allticketPrice}}원</td>
                                 <th>사용적립금</th>
-                                <td>{{list.point}}원</td>
+                                <td>{{list.usePoint}}원</td>
                             </tr>
                             <tr>
                                 <th>결제수단</th>
-                                <td colspan="3">{{list.payment}}</td>
+                                <td colspan="3">{{list.paymentMethod}}</td>
                             </tr>
                             <tr>
                                 <th>최종결제금액</th>
-                                <td colspan="3">{{list.lastPrice}}원</td>
+                                <td colspan="3">{{list.bookingPrice}}원</td>
                             </tr>
                             <tr>
                                 <th>결제상태</th>
@@ -79,7 +72,7 @@
                 </div>
 
                 <div class="btnBox">
-                    <button>이전</button>
+                    <button @click="goList">이전</button>
                     <button>예매수정</button>
                 </div>
               </div>
@@ -88,6 +81,7 @@
 </template>
         <script>
             import SideMenu from '@/components/admin/SideMenu.vue'
+            import axios from '@/axios/axios.js';
             export default {
                 components: {
                     SideMenu
@@ -95,29 +89,51 @@
 
                 data() {
                     return {
-                        thumb:'https://movie-phinf.pstatic.net/20220607_129/16545872892918GA4h_JPEG/movie_image.jpg?type=m203_290_2',
-                        list: {
-                                num: 20,
-                                id:'bee',
-                                title:'헤어질결심',
-                                hall: '오케스트라홀',
-                                genre:'오페라',
-                                regdate:'2022-08-21',
-                                time:'13:30',
-                                seats:[
-                                    {seat:'A01',seatGrade:'S석',age:'어린이'},
-                                    {seat:'A02',seatGrade:'S석',age:'성인'}
-                                ],
-                                price:'40,000',
-                                point:'2,000',
-                                payment:'신용카드',
-                                lastPrice:'38,000',
-                                paymentStatus:'결제완료',
-                                paymentDate:'2022-08-02'
-                            }
+                        
+                        num:this.$route.params.showNum,
+                        id:this.$route.params.id,
+                        title:this.$route.params.title,
+                        pageNum: this.$route.params.pageNum,
+                        status: this.$route.params.status,
+                        selectField: this.$route.params.field,
+                        search: this.$route.params.search,                  
+                        list:[]
+                        //주문번호 list.merchantUid
+                        //결제번호 list.impUid
                     }
-                }
+                },
 
+                mounted(){
+                  this.viewDetail(this.num);
+                },
+
+                methods:{
+
+                  //예매정보 불러오기
+                  viewDetail(bookingNum){
+                    axios.get('moaplace.com/admin/ticket/detail/' + bookingNum)
+                    .then(function(resp){
+                      this.list = resp.data.list;
+                      this.list.allticketPrice=resp.data.list.allticketPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                      this.list.bookingPrice=resp.data.list.bookingPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }.bind(this))
+                  },
+
+                  //예매리스트로 이동
+                  goList(){
+                  this.$router.push({
+                    name:'adminTicketList',
+                    params:{
+                      pageNum:this.pageNum,
+                      status:this.status,
+                      selectField:this.selectField,
+                      search:this.search,
+                    }
+                  })
+                }
+              }
+
+                
             }
         </script>
         <style lang="scss" scoped="scoped">
