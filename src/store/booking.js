@@ -8,7 +8,7 @@ export default {
     state(){
         return{
 
-            show_num : 162, //공연 번호
+            show_num : 0, //공연 번호
 
             show_thumbnail:'', //공연 섬네일
             title : "", //공연제목
@@ -31,16 +31,9 @@ export default {
         }
     },
     mutations:{
-        // 예매페이지 create되기 전에 동작
-        resetShowInfo(state){
-            state.show_num = 0; 
-            state.title = ""; 
-            state.place = ""; 
-            state.rows = 0;
-            state.cols = 0;
-            state.priceR = 0; 
-            state.priceS = 0;
-            state.priceA = 0;
+        //공연상세보기페이지에서 작동
+        setShowNum(state,payload){
+            state.show_num = payload;
         },
         //좌석 선택하기 위한 정보 전송(공연명,공연장명,일정번호,공연날짜,공연시간)
         setSelectTime(state, payload){

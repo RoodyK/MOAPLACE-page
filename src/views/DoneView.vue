@@ -154,6 +154,9 @@ export default {
              &> :first-child{
               margin-right: 8px;
             }
+            &.left{
+              visibility: hidden;
+            }
           }
           h1.title{
             font-size: 22px;
