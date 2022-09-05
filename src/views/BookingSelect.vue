@@ -231,7 +231,6 @@ export default {
       //가지고 온 스케줄 데이터만큼 반복
       for (let i = 0; i < this.showI.length; i++) {
         if (this.showI[i].scheduleDate == e.value) {
-          console.log(i + ":" + e.value)
           //22.09.03 (요일) 형식으로 보여주기 위함 
           this.onDate = e.value.substr(2, 2) + "." +
             e.value.substr(5, 2) + "." + e.value.substr(8, 2) +
