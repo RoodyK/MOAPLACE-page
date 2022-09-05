@@ -261,7 +261,7 @@ import SideVisual from '@/components/SideVisual.vue'
                 left:0;
                 top:0;
             }
-            .wrap::v-deep {
+            .wrap {
                 width: 1100px;
                 margin: auto;
                 position: relative;
