@@ -2,12 +2,12 @@
   <div id="wrap">
     <div class="inner">
         <header>
-            <button class="left">
+            <button class="left" @click="resetModal">
                 <i class="material-symbols-outlined">restart_alt</i>
                 <span>예매 다시하기</span>
             </button>
             <h1 class="title">할인선택</h1>
-            <button class="right">
+            <button class="right" @click="closeModal">
                 <span>창닫기</span>
                 <i class="material-symbols-outlined">close</i>
             </button>
@@ -339,6 +339,33 @@ export default {
                 console.log(this.tickets);
                 this.$router.push('/moaplace.com/booking/payment');
             }
+        },
+        //모달창 종료
+        closeModal(){
+            let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
+            if(chk == true){
+                // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
+                window.parent.postMessage(
+                // 전달할 data (부모창에서 호출할 함수명)
+                { functionName : 'closeShow' }
+                // 부모창의 도메인
+                , 'http://localhost:8080/moaplace.com/'
+                );
+            }else{
+                return;
+            }
+        },
+        //예매다시하기(vuex 초기화)
+        resetModal(){
+            let chk = window.confirm("모든 선택이 초기화되며 일정 선택 페이지로 이동합니다.");
+            if(chk == true){
+                let num = this.$store.state.booking.show_num;
+                this.$store.commit('booking/resetAllChoice');
+                this.$router.push('/moaplace.com/booking/select/'+num);
+            }else{
+                return;
+            }
+            
         }
     }
 }
