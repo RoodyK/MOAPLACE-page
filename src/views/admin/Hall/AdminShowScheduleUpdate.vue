@@ -6,7 +6,6 @@
                 <h2 class="title">일정정보 - 일정수정</h2>
 
                 <div class="btnUpBox">
-                  <button>삭제</button>
                   <button @click="goUpdate">수정</button>
                 </div>
 
@@ -97,12 +96,11 @@
                     </div>
                   </div>
 
-
                 <div class="btnBox">
                     <button @click="goList">이전</button>
                     <button @click="goUpdate">수정</button>
-                    <button>삭제</button>
                 </div>
+
               </div>
           </main>
       </div>
@@ -143,7 +141,6 @@
                   this.viewDetail(
                     this.$route.params.showNum,
                     this.$route.params.showDate);
-                    // console.log("넘어온 데이터 "+this.$route.params.showNum,this.$route.params.showDate)
                 },
 
                 methods:{
@@ -158,15 +155,21 @@
                     this.timeInfo[i].dateStatus = e.value;
                   },
                   updateTime(i,e){
-                      if(i>0 && e.value < this.timeInfo[i-1].dateTime){
-                        alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
-                        e.value=""
-                      }else if(this.timeInfo[i-1].dateTime==""){
-                        alert("데이터를 회차순으로 입력하세요.")
-                        e.value=""
-                      }else{
-                          this.timeInfo[i].dateTime = e.value;
-                      }
+                    let showTerm = this.runningTime+this.intermission;
+                    let oldTime = new Date(this.showDate + " "+ this.timeInfo[i-1].dateTime).getTime()
+                    let newTime = new Date(this.showDate + " "+ e.value).getTime()
+                    if(i>0 && e.value < this.timeInfo[i-1].dateTime){
+                      alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+                      e.value=""
+                    }else if(this.timeInfo[i-1].dateTime==""){
+                      alert("데이터를 회차순으로 입력하세요.")
+                      e.value=""
+                    }else if(i>0 && newTime < oldTime+(showTerm*1000*60)){
+                      alert("이전 공연이 진행중인 시간은 선택할 수 없습니다.")
+                      e.value=""
+                    }else{
+                        this.timeInfo[i].dateTime = e.value;
+                    }
                   },
                     cntTime(e){
                         if(e.value.search(/[^0-9]/g)!=-1){
@@ -174,9 +177,7 @@
                             e.value="";
                         }else{
                           if(this.showCount > e.value){
-                            console.log(e.value)
                             this.timeInfo = this.timeInfo.slice(0,e.value)
-                            console.log(this.timeInfo)
                             this.showCount = e.value
                           }else if(this.showCount < e.value){
                             for(let i = this.showCount; i < e.value ;i++){
@@ -197,10 +198,9 @@
                         this.showStatus = resp.data.showStatus
                         this.timeInfo = resp.data.arrTime
                         this.showCount = resp.data.arrTime.length
-
                       }.bind(this)).
                     catch(function(error){
-                      if(error.response){
+                      if(error.request){
                         alert('공연정보를 모두 입력하세요')
                       }
                     })
@@ -236,7 +236,7 @@
                           this.goList()
                         }.bind(this)).
                         catch(function(error){
-                          if(error.response){
+                          if(error.request){
                             alert('공연정보 수정을 실패하였습니다.')
                           }
                         })
@@ -283,9 +283,6 @@
                           margin-bottom:16px;
                           background-color: $black;
                           color:white;
-                          &:last-child{
-                            margin-right: 16px;
-                          }
                       }
                     }
 
@@ -330,6 +327,7 @@
                                 width: 100%;
                                 border-top: 1px solid rgba($black,0.3);
                                 border-width: 1px 0;
+                                table-layout: fixed;
                                 tr {
                                     td,
                                     th {
@@ -346,8 +344,8 @@
                             }
                         }
                     }
-                    // --------공연정보 끝, 이미지 시작--------
-                    .image {
+                    // --------공연정보 끝, 일정정보 시작--------
+                    .hallInfo {
                         margin: 32px 0;
                         h3 {
                             font-size: 20px;
@@ -361,44 +359,44 @@
                                 width: 100%;
                                 border-top: 1px solid rgba($black,0.3);
                                 border-width: 1px 0;
+                                table-layout: fixed;
 
                                 tr {
                                     td,
                                     th {
                                         padding: 8px 16px;
                                         border-bottom: 1px solid rgba($black, 0.3);
+                                        > button{
+                                          padding: 0 56px;
+                                          text-align: center;
+                                          border:1px solid rgba($black, 0.2);
+                                          background: rgb(250, 250, 250);
+                                          border-radius: 3px;
+                                        }
                                     }
                                     th {
                                         width: 15%;
                                         background: #eee;
                                         text-align: center;
                                     }
-                                    text-align: center;
-                                    img{
-                                          width: calc(80%/1);
-                                        }
                                 }
                             }
                         }
                     }
                     // --------이미지 끝, 버튼 영역 시작--------
                     .btnBox {
-                        width: 100%;
-                        display: flex;
-                        justify-content: space-between;
-                        button {
-                            width: calc((100% - 16px) /3);
-                            padding: 12px 0;
-                            border: none;
-                            &:nth-child(2){
-                              background-color: $black;
-                              color: #fff;
-                            }
-                            &:last-child {
-                                background-color: $black;
-                                color: #fff;
-                            }
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      button {
+                        width: calc((100% - 16px) /2);
+                        padding: 12px 0;
+                        border: none;
+                        &:last-child {
+                          background-color: $black;
+                          color: #fff;
                         }
+                      }
                     }
 
                 }

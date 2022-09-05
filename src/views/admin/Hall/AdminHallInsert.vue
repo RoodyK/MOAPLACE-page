@@ -181,7 +181,6 @@
 
           fr.readAsDataURL(e.files[0]); //readAsDataURL(파일/blob객체) -> 해당 파일이나 blob객체를 읽어오고, 읽기가 종료되면 readystate가 done(완료)되면서 loadend이벤트가 트리거되고 base64인코딩된 스트링 데이터가 result속성(attribute)에 담김. 
           fr.addEventListener('load',()=>{this.thumb=fr.result},false) //위와 같은 이유로 해당 FileReader객체에 load이벤트가 발생했을 때 .result 속성을 가져와 변수에 담으면 인코딩된 스트링데이터가 변수에 담기는 것임
-          
           //console.log(this.thumb) //왜 스트링 데이터인데 로그로는 나오지 않을까? -> 이벤트리스너로 발생한 이벤트객체를 타겟으로 출력했어야 함! 
 
         },
@@ -310,7 +309,7 @@
 <style lang="scss" scoped>
   @import "@/scss/common.scss";
   // --------관리자 페이지 레이아웃 시작--------
-    #wrap::v-deep {
+    #wrap {
         padding-left: 240px;
         background: #f7f9fa;
         #main {

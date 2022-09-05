@@ -44,8 +44,32 @@
                 <div class="btnBox">
                     <button @click="goList">이전</button>
                     <button @click="updateDetail(detailInfo.num,detailInfo.showDate)">수정</button>
-                    <button>삭제</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">삭제</button>
                 </div>
+
+                <!-- 삭제버튼 확인 모달 -->
+                <div class="modal" id="myModal">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h5 class="modal-title">정말 일정정보를 삭제하시겠습니까?</h5>
+                      </div>
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                        삭제된 일정정보는 복구할 수 없습니다.
+                      </div>
+
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">취소</button>
+                        <button class="btn-close" data-bs-dismiss="modal" @click="deleteSchedule(detailInfo.num,detailInfo.showDate)">삭제</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
           </main>
       </div>
@@ -85,7 +109,6 @@
                         resp.data
                           this.detailInfo = resp.data.detailInfoDTO;
                           this.timeInfo = resp.data.arrTime;
-                          console.log(resp.data.arrTime)
                       }.bind(this));
                     },
                     goList(){
@@ -107,7 +130,19 @@
                           params:{
                             showNum:num,
                             showDate:showDate}});
-                      },
+                    },
+
+                    deleteSchedule(num,showDate){
+                      axios.get('/moaplace.com/admin/show/schedule/delete/'+ num + '/'+ showDate)
+                      .then(function(resp){
+                        if(resp.data > 0){
+                          alert('공연일정이 삭제되었습니다.')
+                          this.goList()
+                        }else{
+                          alert('해당 날짜에 진행중인 공연이 있어 삭제할 수 없습니다.')
+                        }
+                      }.bind(this))
+                    }
                 }
 
             }
@@ -152,6 +187,12 @@
                           color:white;
                           &:last-child{
                             margin-right: 16px;
+                          }
+                          >&.btn-primary{
+                            border-radius: 0;
+                          }
+                          >&.btn-primary:focus{
+                            box-shadow:none;
                           }
                       }
                     }
@@ -250,22 +291,52 @@
                     }
                     // --------이미지 끝, 버튼 영역 시작--------
                     .btnBox {
-                        width: 100%;
-                        display: flex;
-                        justify-content: space-between;
-                        button {
-                            width: calc((100% - 16px) /3);
-                            padding: 12px 0;
-                            border: none;
-                            &:nth-child(2){
-                              background-color: $black;
-                              color: #fff;
-                            }
-                            &:last-child {
-                                background-color: $black;
-                                color: #fff;
-                            }
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      button {
+                        width: calc((100% - 16px) /3);
+                        padding: 12px 0;
+                        border: none;
+                        &:nth-child(2){
+                          background-color: $black;
+                          color: #fff;
                         }
+                        &:last-child {
+                            background-color: $black;
+                            color: #fff;
+                        }
+                        >&.btn-primary{
+                            border-radius: 0;
+                        }
+                        >&.btn-primary:focus{
+                            box-shadow:none;
+                        }
+                      }
+                    }
+                    .modal-header{
+                    display: inline;
+                    text-align: center;
+                    }
+                    .modal-body{
+                        text-align: center;
+                    }
+                    .modal-footer{
+                      display: flex;
+                      justify-content: space-between;
+                      & .btn-close{
+                        background: none;
+                        box-sizing:none;
+                        width:104px;
+                        height: 32px;
+                        padding: 0 px;
+                        opacity:none;
+                        background-color: $black;
+                        color: #fff;
+                        &.btn-close:focus{
+                          box-shadow:none;
+                        }
+                      }
                     }
 
                 }
