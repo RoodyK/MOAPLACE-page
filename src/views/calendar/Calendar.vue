@@ -8,31 +8,11 @@
         <div class="period">
             <div class="yearBox">
                 </div> 
-                <select v-model="year" @change="createMonth">
-                    <option value="2016">2016년</option>
-                    <option value="2017">2017년</option>
-                    <option value="2018">2018년</option>
-                    <option value="2019">2019년</option>
-                    <option value="2020">2020년</option>
-                    <option value="2021">2021년</option>
-                    <option value="2022">2022년</option>
-                    <option value="2023">2023년</option>
-                    <option value="2024">2024년</option>
-                    <option value="2025">2025년</option>
+                <select v-model="toYear" @change="createMonth">
+                    <option v-for="(item,index) in yearList" :key="index" :value='item'>{{item}}년</option>
                 </select>
                 <select v-model="month" @change="createMonth">
-                    <option value="1">01월</option>
-                    <option value="2">02월</option>
-                    <option value="3">03월</option>
-                    <option value="4">04월</option>
-                    <option value="5">05월</option>
-                    <option value="6">06월</option>
-                    <option value="7">07월</option>
-                    <option value="8">08월</option>
-                    <option value="9">09월</option>
-                    <option value="10">10월</option>
-                    <option value="11">11월</option>
-                    <option value="12">12월</option>
+                    <option v-for="(item,index) in monthList" :key="index" :value='item'>{{item.padStart(2, '0')}}월</option>
                 </select>
                 <div class="btn-box">
                     <button class="moveBtn" @click="prevMonth">
@@ -84,20 +64,38 @@
                 <table class="calendar">
                     <thead>
                         <tr>
-                            <th>
-                                <span class='sunday'>일</span>
-                            </th>
-                            <th>월</th>
-                            <th>화</th>
-                            <th>수</th>
-                            <th>목</th>
-                            <th>금</th>
-                            <th>
-                                <span class='satday'>토</span>
+                            <th v-for="(item,index) in dateList" :key="index">
+                                <span :class="{'sunday':item=='일','satday':item=='토'}" >{{item}}</span>
                             </th>
                         </tr>
                     </thead>
-                    <tbody v-html="calendar"></tbody>
+                    <tbody>
+                      <tr v-for="(item,i) in calendarList" :key="i">
+                        <td v-for="(day,index) in item" :key="index">
+                          <div class="dateBox">
+                            <p class='day'>
+                              <span :class="{'sunday':index==0,'satday':index==6}">
+                                {{day.date}}
+                              </span>
+                            </p>
+                            <div class='container mt-3'>
+                              <ul>
+                                <li v-for="(i,e) in day.schedule" :key="e">
+                                    <div :class="{'icon1-td':i.hallNum==1,
+                                      'icon2-td':i.hallNum==2,
+                                      'icon3-td':i.hallNum==3}">
+                                      {{i.hallNum==1?'M':i.hallNum==2?'O':'A'}}
+                                      </div>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal"
+                                     @click="viewMoadal(i)">
+                                      {{i.showName}}</button>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
                 </table>
             </div>
 
@@ -108,15 +106,22 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="poster">
-                            <img
-                                src="https://www.sejongpac.or.kr/cmmn/file/imageSrc.do?fileStreCours=faec0c25744c22e99776405c0fa72802c8777c70061f67507e3bee4a2a5844e9&streFileNm=7092ee934032e328dac3abc9fd80d8856a7ff77472074eb1dad6fba65becd736"></div>
+                            <img :src="posterImg" class="posterImg"></div>
                             <div class="preview">
+                              <div>
                                 <div class="title">
-                                    <p>모던홀</p>
+                                    <p :class="{'hall1':this.modalHallNum==1,
+                                      'hall2':this.modalHallNum==2,
+                                      'hall3':this.modalHallNum==3}">{{modalHallName}}</p>
                                 </div>
-                                <p class="tit">웃는남자</p>
-                                <p>2022.08.02~2022.09.05</p>
-                                <a href="#">자세히 보기</a>
+                                <div>
+                                  <p class='tit'>{{modalTitle}}</p>
+                                </div>
+                                <div><p>{{modalTerm}}</p></div>
+                              </div>
+                              <div>
+                                <a href="#" @click="goDetail(this.modalNum)" data-bs-dismiss="modal">자세히 보기</a>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -129,6 +134,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import axios from '@/axios/axios.js';
             export default {
                 name: 'ShowCalendar',
                 components:{
@@ -139,16 +145,35 @@ import SideVisual from '@/components/SideVisual.vue'
                 data() {
                     return {
                         calendar: '',
-                        today: new Date()
-                            .toISOString()
-                            .substr(0, 10), //오늘 날짜 2022-08-09 형식
+                        today: new Date().getDate(),
                         dateCnt: 1,
-                        year: parseInt(new Date().toISOString().substr(0, 4)),
-                        month: parseInt(new Date().toISOString().substr(5, 2))
+                        year: new Date().getFullYear(),
+                        month: new Date().getMonth() +1,
+                        toYear:'2022',
+                        yearList:['2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],
+                        monthList:['1','2','3','4','5','6','7','8','9','10','11','12'],
+                        dateList:['일','월','화','수','목','금','토'],
+                        calendarList:[],
+                        weekList:[],
+                        posterImg:'',
+                        hallList:[
+                            { id: '1', value:'모던홀'},
+                            { id: '2', value:'오케스트라홀'},
+                            { id: '3', value:'아트홀'},
+                        ],
+                        showDateList:[],
+                        list:[],
+                        filterResult:[],
+                        showMoadal:'modal',
+                        modalHallName:'',
+                        modalTitle:'',
+                        modalTerm:'',
+                        modalHallNum:'',
+                        modalNum:''
                     }
                 },
                 mounted() {
-                    this.createMonth();
+                  this.loadSchedule();
                 },
                 methods: {
                     prevMonth() {
@@ -158,17 +183,17 @@ import SideVisual from '@/components/SideVisual.vue'
                             this.year--;
                             this.month = 12;
                         }
-                        this.createMonth();
+                        this.loadSchedule();
                     },
                     upYear() {
                         if (this.year >= 2025)return;
                         this.year++;
-                        this.createMonth();
+                        this.loadSchedule();
                     },
                     downYear() {
                         if (this.year < 2017)return;
                         this.year--;
-                        this.createMonth();
+                        this.loadSchedule();
                     },
                     nextMonth() {
                         if (this.year >= 2025 && this.month==12)return;
@@ -177,7 +202,7 @@ import SideVisual from '@/components/SideVisual.vue'
                             this.year++;
                             this.month = 1;
                         }
-                        this.createMonth();
+                        this.loadSchedule();
                     },
                     lastDay() { // 달 말일 구하기
                         return new Date(this.year, this.month, 0).getDate();
@@ -189,66 +214,78 @@ import SideVisual from '@/components/SideVisual.vue'
                         return Math.ceil((this.lastDay() + this.firstDay()) / 7);
                     },
                     createMonth() { //
-                        this.calendar = '';
-                        for (let w = 1; w <= this.weekCnt(); w++) {
-                            this.calendar += "<tr>";
-                            for (let i = 0; i < 7; i++) {
-                                if (w == 1) { //첫째주 반복문
-                                    if (i >= this.firstDay()) {
-                                        if (i == 0) { //일요일이면 span 주기
-                                            this.calendar += "<td><p class='day'><span class='sunday'>" + (
-                                                this.dateCnt++
-                                            ) + "</span></p></td>";
-                                        } else if (i == 6) { //일요일이면 span 주기
-                                            this.calendar += "<td><p class='day'><span class='satday'>" + (
-                                                this.dateCnt++
-                                            ) + "</span></p></td>";
-                                        } else {
-                                            this.calendar += "<td><p class='day'>" + (
-                                                this.dateCnt++
-                                            ) + "</p></td>";
-                                        }
-                                        if (i == 6) {
-                                            this.calendar += "</tr>";
-                                            break;
-                                        }
-                                    } else {
-                                        this.calendar += "<td></td>";
-                                    }
-                                }
-                                if (w > 1) { //둘째주부터 반복문
-                                    if (this.dateCnt <= this.lastDay()) {
-                                        if (i == 0) { //일요일이면 span 주기
-                                            this.calendar += "<td><p class='day'><span class='sunday'>" + (
-                                                this.dateCnt++
-                                            ) + "</span></p><div class='container mt-3'><ul><li><div class='icon1-td'>M</di" +
-                                                    "v><a href='#myModal' data-bs-toggle='modal'>웃는남자</a></li><li><div class='icon2" +
-                                                    "-td'>O</div><a href='#myModal' data-bs-toggle='modal'>우는남자</a></li><li><div cl" +
-                                                    "ass='icon3-td'>A</div><a href='#myModal' data-bs-toggle='modal'>졸린여자</a></li><" +
-                                                    "/ul></div></td>";
-                                        } else if (i == 6) { //토요일이면 span 주기
-                                            this.calendar += "<td><p class='day'><span class='satday'>" + (
-                                                this.dateCnt++
-                                            ) + "</span></p></td>";
-                                        } else {
-                                            this.calendar += "<td><p class='day'>" + (
-                                                this.dateCnt++
-                                            ) + "</p></td>";
-                                            if (this.dateCnt == this.today.substr(8, 2)) { //오늘 일자일 때
-                                            }
-                                        }
-                                    } else { //요일 없는 빈칸 찍기
-                                        this.calendar += "<td></td>";
-                                        this.dateCnt++;
-                                    }
-                                    if (i == 6) { //토요일마다 줄바꿈하기
-                                        this.calendar += "</tr>";
-                                        break;
-                                    }
-                                }
+                      this.calendarList.splice(0)
+                      this.dateCnt=1
+                      for(let w = 1; w <= this.weekCnt(); w++){
+                        for (let i = 0; i < 7; i++) {
+                          //첫째주 반복문
+                          if (w == 1) { 
+                            if (i >= this.firstDay()){
+
+                              this.filterResult = this.list.filter(
+                                  v => v.scheduleDate.substr(8,2).replace(/(^0+)/, "") == this.dateCnt)
+                              //달의 첫째 요일부터 카운트하는 dateCnt변수 날짜 입력하면서 더하기
+                              this.weekList.push({
+                                date : this.dateCnt++,
+                                schedule : this.filterResult});   
+                                this.filterResult=[];
+                              }else{
+                              //첫째요일이 아니면 공백 입력
+                              this.weekList.push(""); 
                             }
+                          }
+                          //둘째주부터 반복문
+                          if (w > 1) { 
+                            //날짜가 달의 마지막날보다 작거나 같으면 날짜 입력 
+                            if (this.dateCnt <= this.lastDay()) { 
+
+                              this.filterResult = this.list.filter(
+                                  v => v.scheduleDate.substr(8,2).replace(/(^0+)/, "") == this.dateCnt)
+                              this.weekList.push({
+                                date : this.dateCnt++,
+                                schedule : this.filterResult});   
+                                this.filterResult=[];
+                            }else{
+                              this.weekList.push("");
+                            }
+                          }
                         }
-                        this.dateCnt = 1;
+                        this.calendarList.push(this.weekList)
+                        this.weekList=[]
+                      }
+                    },
+
+                    loadSchedule(){
+                      let yearMonth = this.year.toString().substr(2,2) + ("0"+this.month).slice(-2);
+                      axios.get('/moaplace.com/show/calendar/'+ yearMonth)
+                      .then(function(resp){
+                        this.list = resp.data.list
+                        this.createMonth()
+                      }.bind(this))                 
+                    },
+
+                    viewMoadal(i){
+
+                      switch(i.hallNum){
+                        case i.hallNum=1 : this.modalHallName = '모던홀'; break;
+                        case i.hallNum=2 : this.modalHallName = '오케스트라홀'; break;
+                        case i.hallNum=3 : this.modalHallName = '아트홀'; break;
+                      }
+                      this.modalTitle = i.showName;
+                      this.modalTerm = i.showStart +" ~ "+ i.showEnd;
+                      this.modalNum = i.showNum;
+                      this.modalHallNum = i.hallNum;
+                      axios.get('/moaplace.com/show/calendar/thumbnail/' + i.showNum)
+                      .then(function(resp){
+                        this.posterImg = resp.data
+                      }.bind(this))
+                    },
+
+                    goDetail(num){
+                      this.$router.push({
+                      name:'showdetail',
+                      params:{show_num:num}
+                        })
                     }
                 }
             }
@@ -261,7 +298,7 @@ import SideVisual from '@/components/SideVisual.vue'
                 left:0;
                 top:0;
             }
-            .wrap::v-deep {
+            .wrap{
                 width: 1100px;
                 margin: auto;
                 position: relative;
@@ -326,7 +363,7 @@ import SideVisual from '@/components/SideVisual.vue'
                         height: 22px;
                         font-size: 14px;
                         font-weight: bold;
-                        color: white;
+                        color: #fff;
                         text-align: center;
                         display: inline-block;
                     }
@@ -351,76 +388,105 @@ import SideVisual from '@/components/SideVisual.vue'
                     height: 16px;
                     font-size: 11px;
                     font-weight: bold;
-                    color: white;
+                    color: #fff;
                     text-align: center;
-                    position: relative;
-                    display: inline-block;
-                    top: -2px;
+                    display: flex;
+                    justify-content: center;
+                    padding: 0px 2px 2px 2px;
+
                 }
                 .icon1,
-                .icon1-td {
-                    background-color: darkcyan;
+                .icon1-td,
+                .hall1{
+                    background-color: rgb(0, 139, 139);
                 }
                 .icon2,
-                .icon2-td {
-                    background-color: yellowgreen;
+                .icon2-td,
+                .hall2{
+                    background-color: rgb(154, 205, 50);
                 }
                 .icon3,
-                .icon3-td {
-                    background-color: blueviolet;
+                .icon3-td,
+                .hall3{
+                    background-color: rgb(138, 43, 226);
                 }
                 .tb {
                     width: 100%;
                     margin: auto;
+                    
                     .sunday {
-                        color: red;
+                        color: rgb(255, 0, 0);
                     }
                     .satday {
-                        color: blue;
+                        color: rgb(0, 0, 255);
                     }
                     .calendar {
                         width: 100%;
                         height: 800px;
                         margin: auto;
+                        table-layout: fixed;
                         thead {
                             width: 150px;
                             height: 75px;
                             text-align: center;
                             border: 0;
-                            border-bottom: 3px solid gainsboro;
+                            border-bottom: 3px solid rgba($black,0.2);
                             td,
                             th {
                                 width: 157px;
-                                border: 1px solid gainsboro;
+                                border: 1px solid rgba($black,0.2);
                                 vertical-align: middle;
+                                table-layout: fixed;
                             }
                         }
                         tbody {
-                            border: 1px solid gainsboro;
+                            border: 1px solid rgba($black,0.2);
                             td,
                             th {
                                 width: 157px;
                                 height: 157px;
-                                border: 1px solid gainsboro;
+                                border: 1px solid rgba($black,0.2);
                                 position: relative;
-                                .day {
+                                table-layout: fixed;
+                                .dateBox{
+                                  margin: 0;
+                                  .day {
                                     font-weight: bold;
                                     width: 50px;
                                     font-weight: bold;
-                                    position: absolute;
-                                    top: 15px;
-                                    left: 15px;
+                                  display: flex;
+                                  padding: 16px 0px 0px 16px; 
+                                }
+                                }
+                                .mt-3{
+                                  margin:0px;
+                                  padding: 4px 16px 0px 16px;
                                 }
                             }
                             ul {
-                                margin-top: 40px;
-                                list-style: none;
-                                padding-left: 0;
-                                a {
-                                    text-decoration: none;
-                                    color: $black;
-                                    margin: 5px;
-                                    font-size: 16px;
+                              list-style: none;
+                              padding-left: 0;
+                              li{
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                text-align: center;
+                              }
+                              .btn-primary {
+                                border:none;
+                                color: $black;
+                                background-color: #fff;
+                                margin: 0;
+                                font-size: 16px;
+                                padding: 0 6px;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                width: 120px;
+                                text-align:left;
+                                &.btn-primary:focus{
+                                  box-shadow:none;
+                                  }
                                 }
                             }
                         }
@@ -430,12 +496,14 @@ import SideVisual from '@/components/SideVisual.vue'
                     width: 450px;
                     height: 450px;
                     position: fixed;
-                    top: 50%;
+                    top: 60%;
                     left: 50%;
                     transform: translate(-50%, -50%);
+                    &::-webkit-scrollbar{
+                      display: none;
+                    }
                     .modal-dialog {
                         width: 100%;
-                        height: 100%;
                         .modal-content {
                             flex-direction: row;
                             .exit {
@@ -445,45 +513,64 @@ import SideVisual from '@/components/SideVisual.vue'
                                 right: 0;
                                 left: unset;
                                 z-index: 9999;
+                                .btn-close:focus{
+                                  box-shadow:none;
+                                }
                             }
                             .poster {
                                 width: 50%;
-                                img {
-                                    width: 80%;
-                                    margin: 25px;
+                                height: 300px;
+                                display: flex;
+                                justify-content: center;
+                                padding: 16px 8px 16px 16px;
+                                overflow: hidden;
+                                .posterImg {
+                                  width: 100%;
+                                  height:100%;
+                                  display: flex;
                                 }
                             }
                             .preview {
                                 width: 50%;
                                 height: 300px;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                                padding: 16px 16px 16px 8px;
                                 .title {
-                                    position: relative;
-                                    p {
-                                        height: 30px;
-                                        background: darkcyan;
-                                        color: white;
-                                        text-align: center;
-                                        margin-top: 25px;
-                                        padding: 4px 16px;
-                                        display: inline-block;
-                                    }
+                                  position: relative;
+                                  p {
+                                    height: 30px;
+                                    color: #fff;
+                                    text-align: center;
+                                    padding: 4px 16px;
+                                    display: inline-block;
+                                  }
                                 }
                                 .tit {
                                     font-size: 20px;
                                     margin-top: 10px;
                                     font-weight: bold;
                                 }
+                                
                                 p {
                                     font-size: 15px;
-                                    color: gray;
+                                    color: $black;
+                                }
+                                div{
+                                  &:nth-child(4){
+                                  background-color: red;
+                                  display: flex;
+                                  align-items: end;
+                                }
                                 }
                                 a {
-                                    background-color: gainsboro;
+                                    background-color: rgba($black,0.5);
                                     text-decoration: none;
-                                    color: white;
-                                    display: block;
+                                    color: #fff;
+                                    display: flex;
+                                    justify-content: center;
                                     width: 200px;
-                                    margin-top: 120px;
                                     padding: 8px 0;
                                     text-align: center;
                                 }
@@ -493,3 +580,4 @@ import SideVisual from '@/components/SideVisual.vue'
                 }
             }
         </style>
+
