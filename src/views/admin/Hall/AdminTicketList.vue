@@ -206,7 +206,7 @@
                   {
                     name:'adminTicketDetail',
                     params:{
-                      booking:num,
+                      bookingNum:num,
                       id:id,
                       title:title,
                       pageNum:this.pageNum,
