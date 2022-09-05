@@ -1,6 +1,6 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="공연관리" mediumCategory="공연정보"/>
+    <SideMenu largeCategory="공연관리" mediumCategory="일정정보"/>
     <main id="main">
       <div class="inner">
         <h2 class="title">일정정보 - 일정등록</h2>
@@ -33,38 +33,40 @@
             <tr>
               <th>공연번호</th>
               <td>{{showNum}}</td>
-              <th rowspan="6">섬네일</th>
-              <td rowspan="6">
-                <img :src="thumnail">
+              <th rowspan="8">섬네일</th>
+              <td rowspan="8" style="vertical-align: top;">
+                <div class="thumb">
+                  <img :src="thumnail">
+                </div>
               </td>
             </tr>
             <tr>
               <th>공연명</th>
-              <td colspan="1">{{title}}</td>
+              <td>{{title}}</td>
             </tr>
             <tr>
               <th>러닝타임</th>
-              <td colspan="1">{{runningTime}}</td>
+              <td>{{runningTime}}</td>
             </tr>
             <tr>
               <th>인터미션</th>
-              <td colspan="1">{{intermission}}</td>
+              <td>{{intermission}}</td>
             </tr>
             <tr>
               <th>상연등급</th>
-              <td colspan="1">{{grade}}</td>
+              <td>{{grade}}</td>
             </tr>
             <tr>
               <th>공연상태</th>
-              <td colspan="1">{{check}}</td>
+              <td>{{check}}</td>
             </tr>
             <tr>
               <th>공연시작일</th>
-              <td colspan="1">{{startDate}}</td>
+              <td>{{startDate}}</td>
             </tr>
             <tr>
               <th>공연종료일</th>
-              <td colspan="1">{{endDate}}</td>
+              <td>{{endDate}}</td>
             </tr>
             <tr v-for="(item,index) in ynHideRow" :key="index">
               <th>{{item.start}}</th>
@@ -149,10 +151,6 @@
           let showTerm = Number(this.runningTime.replace(/[^0-9]/g,''))+Number(this.intermission.replace(/[^0-9]/g,''));
           let oldTime = new Date(this.showDate + " "+ this.showTime[i-1]).getTime()
           let newTime = new Date(this.showDate + " "+ e.value).getTime()
-          if(i>0 && newTime < oldTime+(showTerm*1000*60)){
-            alert("이전 공연이 진행중인 시간은 선택할 수 없습니다.")
-          }
-          alert('출력'+new Date(this.showDate+e.value))
           if(i>0 && e.value < this.showTime[i-1]){
             alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
             e.value=""
@@ -266,7 +264,7 @@
 <style lang="scss" scoped>
   @import "@/scss/common.scss";
   // --------관리자 페이지 레이아웃 시작--------
-    #wrap::v-deep {
+    #wrap {
         padding-left: 240px;
         background: #f7f9fa;
         #main {
@@ -294,17 +292,24 @@
               button{
                 border: 1px solid rgba($black,0.6);
                 background-color: #fff;
-                
                 padding: 2px 16px 2px 16px;
                 border-radius: 2px;
               }
-              
               table {
                 border-collapse: collapse;
                 width: 100%;
                 border-top: 1px solid rgba($black,0.3);
                 border-width: 1px 0;
+                table-layout: fixed;
+                .thumb{
+                  img{
+                    width: 100%;
+                  }
+                }
                 tr {
+                  &:nth-child(2){
+                    table-layout: fixed;
+                  }
                   td,
                   th {
                     padding: 8px 16px;
@@ -331,79 +336,81 @@
                     background: #eee;
                     text-align: center;
                   }
+                  // ---------공연명 검색 후 보여질 목록 테이블 시작------
                   .showList{
                     text-align: center;
+                    table-layout: fixed;
                      .t-row {
                         display: flex;
                         flex-flow: row wrap;
                         font-size: 16px;
                         justify-content: center;
                         &.thead {
-                            background: rgba($black,0.6);
-                            color: #fff;
-                             > & :first-child{
-                              width:100px;
-                            }
-                            > & :nth-child(2){
-                              width:400px;
-                            }
-                            > & :last-child{
-                              width:100px;
-                            }
+                          background: rgba($black,0.6);
+                          color: #fff;
+                            > & :first-child{
+                            width:100px;
+                          }
+                          > & :nth-child(2){
+                            width:400px;
+                          }
+                          > & :last-child{
+                            width:100px;
+                          }
                         }
                         &.tbody {
-                            border-bottom: 1px solid rgba($black, 0.2);
-                            display: flex;
-                            align-items: center;
-                            cursor: pointer;
-                            &:hover {
-                                background: #eee;
-                            }
-                            
-                            select {
-                                border: 1px solid #333;
-                                padding: 4px;
-                            }
-                            &:p{
-                                display: flex;
-                                align-items: center;
-                                text-align: center;
-                                font-size: 16px;
-                                overflow: hidden;
-                                text-overflow:ellipsis;
-                                white-space:nowrap;
-                                padding: 4px;
-                            }
-                             > & :first-child{
-                              width:100px;
-                            }
-                            > & :nth-child(2){
-                              width:400px;
-                            }
-                            > & :last-child{
-                              width:100px;
-                            }
-                          
+                          border-bottom: 1px solid rgba($black, 0.2);
+                          display: flex;
+                          align-items: center;
+                          cursor: pointer;
+                          &:hover {
+                              background: #eee;
+                          }
+                          select {
+                              border: 1px solid #333;
+                              padding: 4px;
+                          }
+                          .thumb{
+                            width:100%;
+                            overflow: hidden;
+                          }
+                          &:p{
+                              display: flex;
+                              align-items: center;
+                              text-align: center;
+                              font-size: 16px;
+                              overflow: hidden;
+                              text-overflow:ellipsis;
+                              white-space:nowrap;
+                              padding: 4px;
+                          }
+                            > & :first-child{
+                            width:100px;
+                          }
+                          > & :nth-child(2){
+                            width:400px;
+                          }
+                          > & :last-child{
+                            width:100px;
+                          }
                         }
                         & > p,
                         div {
-                            width: calc(100% /4);
-                            text-align: center;
-                            overflow: hidden;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            
-                            & {
-                                padding-top: 4px;
-                            }
-                            
+                          width: calc(100% /4);
+                          text-align: center;
+                          overflow: hidden;
+                          white-space: nowrap;
+                          text-overflow: ellipsis;
+                          
+                          & {
+                              padding-top: 4px;
+                          }
                         }
+                      }  
                     }
-                      
-                    }
-
+                  // ---------공연명 검색 후 보여질 목록 테이블 끝------
                   label{
-                      margin-right:16px;
+                    margin-right:16px;
                   }
                 }
               }

@@ -90,7 +90,7 @@
                 data() {
                     return {
                         
-                        num:this.$route.params.showNum,
+                        num:this.$route.params.bookingNum,
                         id:this.$route.params.id,
                         title:this.$route.params.title,
                         pageNum: this.$route.params.pageNum,

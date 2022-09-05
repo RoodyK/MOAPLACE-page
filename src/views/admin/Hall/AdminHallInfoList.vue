@@ -172,7 +172,6 @@
 
               updateDetail(num){
 
-                console.log("업데이트넘",num)
                 this.$router.push(
                   {
                     name:'adminHallUpdate',

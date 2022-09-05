@@ -112,6 +112,7 @@
                       </div>
                     </div>
                   </div>
+                  
                 </div>
               </div>
           </main>
@@ -142,7 +143,6 @@
 
                   this.viewDetail(
                     this.$route.params.showNum);
-                    console.log("pn",this.pageNum)
                 },
 
                 methods:{
@@ -169,7 +169,6 @@
                       })
                     },
                     updateDetail(num){
-                      console.log("업데이트넘",num)
                       this.$router.push(
                         {
                           name:'adminHallUpdate',
@@ -181,7 +180,6 @@
                             search:this.search}});
                     },
                     deleteShow(){
-                      console.log("쇼넘" + this.list.num)
                       axios.get('/moaplace.com/admin/show/delete/'+ this.list.num)
                       .then(function(resp){
                         if(resp.data > 0){

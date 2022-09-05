@@ -45,7 +45,7 @@
                           <p>{{item.showName}}</p>
                           <p>{{item.scheduleDate}}</p>
                           <p>{{item.scheduleTime}}</p>
-                          <p>{{item.bookingPrice}}</p>
+                          <p>{{item.bookingPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</p>
                           <p>{{item.bookingDate}}</p>
                           <p>{{item.status}}</p>
                         </div>
@@ -206,7 +206,7 @@
                   {
                     name:'adminTicketDetail',
                     params:{
-                      showNum:num,
+                      booking:num,
                       id:id,
                       title:title,
                       pageNum:this.pageNum,
