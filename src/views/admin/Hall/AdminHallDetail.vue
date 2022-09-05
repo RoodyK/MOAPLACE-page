@@ -6,7 +6,7 @@
                 <h2 class="title">공연정보 - 공연상세</h2>
 
                 <div class="btnUpBox">
-                  <button>삭제</button>
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">삭제</button>
                   <button @click="updateDetail(list.num)">수정</button>
                 </div>
 
@@ -84,9 +84,34 @@
                 </div>
 
                 <div class="btnBox">
-                    <button @click="goList">이전</button>
-                    <button @click="updateDetail(list.num)">수정</button>
-                    <button>삭제</button>
+                    <button @click = "goList">이전</button>
+                    <button @click = "updateDetail(list.num)">수정</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">삭제</button>
+                </div>
+
+                <!-- 삭제버튼 확인 모달 -->
+                <div class="modal" id="myModal">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h5 class="modal-title">정말 공연정보를 삭제하시겠습니까?</h5>
+                      </div>
+
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                        <p>등록된 공연정보를 삭제하면</p>
+                        <p>해당 공연의 좌석별 가격과 상세이미지가 함께 삭제됩니다.</p>
+                      </div>
+
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">취소</button>
+                        <button class="btn-close" data-bs-dismiss="modal" @click="deleteShow">삭제</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
           </main>
@@ -155,6 +180,23 @@
                             field:this.selectField,
                             search:this.search}});
                     },
+                    deleteShow(){
+                      console.log("쇼넘" + this.list.num)
+                      axios.get('/moaplace.com/admin/show/delete/'+ this.list.num)
+                      .then(function(resp){
+                        if(resp.data > 0){
+                          alert("해당 공연이 삭제되었습니다.");
+                          this.goList();
+                        }else{
+                          alert('공연 삭제를 실패했습니다.')
+                        }
+                      }.bind(this))
+                      .catch(function(error){
+                        if(error.request){
+                          alert('공연 일정이 없는 공연만 삭제할 수 있습니다.')
+                        }
+                      })
+                    }
                 }
             }
         </script>
@@ -198,6 +240,12 @@
                           color:white;
                           &:last-child{
                             margin-right: 16px;
+                          }
+                          >&.btn-primary{
+                                border-radius: 0;
+                            }
+                          >&.btn-primary:focus{
+                              box-shadow:none;
                           }
                       }
                     }
@@ -307,14 +355,44 @@
                             &:nth-child(2){
                               background-color: $black;
                               color: #fff;
+                              border-radius: none;
                             }
                             &:last-child {
                                 background-color: $black;
                                 color: #fff;
                             }
+                            >&.btn-primary{
+                                border-radius: 0;
+                            }
+                            >&.btn-primary:focus{
+                                box-shadow:none;
+                            }
                         }
                     }
-
+                  .modal-header{
+                    display: inline;
+                    text-align: center;
+                  }
+                  .modal-body{
+                      text-align: center;
+                  }
+                  .modal-footer{
+                    display: flex;
+                    justify-content: space-between;
+                    & .btn-close{
+                      background: none;
+                      box-sizing:none;
+                      width:104px;
+                      height: 32px;
+                      padding: 0 px;
+                      opacity:none;
+                      background-color: $black;
+                      color: #fff;
+                      &.btn-close:focus{
+                        box-shadow:none;
+                      }
+                    }
+                  }
                 }
             }
         </style>
