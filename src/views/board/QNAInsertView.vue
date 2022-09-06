@@ -109,7 +109,6 @@ export default {
                   let data = response.data;
                   this.forms.member_num = data.member_num;
                   this.forms.member_email = data.member_email;
-                  console.log(this.forms.member_num, this.forms.member_email);
                 })
                  .catch(error => {
                     console.log(error.message);
@@ -150,7 +149,6 @@ export default {
            .then(resp => {
 
             if(resp.data!='fail'){ // 등록 성공하면 qna리스트로 이동
-              console.log(resp.data);
               alert('문의글이 등록되었습니다.');
               this.$router.push({name:'qnaList'});
 

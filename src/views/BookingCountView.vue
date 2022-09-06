@@ -300,6 +300,7 @@ export default {
             }
             el.dispatchEvent(new Event('input'));
         },
+
         clear(index, rate){
             switch(rate) {
                 case 'A' : this.changeTicket[index].countA = 0;

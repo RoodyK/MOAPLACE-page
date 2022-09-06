@@ -6,7 +6,6 @@
                 <h2 class="title">일정정보 - 일정수정</h2>
 
                 <div class="btnUpBox">
-                  <button>삭제</button>
                   <button @click="goUpdate">수정</button>
                 </div>
 
@@ -42,7 +41,7 @@
                             <tr>
                                 <th>공연횟수</th>
                                 <td colspan="5">
-                                    <input type="text" :value="showCount" class="countBox" maxlength="2" @keyup="cntTime($event.currentTarget)">
+                                    {{showCount}}
                                     회
                                 </td>
                             </tr>
@@ -61,12 +60,47 @@
                         </table>
                     </div>
                 </div>
+                <div class="hallInfo">
+                    <h3>일정정보</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>공연회차 추가</th>
+                                <td>
+                                    <button @click="addRow">등록</button>
+                                </td>
+                                <th>공연시간</th>
+                                <td><input type="time" v-model="addTime"></td>
+                                <th>공연상태</th>
+                                <td>
+                                  <select v-model="addStatus">
+                                    <option v-for="list in showStatusList" :key="list">{{list}}</option>
+                                  </select>
+                                </td>
+                            </tr>
+                            <tr v-for="(item,index) in addTimeInfo" :key="index">
+                                <th>추가된 공연</th>
+                                <td>
+                                  {{item.timeRow}}회차
+                                </td>
+                                <th>공연시간</th>
+                                <td><input type="time" :value='item.dateTime'></td>
+                                <th>공연상태</th>
+                                <td>
+                                  <select v-model="addStatus" :value="item.dateStatus">
+                                    <option v-for="list in showStatusList" :key="list">{{list}}</option>
+                                  </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                  </div>
 
                 <div class="btnBox">
                     <button @click="goList">이전</button>
                     <button @click="goUpdate">수정</button>
-                    <button>삭제</button>
                 </div>
+
               </div>
           </main>
       </div>
@@ -92,6 +126,9 @@
                       timeInfo:[],
                       showCount:'',
                       bookingSeat:'',
+                      addTime:'',
+                      addStatus:'Y',
+                      addTimeInfo:[],
                       pageNum: this.$route.params.pageNum,
                       status: this.$route.params.status,
                       selectDate: this.$route.params.selectDate,
@@ -104,23 +141,35 @@
                   this.viewDetail(
                     this.$route.params.showNum,
                     this.$route.params.showDate);
-                    // console.log("넘어온 데이터 "+this.$route.params.showNum,this.$route.params.showDate)
                 },
 
                 methods:{
+                  addRow(){
+                    this.addTimeInfo.push({
+                      dateTime : this.addTime,
+                      dateStatus : this.addStatus,
+                      timeRow : this.timeInfo.length+this.addTimeInfo.length+1,
+                      scheduleNum : 0})
+                  },
                   updateYN(i,e){
                     this.timeInfo[i].dateStatus = e.value;
                   },
                   updateTime(i,e){
-                      if(i>0 && e.value < this.timeInfo[i-1].dateTime){
-                        alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
-                        e.value=""
-                      }else if(this.timeInfo[i-1].dateTime==""){
-                        alert("데이터를 회차순으로 입력하세요.")
-                        e.value=""
-                      }else{
-                          this.timeInfo[i].dateTime = e.value;
-                      }
+                    let showTerm = this.runningTime+this.intermission;
+                    let oldTime = new Date(this.showDate + " "+ this.timeInfo[i-1].dateTime).getTime()
+                    let newTime = new Date(this.showDate + " "+ e.value).getTime()
+                    if(i>0 && e.value < this.timeInfo[i-1].dateTime){
+                      alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+                      e.value=""
+                    }else if(this.timeInfo[i-1].dateTime==""){
+                      alert("데이터를 회차순으로 입력하세요.")
+                      e.value=""
+                    }else if(i>0 && newTime < oldTime+(showTerm*1000*60)){
+                      alert("이전 공연이 진행중인 시간은 선택할 수 없습니다.")
+                      e.value=""
+                    }else{
+                        this.timeInfo[i].dateTime = e.value;
+                    }
                   },
                     cntTime(e){
                         if(e.value.search(/[^0-9]/g)!=-1){
@@ -128,9 +177,7 @@
                             e.value="";
                         }else{
                           if(this.showCount > e.value){
-                            console.log(e.value)
                             this.timeInfo = this.timeInfo.slice(0,e.value)
-                            console.log(this.timeInfo)
                             this.showCount = e.value
                           }else if(this.showCount < e.value){
                             for(let i = this.showCount; i < e.value ;i++){
@@ -151,13 +198,9 @@
                         this.showStatus = resp.data.showStatus
                         this.timeInfo = resp.data.arrTime
                         this.showCount = resp.data.arrTime.length
-                        this.timeInfo = resp.data.arrTime
-                        if(resp.data.using){
-                          alert("해당 일자의 공연은 예약된 좌석이 있어 수정할 수 없습니다. ")
-                        }
                       }.bind(this)).
                     catch(function(error){
-                      if(error.response){
+                      if(error.request){
                         alert('공연정보를 모두 입력하세요')
                       }
                     })
@@ -183,16 +226,18 @@
                             {
                               showNum:this.$route.params.showNum,
                               showDate:this.showDate,
-                              list:this.timeInfo
+                              list:this.timeInfo,
+                              addList:this.addTimeInfo
                             }),
                         {headers:{'Content-Type':'application/json'}}
                         ).then(function(resp){
-                          alert(resp.data+'개의 공연정보 수정됨')
+                          resp.data
+                          alert('공연정보 수정됨')
                           this.goList()
                         }.bind(this)).
                         catch(function(error){
-                          if(error.response){
-                            alert('해당 날짜에 예약된 일정 내역이 있어 수정할 수 없습니다.')
+                          if(error.request){
+                            alert('공연정보 수정을 실패하였습니다.')
                           }
                         })
                     },
@@ -238,9 +283,6 @@
                           margin-bottom:16px;
                           background-color: $black;
                           color:white;
-                          &:last-child{
-                            margin-right: 16px;
-                          }
                       }
                     }
 
@@ -285,6 +327,7 @@
                                 width: 100%;
                                 border-top: 1px solid rgba($black,0.3);
                                 border-width: 1px 0;
+                                table-layout: fixed;
                                 tr {
                                     td,
                                     th {
@@ -301,8 +344,8 @@
                             }
                         }
                     }
-                    // --------공연정보 끝, 이미지 시작--------
-                    .image {
+                    // --------공연정보 끝, 일정정보 시작--------
+                    .hallInfo {
                         margin: 32px 0;
                         h3 {
                             font-size: 20px;
@@ -316,44 +359,44 @@
                                 width: 100%;
                                 border-top: 1px solid rgba($black,0.3);
                                 border-width: 1px 0;
+                                table-layout: fixed;
 
                                 tr {
                                     td,
                                     th {
                                         padding: 8px 16px;
                                         border-bottom: 1px solid rgba($black, 0.3);
+                                        > button{
+                                          padding: 0 56px;
+                                          text-align: center;
+                                          border:1px solid rgba($black, 0.2);
+                                          background: rgb(250, 250, 250);
+                                          border-radius: 3px;
+                                        }
                                     }
                                     th {
                                         width: 15%;
                                         background: #eee;
                                         text-align: center;
                                     }
-                                    text-align: center;
-                                    img{
-                                          width: calc(80%/1);
-                                        }
                                 }
                             }
                         }
                     }
                     // --------이미지 끝, 버튼 영역 시작--------
                     .btnBox {
-                        width: 100%;
-                        display: flex;
-                        justify-content: space-between;
-                        button {
-                            width: calc((100% - 16px) /3);
-                            padding: 12px 0;
-                            border: none;
-                            &:nth-child(2){
-                              background-color: $black;
-                              color: #fff;
-                            }
-                            &:last-child {
-                                background-color: $black;
-                                color: #fff;
-                            }
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      button {
+                        width: calc((100% - 16px) /2);
+                        padding: 12px 0;
+                        border: none;
+                        &:last-child {
+                          background-color: $black;
+                          color: #fff;
                         }
+                      }
                     }
 
                 }
