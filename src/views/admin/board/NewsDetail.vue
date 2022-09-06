@@ -88,9 +88,9 @@ export default {
   //리스트 v-for 중복 방지를 위해 v-for에 splice를 써줌 -> 반복 수 제한
   methods: {
     getdetail() {
-      console.log("메소드 notice_num", this.notice_num);
-      console.log("메소드 member_num", this.member_num);
-      console.log("메소드 notice_detail_num", this.notice_detail_num);
+      // console.log("메소드 notice_num", this.notice_num);
+      // console.log("메소드 member_num", this.member_num);
+      // console.log("메소드 notice_detail_num", this.notice_detail_num);
       axios
         .get(
           `/moaplace.com/admin/news/detail/${this.member_num}/${this.notice_num}`
@@ -110,20 +110,20 @@ export default {
         );
     },
     download(notice_detail_num) {
-      console.log("파일넘버:", notice_detail_num);
+      // console.log("파일넘버:", notice_detail_num);
       window.location = `http://localhost:9090/moaplace.com/admin/news/file/download/${notice_detail_num}`;
     },
     deletenews(notice_num) {
-      console.log("파일넘버:", notice_num);
+      // console.log("파일넘버:", notice_num);
       axios.get(`/moaplace.com/admin/news/delete/${notice_num}`).then(
         function (resp) {
           if (resp.data == 1) {
             alert("목록을 삭제하였습니다.");
             this.$router.push({ name: "adminNewsList" });
-            console.log("삭제성공");
+            // console.log("삭제성공");
           } else {
             alert("삭제가 실패되었습니다. 다시 확인해주세요");
-            console.log("삭제실패");
+            // console.log("삭제실패");
           }
         }.bind(this)
       );

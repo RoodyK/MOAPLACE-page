@@ -113,7 +113,6 @@ export default {
       this.keyword = this.$route.params.keyword;
       this.field = this.$route.params.field;
     }
-    console.log(this.pageNum, this.field, this.keyword);
     
     this.sortList();
     this.faqList(); // 리스트 불러오기
@@ -174,20 +173,14 @@ export default {
       } 
       this.keyword = this.newKeyword; // 검색어 변경
       this.pageNum = 1;
-      console.log(this.field, this.keyword, this.sort_num);
-
       this.faqList();
     },
     filterList(){
       this.pageNum = 1;
-      console.log(this.sort_num);
-
       this.faqList();
     },    
     movePage(move){ // 페이지 이동
       this.pageNum = move;
-      console.log(this.pageNum);
-
       this.faqList();
     },
     async deleteFaq(rnum, faq_num){ // faq 삭제

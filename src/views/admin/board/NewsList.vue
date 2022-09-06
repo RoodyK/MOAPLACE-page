@@ -72,10 +72,10 @@
               <p>
                 <RouterLink
                   :to="`/moaplace.com/admin/news/update/${i.notice_num}`"
-                  ><button>수정</button></RouterLink
+                  ><button type="button">수정</button></RouterLink
                 >
               </p>
-              <p><button @click="deletenews(i.notice_num)">삭제</button></p>
+              <p><button type="button" @click="deletenews(i.notice_num)">삭제</button></p>
             </div>
             <ul class="paging">
               <li
@@ -178,18 +178,15 @@ export default {
 
   methods: {
     getList() {
-      console.log(this.pageNum); /* 클릭하는페이지 num */
 
-      // alert(this.selected);
-      // alert(this.member_num);
       axios
         .get(
           `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
         )
         .then(
           function (resp) {
-            console.log("멤버번호:", this.member_num);
-            console.log(resp.data);
+            // console.log("멤버번호:", this.member_num);
+            // console.log(resp.data);
             this.list = resp.data.list;
             this.startPageNum = resp.data.startPageNum;
             this.endPageNum = resp.data.endPageNum;
@@ -197,7 +194,7 @@ export default {
             this.totalRowCount = resp.data.totalRowCount;
             this.startRow = resp.data.startRow;
             this.endRow = resp.data.endRow;
-            console.log("리스트 불러오기 성공");
+            // console.log("리스트 불러오기 성공");
 
             // alert("this.endPageNum:" + this.endPageNum);
             //alert("this.totalRowCount:" + this.totalPageCount);
@@ -226,25 +223,25 @@ export default {
               this.totalRowCount = resp.data.totalRowCount;
               this.startRow = resp.data.startRow;
               this.endRow = resp.data.endRow;
-              console.log("검색 리스트 불러오기 성공");
+              // console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
       }
     },
     deletenews(notice_num) {
-      console.log("파일넘버:", notice_num);
-      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`).then(
-        function (resp) {
+      // console.log("파일넘버:", notice_num);
+      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`)
+      .then(resp => {
           if (resp.data == 1) {
             alert("목록을 삭제하였습니다.");
-            this.$router.push({ name: "adminNewsList" });
-            console.log("삭제성공");
+            // this.$router.push({ name: "adminNewsList" });
+            this.getList();
+            // console.log("삭제성공");
           } else {
             alert("삭제가 실패되었습니다. 다시 확인해주세요");
-            console.log("삭제실패");
+            // console.log("삭제실패");
           }
-        }.bind(this)
-      );
+        });
     },
 
     // class -> css 처리용 , prevPage -> alert

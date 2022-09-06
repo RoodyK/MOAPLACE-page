@@ -226,7 +226,7 @@ export default {
           this.email = data.member_email;
           this.username = data.member_name;
           this.userpoint = data.member_point;
-          console.log(data);
+          // console.log(data);
         })
         .catch((error) => {
           console.log(error.message);
@@ -240,13 +240,13 @@ export default {
     },
 
     buyticket: function () {
-      console.log("===============버튼 클릭 시================");
-      console.log("schedule_num:", this.schedule_num);
-      console.log("booking_seat:", this.booking_seats);
-      console.log("all_seats:", this.all_seats);
-      console.log("tot_count", this.tot_count);
-      console.log("ticket", this.tickets);
-      console.log("==========================================");
+      // console.log("===============버튼 클릭 시================");
+      // console.log("schedule_num:", this.schedule_num);
+      // console.log("booking_seat:", this.booking_seats);
+      // console.log("all_seats:", this.all_seats);
+      // console.log("tot_count", this.tot_count);
+      // console.log("ticket", this.tickets);
+      // console.log("==========================================");
       let booking = {
         booking_num: 0,
         member_num: this.member_num,
@@ -307,14 +307,14 @@ export default {
             // all_seat = localStorage.getItem("all_seat");
             // show_num = localStorage.getItem("show_num");
             // member_num = localStorage.getItem("member_num");
-            console.log("==========================================");
-            console.log("ticket :", ticket);
-            console.log("show_num:", show_num);
-            console.log("member_num:", member_num);
-            console.log("booking:", booking);
-            console.log("payment:", payment);
-            console.log("all_seat:", all_seat);
-            console.log("===============결제 성공==============");
+            // console.log("==========================================");
+            // console.log("ticket :", ticket);
+            // console.log("show_num:", show_num);
+            // console.log("member_num:", member_num);
+            // console.log("booking:", booking);
+            // console.log("payment:", payment);
+            // console.log("all_seat:", all_seat);
+            // console.log("===============결제 성공==============");
 
             // let formData = new FormData();
             // formData.append("booking", booking);
@@ -341,14 +341,14 @@ export default {
               })
               .then((resp) => {
                 if (resp.data.data === "success") {
-                  console.log(resp.data.booking_num);
+                  // console.log(resp.data.booking_num);
                   router.push({
                     name: "paymentDone",
                     params: { booking_num: resp.data.booking_num },
                   });
                 } else {
                   alert("결제를 실패하였습니다. 다시 확인해주세요");
-                  console.log("결제실패");
+                  // console.log("결제실패");
                 }
               });
           } else {
@@ -390,57 +390,8 @@ export default {
             return;
         }
         
-    }
-
-    buyticket: function () {
-      IMP.init("imp49001285");
-      IMP.request_pay(
-        {
-          // param
-          pg: "html5_inicis",
-          pay_method: "card",
-          merchant_uid: "merchant_" + new Date().getTime(),
-          name: "모아플레이스",
-          buyer_name: this.username,
-          amount: "10000",
-          buyer_email: this.email,
-        },
-        function (resp) {
-          // callback
-          console.log(resp);
-          if (resp.success) {
-            console.log("pay_method", resp.pay_method);
-            console.log("merchant_uid", resp.merchant_uid);
-            console.log("paid_amount", resp.paid_amount);
-            console.log("apply_num", resp.apply_num);
-            console.log("결제 성공"); //확인
-            var result = {
-              member_num: this.member_num,
-              pay_method: resp.pay_method,
-              merchant_uid: resp.merchant_uid,
-              paid_amount: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
-              apply_num: resp.apply_num, //카드 승인 번호
-            };
-            axios
-              .post("/moaplace.com/booking/payment", JSON.stringify(result))
-              .then(
-                function (resp) {
-                  if (resp.data === "success") {
-                    alert("결제가 완료되었습니다. ");
-                    //페이지 이동  this.$router.push({ name: "adminNewsList" });
-                    console.log("결제성공");
-                  } else {
-                    alert("결제를 실패하였습니다. 다시 확인해주세요");
-                    console.log("결제실패");
-                  }
-                }.bind(this)
-              );
-          } else {
-            console.log("결제 실패");
-          }
-        }
-      );
     },
+    
   },
   watch: {
     upoint: function (newVal) {

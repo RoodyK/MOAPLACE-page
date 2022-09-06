@@ -99,7 +99,6 @@ export default {
     if(this.$route.params.keyword) {
       this.keyword = this.$route.params.keyword;
     }
-    console.log(this.pageNum, this.keyword);
     
     this.sortList();
     this.faqList();
@@ -147,7 +146,6 @@ export default {
                         isActive: false
                       }) 
                     });
-                    console.log(this.list);
 
                     this.field = resp.data.field, // 검색어
                     this.keyword = resp.data.keyword, // 검색어
@@ -175,20 +173,14 @@ export default {
       } 
       this.pageNum = 1;
       this.keyword = this.newKeyword; // 검색어 변경
-      console.log(this.keyword, this.sort_num);
-
       this.faqList();
     },
     filterList(){
       this.pageNum = 1;
-      console.log(this.sort_num);
-
       this.faqList();
     },
     movePage(move){ // 페이지 이동
       this.pageNum = move;
-      console.log(this.pageNum);
-
       this.faqList();
     },    
     isMatch(e) {

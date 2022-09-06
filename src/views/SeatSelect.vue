@@ -98,225 +98,218 @@
     </div>
   </template>
   
-  <script>
-  
-  
+<script>
   export default {
       data(){
-          return{
-              title: '',
-              place: '',
-              date: '',
-              time : '',
-              seats:[],
-              rows: 0,//열번호
-              cols: 0,//행번호
-              priceR: 0,
-              priceS: 0,
-              priceA: 0,
-              gradeR: 0, //R석 행 수
-              gradeS: 0, //S석 행 수
-              gradeA: 0,//A석 행 수
-              seatrows:[],
-              alreadySelect:[]
-          }
+				return{
+					title: '',
+					place: '',
+					date: '',
+					time : '',
+					seats:[],
+					rows: 0,//열번호
+					cols: 0,//행번호
+					priceR: 0,
+					priceS: 0,
+					priceA: 0,
+					gradeR: 0, //R석 행 수
+					gradeS: 0, //S석 행 수
+					gradeA: 0,//A석 행 수
+					seatrows:[],
+					alreadySelect:[]
+				}
       },
       created(){
-          //이미 예매된 좌석 불러오기
-          this.getBookingSeat();
-  
-          //좌석표 그리기
-          this.getHallInfo();
+				//이미 예매된 좌석 불러오기
+				this.getBookingSeat();
+
+				//좌석표 그리기
+				this.getHallInfo();
       },
       mounted(){
-          // 유니코드 A = 65
-          for(let i = 65; i< (65+this.rows); i++){
-              let row = String.fromCharCode([i]);
-              this.seatrows.push(row);
-          }        
-  
-          setTimeout(()=>{
-              //선택할 수 없는 좌석 disabled
-              this.selectedSeat();
-          },10);
-      },
-      computed:{
-          
+				// 유니코드 A = 65
+				for(let i = 65; i< (65+this.rows); i++){
+						let row = String.fromCharCode([i]);
+						this.seatrows.push(row);
+				}        
+
+				setTimeout(()=>{
+						//선택할 수 없는 좌석 disabled
+						this.selectedSeat();
+				},10);
       },
       methods:{
-          priceToString(price) {
-              return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-          },
-          addSeats(e,row, index){
-              // 유니코드 A = 65
-              let gradeR = 65 + this.gradeR;
-              let gradeS = gradeR + this.gradeS;
-              let col = index < 10 ? '0'+ index : index;
-              
-              //이미 예약된 좌석이 아닌것만 동작
-              if(e.target.previousSibling.className != 'dis'){
-                  // 선택했던 좌석 다시 클릭하면 선택 취소
-                  if(e.target.previousSibling.checked){
-                      let seat = this.seats.findIndex((e)=>{
-                          if(e.row == row && e.col == col){
-                              return true;
-                          }
-                      })
-                      this.seats.splice(seat,1);
-                      //좌석 선택 4개 이후 좌석 선택 취소시 모든 좌석 선택 가능하게 변경
-                      this.disableAll(false);
-                  }else{
-                      if(this.seats.length >= 4){
-                          alert("좌석은 최대 4석까지만 선택가능합니다.");
-                      }else{
-                          if(row.charCodeAt(0) >= 65 && row.charCodeAt(0) < gradeR){
-                              this.seats.push({grade: 'R', row: row,col: col});
-                          }else if(row.charCodeAt(0) >= gradeR && row.charCodeAt(0) < gradeS){
-                              this.seats.push({grade: 'S', row: row,col: col});
-                          }else{
-                              this.seats.push({grade: 'A', row: row,col: col});
-                          }
-                          if(this.seats.length == 4){
-                              /* 
-                                  addSeats가 동작하고 input이 checked되기 때문에
-                                  현재 클릭된 label의 형제 input을 체크될 수 있도록 처리해준다
-                              */ 
-                              this.disableAll(true);
-                              e.target.previousSibling.disabled = false;
-                          }
-                      }
-                  }
-              }else{
-                  return;
-              }
-          },
-          delSeat(row, col){
-              let input = document.querySelector('input#'+row+col);
-              input.checked = false;
-              let seat = this.seats.findIndex((e)=>{
-                  if(e.row == row && e.col == col){
-                      return true;
-                  }
-              })
-              this.seats.splice(seat,1);
-              this.disableAll(false);
-          },
-          disableAll(dis){
-              let inputs = document.querySelectorAll(".seat > input:not(.dis)");
-              for(let i = 0; i<inputs.length; i++){
-                  if(!inputs.item(i).checked){
-                      inputs.item(i).disabled = dis;
-                  }
-              }
-          },
-          selectedSeat(){
-              let inputs = document.querySelectorAll(".seat > input");
-  
-              for(let i=0; i< this.alreadySelect.length; i++){
-  
-                  let seat = this.alreadySelect[i];
-  
-                  for(let j=0; j < inputs.length; j++){
-                      
-                      if(inputs[j].id == seat){
-                          inputs[j].disabled = true;
-                          inputs[j].className = 'dis';
-                      }
-                  }   
-              }
-          },
-          getBookingSeat(){
-              this.alreadySelect = this.$store.state.booking.alreadySelect;
-          },
-          async getHallInfo(){
-              
-              this.title = this.$store.state.booking.title;
-              this.place = this.$store.state.booking.place;
-              this.date = this.$store.state.booking.schedule_date;
-              this.time = this.$store.state.booking.time;
-              
-              this.rows= this.$store.state.booking.rows;
-              this.cols= this.$store.state.booking.cols;
-              
-              let gradeSeats = this.$store.state.booking.gradeSeats;
-              let gradePrice = this.$store.state.booking.gradePrice;
-  
-              //등급별 행수
-              for(let i = 0; i < gradeSeats.length; i++){
-                  switch(gradeSeats[i].grade_seat){
-                      case 'R' : 
-                          this.gradeR = gradeSeats[i].seat_line; 
-                          break;
-                      case 'S' : 
-                          this.gradeS = gradeSeats[i].seat_line; 
-                          break;
-                      case 'A' : 
-                          this.gradeA = gradeSeats[i].seat_line; 
-                          break;
-                  }
-              }
-              //등급별 가격
-              for(let i = 0; i < gradePrice.length; i++){
-                  switch(gradePrice[i].grade_seat){
-                      case 'R' : 
-                          this.priceR = gradePrice[i].grade_price; 
-                          break;
-                      case 'S' : 
-                          this.priceS = gradePrice[i].grade_price; 
-                          break;
-                      case 'A' : 
-                          this.priceA = gradePrice[i].grade_price; 
-                          break;
-                  }
-              }            
-          },
-          goPrev(){
-              let chk = window.confirm("좌석 선택이 초기화됩니다.");
-              if(chk == true){
-                  this.$store.commit('booking/resetSeat');
-                  this.$router.go(-1);
-              }
-          },
-          goNext(){
-              if(this.seats.length > 0){
-                  this.$store.commit('booking/setSeatChoice', this.seats);
-                  console.log(this.$store.state.booking.seats);
-                  this.$router.push('/moaplace.com/booking/count');
-              }else{
-                  alert('좌석을 선택하세요.')
-                  return;
-              }
-          },
-          //모달창 종료
-          closeModal(){
-            let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
-            if(chk == true){
-                // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
-                window.parent.postMessage(
-                // 전달할 data (부모창에서 호출할 함수명)
-                { functionName : 'closeShow' }
-                // 부모창의 도메인
-                , 'http://localhost:8080/moaplace.com/'
-                );
-            }else{
-                return;
-            }
-          },
-          //예매다시하기(vuex 초기화)
-            resetModal(){
-                let chk = window.confirm("모든 선택이 초기화되며 일정 선택 페이지로 이동합니다.");
-                if(chk == true){
-                    let num = this.$store.state.booking.show_num;
-                    this.$store.commit('booking/resetAllChoice');
-                    this.$router.push('/moaplace.com/booking/select/'+num);
-                }else{
-                    return;
-                }
-                
-            }
+				priceToString(price) {
+						return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+				},
+				addSeats(e,row, index){
+					// 유니코드 A = 65
+					let gradeR = 65 + this.gradeR;
+					let gradeS = gradeR + this.gradeS;
+					let col = index < 10 ? '0'+ index : index;
+					
+					//이미 예약된 좌석이 아닌것만 동작
+					if(e.target.previousSibling.className != 'dis'){
+							// 선택했던 좌석 다시 클릭하면 선택 취소
+							if(e.target.previousSibling.checked){
+									let seat = this.seats.findIndex((e)=>{
+											if(e.row == row && e.col == col){
+													return true;
+											}
+									})
+									this.seats.splice(seat,1);
+									//좌석 선택 4개 이후 좌석 선택 취소시 모든 좌석 선택 가능하게 변경
+									this.disableAll(false);
+							}else{
+									if(this.seats.length >= 4){
+											alert("좌석은 최대 4석까지만 선택가능합니다.");
+									}else{
+											if(row.charCodeAt(0) >= 65 && row.charCodeAt(0) < gradeR){
+													this.seats.push({grade: 'R', row: row,col: col});
+											}else if(row.charCodeAt(0) >= gradeR && row.charCodeAt(0) < gradeS){
+													this.seats.push({grade: 'S', row: row,col: col});
+											}else{
+													this.seats.push({grade: 'A', row: row,col: col});
+											}
+											if(this.seats.length == 4){
+													/* 
+															addSeats가 동작하고 input이 checked되기 때문에
+															현재 클릭된 label의 형제 input을 체크될 수 있도록 처리해준다
+													*/ 
+													this.disableAll(true);
+													e.target.previousSibling.disabled = false;
+											}
+									}
+							}
+					}else{
+							return;
+					}
+				},
+				delSeat(row, col){
+					let input = document.querySelector('input#'+row+col);
+					input.checked = false;
+					let seat = this.seats.findIndex((e)=>{
+							if(e.row == row && e.col == col){
+									return true;
+							}
+					})
+					this.seats.splice(seat,1);
+					this.disableAll(false);
+				},
+				disableAll(dis){
+						let inputs = document.querySelectorAll(".seat > input:not(.dis)");
+						for(let i = 0; i<inputs.length; i++){
+								if(!inputs.item(i).checked){
+										inputs.item(i).disabled = dis;
+								}
+						}
+				},
+				selectedSeat(){
+					let inputs = document.querySelectorAll(".seat > input");
+
+					for(let i=0; i< this.alreadySelect.length; i++){
+
+						let seat = this.alreadySelect[i];
+
+						for(let j=0; j < inputs.length; j++){
+								
+								if(inputs[j].id == seat){
+										inputs[j].disabled = true;
+										inputs[j].className = 'dis';
+								}
+						}   
+					}
+				},
+				getBookingSeat(){
+						this.alreadySelect = this.$store.state.booking.alreadySelect;
+				},
+				async getHallInfo(){
+					this.title = this.$store.state.booking.title;
+					this.place = this.$store.state.booking.place;
+					this.date = this.$store.state.booking.schedule_date;
+					this.time = this.$store.state.booking.time;
+					
+					this.rows= this.$store.state.booking.rows;
+					this.cols= this.$store.state.booking.cols;
+					
+					let gradeSeats = this.$store.state.booking.gradeSeats;
+					let gradePrice = this.$store.state.booking.gradePrice;
+
+					//등급별 행수
+					for(let i = 0; i < gradeSeats.length; i++){
+							switch(gradeSeats[i].grade_seat){
+									case 'R' : 
+											this.gradeR = gradeSeats[i].seat_line; 
+											break;
+									case 'S' : 
+											this.gradeS = gradeSeats[i].seat_line; 
+											break;
+									case 'A' : 
+											this.gradeA = gradeSeats[i].seat_line; 
+											break;
+							}
+					}
+					//등급별 가격
+					for(let i = 0; i < gradePrice.length; i++){
+							switch(gradePrice[i].grade_seat){
+									case 'R' : 
+											this.priceR = gradePrice[i].grade_price; 
+											break;
+									case 'S' : 
+											this.priceS = gradePrice[i].grade_price; 
+											break;
+									case 'A' : 
+											this.priceA = gradePrice[i].grade_price; 
+											break;
+							}
+					}            
+				},
+				goPrev(){
+						let chk = window.confirm("좌석 선택이 초기화됩니다.");
+						if(chk == true){
+								this.$store.commit('booking/resetSeat');
+								this.$router.go(-1);
+						}
+				},
+				goNext(){
+						if(this.seats.length > 0){
+								this.$store.commit('booking/setSeatChoice', this.seats);
+								console.log(this.$store.state.booking.seats);
+								this.$router.push('/moaplace.com/booking/count');
+						}else{
+								alert('좌석을 선택하세요.')
+								return;
+						}
+				},
+				//모달창 종료
+				closeModal(){
+					let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
+					if(chk == true){
+							// 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
+							window.parent.postMessage(
+							// 전달할 data (부모창에서 호출할 함수명)
+							{ functionName : 'closeShow' }
+							// 부모창의 도메인
+							, 'http://localhost:8080/moaplace.com/'
+							);
+					}else{
+							return;
+					}
+				},
+				//예매다시하기(vuex 초기화)
+				resetModal(){
+						let chk = window.confirm("모든 선택이 초기화되며 일정 선택 페이지로 이동합니다.");
+						if(chk == true){
+								let num = this.$store.state.booking.show_num;
+								this.$store.commit('booking/resetAllChoice');
+								this.$router.push('/moaplace.com/booking/select/'+num);
+						}else{
+								return;
+						}
+				}
       }
   }
-  </script>
+</script>
   
   <style lang="scss" scoped>
       @import '@/scss/common.scss';

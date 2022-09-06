@@ -137,7 +137,7 @@ export default {
   },
   created() {
     this.notice_num = this.$route.params.notice;
-    console.log("mounted: ", this.notice_num);
+    // console.log("mounted: ", this.notice_num);
     this.getupdate();
   },
 
@@ -150,8 +150,8 @@ export default {
           this.notice_title = resp.data.notice_title;
           this.notice_content = resp.data.notice_content;
           this.selected = resp.data.sort_num;
-          console.log("파일리스트", this.filelist);
-          console.log("내용===", this.notice_content);
+          // console.log("파일리스트", this.filelist);
+          // console.log("내용===", this.notice_content);
         }.bind(this)
       );
     },
@@ -166,7 +166,7 @@ export default {
     selectFile() {
       for (let i = 0; i < this.$refs.files.files.length; i++) {
         this.newfile.push(this.$refs.files.files[i]);
-        console.log(this.newfile);
+        // console.log(this.newfile);
       }
 
       let total = 0;
@@ -223,8 +223,8 @@ export default {
     },
 
     updatenews() {
-      console.log("삭제확인용===" + typeof this.deletelist);
-      console.log("추가확인용===" + this.newfile);
+      // console.log("삭제확인용===" + typeof this.deletelist);
+      // console.log("추가확인용===" + this.newfile);
       axios
         .post(
           `/moaplace.com/admin/news/update/${this.notice_num}`,
@@ -240,10 +240,10 @@ export default {
             if (resp.data === "success") {
               alert("수정이 완료되었습니다");
               this.$router.push({ name: "adminNewsList" });
-              console.log("수정성공");
+              // console.log("수정성공");
             } else {
               alert("수정이 실패되었습니다. 다시 확인해주세요");
-              console.log("수정실패");
+              // console.log("수정실패");
             }
           }.bind(this)
         );

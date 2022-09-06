@@ -93,7 +93,9 @@
                             <tr>
                                 <th>첨부파일</th>
                                 <td>
-                                    <a href="#">{{details.rental_originfilename}}</a>
+                                    <a :href="`http://localhost:9090/moaplace.com/rental/file/download/${details.rental_num}`" target="_blank">
+                                        {{details.rental_originfilename}}
+                                    </a>
                                     <span class="filesize">({{formatBytes(details.rental_filesize)}})</span>
                                 </td>
                             </tr>
@@ -173,9 +175,9 @@
             }
         },
         methods:{
-            getDetail(){
+            async getDetail(){
                 let rental_num = this.$route.params.id;
-                axios
+                await axios
                     .get(`/moaplace.com/admin/rental/detail/${rental_num}`)
                     .then(function(resp){
                         if(resp.data.result == 'success'){

@@ -84,8 +84,6 @@ export default {
   },
   created() {
     this.qna_num = this.$route.params.qna_num;
-    console.log(this.qna_num);
-
     this.qnaDetail(); // 문의 상세내용 불러오기
   },
   methods: {
@@ -102,7 +100,6 @@ export default {
                  .then(response => {
                     let data = response.data;
                     this.member_num = data.member_num;
-                    console.log(this.member_num);
                 })
                  .catch(error => {
                     console.log(error.message);
@@ -114,9 +111,7 @@ export default {
                  .then(resp => {
                       this.detail = resp.data.detail;
                       this.answer = resp.data.answer;
-                      console.log(this.detail);
-                      console.log(this.answer);
-                      
+
                       // 다른 회원이면 돌려보내기
                       if(this.member_num != this.detail.member_num) {
                         alert('잘못된 경로입니다.');

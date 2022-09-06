@@ -34,7 +34,7 @@
                     </div>
                   </td>
                   <td>
-                    <RouterLink :to="`/moaplace.com/users/mypage/ticket/detail/${ bkDto.booking_num }`">
+                    <RouterLink :to="`/moaplace.com/show/showdetail/${ bkDto.show_num }`">
                       <div class="info">
                         <img :src="bkDto.show_thumbnail" class="img1">
                         <div class="txt">
@@ -193,7 +193,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -220,7 +220,7 @@ export default {
           if(resp.status == 200) {
 
             this.bkExist = resp.data.bkExist; // 예매내역 존재여부
-            console.log("bkExist:",this.bkExist);
+            // console.log("bkExist:",this.bkExist);
             if(this.bkExist) {
               this.bkDto = resp.data.bkDto; // 가장 최근 예매내역
               
@@ -252,9 +252,9 @@ export default {
 
             }
             
-            console.log(this.bkExist,this.rtExist);
-            console.log(this.bkDto);
-            console.log(this.rtDto);
+            // console.log(this.bkExist,this.rtExist);
+            // console.log(this.bkDto);
+            // console.log(this.rtDto);
 
           } else {
             alert('에러 핸들링');
