@@ -72,7 +72,7 @@ export default {
       toDate: "",
       chartType: "ColumnChart",
       chartData: [
-        ['Year', 'Sales'],
+        ['Year', '매출'],
         ['', 0]
       ],
       chartOptions: {
@@ -115,7 +115,7 @@ export default {
     },
     chartDataUpdate(list) {
       this.chartData = [
-        ['Year', 'Sales']
+        ['Year', '매출']
       ];
       if(list.length == 0) {
         this.chartData.push(['', 0]);

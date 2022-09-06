@@ -167,10 +167,6 @@ export default {
                   })
     },
     searchList(){ // 리스트 검색
-      if(this.field=='' || this.field==null) {
-        alert('검색 구분을 선택하세요.')
-        return;
-      }
       if(this.newKeyword=='' || this.newKeyword==null){
         alert('검색어를 입력하세요.')
         return;

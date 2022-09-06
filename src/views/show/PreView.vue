@@ -93,7 +93,7 @@
         <div class="show" v-for="show in show_list" :key="show.show_num">
           <div class="img">
             <div class="pop" v-if="show.show_check=='Y'">
-              <RouterLink class="left" :to="`/moaplace.com/show/showdetail/${show.show_num}`">예매</RouterLink>
+              <RouterLink class="left" :to="`/moaplace.com/booking/select/${show.show_num}`">예매</RouterLink>
               <RouterLink class="right" :to="`/moaplace.com/show/showdetail/${show.show_num}`">상세</RouterLink>
             </div>
             <div class="pop" v-else>
