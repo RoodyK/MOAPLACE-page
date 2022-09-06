@@ -22,7 +22,7 @@
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="forms.faq_title" placeholder="등록할 자주 묻는 질문을 입력하세요."></td>
+                                <td><input type="text" v-model="forms.faq_title" placeholder="등록할 자주 묻는 질문을 입력하세요." maxlength="50"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>

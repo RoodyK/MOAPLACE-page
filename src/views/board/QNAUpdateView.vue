@@ -42,7 +42,7 @@
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" v-model="detail.qna_title">
+          <input type="text" v-model="detail.qna_title" maxlength="50">
         </div>
         
         <div class="contentBox" v-if="detail.qna_content!=undefined">
