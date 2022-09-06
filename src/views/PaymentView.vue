@@ -23,7 +23,7 @@
                 <div class="point">
                   <div>
                     <span><input type="text" v-model="upoint" /> 원</span> /
-                    <span class="use">{{ userpoint }}원</span>
+                    <span class="use">{{ formatPrice(userpoint) }}원</span>
                     <button @click="use_point">전액사용</button>
                   </div>
                   <p>
@@ -39,7 +39,7 @@
               <div class="txt">
                 <div class="pay">
                   <input type="radio" name="pay_method" id="card" />
-                  <label for="card" @click="buyticket()">카드 결제</label>
+                  <label for="card">카드 결제</label>
                 </div>
                 <div class="pay">
                   <input type="radio" name="pay_method" id="money" />
@@ -51,21 +51,21 @@
               <div class="box">
                 <p>총 금액</p>
                 <div>
-                  <p>{{ price }}</p>
+                  <p>{{ formatPrice(total) }}</p>
                   <span>원</span>
                 </div>
               </div>
               <div class="box">
                 <p>적립금</p>
                 <div>
-                  <p>{{ point }}</p>
+                  <p>{{ formatPrice(upoint) }}</p>
                   <span>원</span>
                 </div>
               </div>
               <div class="box">
                 <p>남은 금액</p>
                 <div>
-                  <p>{{ tot }}</p>
+                  <p>{{ formatPrice(tot) }}</p>
                   <span>원</span>
                 </div>
               </div>
@@ -75,45 +75,38 @@
             <div class="aside">
               <!--동일-->
               <h2 class="side-title">구매정보</h2>
-              <h3 class="show-title">{{ title }}</h3>
+              <h3 class="show-title">{{ booking.title }}</h3>
               <div class="show-info">
                 <div class="info-row">
                   <span>장소</span>
-                  <span>{{ place }}</span>
+                  <span>{{ booking.place }}</span>
                 </div>
                 <div class="info-row">
                   <span>날짜</span>
-                  <span>{{ date }}</span>
+                  <span>{{ booking.schedule_date }}</span>
                 </div>
                 <div class="info-row">
                   <span>회차</span>
-                  <span>{{ time }}</span>
+                  <span>{{ booking.time }}</span>
                 </div>
                 <div class="info-row">
                   <span>좌석</span>
                   <span class="seats">
                     <p v-for="(seat, index) in seats" :key="index">
-                      {{ seat.grade }}석 {{ seat.row }}{{ seat.cols }}
+                      {{ seat.grade }}석 {{ seat.row }}{{ seat.col }}
                     </p>
                   </span>
                 </div>
               </div>
             </div>
             <div class="btn-box">
-              <button>
+              <button @click="goPrev()">
                 <i class="material-symbols-outlined">keyboard_backspace</i>
-                <span
-                  ><RouterLink :to="`/moaplace.com/booking/count`"
-                    >이전</RouterLink
-                  ></span
-                >
+                <span>이전</span>
               </button>
-              <button>
-                <span
-                  ><RouterLink :to="`/moaplace.com/booking/done`"
-                    >결제</RouterLink
-                  ></span
-                ><i class="material-symbols-outlined">arrow_right_alt</i>
+              <button @click="buyticket()">
+                <span>결제</span>
+                <i class="material-symbols-outlined">arrow_right_alt</i>
               </button>
             </div>
           </div>
@@ -125,6 +118,8 @@
 
 <script>
 import axios from "@/axios/axios.js";
+import router from "@/router/index.js";
+
 const { IMP } = window;
 export default {
   data() {
@@ -132,20 +127,14 @@ export default {
       msg: "",
       userpoint: "", //멤버에서 받는 point
 
-      upoint: "", //사용자가 사용 할 포인트 금액(이 페이지 입력)
+      upoint: 0, //사용자가 사용 할 포인트 금액(이 페이지 입력)
+
       username: "",
       email: "",
       member_num: "",
-
-      //param
-
-      title: "웃다가 우는 남자",
-      place: "오케스트라홀",
-      date: "22.08.16(화)",
-      time: "1회차 14:30",
-      seats: [{ grade: "R", row: "A", cols: "01" }],
-      rows: 11, //열번호
-      cols: 10, //행번호
+      tot_ticket: 0,
+      all_seat: [],
+      b_seat: [],
     };
   },
   created() {
@@ -162,8 +151,65 @@ export default {
       }
     },
     tot: function () {
-      return this.price - this.uupoint;
+      return this.total - this.uupoint;
     },
+    booking() {
+      //예약 정보 가져오기
+      let booking = {
+        title: this.$store.state.booking.title,
+        place: this.$store.state.booking.place,
+        schedule_date: this.$store.state.booking.schedule_date,
+        time: this.$store.state.booking.time,
+      };
+      return booking;
+    },
+    total() {
+      return this.$store.state.booking.total;
+    },
+    schedule_num() {
+      return this.$store.state.booking.schedule_num;
+    },
+    show_num() {
+      return this.$store.state.booking.show_num;
+    },
+    seats() {
+      return this.$store.state.booking.seats;
+    },
+    // booking_seats: function () {
+    //   this.seats.forEach((e) => {
+    //     return e.seats.grade + "석" + e.seats.row + e.seats.col;
+    //   });
+    // },
+    booking_seats: function () {
+      this.seats.forEach((e) => {
+        this.b_seat.push(e.grade + "석 " + e.row + e.col);
+      });
+      return this.b_seat;
+    },
+    all_seats: function () {
+      this.seats.forEach((e) => {
+        this.all_seat.push(e.row + e.col);
+      });
+      return this.all_seat;
+    },
+    tickets() {
+      return this.$store.state.booking.tickets;
+    },
+
+    tot_count: function () {
+      this.tickets.forEach((e) => {
+        this.tot_ticket += e.count;
+      });
+      // for (var i = 0; i < this.tickets.length; i++) {
+      //   this.tot_count += this.tickets.count[i];
+      // }
+      return this.tot_ticket;
+    },
+    // ticket_r:function(){
+    //   this.tickets.forEach((e) => {
+    //     this.ticket_rating.push(e.)
+    //   })
+    // }
   },
   methods: {
     getmember() {
@@ -184,11 +230,41 @@ export default {
           console.log(error.message);
         });
     },
+    formatPrice(n) {
+      return n.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    },
     use_point() {
-      this.upoint = this.point;
+      this.upoint = this.userpoint;
     },
 
     buyticket: function () {
+      console.log("===============버튼 클릭 시================");
+      console.log("schedule_num:", this.schedule_num);
+      console.log("booking_seat:", this.booking_seats);
+      console.log("all_seats:", this.all_seats);
+      console.log("tot_count", this.tot_count);
+      console.log("ticket", this.tickets);
+      console.log("==========================================");
+      let booking = {
+        booking_num: 0,
+        member_num: this.member_num,
+        schedule_num: this.schedule_num,
+        booking_count: this.tot_count,
+        booking_price: this.tot,
+        booking_seat: this.booking_seats,
+        use_point: this.upoint,
+      };
+      let ticket = this.tickets;
+      let all_seat = this.all_seats;
+      let show_num = this.show_num;
+      let member_num = this.member_num;
+
+      localStorage.setItem("booking", JSON.stringify(booking));
+      localStorage.setItem("ticket", JSON.stringify(ticket));
+      localStorage.setItem("all_seat", JSON.stringify(all_seat));
+      localStorage.setItem("show_num", JSON.stringify(show_num));
+      localStorage.setItem("member_num", JSON.stringify(member_num));
+
       IMP.init("imp49001285");
       IMP.request_pay(
         {
@@ -198,45 +274,93 @@ export default {
           merchant_uid: "merchant_" + new Date().getTime(),
           name: "모아플레이스",
           buyer_name: this.username,
-          amount: "10000",
+          amount: "1000",
+          // amount: this.tot,
           buyer_email: this.email,
         },
         function (resp) {
           // callback
           console.log(resp);
           if (resp.success) {
-            console.log("pay_method", resp.pay_method);
-            console.log("merchant_uid", resp.merchant_uid);
-            console.log("paid_amount", resp.paid_amount);
-            console.log("apply_num", resp.apply_num);
-            console.log("결제 성공"); //확인
-            var result = {
-              member_num: this.member_num,
-              pay_method: resp.pay_method,
+            // console.log("pay_method", resp.pay_method);
+            // console.log("merchant_uid", resp.merchant_uid);
+            // console.log("paid_amount", resp.paid_amount);
+            // console.log("apply_num", resp.apply_num);
+            // console.log("tot_count", resp.paid_amount);
+
+            var payment = {
+              imp_uid: resp.imp_uid,
               merchant_uid: resp.merchant_uid,
-              paid_amount: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
-              apply_num: resp.apply_num, //카드 승인 번호
+              booking_price: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
+              payment_method: resp.pay_method,
+              payment_status: resp.status,
             };
+            booking = JSON.parse(localStorage.getItem("booking"));
+            ticket = JSON.parse(localStorage.getItem("ticket"));
+            all_seat = JSON.parse(localStorage.getItem("all_seat"));
+            show_num = JSON.parse(localStorage.getItem("show_num"));
+            member_num = JSON.parse(localStorage.getItem("member_num"));
+            // booking = localStorage.getItem("booking");
+            // ticket = localStorage.getItem("ticket");
+            // all_seat = localStorage.getItem("all_seat");
+            // show_num = localStorage.getItem("show_num");
+            // member_num = localStorage.getItem("member_num");
+            console.log("==========================================");
+            console.log("ticket :", ticket);
+            console.log("show_num:", show_num);
+            console.log("member_num:", member_num);
+            console.log("booking:", booking);
+            console.log("payment:", payment);
+            console.log("all_seat:", all_seat);
+            console.log("===============결제 성공==============");
+
+            // let formData = new FormData();
+            // formData.append("booking", booking);
+            // formData.append("ticket", ticket);
+            // formData.append("payment", payment);
+            // formData.append("all_seat", all_seat);
+            // formData.append("member_num", member_num);
+            // formData.append("show_num", show_num);
+
+            let data = {
+              booking: booking,
+              ticket: ticket,
+              payment: payment,
+              allseat: all_seat,
+              member_num: member_num,
+              show_num: show_num,
+            };
+
             axios
-              .post("/moaplace.com/booking/payment", JSON.stringify(result))
-              .then(
-                function (resp) {
-                  if (resp.data === "success") {
-                    alert("결제가 완료되었습니다. ");
-                    //페이지 이동  this.$router.push({ name: "adminNewsList" });
-                    console.log("결제성공");
-                  } else {
-                    alert("결제를 실패하였습니다. 다시 확인해주세요");
-                    console.log("결제실패");
-                  }
-                }.bind(this)
-              );
+              .post(`/moaplace.com/booking/payment`, JSON.stringify(data), {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((resp) => {
+                if (resp.data.data === "success") {
+                  console.log(resp.data.booking_num);
+                  router.push({
+                    name: "paymentDone",
+                    params: { booking_num: resp.data.booking_num },
+                  });
+                } else {
+                  alert("결제를 실패하였습니다. 다시 확인해주세요");
+                  console.log("결제실패");
+                }
+              });
           } else {
             console.log("결제 실패");
           }
         }
       );
     },
+    goPrev() {
+      if (confirm("결제가 되지 않았습니다. \n이전으로 돌아가시겠습니까?")) {
+        this.$router.go(-1);
+      } else return;
+    },
+
     //모달창 종료
     closeModal(){
         let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
@@ -393,7 +517,7 @@ a {
 
                 p {
                   margin-top: 12px;
-                  color: red;
+                  color: $brown;
                 }
               }
               .pay {
@@ -407,6 +531,10 @@ a {
                 }
                 label {
                   cursor: pointer;
+                }
+                input[type="radio"]:checked + label {
+                  color: $brown;
+                  font-weight: bold;
                 }
               }
             }

@@ -459,7 +459,7 @@ const routes = [
     component: PaymentView
   },
   {
-    path: '/moaplace.com/booking/done',
+    path: '/moaplace.com/booking/done/:booking_num',
     name: 'paymentDone',
     component: PaymentDone
   },
