@@ -153,13 +153,13 @@ export default {
   },
   methods: {
     getList() {
-      console.log(this.pageNum); /* 클릭하는페이지 num */
+      // console.log(this.pageNum); /* 클릭하는페이지 num */
 
       // alert(this.selected);
       // alert(this.member_num);
       axios.get(`/moaplace.com/moaplace/news/list/${this.pageNum}`).then(
         function (resp) {
-          console.log(resp.data);
+          // console.log(resp.data);
           this.list = resp.data.list;
           this.startPageNum = resp.data.startPageNum;
           this.endPageNum = resp.data.endPageNum;
@@ -167,7 +167,7 @@ export default {
           this.totalRowCount = resp.data.totalRowCount;
           this.startRow = resp.data.startRow;
           this.endRow = resp.data.endRow;
-          console.log("리스트 불러오기 성공");
+          // console.log("리스트 불러오기 성공");
         }.bind(this)
       );
     },
@@ -193,7 +193,7 @@ export default {
               this.totalRowCount = resp.data.totalRowCount;
               this.startRow = resp.data.startRow;
               this.endRow = resp.data.endRow;
-              console.log("검색 리스트 불러오기 성공");
+              // console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
       }

@@ -134,8 +134,8 @@ export default {
 
   methods: {
     getdetail() {
-      console.log("메소드 notice_num", this.notice_num);
-      console.log("메소드 notice_detail_num", this.notice_detail_num);
+      // console.log("메소드 notice_num", this.notice_num);
+      // console.log("메소드 notice_detail_num", this.notice_detail_num);
       axios.get(`/moaplace.com/moaplace/news/detail/${this.notice_num}`).then(
         function (resp) {
           this.filelist = resp.data.filelist;
@@ -159,12 +159,10 @@ export default {
 
           /* 다음글 정보가 null 값인지 확인*/
 
-          console.log("다음글정보:", resp.data.next);
-
-          console.log("날짜", this.notice_regdate);
-
-          console.log("파일리스트", this.filelist);
-          console.log("이전글정보:", resp.data.prev);
+          // console.log("다음글정보:", resp.data.next);
+          // console.log("날짜", this.notice_regdate);
+          // console.log("파일리스트", this.filelist);
+          // console.log("이전글정보:", resp.data.prev);
         }.bind(this)
       );
     },
@@ -221,7 +219,7 @@ export default {
     //   window.location = `/moaplace.com/moaplace/news/detail/${prev1_num}`;
     // },
     download(notice_detail_num) {
-      console.log("파일넘버:", notice_detail_num);
+      // console.log("파일넘버:", notice_detail_num);
       window.location = `http://localhost:9090/moaplace.com/admin/news/file/download/${notice_detail_num}`;
     },
   },

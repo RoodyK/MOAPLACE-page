@@ -172,7 +172,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -241,10 +241,10 @@ export default {
       }
 
       if( this.enddate < this.startdate ) {
-        console.log("끝날짜가 시작날짜보다 이전임(오류메세지띄워야됨)");
+        // console.log("끝날짜가 시작날짜보다 이전임(오류메세지띄워야됨)");
         alert('기간을 다시 선택해 주세요.');
       } else {
-        console.log("끝날짜가 시작날짜보다 뒤임(잘된거임)");
+        // console.log("끝날짜가 시작날짜보다 뒤임(잘된거임)");
       }
 
     },
@@ -253,7 +253,7 @@ export default {
 
       // 기간선택 버튼 클릭할 때마다 period값 변경 
       this.period = event.target.value;
-      console.log("period : ", this.period);
+      // console.log("period : ", this.period);
 
       // period값에 따라서 startdate 변경 + enddate 현재날짜로 초기화
       let date = new Date();
@@ -289,7 +289,7 @@ export default {
 
     movePage(move) {
       this.pageNum = move;
-      console.log(this.pageNum);
+      // console.log(this.pageNum);
       this.getList();
     }
     

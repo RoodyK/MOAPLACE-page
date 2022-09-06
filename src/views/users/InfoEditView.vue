@@ -171,7 +171,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -285,7 +285,7 @@ export default {
         member_address : address
       }
 
-      console.log(updateRequest);
+      // console.log(updateRequest);
 
       axios.post("/moaplace.com/users/mypage/info/edit",
         JSON.stringify(updateRequest), {
@@ -293,7 +293,7 @@ export default {
             "Content-Type" : "application/json"
           }
       }).then((resp) => {
-        console.log(resp.data);
+        // console.log(resp.data);
         if(resp.data == "success") {
 
           alert('수정이 완료되었습니다.');
