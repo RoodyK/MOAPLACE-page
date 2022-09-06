@@ -22,7 +22,7 @@
                     <p>공연기간</p>
                     <p>공연상태</p>
                   </div>
-                  <div class="t-row tbody" v-for="(item,index) in showList" :key="index" @click="selectShow(index)">
+                  <div class="t-row tbody" v-for="(item,index) in showList" :key="index" @click="selectShow(index,item.num)">
                     <p>{{item.num}}</p>
                     <p>{{item.title}}</p>
                     <p>{{item.startDate}} ~ {{item.endDate}}</p>
@@ -184,6 +184,7 @@
           this.check = '';
           this.pauseStart = '';
           this.pauseEnd = '';
+          this.thumnail = '';
           axios.get('/moaplace.com/admin/show/schedule/viewshow/'+ searchShow).
           then(function(resp){
               this.resultRow.splice(0);
@@ -194,7 +195,11 @@
               this.showList = resp.data.showList;
           }.bind(this));
         },
-        selectShow(index){
+        selectShow(index,num){
+          axios.get('/moaplace.com/show/calendar/thumbnail/' + num)
+          .then(function(resp){
+            this.thumnail = resp.data
+          }.bind(this))
           this.showNum = this.showList[index].num;
           this.title = this.showList[index].title;
           this.runningTime = this.showList[index].runningTime + ' 분'
@@ -205,7 +210,6 @@
           this.check = this.showList[index].status
           this.pauseStart = this.showList[index].blockStartDate
           this.pauseEnd = this.showList[index].blockEndDate
-          this.thumnail = this.showList[index].thumbnail
           this.yOrN();
         },
         yOrN(){
