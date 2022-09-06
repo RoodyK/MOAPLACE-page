@@ -4,7 +4,8 @@
       <header>
         <button class="left">
           <i class="material-symbols-outlined">restart_alt</i>
-          <span>예매 다시하기</span>
+          <!-- <span>예매 다시하기</span> -->
+          <RouterLink :to="`/moaplace.com/booking/done/${info.show_num}`">예매 다시하기</RouterLink>
         </button>
         <h1 class="title">예매완료</h1>
         <button class="right">
@@ -21,7 +22,7 @@
               <span>예매번호</span>
             </div>
             <div class="right">
-              <span>220807-0000-0001</span>
+              <span>{{today}}-{{info.booking_num}}</span>
             </div>
           </div>
           <div class="content">
@@ -29,26 +30,61 @@
               <span class="purchase">구매 정보</span>
               <div class="info_box">
                 <div class="poste">
-                  <img src="../assets/smile.jpg">
+                  <img :src="thumb">
                 </div>
                 <div class="info">
-                  <h5>{{title}}</h5>
+                  <h5>{{info.show_name}}</h5>
                   <div>
                     <span class="info_title">장소</span>
-                    <span>{{place}}</span>
+                    <span>{{info.hall_name}}</span>
                   </div>
                   <div>
                     <span class="info_title">날짜</span>
-                    <span>{{date}}</span>
+                    <span>{{show_date}}</span>
                   </div>
                   <div>
                     <span class="info_title">회차</span>
-                    <span>{{time}}</span>
+                    <span>{{rounds}}회차 {{info.schedule_time}}</span>
                   </div>
                   <div>
                     <span class="info_title">좌석</span>
                     <span v-for="(seat, index) in seats" :key="index">
-                      {{seat.grade}}석 {{seat.row}}{{seat.cols}}
+                      <p v-if="info.hall_name == '모아홀'">
+                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B'">
+                          R석
+                        </span>
+                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F'">
+                          S석
+                        </span>
+                        <span v-if="seat.charAt() == 'G' || seat.charAt() == 'H'">
+                          A석
+                        </span>
+                        {{seat}}
+                      </p>
+                      <p v-if="info.hall_name == '오케스트라홀'">
+                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C'">
+                          R석
+                        </span>
+                        <span v-if="seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G'">
+                          S석
+                        </span>
+                        <span v-if="seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J'">
+                          A석
+                        </span>
+                        {{seat}}
+                      </p>
+                      <p v-if="info.hall_name == '아트홀'">
+                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C' || seat.charAt() == 'D'">
+                          R석
+                        </span>
+                        <span v-if="seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H'">
+                          S석
+                        </span>
+                        <span v-if="seat.charAt() == 'I' || seat.charAt() == 'J' || seat.charAt() == 'K' || seat.charAt() == 'L'">
+                          A석
+                        </span>
+                        {{seat}}
+                      </p>
                     </span>
                   </div>
                 </div>
@@ -57,8 +93,8 @@
             <div class="right">
               <span class="purchase">결제금액</span>
               <div class="purchase_info">
-                <h4>150,000원</h4>
-                <span>결제 수단 : 카드(145,000원) + 적립금(5,000원)</span>
+                <h4>{{total}}원</h4>
+                <span>결제 수단 : 금액({{cash}}) + 적립금({{point}})</span>
               </div>
               <div class="caution">
                 <span>[예매시 주의사항]</span>
@@ -70,10 +106,10 @@
             </div>
           </div>
           <div class="mybtn">
-            <button class="left">
+            <button class="left" @click="print">
               예매출력
             </button>
-            <button class="right">
+            <button class="right" @click.prevent="cancleOk()">
               예매취소
             </button>
           </div>
@@ -83,21 +119,128 @@
 </template>
 
 <script>
+import axios from '@/axios/axios.js'
+
 export default {
   data(){
     return{
-      title: '웃다가 우는 남자',
-      place: '오케스트라홀',
-      date: '22.08.16(화)',
-      time : '1회차 14:30',
-      seats:[
-        {grade: 'R', row: 'A', cols: '01'}
-      ],
-      rows: 11,//열번호
-      cols: 10,//행번호
-      priceR: '150,000',
-      priceS: '100,000',
-      priceA: '80,000',
+      member : {},
+      booking_num:0,
+      info:[],
+      show_date:'',
+      total:0,
+      cash:0,
+      point:0,
+      thumb:'',
+      rounds:'',
+      today:`${new Date().getFullYear()}${new Date().getMonth()+1 < 10 ? `0${new Date().getMonth()+1}` : new Date().getMonth()+1}${new Date().getDate() < 10 ? `0${new Date().getDate()}` : new Date().getDate()}`,
+
+      seats:[]
+    }
+  },
+  created(){
+    // 회원정보조회
+    let token = localStorage.getItem("access_token");
+    if(token == null) return;
+
+    const config = {
+      headers: {
+        "Authorization" : token
+      }
+    }
+
+    axios.get("/moaplace.com/users/login/member/info", config)
+    .then(response => {
+      let data = response.data;
+      const info = {
+        num: data.member_num,
+        id: data.member_id,
+        pwd: data.member_pwd,
+        email: data.member_email,
+        name: data.member_name,
+        gender: data.member_gender,
+        phone: data.member_gender,
+        address: data.member_address,
+        point: data.member_point
+      }
+      // console.log(info);
+
+      this.member = info;
+      })
+    .catch(error => {
+      console.log(error.message);
+    })
+
+    this.data();
+  },
+  methods:{
+    data(){
+      // this.booking_num = this.$route.params.booking_num;
+      let booking_num = 1;
+
+      axios.get(`/moaplace.com/booking/done/${booking_num}`)
+        .then((resp) => {
+          this.info = resp.data;
+          console.log(resp.data);
+
+          this.total = this.numberWithCommas(resp.data.booking_price);
+          this.cash = this.numberWithCommas(resp.data.booking_price - resp.data.use_point);
+          this.point = this.numberWithCommas(resp.data.use_point);
+
+          let date = resp.data.schedule_date;
+          this.show_date = `${new Date(date).getFullYear()}.
+            ${new Date(date).getMonth()+1 < 10 ? `0${new Date(date).getMonth()+1}` : new Date(date).getMonth()+1}
+            .${new Date(date).getDate() < 10 ? `0${new Date(date).getDate()}` : new Date(date).getDate()}`;
+
+          let schedule_date = `${new Date(date).getFullYear()}-${new Date(date).getMonth()+1 < 10 ? `0${new Date(date).getMonth()+1}` : new Date(date).getMonth()+1}-${new Date(date).getDate() < 10 ? `0${new Date(date).getDate()}` : new Date(date).getDate()}`;
+
+          axios.get(`/moaplace.com/booking/done/${resp.data.show_num}/${schedule_date}/${resp.data.schedule_time}`)
+            .then((resp) => {
+              this.rounds = resp.data.Rounds;
+              this.thumb = resp.data.returnThumb;
+            }
+          )
+          
+          this.seats = resp.data.booking_seat.split(",");
+        }
+      )
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    print() {
+      window.print();
+    },
+    cancleOk() {
+      let pwd = prompt("패스워드를 입력하세요.");
+
+      console.log("입력한 패스워드 : ", pwd);
+      console.log(this.$store.state.mypage.member.pwd);
+
+      const cancleData = {
+        booking_num : 1,
+        member_id : this.member.id,
+        member_pwd : pwd
+      }
+
+      axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(cancleData), {
+        headers: {
+          "Content-Type": `application/json`,
+        }
+      }).then((resp) => {
+
+        if(resp.data == "success") {
+
+          alert('예매취소가 완료되었습니다.');
+          this.$router.push('/moaplace.com');
+
+        } else if(resp.data == "failA") {
+          alert('비밀번호는 일치하지만 업데이트가 정상적으로 되지 않았습니다.');
+        } else if(resp.data == "failB") {
+          alert('비밀번호가 일치하지 않습니다.');
+        }
+      });
+
     }
   }
 }
@@ -160,6 +303,11 @@ export default {
           }
           h1.title{
             font-size: 22px;
+          }
+          .left{
+            a{
+              color: rgba(#fff, 0.9);
+            }
           }
         }
         main{
