@@ -220,9 +220,6 @@ export default {
 
       axios.post("/moaplace.com/users/join/email/auth", {
         email: email.value }, {
-        headers: {
-          "Authorization" : "1234"
-        },
       })
       .then((response) => {
         this.authNumber = response.data;
