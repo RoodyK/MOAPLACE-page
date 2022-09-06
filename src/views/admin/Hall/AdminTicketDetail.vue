@@ -5,10 +5,6 @@
             <div class="inner">
                 <h2 class="title">예매정보 - 예매상세</h2>
 
-                <div class="btnUpBox">
-                  <button @click="cancleBooking()">예매취소</button>
-                </div>
-
                 <div class="titleBox">
                     <span>예매번호</span>
                     <input type="text" v-model="num" readonly>
@@ -107,6 +103,19 @@
                 mounted(){
                   this.viewDetail(this.num);
                 },
+                computed: {
+                    cannotCancle() { // 오늘 - 공연일 날짜 차이 계산
+                        let today = new Date();
+                        // let year = today.getFullYear();
+                        // let month = today.getMonth()+1;
+                        // let day = today.getDate();
+                        let showDay = new Date(this.list.scheduleDate);
+
+                        let n = today.getTime() - showDay.getTime();
+                        var result = n / (1000*60*60*24);
+                        return result;
+                    }
+                },
 
                 methods:{
 
@@ -122,15 +131,20 @@
                   },
 
                   cancleBooking() { // 예매취소
-                    if (this.list.paymentStatus!='결제취소') {
-                        if(confirm('해당 예매내역을 취소하시겠습니까?\n전체 결제금액('+this.list.allticketPrice+')이 취소됩니다.')){
+                    if(this.list.paymentStatus == '결제취소'){
+                        alert('이미 취소된 예매 내역입니다.');
+                        return;
+                    }
+                    
+                    if (this.cannotCancle < 1) {
+                        if(confirm('해당 예매내역을 취소하시겠습니까?\n적립금을 제외한 결제금액('+this.list.allticketPrice+'원)이 취소됩니다.')){
                             let forms = {
-                                imp_uid:this.list.imp_uid, // 아임포트 주문번호
+                                imp_uid:this.list.impUid, // 아임포트 주문번호
                                 amount: this.amount, // 환불금액
-                                reason: '관리자 예매취소', // 환불사유
+                                reason: '모아플레이스 관리자 예매취소', // 환불사유
                                 booking_num: this.num // 예매번호
                             }
-                            axios.post("/moaplace.com/admin/booking/cancle", JSON.stringify(forms),{
+                            axios.post("/moaplace.com/admin/ticket/cancle", JSON.stringify(forms),{
                                 headers: {'Content-Type' : 'application/json'}
                             })
                                  .then(resp => {
@@ -150,7 +164,7 @@
                             } else return;
 
                         } else {
-                            alert('이미 취소된 예매 내역입니다.');
+                            alert('공연일이 지난 예매내역은 취소할 수 없습니다.');
                             return;
                     }
                  },
