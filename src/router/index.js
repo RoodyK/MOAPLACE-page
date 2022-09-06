@@ -446,12 +446,13 @@ const routes = [
 
   // 예매페이지
   {
-    path: '/moaplace.com/booking/select/:show_num',
+
+    path: '/moaplace.com/booking/select/:num',
     name: 'bookingSelect',
     component: BookingSelect
   },
   {
-    path: '/moaplace.com/booking/seat/:num',
+    path: '/moaplace.com/booking/seat',
     name: 'bookinseat',
     component: SeatSelect
   },
@@ -466,7 +467,7 @@ const routes = [
     component: PaymentView
   },
   {
-    path: '/moaplace.com/booking/done',
+    path: '/moaplace.com/booking/done/:booking_num',
     name: 'paymentDone',
     component: PaymentDone
   }

@@ -59,7 +59,7 @@ export default {
     methods:{
         getAnswer(){
             this.rental_num = this.$route.params.id;
-            console.log("I'm work")
+            
             axios
                 .get(`/moaplace.com/admin/rental/answer/getAnswer/${this.rental_num}`)
                 .then(function(resp){

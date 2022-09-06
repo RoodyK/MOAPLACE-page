@@ -298,6 +298,7 @@ import axios from '@/axios/axios.js';
                 left:0;
                 top:0;
             }
+
             .wrap{
                 width: 1100px;
                 margin: auto;
