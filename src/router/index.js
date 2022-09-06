@@ -50,6 +50,7 @@ import AdminShowScheduleUpdate from '@/views/admin/Hall/AdminShowScheduleUpdate.
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import AdminFAQListView from '@/views/admin/board/FAQList.vue'
+import AdminFAQUpdateView from '@/views/admin/board/FAQUpdate.vue'
 import AdminFAQDetailView from '@/views/admin/board/FAQDetail.vue'
 import AdminFAQInsertView from '@/views/admin/board/FAQInsert.vue'
 import AdminQNAListView from '@/views/admin/board/QNAList.vue'
@@ -347,6 +348,11 @@ const routes = [
     path: '/moaplace.com/admin/faq/insert',
     name: 'adminFaqInsert',
     component: AdminFAQInsertView
+  },
+  {
+    path: '/moaplace.com/admin/faq/update/:faq_num',
+    name: 'adminFaqUpdate',
+    component: AdminFAQUpdateView
   },
   {
     path: '/moaplace.com/admin/qna/list',
