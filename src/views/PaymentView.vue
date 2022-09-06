@@ -2,12 +2,12 @@
   <div id="wrap">
     <div class="inner">
       <header>
-        <button class="left"  @click="resetModal">
+        <button class="left" @click="resetModal">
           <i class="material-symbols-outlined">restart_alt</i>
           <span>예매 다시하기</span>
         </button>
         <h1 class="title">결제선택</h1>
-        <button class="right"  @click="closeModal">
+        <button class="right" @click="closeModal">
           <span>창닫기</span>
           <i class="material-symbols-outlined">close</i>
         </button>
@@ -38,11 +38,23 @@
               </div>
               <div class="txt">
                 <div class="pay">
-                  <input type="radio" name="pay_method" id="card" />
+                  <input
+                    type="radio"
+                    name="pay_method"
+                    id="card"
+                    value="card"
+                    v-model="pay_method"
+                  />
                   <label for="card">카드 결제</label>
                 </div>
                 <div class="pay">
-                  <input type="radio" name="pay_method" id="money" />
+                  <input
+                    type="radio"
+                    name="pay_method"
+                    id="money"
+                    value="money"
+                    v-model="pay_method"
+                  />
                   <label for="money">무통장 입금</label>
                 </div>
               </div>
@@ -137,6 +149,7 @@ export default {
       tot_ticket: 0,
       all_seat: [],
       b_seat: [],
+      pay_method: "",
     };
   },
   created() {
@@ -240,122 +253,127 @@ export default {
     },
 
     buyticket: function () {
-      // console.log("===============버튼 클릭 시================");
-      // console.log("schedule_num:", this.schedule_num);
-      // console.log("booking_seat:", this.booking_seats);
-      // console.log("all_seats:", this.all_seats);
-      // console.log("tot_count", this.tot_count);
-      // console.log("ticket", this.tickets);
-      // console.log("==========================================");
-      let booking = {
-        booking_num: 0,
-        member_num: this.member_num,
-        schedule_num: this.schedule_num,
-        booking_count: this.tot_count,
-        booking_price: this.tot,
-        booking_seat: this.booking_seats,
-        use_point: this.upoint,
-      };
-      let ticket = this.tickets;
-      let all_seat = this.all_seats;
-      let show_num = this.show_num;
-      let member_num = this.member_num;
+      if (this.pay_method == "" || this.pay_method == null) {
+        alert("결제 방법을 선택해주세요");
+      } else {
+        console.log(this.pay_method);
+        // console.log("===============버튼 클릭 시================");
+        // console.log("schedule_num:", this.schedule_num);
+        // console.log("booking_seat:", this.booking_seats);
+        // console.log("all_seats:", this.all_seats);
+        // console.log("tot_count", this.tot_count);
+        // console.log("ticket", this.tickets);
+        // console.log("==========================================");
+        let booking = {
+          booking_num: 0,
+          member_num: this.member_num,
+          schedule_num: this.schedule_num,
+          booking_count: this.tot_count,
+          booking_price: this.tot,
+          booking_seat: this.booking_seats,
+          use_point: this.upoint,
+        };
+        let ticket = this.tickets;
+        let all_seat = this.all_seats;
+        let show_num = this.show_num;
+        let member_num = this.member_num;
 
-      localStorage.setItem("booking", JSON.stringify(booking));
-      localStorage.setItem("ticket", JSON.stringify(ticket));
-      localStorage.setItem("all_seat", JSON.stringify(all_seat));
-      localStorage.setItem("show_num", JSON.stringify(show_num));
-      localStorage.setItem("member_num", JSON.stringify(member_num));
+        localStorage.setItem("booking", JSON.stringify(booking));
+        localStorage.setItem("ticket", JSON.stringify(ticket));
+        localStorage.setItem("all_seat", JSON.stringify(all_seat));
+        localStorage.setItem("show_num", JSON.stringify(show_num));
+        localStorage.setItem("member_num", JSON.stringify(member_num));
 
-      IMP.init("imp49001285");
-      IMP.request_pay(
-        {
-          // param
-          pg: "html5_inicis",
-          pay_method: "card",
-          merchant_uid: "merchant_" + new Date().getTime(),
-          name: "모아플레이스",
-          buyer_name: this.username,
-          amount: "1000",
-          // amount: this.tot,
-          buyer_email: this.email,
-        },
-        function (resp) {
-          // callback
-          console.log(resp);
-          if (resp.success) {
-            // console.log("pay_method", resp.pay_method);
-            // console.log("merchant_uid", resp.merchant_uid);
-            // console.log("paid_amount", resp.paid_amount);
-            // console.log("apply_num", resp.apply_num);
-            // console.log("tot_count", resp.paid_amount);
+        IMP.init("imp49001285");
+        IMP.request_pay(
+          {
+            // param
+            pg: "html5_inicis",
+            pay_method: this.pay_method,
+            merchant_uid: "merchant_" + new Date().getTime(),
+            name: "모아플레이스",
+            buyer_name: this.username,
+            amount: "1000",
+            // amount: this.tot,
+            buyer_email: this.email,
+          },
+          function (resp) {
+            // callback
+            console.log(resp);
+            if (resp.success) {
+              // console.log("pay_method", resp.pay_method);
+              // console.log("merchant_uid", resp.merchant_uid);
+              // console.log("paid_amount", resp.paid_amount);
+              // console.log("apply_num", resp.apply_num);
+              // console.log("tot_count", resp.paid_amount);
 
-            var payment = {
-              imp_uid: resp.imp_uid,
-              merchant_uid: resp.merchant_uid,
-              booking_price: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
-              payment_method: resp.pay_method,
-              payment_status: resp.status,
-            };
-            booking = JSON.parse(localStorage.getItem("booking"));
-            ticket = JSON.parse(localStorage.getItem("ticket"));
-            all_seat = JSON.parse(localStorage.getItem("all_seat"));
-            show_num = JSON.parse(localStorage.getItem("show_num"));
-            member_num = JSON.parse(localStorage.getItem("member_num"));
-            // booking = localStorage.getItem("booking");
-            // ticket = localStorage.getItem("ticket");
-            // all_seat = localStorage.getItem("all_seat");
-            // show_num = localStorage.getItem("show_num");
-            // member_num = localStorage.getItem("member_num");
-            // console.log("==========================================");
-            // console.log("ticket :", ticket);
-            // console.log("show_num:", show_num);
-            // console.log("member_num:", member_num);
-            // console.log("booking:", booking);
-            // console.log("payment:", payment);
-            // console.log("all_seat:", all_seat);
-            // console.log("===============결제 성공==============");
+              var payment = {
+                imp_uid: resp.imp_uid,
+                merchant_uid: resp.merchant_uid,
+                booking_price: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
+                payment_method: resp.pay_method,
+                payment_status: resp.status,
+              };
+              booking = JSON.parse(localStorage.getItem("booking"));
+              ticket = JSON.parse(localStorage.getItem("ticket"));
+              all_seat = JSON.parse(localStorage.getItem("all_seat"));
+              show_num = JSON.parse(localStorage.getItem("show_num"));
+              member_num = JSON.parse(localStorage.getItem("member_num"));
+              // booking = localStorage.getItem("booking");
+              // ticket = localStorage.getItem("ticket");
+              // all_seat = localStorage.getItem("all_seat");
+              // show_num = localStorage.getItem("show_num");
+              // member_num = localStorage.getItem("member_num");
+              // console.log("==========================================");
+              // console.log("ticket :", ticket);
+              // console.log("show_num:", show_num);
+              // console.log("member_num:", member_num);
+              // console.log("booking:", booking);
+              // console.log("payment:", payment);
+              // console.log("all_seat:", all_seat);
+              // console.log("===============결제 성공==============");
 
-            // let formData = new FormData();
-            // formData.append("booking", booking);
-            // formData.append("ticket", ticket);
-            // formData.append("payment", payment);
-            // formData.append("all_seat", all_seat);
-            // formData.append("member_num", member_num);
-            // formData.append("show_num", show_num);
+              // let formData = new FormData();
+              // formData.append("booking", booking);
+              // formData.append("ticket", ticket);
+              // formData.append("payment", payment);
+              // formData.append("all_seat", all_seat);
+              // formData.append("member_num", member_num);
+              // formData.append("show_num", show_num);
 
-            let data = {
-              booking: booking,
-              ticket: ticket,
-              payment: payment,
-              allseat: all_seat,
-              member_num: member_num,
-              show_num: show_num,
-            };
+              let data = {
+                booking: booking,
+                ticket: ticket,
+                payment: payment,
+                allseat: all_seat,
+                member_num: member_num,
+                show_num: show_num,
+              };
 
-            axios
-              .post(`/moaplace.com/booking/payment`, JSON.stringify(data), {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              })
-              .then((resp) => {
-                if (resp.data.data === "success") {
-                  // console.log(resp.data.booking_num);
-                  router.push({
-                    name: "paymentDone",
-                    params: { booking_num: resp.data.booking_num },
-                  });
-                } else {
-                  alert("결제를 실패하였습니다. 다시 확인해주세요");
-                  // console.log("결제실패");
-                }
-              });
-          } else {
-            console.log("결제 실패");
+              axios
+                .post(`/moaplace.com/booking/payment`, JSON.stringify(data), {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                .then((resp) => {
+                  if (resp.data.data === "success") {
+                    // console.log(resp.data.booking_num);
+                    router.push({
+                      name: "paymentDone",
+                      params: { booking_num: resp.data.booking_num },
+                    });
+                  } else {
+                    alert("결제를 실패하였습니다. 다시 확인해주세요");
+                    // console.log("결제실패");
+                  }
+                });
+            } else {
+              console.log("결제 실패");
+            }
           }
-        }
-      );
+        );
+      }
     },
     goPrev() {
       if (confirm("결제가 되지 않았습니다. \n이전으로 돌아가시겠습니까?")) {
@@ -363,35 +381,34 @@ export default {
       } else return;
     },
 
-
     //모달창 종료
-    closeModal(){
-        let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
-        if(chk == true){
-            // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
-            window.parent.postMessage(
-            // 전달할 data (부모창에서 호출할 함수명)
-            { functionName : 'closeShow' }
-            // 부모창의 도메인
-            , 'http://localhost:8080/moaplace.com/'
-            );
-        }else{
-            return;
-        }
+    closeModal() {
+      let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
+      if (chk == true) {
+        // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
+        window.parent.postMessage(
+          // 전달할 data (부모창에서 호출할 함수명)
+          { functionName: "closeShow" },
+          // 부모창의 도메인
+          "http://localhost:8080/moaplace.com/"
+        );
+      } else {
+        return;
+      }
     },
     //예매다시하기(vuex 초기화)
-    resetModal(){
-        let chk = window.confirm("모든 선택이 초기화되며 일정 선택 페이지로 이동합니다.");
-        if(chk == true){
-            let num = this.$store.state.booking.show_num;
-            this.$store.commit('booking/resetAllChoice');
-            this.$router.push('/moaplace.com/booking/select/'+num);
-        }else{
-            return;
-        }
-        
+    resetModal() {
+      let chk = window.confirm(
+        "모든 선택이 초기화되며 일정 선택 페이지로 이동합니다."
+      );
+      if (chk == true) {
+        let num = this.$store.state.booking.show_num;
+        this.$store.commit("booking/resetAllChoice");
+        this.$router.push("/moaplace.com/booking/select/" + num);
+      } else {
+        return;
+      }
     },
-    
   },
   watch: {
     upoint: function (newVal) {
@@ -540,7 +557,6 @@ a {
                   color: $brown;
                   font-weight: bold;
                 }
-
               }
             }
           }
