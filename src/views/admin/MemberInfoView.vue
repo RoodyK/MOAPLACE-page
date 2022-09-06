@@ -131,7 +131,8 @@ export default {
           : `/moaplace.com/admin/member/info/${this.page}/${this.sorted}`
 
         const response = await axios.get(url);
-        console.log(response);
+        // console.log(response);
+
         this.memberList = response.data.list;
         this.pageUtils = response.data.pu;
         this.listPageNums();
@@ -151,7 +152,8 @@ export default {
         this.searched = true;
         try {
           const response = await axios.get(`/moaplace.com/admin/member/info/1/${this.sorted}/${this.fielded}/${this.word}`)
-          console.log(response);
+          // console.log(response);
+
           this.memberList = response.data.list;
           this.pageUtils = response.data.pu;
           this.sorted = response.data.sorted;
@@ -167,13 +169,14 @@ export default {
     },
     async movePage(page) {
       this.page = page;
-      console.log(this.searched);
+      // console.log(this.searched);
       const url = this.searched
         ? `/moaplace.com/admin/member/info/${page}/${this.sorted}/${this.fielded}/${this.word}`
         : `/moaplace.com/admin/member/info/${page}/${this.sorted}`
 
       try {
         const response = await axios.get(url);
+
         this.memberList = response.data.list;
         this.pageUtils = response.data.pu;
         this.sorted = response.data.sorted;

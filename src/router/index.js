@@ -73,7 +73,6 @@ import AdminMemberInfo from '@/views/admin/MemberInfoView.vue'
 import AdminRentalChart from '@/views/admin/RentalChartView.vue'
 import AdminShowChart from '@/views/admin/ShowChartView.vue'
 
-
 const routes = [
 
   {
@@ -462,7 +461,7 @@ const routes = [
     path: '/moaplace.com/booking/done',
     name: 'paymentDone',
     component: PaymentDone
-  },
+  }
 ]
 
 const router = createRouter({
@@ -473,16 +472,38 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach( (to, from, next) => {
-//   if(to.fullPath.startsWith("/moaplace.com/admin")) {
-//     if(store.state.login.userRoles !== 'ROLE_ADMIN') {
-//       next('/moaplace.com')
-//     }
-//   }
-//   if(from.name == 'asefawfawefawef') {
-//     console.log(from.name);
-//   }
-//   next();
-// })
+router.beforeEach( (to, from, next) => {
+  // console.log("navigation guard from ", from);
+  // console.log("navigation guard to ", to);
+  // console.log("includes admin ", to.path.includes('admin'));
+
+  let token = localStorage.getItem('access_token');
+  let role = localStorage.getItem('user');
+
+  if(to.path.includes('mypage') || to.path.includes('booking') 
+    || to.path.includes('/board/qna') || to.path.includes('/rental/insert')) {
+    if(token == null) {
+      alert('로그인 후 이용 가능합니다.');
+      next('/moaplace.com/users/login');
+      return;
+    }
+  }
+
+  // 관리자 페이지 접근 설정
+  if(to.path.includes('admin')) {
+    if(token == null) {
+      alert('로그인 후 이용 가능합니다.');
+      next('/moaplace.com');
+      return;
+    }
+    if(role != 'redm') {
+      alert('권한없이 관리자 페이지에 접근할 수 없습니다.');
+      next('/moaplace.com');
+      return;
+    }
+  }
+  // console.log("navigation guard next ", );
+  next();
+})
 
 export default router
