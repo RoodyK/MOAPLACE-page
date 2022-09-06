@@ -102,7 +102,11 @@
             <div class="btn-box">
               <button @click="goPrev()">
                 <i class="material-symbols-outlined">keyboard_backspace</i>
-                <span>이전</span>
+                <span
+                  ><RouterLink :to="`/moaplace.com/booking/count`"
+                    >이전</RouterLink
+                  ></span
+                >
               </button>
               <button @click="buyticket()">
                 <span>결제</span>
@@ -126,9 +130,7 @@ export default {
     return {
       msg: "",
       userpoint: "", //멤버에서 받는 point
-
       upoint: 0, //사용자가 사용 할 포인트 금액(이 페이지 입력)
-
       username: "",
       email: "",
       member_num: "",
@@ -361,6 +363,7 @@ export default {
       } else return;
     },
 
+
     //모달창 종료
     closeModal(){
         let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
@@ -388,6 +391,56 @@ export default {
         }
         
     }
+
+    buyticket: function () {
+      IMP.init("imp49001285");
+      IMP.request_pay(
+        {
+          // param
+          pg: "html5_inicis",
+          pay_method: "card",
+          merchant_uid: "merchant_" + new Date().getTime(),
+          name: "모아플레이스",
+          buyer_name: this.username,
+          amount: "10000",
+          buyer_email: this.email,
+        },
+        function (resp) {
+          // callback
+          console.log(resp);
+          if (resp.success) {
+            console.log("pay_method", resp.pay_method);
+            console.log("merchant_uid", resp.merchant_uid);
+            console.log("paid_amount", resp.paid_amount);
+            console.log("apply_num", resp.apply_num);
+            console.log("결제 성공"); //확인
+            var result = {
+              member_num: this.member_num,
+              pay_method: resp.pay_method,
+              merchant_uid: resp.merchant_uid,
+              paid_amount: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
+              apply_num: resp.apply_num, //카드 승인 번호
+            };
+            axios
+              .post("/moaplace.com/booking/payment", JSON.stringify(result))
+              .then(
+                function (resp) {
+                  if (resp.data === "success") {
+                    alert("결제가 완료되었습니다. ");
+                    //페이지 이동  this.$router.push({ name: "adminNewsList" });
+                    console.log("결제성공");
+                  } else {
+                    alert("결제를 실패하였습니다. 다시 확인해주세요");
+                    console.log("결제실패");
+                  }
+                }.bind(this)
+              );
+          } else {
+            console.log("결제 실패");
+          }
+        }
+      );
+    },
   },
   watch: {
     upoint: function (newVal) {
@@ -536,6 +589,7 @@ a {
                   color: $brown;
                   font-weight: bold;
                 }
+
               }
             }
           }

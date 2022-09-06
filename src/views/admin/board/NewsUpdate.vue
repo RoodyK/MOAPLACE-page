@@ -17,7 +17,7 @@
                         <option
                           v-for="(list, sort_num) in sorts"
                           :key="sort_num"
-                          :value="sort_num"
+                          :value="list.sort_num"
                         >
                           {{ list.sort_name }}
                         </option>
@@ -33,10 +33,13 @@
                   <div class="t-row">
                     <div>내용</div>
                     <div>
-                      <textarea
-                        id="content"
-                        v-model="notice_content"
-                      ></textarea>
+                      <!--  v-if="notice_content != ''" -->
+                      <TextEditor
+                        v-if="notice_content != ''"
+                        height="300"
+                        v-model:content="notice_content"
+                        contentType="html"
+                      />
                     </div>
                   </div>
                   <div class="t-row">
@@ -58,8 +61,19 @@
                           >
                             {{ filelist.notice_orgfile }}
 
-                            {{ filelist.name }}
-                            <button @click.prevent="deletefile1(index)">
+                            <button
+                              @click.prevent="
+                                deletefile1(index, filelist.notice_detail_num)
+                              "
+                            >
+                              <img src="@/assets/admin/remove.png" />
+                            </button>
+                          </li>
+                        </ul>
+                        <ul>
+                          <li v-for="(f, index) in newfile" :key="index">
+                            {{ f.name }}
+                            <button @click.prevent="deletefile2(index)">
                               <img src="@/assets/admin/remove.png" />
                             </button>
                           </li>
@@ -91,11 +105,13 @@
 
 <script>
 import SideMenu from "@/components/admin/SideMenu.vue";
+import TextEditor from "@/components/TextEditor.vue";
 import axios from "@/axios/axios.js";
 
 export default {
   components: {
     SideMenu,
+    TextEditor,
   },
   data() {
     return {
@@ -108,8 +124,9 @@ export default {
         { sort_num: 5, sort_name: "회원" },
         { sort_num: 6, sort_name: "기타" },
       ],
-
       filelist: [],
+      newfile: [],
+      deletelist: [],
       notice_num: "",
       notice_title: "",
       notice_content: "",
@@ -129,43 +146,62 @@ export default {
     getupdate() {
       axios.get(`/moaplace.com/admin/news/update/${this.notice_num}`).then(
         function (resp) {
-          // console.log(resp.data);
           this.filelist = resp.data.filelist;
           this.notice_title = resp.data.notice_title;
           this.notice_content = resp.data.notice_content;
           this.selected = resp.data.sort_num;
-
           console.log("파일리스트", this.filelist);
+          console.log("내용===", this.notice_content);
         }.bind(this)
       );
     },
-    deletefile1(index) {
+    deletefile1(index, num) {
       this.filelist.splice(index, 1);
+      this.deletelist.push(num);
+    },
+    deletefile2(index) {
+      this.newfile.splice(index, 1);
     },
 
     selectFile() {
       for (let i = 0; i < this.$refs.files.files.length; i++) {
-        /* 데이터 전송 리스트에 담기 */
-        this.filelist.push(this.$refs.files.files[i]);
+        this.newfile.push(this.$refs.files.files[i]);
+        console.log(this.newfile);
       }
-      /*파일 크기 제한*/
-      if (this.filelist.length > 5) {
-        alert("최대 가능한 첨부 파일 개수는 5개입니다.");
-        this.filelist.splice(0, this.filelist.length);
+
+      let total = 0;
+
+      if (this.filelist == undefined) {
+        total = this.newfile.length;
+      } else {
+        total = this.filelist.length + this.newfile.length;
+      }
+
+      let final = total - 5;
+      if (total > 5) {
+        alert("최대 가능한 첨부 파일 개수는 5개입니다. ");
+        //splice ( 시작할 배열 번호, 삭제할 개수)
+        this.newfile.splice(final, final);
         return;
       }
-      console.log(this.filelist);
-      console.log(this.filelist.length);
     },
 
     savefile() {
       var formData = new FormData();
+
+      formData.append("notice_num", this.notice_num);
       formData.append("sort_num", this.selected);
       formData.append("content", this.notice_content);
       formData.append("title", this.notice_title);
-      this.filelist.forEach(function (filelist) {
-        formData.append("files", filelist);
+
+      this.deletelist.forEach(function (deletelist) {
+        formData.append("deletefiles", deletelist);
       });
+
+      this.newfile.forEach(function (newfile) {
+        formData.append("newfiles", newfile);
+      });
+
       return formData;
     },
 
@@ -187,13 +223,11 @@ export default {
     },
 
     updatenews() {
-      console.log(this.selected);
-      console.log(this.savefile());
-      alert(this.filelist);
-      alert(this.filelist.length);
+      console.log("삭제확인용===" + typeof this.deletelist);
+      console.log("추가확인용===" + this.newfile);
       axios
         .post(
-          `/moaplace.com/admin/news/udpate/${this.notice_num}`,
+          `/moaplace.com/admin/news/update/${this.notice_num}`,
           this.savefile(),
           {
             headers: {
@@ -265,6 +299,7 @@ nav {
           table-layout: fixed;
           width: 100%;
           border-bottom: 1px solid rgba($black, 0.2);
+
           &:first-child {
             border-top: 3px solid $brown;
             margin-top: 50px;
@@ -317,34 +352,33 @@ nav {
           }
 
           &:nth-child(3) {
-            textarea {
-              padding: 8px 16px;
-              resize: none;
-              border: 1px solid rgba($black, 0.2);
-              width: 100%;
-              min-height: 400px;
-              box-sizing: border-box;
+            ::v-deep .ql-container {
+              padding: 14px;
+
+              img {
+                max-width: 100%;
+              }
             }
           }
         }
-        .footer {
-          display: flex;
-          justify-content: center;
-          margin-top: 32px;
-          button {
-            margin-right: 16px;
-            color: #f1f1f1;
-            padding: 10px 42px;
-            border: none;
-            &:first-child {
-              background-color: rgba($black, 0.6);
-            }
-            &:nth-child(2) {
-              background-color: $brown;
-            }
-            &:last-child {
-              background-color: $black;
-            }
+      }
+      .footer {
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+        button {
+          margin-right: 16px;
+          color: #f1f1f1;
+          padding: 10px 42px;
+          border: none;
+          &:first-child {
+            background-color: rgba($black, 0.6);
+          }
+          &:nth-child(2) {
+            background-color: $brown;
+          }
+          &:last-child {
+            background-color: $black;
           }
         }
       }

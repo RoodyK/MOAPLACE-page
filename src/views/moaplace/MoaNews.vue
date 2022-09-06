@@ -10,27 +10,29 @@
     </div>
     <div class="con">
       <div class="inner_wrap">
-        <div class="search">
-          <select v-model="selected2">
-            <option
-              v-for="(f, field_value) in fieldList"
-              :key="field_value"
-              :value="f.field_value"
-            >
-              {{ f.field_name }}
-            </option>
-          </select>
-          <input
-            type="text"
-            v-model="keyword"
-            class="custom-search-input"
-            placeholder="검색어를 입력하세요."
-            :class="{ search: isSearch }"
-            @keydown.enter="searchList()"
-          />
-          <button :class="{ search: isSearch }" @click.prevent="searchList()">
-            <img src="@/assets/moaplace/search.png" />
-          </button>
+        <div class="searchBox">
+          <div class="custom-search">
+            <select v-model="selected2">
+              <option
+                v-for="(f, field_value) in fieldList"
+                :key="field_value"
+                :value="f.field_value"
+              >
+                {{ f.field_name }}
+              </option>
+            </select>
+            <input
+              type="text"
+              v-model="keyword"
+              class="custom-search-input"
+              placeholder="검색어를 입력하세요."
+              :class="{ search: isSearch }"
+              @keydown.enter="searchList()"
+            />
+            <button :class="{ search: isSearch }" @click.prevent="searchList()">
+              <img src="@/assets/moaplace/search.png" />
+            </button>
+          </div>
         </div>
         <div class="content">
           <table cellpadding="0" cellspacing="0" class="table">
@@ -257,32 +259,69 @@ $brown: #826d5e;
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  .search {
-    margin-bottom: 30px;
-    width: 355px;
-    height: 50px;
-    border: 1px solid #e2e2e2;
-    position: relative;
-    float: right;
+  .inner_wrap {
+    justify-content: space-between;
+    margin-top: 50px;
+
     select {
-      height: 100%;
-      border: 0;
-      padding: 10px 16px;
+      width: 100px;
+      height: 40px;
+      border-color: #ccc;
+      padding: 0 28px 0 15px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: url("@/assets/board/arrow.png") no-repeat 95% 50%/20px auto;
     }
-    input {
-      margin: 0;
-      height: 45px;
-      border: none;
-      padding: 0 14px;
+    .custom-search {
+      width: 350px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      opacity: 1;
+      position: relative;
+      select {
+        border-right: none;
+        width: 120px;
+      }
+      button {
+        position: absolute;
+        right: 14px;
+        border: none;
+        background-color: #fff;
+        background-image: url(@/assets/moaplace/search.png);
+        background-position: 260px center;
+        background-size: 25px 25px;
+        background-repeat: no-repeat;
+        padding-left: 16px;
+        box-sizing: border-box;
+      }
+    }
+    .custom-search-input {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ccc;
+      padding: 10px 50px 10px 20px;
       outline: none;
+      border-left: none;
     }
-    button {
-      height: 100%;
-      background: url(@/assets/moaplace/search.png) no-repeat center;
-      float: right;
-      padding: 0 26px 0;
-      position: absolute;
-      border: none;
+    .searchBox {
+      display: flex;
+      margin-bottom: 24px;
+      justify-content: flex-end; /* 수평축,수직축 */
+      .newBtn {
+        background-color: $black;
+        padding: 0 32px;
+        height: 40px;
+        border: none;
+        margin-left: 16px;
+        color: white;
+        transition: all 0.3s;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
   }
   .table {
