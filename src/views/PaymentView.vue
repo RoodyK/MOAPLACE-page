@@ -252,7 +252,7 @@ export default {
         member_num: this.member_num,
         schedule_num: this.schedule_num,
         booking_count: this.tot_count,
-        booking_price: this.tot,
+        booking_price: this.total,
         booking_seat: this.booking_seats,
         use_point: this.upoint,
       };
@@ -276,7 +276,7 @@ export default {
           merchant_uid: "merchant_" + new Date().getTime(),
           name: "모아플레이스",
           buyer_name: this.username,
-          amount: "1000",
+          amount: this.tot,
           // amount: this.tot,
           buyer_email: this.email,
         },
