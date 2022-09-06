@@ -60,16 +60,20 @@
                   <td class="desctd">{{ dto.payment_date }}</td>
                 </tr>
                 <tr>
-                  <th class="col-md-2 text-center descth">결제금액</th>
+                  <th class="col-md-2 text-center descth">예매가격</th>
                   <td class="desctd">{{ dto.booking_price }}원</td>
-                </tr>
-                <tr>
-                  <th class="col-md-2 text-center descth">결제수단</th>
-                  <td class="desctd">{{ dto.payment_method }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">사용적립금</th>
                   <td class="desctd">{{ dto.use_point }}원</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">최종 결제금액</th>
+                  <td class="desctd">{{ totalPrice }}원</td>
+                </tr>
+                <tr>
+                  <th class="col-md-2 text-center descth">결제수단</th>
+                  <td class="desctd">{{ dto.payment_method }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">결제상태</th>
@@ -115,6 +119,7 @@ export default {
       booking_num : 0, // 예매번호
       dto : {}, // 예매내역 상세정보
       cancle : false, // 예매취소 가능여부
+      totalPrice : 0, // 총결제금액=예매가격-적립금
 
     }
   },
@@ -173,8 +178,24 @@ export default {
 
           if(resp.status == 200) {
 
-            this.dto = resp.data.dto;
-            this.cancle = resp.data.cancle;
+            // this.dto = resp.data.dto;
+            // this.cancle = resp.data.cancle;
+
+            // console.log("resp.data.dto : " , resp.data.dto);
+            // console.log("this.member.num : ", this.member.num);
+            // console.log("resp.data.dto.member_num : ", resp.data.dto.member_num);
+
+            if(resp.data.dto.member_num == this.member.num) {
+              
+              // resp.data.dto.member_num와 this.member.num이 같음
+              this.dto = resp.data.dto;
+              this.cancle = resp.data.cancle;
+
+            } else {
+              alert("비정상적인 접근입니다.");
+              this.$router.push('/moaplace.com/');
+              return;
+            }
 
             if(this.dto.payment_status == '결제취소') {
               this.cancle = false;
@@ -194,6 +215,8 @@ export default {
 
             var use_point = this.dto.use_point;
             this.dto.use_point = use_point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+            this.totalPrice = (price - use_point).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
           } else {
             alert('ticket detail 에러');
