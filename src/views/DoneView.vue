@@ -49,38 +49,38 @@
                   <div>
                     <span class="info_title">좌석</span>
                     <span v-for="(seat, index) in seats" :key="index">
-                      <p v-if="info.hall_name == '모아홀'">
+                      <p v-if="info.hall_name == '아트홀'">
                         <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B'">
                           R석
                         </span>
-                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F'">
+                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E'">
                           S석
                         </span>
-                        <span v-if="seat.charAt() == 'G' || seat.charAt() == 'H'">
+                        <span v-if="seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H'">
                           A석
                         </span>
                         {{seat}}
                       </p>
                       <p v-if="info.hall_name == '오케스트라홀'">
-                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C'">
+                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B'">
                           R석
                         </span>
-                        <span v-if="seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G'">
+                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E'">
                           S석
                         </span>
-                        <span v-if="seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J'">
+                        <span v-if="seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J'">
                           A석
                         </span>
                         {{seat}}
                       </p>
-                      <p v-if="info.hall_name == '아트홀'">
-                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C' || seat.charAt() == 'D'">
+                      <p v-if="info.hall_name == '모던홀'">
+                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C'">
                           R석
                         </span>
-                        <span v-if="seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H'">
+                        <span v-if="seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G' ">
                           S석
                         </span>
-                        <span v-if="seat.charAt() == 'I' || seat.charAt() == 'J' || seat.charAt() == 'K' || seat.charAt() == 'L'">
+                        <span v-if="seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J' || seat.charAt() == 'K' || seat.charAt() == 'L'">
                           A석
                         </span>
                         {{seat}}
@@ -175,13 +175,11 @@ export default {
   },
   methods:{
     data(){
-      // this.booking_num = this.$route.params.booking_num;
-      let booking_num = 1;
+      this.booking_num = this.$route.params.booking_num;
 
-      axios.get(`/moaplace.com/booking/done/${booking_num}`)
+      axios.get(`/moaplace.com/booking/done/${this.booking_num}`)
         .then((resp) => {
           this.info = resp.data;
-          // console.log(resp.data);
 
           this.total = this.numberWithCommas(resp.data.booking_price);
           this.cash = this.numberWithCommas(resp.data.booking_price - resp.data.use_point);
@@ -214,11 +212,8 @@ export default {
     cancleOk() {
       let pwd = prompt("패스워드를 입력하세요.");
 
-      // console.log("입력한 패스워드 : ", pwd);
-      // console.log(this.$store.state.mypage.member.pwd);
-
       const cancleData = {
-        booking_num : 1,
+        booking_num : this.booking_num,
         member_id : this.member.id,
         member_pwd : pwd
       }
