@@ -126,7 +126,7 @@ export default {
       font-family: 'Roboto', 'Nanum Gothic', sans-serif;
       background: rgba(#000, 0.7);
       .inner{
-        width: $width;
+        width: 1000px;
         height: 700px;
         background: #fff;
         position: absolute;
