@@ -42,7 +42,7 @@
 
         <div class="titleBox">
           <label>제목</label>
-          <input type="text" v-model="forms.qna_title" placeholder="문의 제목"><br>
+          <input type="text" v-model="forms.qna_title" placeholder="문의 제목" maxlength="50"><br>
         </div>
         
         <div class="contentBox">

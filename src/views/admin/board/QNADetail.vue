@@ -68,7 +68,7 @@
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer_title">
+                                <td><input type="text" v-model="answer_title" maxlength="50">
                                 </td>
                             </tr>
                             <tr>
@@ -113,7 +113,7 @@
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer.answer_title"></td>
+                                <td><input type="text" v-model="answer.answer_title" maxlength="50"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>

@@ -59,6 +59,10 @@
               <p>수정</p>
               <p>삭제</p>
             </div>
+            <div class="empty-list" v-if="list.length < 1">
+              <i class="material-symbols-outlined">info</i>
+              <p>새소식 내역이 존재하지 않습니다.</p>
+            </div>
             <div v-for="(i, index) in list" :key="index" class="t-row tbody">
               <p>{{ i.notice_num }}</p>
               <p>{{ i.sort_name }}</p>
@@ -75,7 +79,11 @@
                   ><button type="button">수정</button></RouterLink
                 >
               </p>
-              <p><button type="button" @click="deletenews(i.notice_num)">삭제</button></p>
+              <p>
+                <button type="button" @click="deletenews(i.notice_num)">
+                  삭제
+                </button>
+              </p>
             </div>
             <ul class="paging">
               <li
@@ -150,16 +158,7 @@ export default {
       selected2: "total",
       keyword: "",
       member_num: 1,
-      list: [
-        {
-          notice_num: "",
-          sort_name: "",
-          sort_num: "",
-          member_num: "",
-          notice_title: "",
-          notice_regdate: "",
-        },
-      ],
+      list: [],
       pageNum: 1,
       // 확인
       startPageNum: "",
@@ -178,7 +177,6 @@ export default {
 
   methods: {
     getList() {
-
       axios
         .get(
           `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
@@ -210,6 +208,9 @@ export default {
         alert("검색어를 검색해주세요");
       } else {
         this.isSearch = true;
+        console.log(this.selected);
+        console.log(this.selected2);
+        console.log(this.keyword);
         axios
           .get(
             `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}/${this.member_num}/${this.pageNum}`
@@ -230,8 +231,9 @@ export default {
     },
     deletenews(notice_num) {
       // console.log("파일넘버:", notice_num);
-      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`)
-      .then(resp => {
+      axios
+        .get(`/moaplace.com/admin/news/delete/${notice_num}`)
+        .then((resp) => {
           if (resp.data == 1) {
             alert("목록을 삭제하였습니다.");
             // this.$router.push({ name: "adminNewsList" });
@@ -262,11 +264,7 @@ export default {
     /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
     movePage(n) {
       this.pageNum = n;
-      if (this.keyword == null || this.keyword == "") {
-        this.getList();
-      } else {
-        this.searchList();
-      }
+      this.isSearch ? this.searchList() : this.getList();
     },
   },
   computed: {
@@ -386,6 +384,15 @@ nav {
     }
 
     .list {
+      .empty-list {
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        i {
+          margin-right: 8px;
+        }
+      }
       .t-row {
         display: table;
         table-layout: fixed;
