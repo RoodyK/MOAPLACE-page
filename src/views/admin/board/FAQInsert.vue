@@ -80,7 +80,6 @@ export default {
                         .then(response => {
                             let data = response.data;
                             this.forms.member_num = data.member_num;
-                            console.log(this.forms.member_num);
                         })
                         .catch(error => {
                             console.log(error.message);
@@ -118,7 +117,6 @@ export default {
                 })
                 .then(resp => {
                     if(resp.data!='fail'){ 
-                        console.log(resp.data);
                         alert('자주 묻는 질문이 등록되었습니다.');
                         this.$router.push({name:'adminFaqList'});
 

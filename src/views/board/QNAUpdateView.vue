@@ -92,8 +92,6 @@ export default {
   },
   created() {
     this.qna_num = this.$route.params.qna_num;
-    console.log(this.qna_num);
-
     this.pageLoad();
     this.qnaDetail(); // 문의글 상세내용 불러오기
   },
@@ -113,7 +111,6 @@ export default {
                   let data = response.data;
                   this.member_num = data.member_num;
                   this.member_email = data.member_email;
-                  console.log(this.member_num, this.member_email);
                 })
                  .catch(error => {
                     console.log(error.message);
@@ -132,7 +129,6 @@ export default {
                   { params: {qna_num: this.qna_num} })
                  .then(resp => {
                     this.detail = resp.data.detail;
-                    console.log(this.detail);
 
                     // 다른 회원이면 돌려보내기
                     if(this.member_num != this.detail.member_num) {
@@ -170,7 +166,6 @@ export default {
             })
            .then(resp => {
               if(resp.data!='fail'){
-                console.log(resp.data);
                 alert('문의글이 수정되었습니다.');
                 this.$router.push({name:'qnaList'});
 

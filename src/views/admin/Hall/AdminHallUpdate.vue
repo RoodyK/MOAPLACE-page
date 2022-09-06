@@ -360,7 +360,7 @@
 <style lang="scss" scoped>
   @import "@/scss/common.scss";
   // --------관리자 페이지 레이아웃 시작--------
-    #wrap::v-deep {
+    #wrap {
         padding-left: 240px;
         background: #f7f9fa;
         #main {

@@ -88,7 +88,7 @@
           <div class="t-row">
             <div>공연명</div>
             <div>
-              <input type="text" v-model="form.rental_title" id="rental_title">
+              <input type="text" v-model="form.rental_title" id="rental_title" placeholder="공연명을 입력하세요.">
               <span></span>
             </div>
           </div>
@@ -205,7 +205,7 @@
           <div class="t-row">
             <div>기타 요청사항</div>
             <div>
-                <textarea cols="30" rows="5" v-model="form.rental_content"></textarea>
+                <textarea cols="30" rows="5" v-model="form.rental_content" placeholder="추가 요청사항 혹은 참고사항이 있을 경우 기재해주세요."></textarea>
             </div>
           </div>
           <p class="etc">* 공연 변경 및 취소신청은 <strong>1:1게시판</strong>으로 문의 바랍니다</p>
@@ -222,7 +222,6 @@
           <RouterLink to="/moaplace.com/rental"><button>이전으로</button></RouterLink>
           <button @click="onSubmit()">신청하기</button>
       </div>
-
     </div>
     <AppFooter/>
   </div>
@@ -250,7 +249,7 @@ import axios from '@/axios/axios.js'
             rental_phone:["","",""], //신청인 연락처
             rental_email:["",""],//신청인 이메일
             rental_title: "",//공연명
-            rental_genre:1,//공연장르
+            rental_genre:"기악",//공연장르
             rental_date: this.getToday(),//대여 희망일자
             rental_time: "",//대여 시간
             rental_originfilename: "", //첨부파일명
@@ -291,8 +290,11 @@ import axios from '@/axios/axios.js'
             '19:00',
             '20:00',
             '21:00'
-          ]
+          ],
       }
+    },
+    created(){
+      this.getMemberInfo();
     },
     methods:{
       getToday(){
@@ -311,7 +313,7 @@ import axios from '@/axios/axios.js'
       validator(){
         let isEmpty = /.{1,}/;
         let isEmail =/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/; // 길이까지 확실한 검증
-        let isPhone = /^\d{2,3}-\d{3,4}-\d{4}$ /;// 휴대폰 번호
+        let isPhone = /^\d{3}-\d{3,4}-\d{4}$/; // 휴대폰 번호
         const rental_phone = this.form.rental_phone[0] + "-" + this.form.rental_phone[1] + "-" + this.form.rental_phone[2];
         const rental_email = this.form.rental_email[0] + "@" + this.form.rental_email[1];
         const rental_ownsphone = this.form.rental_ownsphone[0] + "-" + this.form.rental_ownsphone[1] + "-" + this.form.rental_ownsphone[2];
@@ -431,8 +433,6 @@ import axios from '@/axios/axios.js'
         }
         document.querySelector('#rental_ownemail').parentNode.nextSibling.innerText = "";
         
-        //vuex store 수정할 것
-        this.insertForm.member_num = 1;
         this.insertForm.hall_num = this.form.hall_num;
         this.insertForm.rental_name = this.form.rental_name;
         this.insertForm.rental_phone = rental_phone; 
@@ -451,7 +451,7 @@ import axios from '@/axios/axios.js'
       onSubmit(){
         let isValid = this.validator();
         if(isValid){
-          console.log(this.insertForm);
+          // console.log(this.insertForm);
           const formData = new FormData();
           
           formData.append("data", JSON.stringify(this.insertForm));
@@ -461,23 +461,63 @@ import axios from '@/axios/axios.js'
             headers:{
               "Content-Type" : "multipart/form-data",
             }
-          }).then(function(resp){
+          }).then((resp)=>{
             if(resp.data === "success"){
               alert("대관신청이 완료되었습니다.");
               //마이페이지로 이동
-              this.$router.push('/moaplace.com/users/mypage/rental/list');
-
+              this.$router.push({ name: "myrentallist"});
             }else{
               alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
             }
-          }.bind(this))
-          .catch(function(error){
-            alert("대관신청을 실패하였습니다.\n 다시시도해주세요.");
-            console.log(error);
           });
-
         }
-      }
+      },
+      async getMemberInfo(){
+            let token = localStorage.getItem("access_token");
+
+            if(token == null) return;
+
+            const config = {
+                headers: {
+                "Authorization" : token
+                }
+            }
+
+            await axios.get("/moaplace.com/users/login/member/info", config)
+            .then(response => {
+                let data = response.data;
+
+                if(data != null){
+                  //회원번호
+                  this.insertForm.member_num = data.member_num; 
+                  
+                  //이름
+                  this.form.rental_name = data.member_name;
+
+                  //휴대폰 번호
+                  let phone = data.member_phone.split("-");
+                  for(let i = 0; i< phone.length; i ++){
+                    this.form.rental_phone[i] = phone[i];
+                  }
+                  //이메일
+                  let email = data.member_email.split("@")
+                  for(let i = 0; i< email.length; i ++){
+                    this.form.rental_email[i] = email[i];
+                  }
+
+                }else{
+                  alert('정상적인 접근이 아닙니다.');
+                  // console.log('회원정보 없음');
+                }
+                
+                
+                
+            })
+            .catch(error => {
+                console.log(error.message);
+            })
+                
+        },
     }
   }
 </script>

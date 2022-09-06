@@ -126,7 +126,6 @@ export default {
     if(this.$route.params.keyword) {
       this.keyword = this.$route.params.keyword;
     }
-    console.log(this.pageNum, this.keyword);
 
     this.qnaList();
   },
@@ -146,7 +145,6 @@ export default {
                   .then(response => {
                     let data = response.data;
                     this.member_num = data.member_num;
-                    console.log(this.member_num);
                   })
                   .catch(error => {
                       console.log(error.message);
@@ -174,7 +172,6 @@ export default {
                       this.endPage = resp.data.endPage, // 페이지 마지막번호
                       this.pageCnt= resp.data.pageCnt // 전체 페이지 개수
                     }
-                    console.log(this.startPage, this.endPage, this.pageCnt);
                   })
 
                  .catch (error => {
@@ -182,10 +179,6 @@ export default {
                   })
     },
     searchList(){
-      if(this.field=='' || this.field==null) {
-        alert('검색 구분을 선택하세요.')
-        return;
-      }
       if(this.newKeyword=='' || this.newKeyword==null){
         alert('검색어를 입력하세요.')
         return;
@@ -197,7 +190,6 @@ export default {
     },    
     movePage(move){
       this.pageNum = move;
-      console.log(this.pageNum);
       this.qnaList();
     }
   }

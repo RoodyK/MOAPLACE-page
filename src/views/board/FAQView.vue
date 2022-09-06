@@ -36,9 +36,8 @@
         v-for="(e, index) in list"
         :key="index"
         :class="{ active: e.isActive }"
-        @click="isMatch(index)"
       >
-        <div class="faq_title" @click="e.open = !e.open">
+        <div class="faq_title" @click="isMatch(index)">
           <span>{{e.rnum}}</span>
           <span>{{e.sort_name}} 문의 </span>
           <span class="title">{{e.faq_title}}</span>
@@ -100,7 +99,6 @@ export default {
     if(this.$route.params.keyword) {
       this.keyword = this.$route.params.keyword;
     }
-    console.log(this.pageNum, this.keyword);
     
     this.sortList();
     this.faqList();
@@ -148,7 +146,6 @@ export default {
                         isActive: false
                       }) 
                     });
-                    console.log(this.list);
 
                     this.field = resp.data.field, // 검색어
                     this.keyword = resp.data.keyword, // 검색어
@@ -170,37 +167,29 @@ export default {
                   })
     },
     searchList(){ // 리스트 검색
-      if(this.field=='' || this.field==null) {
-        alert('검색 구분을 선택하세요.')
-        return;
-      }
       if(this.newKeyword=='' || this.newKeyword==null){
         alert('검색어를 입력하세요.')
         return;
       } 
       this.pageNum = 1;
       this.keyword = this.newKeyword; // 검색어 변경
-      console.log(this.keyword, this.sort_num);
-
       this.faqList();
     },
     filterList(){
       this.pageNum = 1;
-      console.log(this.sort_num);
-
       this.faqList();
     },
     movePage(move){ // 페이지 이동
       this.pageNum = move;
-      console.log(this.pageNum);
-
       this.faqList();
     },    
     isMatch(e) {
       if (this.list[e].isActive) {
         this.list[e].isActive = false;
+        this.list[e].open = false;
       } else {
         this.list[e].isActive = true;
+        this.list[e].open = true;
       }
     }
   }

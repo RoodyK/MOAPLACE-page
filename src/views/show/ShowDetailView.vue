@@ -51,9 +51,9 @@
           <button v-if="check" @click="this.$router.push({path: '/moaplace.com/users/login'})">예매하기</button>
         </div>
         <div id="mybtn" v-else>
-          <button @click="favorite">관심공연</button>
-          <button v-if="check" @click="residualseats">잔여석정보</button>
-          <button v-if="check" @click="this.$router.push({path: `/moaplace.com/booking/select/${detail.show_num}`})">예매하기</button>
+          <button @click="favorite()">관심공연</button>
+          <button v-if="check" @click="residualseats()">잔여석정보</button>
+          <button v-if="check" @click="showModal">예매하기</button>
         </div>
       </div>
     </div>
@@ -73,6 +73,9 @@
     </div>
   </div>
   <AppFooter/>
+  <div class="booking-Modal" v-if="isShow == true" :class="{active: isShow == true}">
+    <iframe :src="`/moaplace.com/booking/select/${show_num}`" frameborder="0"></iframe>
+  </div>
 </div>
 </template>
 
@@ -101,7 +104,10 @@ export default {
       
       check:false,
       login_chk:null,
-      
+
+      show_num: 0,
+      isShow: false, //모달창
+
       favorite_show:{
         show_num:0,
         member_num: 0
@@ -111,7 +117,16 @@ export default {
   created(){
     this.data();
     this.memberinfo();
-  },
+    this.show_num = this.$route.params.show_num;
+
+    //모달창 종료
+    window.addEventListener( 'message', (e) => {
+        if( e.data.functionName === 'closeShow' )
+          this.isShow = false;
+          let body = document.querySelector("body");
+          body.removeAttribute('style');
+    });
+  },  
   methods: {
     data(){
       let show_num=this.$route.params.show_num;
@@ -168,32 +183,40 @@ export default {
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
         let data = response.data;
-        const info = {
-          num: data.member_num,
-          id: data.member_id,
-          pwd: data.member_pwd,
-          email: data.member_email,
-          name: data.member_name,
-          gender: data.member_gender,
-          phone: data.member_gender,
-          address: data.member_address,
-          point: data.member_point
-        }
+        // const info = {
+        //   num: data.member_num,
+        //   id: data.member_id,
+        //   pwd: data.member_pwd,
+        //   email: data.member_email,
+        //   name: data.member_name,
+        //   gender: data.member_gender,
+        //   phone: data.member_gender,
+        //   address: data.member_address,
+        //   point: data.member_point
+        // }
         this.favorite_show.member_num = data.member_num;
-        console.log(data);
-        console.log(info);
+        // console.log(data);
+        // console.log(info);
       })
       .catch(error => {
         console.log(error.message);
       })
     },
+
+    showModal(){
+      this.isShow = true;
+      let body = document.querySelector("body");
+      body.style.height = "100%";
+      body.style.overflow = "hidden";
+    },
+
     favorite(){
       axios.post('/moaplace.com/show/inter/insert', JSON.stringify(this.favorite_show),{
         headers: {'Content-Type' : 'application/json'}
       })
       .then(resp => {
         if(resp.data!='fail'){ 
-          console.log(resp.data);
+          // console.log(resp.data);
           if(confirm("관심공연으로 등록하시겠습니까?") == true) {
             alert('관심공연으로 등록되었습니다.');
           }else {
@@ -323,5 +346,38 @@ export default {
       }
     }
   }
-  
+  .booking-Modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Roboto', 'Nanum Gothic', sans-serif;
+    background: rgba(#000, 0.7);
+    iframe{
+      width: 1000px;
+      height: 700px;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    &.active iframe{
+      animation-name: fadeIn;
+      animation-duration: 1s;
+    }
+    @keyframes fadeIn {
+      from {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
 </style>

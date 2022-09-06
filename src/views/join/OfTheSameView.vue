@@ -52,7 +52,6 @@ export default {
     // 다음단계로 이동
     nextStep() {
       const checkedEl = document.querySelector("input[type='checkbox']").checked;
-      console.log(checkedEl);
       if(checkedEl == false) {
         alert('약관동의 후 다음 단계로 이동 가능합니다.');
         return;

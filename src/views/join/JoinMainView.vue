@@ -113,19 +113,14 @@ export default {
   created() {
   },
   async mounted() {
-    // console.log(new URLSearchParams(location.search).get("code"));
     let formEl = document.querySelector("form");
     formEl.reset();
-    
 
     // 카카오 API 회원가입 및 로그인 처리
     let code = new URLSearchParams(location.search).get("code");
     if(code != null) {
-      console.log(code);
-
       // 카카오 access_token 얻어오기
-      const response = await orgAxios.get(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.VUE_APP_KAKAO_API_KEY}&redirect_uri=${process.env.VUE_APP_KAKAO_REDIRECT_URI}&code=${code}`)
-      console.log(response.data);
+      const response = await orgAxios.get(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.VUE_APP_KAKAO_API_KEY}&redirect_uri=${process.env.VUE_APP_KAKAO_REDIRECT_URI}&code=${code}`);
       
       // access_token으로 정보 얻어오기
       const kakaoInfo = await orgAxios.get(`https://kapi.kakao.com/v2/user/me`, {
@@ -133,7 +128,6 @@ export default {
           Authorization : `Bearer ${response.data.access_token}`
         }
       });
-      console.log(kakaoInfo.data.kakao_account.email);
       this.kakaoEmail = kakaoInfo.data.kakao_account.email;
       formEl.emailInput.value = this.kakaoEmail;
       const email = {
@@ -226,18 +220,13 @@ export default {
 
       axios.post("/moaplace.com/users/join/email/auth", {
         email: email.value }, {
-        headers: {
-          "Authorization" : "1234"
-        },
       })
       .then((response) => {
-        console.log(response.data); // 인증번호
         this.authNumber = response.data;
       });
     },
     // 이메일 인증 확인
     confirmEmailAuth() {
-      // console.log(this.authNumber);
       const authenticationInputEl = document.querySelector("#authenticationInput");
       const authenticationHelpEl = document.querySelector(".authenticationHelp");
 
@@ -283,7 +272,7 @@ export default {
       // 우편번호 정규식(숫자만 가능)
       let regExpPostcode = /^[0-9]{1,8}$/;
       // 주소 정규식(숫자, 한글 공백만 가능 )
-      let regExpAddress = /^[0-9가-힣 ]{1,30}$/;
+      let regExpAddress = /^[0-9가-힣- ]{1,30}$/;
 
 
       let idHelp = document.querySelector(".idHelp");
@@ -414,8 +403,9 @@ export default {
         }
       })
       .then((response) => {
-        console.log(response.data);
-        this.$router.push("/moaplace.com/users/join/success");
+        if(response.data == "success") {
+          this.$router.push("/moaplace.com/users/join/success");
+        }
       })
       .catch(() => {
         alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.')

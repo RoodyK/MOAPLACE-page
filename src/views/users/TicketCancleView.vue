@@ -75,7 +75,10 @@
             </p>
           </div>
           <div class="mytxtform">
-            <span>비밀번호 입력 :</span> <input type="password" class="form-control" v-model="pwd">
+            <span>예매취소 사유 :</span><input type="text" class="form-control" v-model="reason" placeholder="ex) 단순변심, 결제수단 변경 등">
+          </div>
+          <div class="mytxtform">
+            <span>비밀번호 입력 :</span><input type="password" class="form-control" v-model="pwd">
           </div>
           <div class="text-center btnmargin">
             <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">이전</button>
@@ -136,6 +139,8 @@ export default {
       booking_num : 0,
       dto : {},
       pwd : '',
+      amount: 0, // 취소요청금액
+      reason : '', // 취소사유
 
       // 인증된 접근인지 체크
       userAuth : false,
@@ -173,7 +178,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -205,7 +210,7 @@ export default {
             var member_num = resp.data.member_num;
 
             if(member_num == this.member.num) {
-              console.log("받아온 회원번호 : " + member_num);
+              // console.log("받아온 회원번호 : " + member_num);
               this.userAuth = true;
 
               if(resp.data.cancle == true) {
@@ -217,6 +222,7 @@ export default {
                 var schedule_date = new Date(this.dto.schedule_date);
                 this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
 
+                this.amount = this.dto.booking_price;
                 var price = this.dto.booking_price;
                 this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
               
@@ -242,13 +248,16 @@ export default {
 
     // 비밀번호 체크 + 맞으면 예매취소 실행하는 메소드
     cancleOk() {
-      console.log("입력한 패스워드 : ", this.pwd);
-      console.log(this.$store.state.mypage.member.pwd);
+      // console.log("입력한 패스워드 : ", this.pwd);
+      // console.log(this.$store.state.mypage.member.pwd);
 
       const cancleData = {
         booking_num : this.booking_num,
         member_id : this.member.id,
-        member_pwd : this.pwd
+        member_pwd : this.pwd,
+        reason : this.reason,
+        amount : this.amount,
+        imp_uid : this.dto.imp_uid
       }
 
       axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(cancleData), {
@@ -376,7 +385,7 @@ export default {
         margin: 0 auto;
         margin-bottom: 30px;
         > input {
-          width: 200px;
+          width: 250px;
           border-radius: 0%;
         }
         > span {

@@ -16,11 +16,7 @@
             <span class="">기간선택</span>
             <div class="radio_box">
               <label class="myradio">
-                <input type="radio" name="period" value="week" @change="radioChange($event)" checked>
-                <span>1주일</span>
-              </label>
-              <label class="myradio">
-                <input type="radio" name="period" value="1month" @change="radioChange($event)">
+                <input type="radio" name="period" value="1month" @change="radioChange($event)" checked>
                 <span>1개월</span>
               </label>
               <label class="myradio">
@@ -133,7 +129,7 @@ export default {
 
       startdate : '', // 조회 시작날짜
       enddate : '', // 조회 끝날짜
-      period : 'week', // 기간선택 (초기 일주일전)
+      period : '1month', // 기간선택 (초기 일주일전)
 
       member : {}, // 회원정보
       rtExist : false, // 대관내역 존재여부
@@ -176,16 +172,21 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
       this.member.point = point.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
       // 조회기간 yyyy-mm-dd 형식으로 변환해서 초기화
-      const cur = new Date();
-      this.enddate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+cur.getDate()).slice(-2);
-      this.startdate = cur.getFullYear()+'-'+('0'+(cur.getMonth()+1)).slice(-2)+'-'+('0'+(cur.getDate()-7)).slice(-2);
+      let date = new Date();
+      let date1month = new Date(
+        date.getFullYear(),
+        date.getMonth() - 1,
+        date.getDate()
+      );
+      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+      this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
 
       this.getList();
 
@@ -240,10 +241,10 @@ export default {
       }
 
       if( this.enddate < this.startdate ) {
-        console.log("끝날짜가 시작날짜보다 이전임(오류메세지띄워야됨)");
+        // console.log("끝날짜가 시작날짜보다 이전임(오류메세지띄워야됨)");
         alert('기간을 다시 선택해 주세요.');
       } else {
-        console.log("끝날짜가 시작날짜보다 뒤임(잘된거임)");
+        // console.log("끝날짜가 시작날짜보다 뒤임(잘된거임)");
       }
 
     },
@@ -252,16 +253,11 @@ export default {
 
       // 기간선택 버튼 클릭할 때마다 period값 변경 
       this.period = event.target.value;
-      console.log("period : ", this.period);
+      // console.log("period : ", this.period);
 
       // period값에 따라서 startdate 변경 + enddate 현재날짜로 초기화
       let date = new Date();
 
-      let dateWeek = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate() - 7
-      );
       let date1month = new Date(
         date.getFullYear(),
         date.getMonth() - 1,
@@ -278,10 +274,7 @@ export default {
         date.getDate()
       );
 
-      if( this.period == 'week' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
-        this.startdate = dateWeek.getFullYear()+'-'+('0'+(dateWeek.getMonth()+1)).slice(-2)+'-'+('0'+dateWeek.getDate()).slice(-2);
-      } else if( this.period == '1month' ) {
+      if( this.period == '1month' ) {
         this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
         this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
       } else if( this.period == '3month' ) {
@@ -296,7 +289,7 @@ export default {
 
     movePage(move) {
       this.pageNum = move;
-      console.log(this.pageNum);
+      // console.log(this.pageNum);
       this.getList();
     }
     
@@ -374,12 +367,12 @@ export default {
         }
         .radio_box {
           display: flex;
-          width: 300px;
+          // width: 300px;
           input[type="radio"] {
             display: none;
           }
           input[type="radio"] + span {
-            padding: 8px 20px;
+            padding: 8px 30px;
             border: 1px solid $brown;
             border-width: 1px 1px 1px 0;
             text-align: center;

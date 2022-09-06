@@ -357,22 +357,22 @@ export default {
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
         let data = response.data;
-        const info = {
-          num: data.member_num,
-          id: data.member_id,
-          pwd: data.member_pwd,
-          email: data.member_email,
-          name: data.member_name,
-          gender: data.member_gender,
-          phone: data.member_gender,
-          address: data.member_address,
-          point: data.member_point
-        }
+        // const info = {
+        //   num: data.member_num,
+        //   id: data.member_id,
+        //   pwd: data.member_pwd,
+        //   email: data.member_email,
+        //   name: data.member_name,
+        //   gender: data.member_gender,
+        //   phone: data.member_gender,
+        //   address: data.member_address,
+        //   point: data.member_point
+        // }
         this.favorite_show.member_num = data.member_num;
         this.review_insert.member_num = data.member_num;
         this.review_edit.member_num = data.member_num;
-        console.log(data);
-        console.log(info);
+        // console.log(data);
+        // console.log(info);
       })
       .catch(error => {
         console.log(error.message);
@@ -436,7 +436,7 @@ export default {
           this.review_list = resp.data.reviewList;
           this.pageutil = resp.data.pageUtil;
           this.getPageNumber();
-          console.log(resp.data);
+          // console.log(resp.data);
         }
       )
     },
@@ -482,7 +482,7 @@ export default {
           headers: {'Content-Type' : 'application/json'}
         })
         .then(resp => {
-          console.log("resp : " + resp);
+          // console.log("resp : " + resp);
           if(resp.data!='fail'){ 
             if(confirm("후기를 등록하시겠습니까?") == true) {
               alert('후기가 등록되었습니다.');
@@ -671,16 +671,12 @@ export default {
       height: 240px;
       .write{
         height: 100%;
-        padding: 8px 12px 24px 12px;
-        background-color: rgba(#ccc, 0.2); // 
         .write_score{
           width: 100%;
           .star {
             position: relative;
             font-size: 32px;
             color: #ccc;
-            background-color: white;
-            border: 1px solid $brown;
             input {
               width: 100%;
               height: 100%;
