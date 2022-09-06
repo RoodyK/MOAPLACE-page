@@ -1,6 +1,6 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="대관관리" mediumCategory="회원정보"/>
+    <SideMenu largeCategory="회원관리" mediumCategory="회원정보"/>
     <main id="main">
       <div class="inner">
         <h2 class="title">회원정보</h2>
