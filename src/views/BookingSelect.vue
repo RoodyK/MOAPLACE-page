@@ -60,7 +60,7 @@
             <div
               v-for="(m, index) in timeTable"
               :key="index"
-              :class="{ timeTable: true }"
+              :class="{ timeTable: true, active: this.scheduleNum == m.schduleNum}"
               class="static"
               @click="selectTime($event.currentTarget.textContent, m.schduleNum)">
               <p>{{ m.count }}</p>
@@ -143,7 +143,8 @@ export default {
       thumb:'',
       seats:'',
       scheduleNum:'',
-      showI:[]
+      showI:[],
+      action:false
     }
   },
 
@@ -180,7 +181,7 @@ export default {
     getTerm() {
       let termTo =
         new Date(this.endDate).getTime() - new Date().getTime();
-      return termTo / 86400000; 
+      return Math.round(termTo / 86400000); 
     },
     
     //가져온 날짜 데이터 이용하여 요일, 날짜 배열에 저장
@@ -227,7 +228,6 @@ export default {
     //버튼을 눌렀을 때 발생한 이벤트의 현재 요소 가지고 와서 변수에 정보 담기
     viewTime(e) {
       this.timeTable.splice(0);
-      
       let ie = 1;
       this.onDate = "";
       this.selectCnt = "";
@@ -264,7 +264,6 @@ export default {
     selectTime(e, num) {
       this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
       this.scheduleNum = num;
-  
       let data = {
         'schedule_num' : this.scheduleNum,
         'schedule_date' : this.onDate,
@@ -278,7 +277,9 @@ export default {
     },
 
     getTop() {
-      return document.querySelector(".firstDay").offsetTop;
+      if(document.querySelector(".firstDay")!=null){
+        return document.querySelector(".firstDay").offsetTop;
+      }
     },
 
     delSelect(){
@@ -368,6 +369,9 @@ a {
       }
     }
     main {
+      display: flex;
+      flex-flow: row nowrap;
+      height: calc(100% - 64px);
       border: 1px solid gainsboro;
       border-top: none;
       border-bottom: none;
@@ -375,6 +379,7 @@ a {
       flex-flow: row nowrap;
       width: 100%;
       height: calc(100% - 64px);
+      overflow: hidden;
       .fontHeader {
         font-size: 24px;
         font-weight: bold;
