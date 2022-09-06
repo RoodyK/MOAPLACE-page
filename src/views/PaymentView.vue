@@ -23,7 +23,7 @@
                 <div class="point">
                   <div>
                     <span><input type="text" v-model="upoint" /> 원</span> /
-                    <span class="use">{{ point }}원</span>
+                    <span class="use">{{ userpoint }}원</span>
                     <button @click="use_point">전액사용</button>
                   </div>
                   <p>
@@ -39,7 +39,7 @@
               <div class="txt">
                 <div class="pay">
                   <input type="radio" name="pay_method" id="card" />
-                  <label for="card" @click="a">카드 결제</label>
+                  <label for="card" @click="buyticket()">카드 결제</label>
                 </div>
                 <div class="pay">
                   <input type="radio" name="pay_method" id="money" />
@@ -58,7 +58,7 @@
               <div class="box">
                 <p>적립금</p>
                 <div>
-                  <p>{{ uupoint }}</p>
+                  <p>{{ point }}</p>
                   <span>원</span>
                 </div>
               </div>
@@ -73,6 +73,7 @@
           </div>
           <div class="con2">
             <div class="aside">
+              <!--동일-->
               <h2 class="side-title">구매정보</h2>
               <h3 class="show-title">{{ title }}</h3>
               <div class="show-info">
@@ -101,10 +102,17 @@
             <div class="btn-box">
               <button>
                 <i class="material-symbols-outlined">keyboard_backspace</i>
-                <span>이전</span>
+                <span
+                  ><RouterLink :to="`/moaplace.com/booking/count`"
+                    >이전</RouterLink
+                  ></span
+                >
               </button>
               <button>
-                <span>결제</span
+                <span
+                  ><RouterLink :to="`/moaplace.com/booking/done`"
+                    >결제</RouterLink
+                  ></span
                 ><i class="material-symbols-outlined">arrow_right_alt</i>
               </button>
             </div>
@@ -116,12 +124,19 @@
 </template>
 
 <script>
+import axios from "@/axios/axios.js";
+const { IMP } = window;
 export default {
   data() {
     return {
-      point: 5000,
-      price: 250000,
-      upoint: 5000,
+      msg: "",
+      userpoint: "", //멤버에서 받는 point
+
+      upoint: "", //사용자가 사용 할 포인트 금액(이 페이지 입력)
+      username: "",
+      email: "",
+      member_num: "",
+
       title: "웃다가 우는 남자",
       place: "오케스트라홀",
       date: "22.08.16(화)",
@@ -129,9 +144,13 @@ export default {
       seats: [{ grade: "R", row: "A", cols: "01" }],
       rows: 11, //열번호
       cols: 10, //행번호
-      msg: "",
     };
   },
+  created() {
+    this.getmember();
+  },
+
+  //실시간 계산
   computed: {
     uupoint: function () {
       if (this.upoint >= this.point) {
@@ -145,8 +164,76 @@ export default {
     },
   },
   methods: {
+    getmember() {
+      let token = localStorage.getItem("access_token");
+      if (token == null) return;
+
+      axios
+        .get("/moaplace.com/users/login/member/info")
+        .then((response) => {
+          let data = response.data;
+          this.member_num = data.member_num;
+          this.email = data.member_email;
+          this.username = data.member_name;
+          this.userpoint = data.member_point;
+          console.log(data);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
     use_point() {
       this.upoint = this.point;
+    },
+
+    buyticket: function () {
+      IMP.init("imp49001285");
+      IMP.request_pay(
+        {
+          // param
+          pg: "html5_inicis",
+          pay_method: "card",
+          merchant_uid: "merchant_" + new Date().getTime(),
+          name: "모아플레이스",
+          buyer_name: this.username,
+          amount: "10000",
+          buyer_email: this.email,
+        },
+        function (resp) {
+          // callback
+          console.log(resp);
+          if (resp.success) {
+            console.log("pay_method", resp.pay_method);
+            console.log("merchant_uid", resp.merchant_uid);
+            console.log("paid_amount", resp.paid_amount);
+            console.log("apply_num", resp.apply_num);
+            console.log("결제 성공"); //확인
+            var result = {
+              member_num: this.member_num,
+              pay_method: resp.pay_method,
+              merchant_uid: resp.merchant_uid,
+              paid_amount: resp.paid_amount, //최종 결제 금액 , store에서 받아오기 > tot
+              apply_num: resp.apply_num, //카드 승인 번호
+            };
+            axios
+              .post("/moaplace.com/booking/payment", JSON.stringify(result))
+              .then(
+                function (resp) {
+                  if (resp.data === "success") {
+                    alert("결제가 완료되었습니다. ");
+                    //페이지 이동  this.$router.push({ name: "adminNewsList" });
+                    console.log("결제성공");
+                  } else {
+                    alert("결제를 실패하였습니다. 다시 확인해주세요");
+                    console.log("결제실패");
+                  }
+                }.bind(this)
+              );
+          } else {
+            console.log("결제 실패");
+          }
+        }
+      );
     },
   },
   watch: {
@@ -189,7 +276,7 @@ a {
   font-family: "Roboto", "Nanum Gothic", sans-serif;
   background: rgba(#000, 0.7);
   .inner {
-    width: $width;
+    width: 1000px;
     height: 700px;
     background: #fff;
     position: absolute;
@@ -285,8 +372,12 @@ a {
                 font-size: 18px;
                 padding: 0 8px 16px 16px;
                 margin-bottom: 16px;
+
                 input[type="radio"] {
                   display: none;
+                }
+                label {
+                  cursor: pointer;
                 }
               }
             }
