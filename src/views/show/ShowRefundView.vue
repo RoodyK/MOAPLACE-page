@@ -203,20 +203,20 @@ export default {
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
         let data = response.data;
-        const info = {
-          num: data.member_num,
-          id: data.member_id,
-          pwd: data.member_pwd,
-          email: data.member_email,
-          name: data.member_name,
-          gender: data.member_gender,
-          phone: data.member_gender,
-          address: data.member_address,
-          point: data.member_point
-        }
+        // const info = {
+        //   num: data.member_num,
+        //   id: data.member_id,
+        //   pwd: data.member_pwd,
+        //   email: data.member_email,
+        //   name: data.member_name,
+        //   gender: data.member_gender,
+        //   phone: data.member_gender,
+        //   address: data.member_address,
+        //   point: data.member_point
+        // }
         this.favorite_show.member_num = data.member_num;
-        console.log(data);
-        console.log(info);
+        // console.log(data);
+        // console.log(info);
       })
       .catch(error => {
         console.log(error.message);

@@ -139,8 +139,8 @@ export default {
         this.fileList.splice(0, this.fileList.length);
         return;
       }
-      console.log(this.fileList);
-      console.log(this.fileList.length);
+      // console.log(this.fileList);
+      // console.log(this.fileList.length);
     },
 
     savefile() {
@@ -172,8 +172,8 @@ export default {
     },
 
     insertnews() {
-      console.log(this.selected);
-      console.log("파일 등록====" + this.fileList);
+      // console.log(this.selected);
+      // console.log("파일 등록====" + this.fileList);
       axios
         .post("/moaplace.com/admin/news/insert", this.savefile(), {
           headers: {
@@ -185,10 +185,10 @@ export default {
             if (resp.data === "success") {
               alert("등록이 완료되었습니다");
               this.$router.push({ name: "adminNewsList" });
-              console.log("등록성공");
+              // console.log("등록성공");
             } else {
               alert("등록이 실패되었습니다. 다시 확인해주세요");
-              console.log("등록실패");
+              // console.log("등록실패");
             }
           }.bind(this)
         );

@@ -174,7 +174,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -195,7 +195,7 @@ export default {
         await axios.get('/moaplace.com/users/mypage/rental/detail/'
           + this.rental_num
         ).then(function(resp){
-          console.log(resp);
+          // console.log(resp);
           if(resp.status == 200) {
 
             this.dto = resp.data.dto;
@@ -205,12 +205,12 @@ export default {
               this.answer = true;
             }
             // 대관취소 가능 여부 체크
-            console.log(this.dto.rental_state);
-            console.log("전",this.cancle);
+            // console.log(this.dto.rental_state);
+            // console.log("전",this.cancle);
             if(this.dto.rental_state != '예약취소' && this.dto.rental_state != '사용완료') {
               this.cancle = true;
             }
-            console.log("후",this.cancle);
+            // console.log("후",this.cancle);
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
@@ -229,7 +229,7 @@ export default {
     },
 
     download(rental_num) {
-      console.log("대관예약번호 : ", rental_num);
+      // console.log("대관예약번호 : ", rental_num);
       window.location = `http://localhost:9090/moaplace.com/users/mypage/file/download/${rental_num}`;
     },
 

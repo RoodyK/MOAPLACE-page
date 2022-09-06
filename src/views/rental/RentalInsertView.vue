@@ -451,7 +451,7 @@ import axios from '@/axios/axios.js'
       onSubmit(){
         let isValid = this.validator();
         if(isValid){
-          console.log(this.insertForm);
+          // console.log(this.insertForm);
           const formData = new FormData();
           
           formData.append("data", JSON.stringify(this.insertForm));
@@ -507,7 +507,7 @@ import axios from '@/axios/axios.js'
 
                 }else{
                   alert('정상적인 접근이 아닙니다.');
-                  console.log('회원정보 없음');
+                  // console.log('회원정보 없음');
                 }
                 
                 

@@ -215,7 +215,7 @@ export default {
                            break;   
             }
         });
-        console.log("매수: ", countR, countS, countA);
+        // console.log("매수: ", countR, countS, countA);
             
         this.price.forEach(e => {
             let temp = {
@@ -239,7 +239,7 @@ export default {
                             break;
             }
         })
-        console.log(this.changeTicket);
+        // console.log(this.changeTicket);
     },
     data(){
         return{

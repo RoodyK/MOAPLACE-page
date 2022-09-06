@@ -332,7 +332,7 @@ export default {
 
       //신청인 전화번호 유효성 검사
       if(!isPhone.test(this.dto.rental_phone)){
-        console.log(this.dto.rental_phone);
+        // console.log(this.dto.rental_phone);
         let phone = document.querySelector('#rental_phone');
         phone.focus();
         phone.nextSibling.innerText = "전화번호를 다시 입력하세요.";
@@ -388,7 +388,7 @@ export default {
       //담당자 연락처 유효성 검사 (콘솔로 로그찍은 후엔 작동하는데 안찍으면 작동안함)
       console.log("1",isPhone.test(this.dto.rental_ownsphone));
       if(!isPhone.test(this.dto.rental_ownsphone)){
-        console.log("2",isPhone.test(this.dto.rental_ownsphone));
+        // console.log("2",isPhone.test(this.dto.rental_ownsphone));
         let inputForm = document.querySelector('#rental_ownsphone');
         inputForm.focus();
         inputForm.nextSibling.innerText = "전화번호를 다시 입력하세요.";
@@ -412,12 +412,12 @@ export default {
     onSubmit(){
       // 유효성검사 체크
       let isValid = this.validator();
-      console.log("isValid:" + isValid);
+      // console.log("isValid:" + isValid);
 
       if(isValid){
         
-        console.log("수정정보:",this.dto);
-        console.log("수정한 파일정보:", this.file);
+        // console.log("수정정보:",this.dto);
+        // console.log("수정한 파일정보:", this.file);
 
         const formData = new FormData();
         
@@ -495,7 +495,7 @@ export default {
 
     // 수정취소 = 상세내역 페이지로 이동
     revert() {
-      console.log("rental_num:",this.rental_num);
+      // console.log("rental_num:",this.rental_num);
       this.$router.push("/moaplace.com/users/mypage/rental/detail/"+this.rental_num);
     },
 

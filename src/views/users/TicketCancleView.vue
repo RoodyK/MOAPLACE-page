@@ -178,7 +178,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -210,7 +210,7 @@ export default {
             var member_num = resp.data.member_num;
 
             if(member_num == this.member.num) {
-              console.log("받아온 회원번호 : " + member_num);
+              // console.log("받아온 회원번호 : " + member_num);
               this.userAuth = true;
 
               if(resp.data.cancle == true) {
@@ -248,8 +248,8 @@ export default {
 
     // 비밀번호 체크 + 맞으면 예매취소 실행하는 메소드
     cancleOk() {
-      console.log("입력한 패스워드 : ", this.pwd);
-      console.log(this.$store.state.mypage.member.pwd);
+      // console.log("입력한 패스워드 : ", this.pwd);
+      // console.log(this.$store.state.mypage.member.pwd);
 
       const cancleData = {
         booking_num : this.booking_num,

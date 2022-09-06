@@ -51,8 +51,8 @@
           <button v-if="check" @click="this.$router.push({path: '/moaplace.com/users/login'})">예매하기</button>
         </div>
         <div id="mybtn" v-else>
-          <button>관심공연</button>
-          <button v-if="check">잔여석정보</button>
+          <button @click="favorite()">관심공연</button>
+          <button v-if="check" @click="residualseats()">잔여석정보</button>
           <button v-if="check" @click="showModal">예매하기</button>
         </div>
       </div>
@@ -183,20 +183,20 @@ export default {
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
         let data = response.data;
-        const info = {
-          num: data.member_num,
-          id: data.member_id,
-          pwd: data.member_pwd,
-          email: data.member_email,
-          name: data.member_name,
-          gender: data.member_gender,
-          phone: data.member_gender,
-          address: data.member_address,
-          point: data.member_point
-        }
+        // const info = {
+        //   num: data.member_num,
+        //   id: data.member_id,
+        //   pwd: data.member_pwd,
+        //   email: data.member_email,
+        //   name: data.member_name,
+        //   gender: data.member_gender,
+        //   phone: data.member_gender,
+        //   address: data.member_address,
+        //   point: data.member_point
+        // }
         this.favorite_show.member_num = data.member_num;
-        console.log(data);
-        console.log(info);
+        // console.log(data);
+        // console.log(info);
       })
       .catch(error => {
         console.log(error.message);
@@ -209,7 +209,6 @@ export default {
       body.style.height = "100%";
       body.style.overflow = "hidden";
     },
-    getIsShow(){
 
     favorite(){
       axios.post('/moaplace.com/show/inter/insert', JSON.stringify(this.favorite_show),{
@@ -217,7 +216,7 @@ export default {
       })
       .then(resp => {
         if(resp.data!='fail'){ 
-          console.log(resp.data);
+          // console.log(resp.data);
           if(confirm("관심공연으로 등록하시겠습니까?") == true) {
             alert('관심공연으로 등록되었습니다.');
           }else {

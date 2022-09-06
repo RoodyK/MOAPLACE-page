@@ -181,7 +181,7 @@ export default {
       axios.get(`/moaplace.com/booking/done/${booking_num}`)
         .then((resp) => {
           this.info = resp.data;
-          console.log(resp.data);
+          // console.log(resp.data);
 
           this.total = this.numberWithCommas(resp.data.booking_price);
           this.cash = this.numberWithCommas(resp.data.booking_price - resp.data.use_point);
@@ -214,8 +214,8 @@ export default {
     cancleOk() {
       let pwd = prompt("패스워드를 입력하세요.");
 
-      console.log("입력한 패스워드 : ", pwd);
-      console.log(this.$store.state.mypage.member.pwd);
+      // console.log("입력한 패스워드 : ", pwd);
+      // console.log(this.$store.state.mypage.member.pwd);
 
       const cancleData = {
         booking_num : 1,
