@@ -7,7 +7,7 @@
           <span>예매 다시하기</span>
         </button>
         <h1 class="title">날짜/회차선택</h1>
-        <button class="right">
+        <button class="right" @click="closeModal">
           <span>창닫기</span>
           <i class="material-symbols-outlined">close</i>
         </button>
@@ -60,7 +60,7 @@
             <div
               v-for="(m, index) in timeTable"
               :key="index"
-              :class="{ timeTable: true }"
+              :class="{ timeTable: true, active: this.scheduleNum == m.schduleNum}"
               class="static"
               @click="selectTime($event.currentTarget.textContent, m.schduleNum)">
               <p>{{ m.count }}</p>
@@ -143,12 +143,15 @@ export default {
       thumb:'',
       seats:'',
       scheduleNum:'',
-      showI:[]
+      showI:[],
+      action:false
     }
   },
 
   mounted(){
-    this.getShow(this.$store.state.booking.show_num);
+    let show_num = this.$route.params.num;
+    this.$store.commit('booking/setShowNum', show_num);
+    this.getShow(show_num);
   },
 
   methods: {
@@ -158,6 +161,7 @@ export default {
        await axios.get('/moaplace.com/booking/getShow/' + num)
         .then(async function(resp){
           this.showI = resp.data.list;
+          console.log(resp.data.list)
           this.title = resp.data.list[0].title;
           this.startDate = resp.data.list[0].showStart;
           this.endDate = resp.data.list[0].showEnd;
@@ -177,7 +181,7 @@ export default {
     getTerm() {
       let termTo =
         new Date(this.endDate).getTime() - new Date().getTime();
-      return termTo / 86400000; 
+      return Math.round(termTo / 86400000); 
     },
     
     //가져온 날짜 데이터 이용하여 요일, 날짜 배열에 저장
@@ -224,14 +228,12 @@ export default {
     //버튼을 눌렀을 때 발생한 이벤트의 현재 요소 가지고 와서 변수에 정보 담기
     viewTime(e) {
       this.timeTable.splice(0);
-      
       let ie = 1;
       this.onDate = "";
       this.selectCnt = "";
       //가지고 온 스케줄 데이터만큼 반복
       for (let i = 0; i < this.showI.length; i++) {
         if (this.showI[i].scheduleDate == e.value) {
-          console.log(i + ":" + e.value)
           //22.09.03 (요일) 형식으로 보여주기 위함 
           this.onDate = e.value.substr(2, 2) + "." +
             e.value.substr(5, 2) + "." + e.value.substr(8, 2) +
@@ -262,7 +264,6 @@ export default {
     selectTime(e, num) {
       this.selectCnt = e.substr(0, 3) + " " + e.substr(3, 5);
       this.scheduleNum = num;
-  
       let data = {
         'schedule_num' : this.scheduleNum,
         'schedule_date' : this.onDate,
@@ -276,13 +277,16 @@ export default {
     },
 
     getTop() {
-      return document.querySelector(".firstDay").offsetTop;
+      if(document.querySelector(".firstDay")!=null){
+        return document.querySelector(".firstDay").offsetTop;
+      }
     },
 
     delSelect(){
       this.selectCnt = '',
       this.onDate = ''
-      this.timeTable.splice(0)
+      this.timeTable.splice(0);
+      this.resetModal();
     },
 
     goNextPage(){
@@ -291,6 +295,25 @@ export default {
       }else{
         alert('날짜와 회차를 선택하세요')
       }
+    },
+    //모달창 종료
+    closeModal(){
+      let chk = window.confirm("모든 선택이 초기화되며 예매창이 종료됩니다.");
+      if(chk == true){
+          // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
+          window.parent.postMessage(
+          // 전달할 data (부모창에서 호출할 함수명)
+          { functionName : 'closeShow' }
+          // 부모창의 도메인
+          , 'http://localhost:8080/moaplace.com/'
+          );
+      }else{
+          return;
+      }
+    },
+    //예매다시하기(vuex 초기화)
+    resetModal(){
+      this.$store.commit('booking/resetAllChoice');
     }
   }
 };
@@ -310,14 +333,7 @@ a {
   }
 }
 #wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 99999;
-  width: 100%;
-  height: 100vh;
-  font-family: "Roboto", "Nanum Gothic", sans-serif;
-  background: rgba(#000, 0.7);
+  
   .inner {
     width: 1000px;
     height: 700px;
@@ -325,7 +341,7 @@ a {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%,-50%);
     header {
       width: 100%;
       height: 64px;
@@ -353,6 +369,9 @@ a {
       }
     }
     main {
+      display: flex;
+      flex-flow: row nowrap;
+      height: calc(100% - 64px);
       border: 1px solid gainsboro;
       border-top: none;
       border-bottom: none;
@@ -360,6 +379,7 @@ a {
       flex-flow: row nowrap;
       width: 100%;
       height: calc(100% - 64px);
+      overflow: hidden;
       .fontHeader {
         font-size: 24px;
         font-weight: bold;
