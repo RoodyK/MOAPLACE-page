@@ -30,7 +30,7 @@
             </div>
             <div>
               <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
-              <button class="btn mybtn resultbtn" @click="getList()">조회</button>
+              <button class="btn mybtn resultbtn" @click="clickSelect()">조회</button>
             </div>
           </div>
           <!-- 내역 -->
@@ -38,11 +38,11 @@
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">예매번호</th>
+                  <th class="col col-md-2">예매번호</th>
                   <th class="col col-md-2">공연정보</th>
-                  <th class="col col-md-1">결제금액</th>
-                  <th class="col col-md-1">결제상태</th>
-                  <th class="col col-md-1 end">상세보기</th>
+                  <th class="col col-md-2">결제금액</th>
+                  <th class="col col-md-2">결제상태</th>
+                  <th class="col col-md-2 end">상세보기</th>
                 </tr>
               </thead>
               <!-- tbody 시작 -->
@@ -301,13 +301,13 @@ export default {
       );
 
       if( this.period == '1month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
       } else if( this.period == '3month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date3month.getFullYear()+'-'+('0'+(date3month.getMonth()+1)).slice(-2)+'-'+('0'+date3month.getDate()).slice(-2);
       } else if( this.period == '6month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date6month.getFullYear()+'-'+('0'+(date6month.getMonth()+1)).slice(-2)+'-'+('0'+date6month.getDate()).slice(-2);
       }
 
@@ -317,7 +317,12 @@ export default {
       this.pageNum = move;
       console.log(this.pageNum);
       this.getList();
-    }
+    },
+
+    clickSelect() {
+      this.pageNum = 1;
+      this.getList();
+    },
     
   }
 }
@@ -474,6 +479,11 @@ export default {
             .txt {
               p {
                 margin-bottom: 10px;
+                width: 200px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+
               }
               table td,th {
                 border: 0px;
@@ -482,9 +492,11 @@ export default {
               .subtable{
                 th {
                   font-weight: bold;
+                  width: 25px;
                 }
                 td {
                   padding-left: 5px;
+                  width: 140px;
                 }
               } 
             }

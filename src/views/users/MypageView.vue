@@ -17,11 +17,11 @@
             <table class="table table-borderless myborder ticket-table">
               <thead>
                 <tr class="text-center">
-                  <th class="col col-md-1">예매번호</th>
+                  <th class="col col-md-2">예매번호</th>
                   <th class="col col-md-2">공연정보</th>
-                  <th class="col col-md-1">결제금액</th>
-                  <th class="col col-md-1">결제상태</th>
-                  <th class="col col-md-1 end">상세보기</th>
+                  <th class="col col-md-2">결제금액</th>
+                  <th class="col col-md-2">결제상태</th>
+                  <th class="col col-md-2 end">상세보기</th>
                 </tr>
               </thead>
               <tbody class="fs-7">
@@ -386,6 +386,10 @@ export default {
             .txt {
               p {
                 margin-bottom: 10px;
+                width: 200px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
               }
               table td,th {
                 border: 0px;
@@ -394,9 +398,11 @@ export default {
               .subtable{
                 th {
                   font-weight: bold;
+                  width: 25px;
                 }
                 td {
                   padding-left: 5px;
+                  width: 140px;
                 }
               } 
             }
