@@ -111,11 +111,18 @@ export default {
       page : 1,
       word : '',
       pageNum: [],
-      pageUtils: []
+      pageUtils: [],
+      rememberWord: ''
     }
   },
   created() {
     this.getMemberInfo();
+  },
+  watch: {
+    word(to, from) {
+      console.log(from);
+      console.log(to);
+    }
   },
   methods: {
     listPageNums() {
@@ -150,6 +157,7 @@ export default {
     async isSearch() {
       if(this.word != null && this.word != '') {
         this.searched = true;
+        this.rememberWord = this.word;
         try {
           const response = await axios.get(`/moaplace.com/admin/member/info/1/${this.sorted}/${this.fielded}/${this.word}`)
           // console.log(response);
@@ -168,10 +176,10 @@ export default {
       }
     },
     async movePage(page) {
-      this.page = page;
+      // this.page = page;
       // console.log(this.searched);
       const url = this.searched
-        ? `/moaplace.com/admin/member/info/${page}/${this.sorted}/${this.fielded}/${this.word}`
+        ? `/moaplace.com/admin/member/info/${page}/${this.sorted}/${this.fielded}/${this.rememberWord}`
         : `/moaplace.com/admin/member/info/${page}/${this.sorted}`
 
       try {

@@ -59,10 +59,6 @@
               <p>수정</p>
               <p>삭제</p>
             </div>
-            <div class="empty-list" v-if="list.length < 1">
-              <i class="material-symbols-outlined">info</i>
-              <p>새소식 내역이 존재하지 않습니다.</p>
-            </div>
             <div v-for="(i, index) in list" :key="index" class="t-row tbody">
               <p>{{ i.notice_num }}</p>
               <p>{{ i.sort_name }}</p>
@@ -157,8 +153,16 @@ export default {
       ],
       selected2: "total",
       keyword: "",
-      member_num: 1,
-      list: [],
+      list: [
+        {
+          notice_num: "",
+          sort_name: "",
+          sort_num: "",
+          member_num: "",
+          notice_title: "",
+          notice_regdate: "",
+        },
+      ],
       pageNum: 1,
       // 확인
       startPageNum: "",
@@ -169,6 +173,7 @@ export default {
       totalPageCount: "",
       isActive: false,
       isSearch: false,
+      rememberWord: ''
     };
   },
   created() {
@@ -177,53 +182,52 @@ export default {
 
   methods: {
     getList() {
-      axios
-        .get(
-          `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
-        )
-        .then(
-          function (resp) {
-            // console.log("멤버번호:", this.member_num);
-            // console.log(resp.data);
-            this.list = resp.data.list;
-            this.startPageNum = resp.data.startPageNum;
-            this.endPageNum = resp.data.endPageNum;
-            this.totalPageCount = resp.data.totalPageCount;
-            this.totalRowCount = resp.data.totalRowCount;
-            this.startRow = resp.data.startRow;
-            this.endRow = resp.data.endRow;
-            // console.log("리스트 불러오기 성공");
+      axios.get(`/moaplace.com/admin/news/list/${this.selected}`).then(
+        function (resp) {
+          // console.log("멤버번호:", this.member_num);
+          // console.log(resp.data);
+          this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
+          this.startPageNum = resp.data.startPageNum;
+          this.endPageNum = resp.data.endPageNum;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.startRow = resp.data.startRow;
+          this.endRow = resp.data.endRow;
+          this.selected = resp.data.sort_num;
+          // console.log("리스트 불러오기 성공");
 
-            // alert("this.endPageNum:" + this.endPageNum);
-            //alert("this.totalRowCount:" + this.totalPageCount);
-          }.bind(this)
-        );
+          // alert("this.endPageNum:" + this.endPageNum);
+          //alert("this.totalRowCount:" + this.totalPageCount);
+        }.bind(this)
+      );
     },
     //@change 했을 때 메소드 진행
     selectchange() {
       this.getList();
     },
     searchList() {
-      if (this.keyword == null || this.keyword == "") {
-        alert("검색어를 검색해주세요");
-      } else {
+      if (this.keyword !== null || this.keyword !== "") {
         this.isSearch = true;
-        console.log(this.selected);
-        console.log(this.selected2);
-        console.log(this.keyword);
+        this.rememberWord = this.keyword;
         axios
           .get(
-            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}/${this.member_num}/${this.pageNum}`
+            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}`
           )
           .then(
             function (resp) {
               this.list = resp.data.list;
+              this.pageutil = resp.data.pageutil;
               this.startPageNum = resp.data.startPageNum;
               this.endPageNum = resp.data.endPageNum;
               this.totalPageCount = resp.data.totalPageCount;
               this.totalRowCount = resp.data.totalRowCount;
               this.startRow = resp.data.startRow;
               this.endRow = resp.data.endRow;
+              this.pageNum = resp.data.pageNum;
+              this.selected = resp.data.sort_num;
+              this.selected2 = resp.data.field;
+              this.keyword = resp.data.keyword;
               // console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
@@ -264,7 +268,28 @@ export default {
     /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
     movePage(n) {
       this.pageNum = n;
-      this.isSearch ? this.searchList() : this.getList();
+      const url = this.isSearch
+        ? `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.rememberWord}/${this.pageNum}`
+        : `/moaplace.com/admin/news/list/${this.selected}/${this.pageNum}`;
+      axios.get(url).then(
+        function (resp) {
+          this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
+          this.startPageNum = resp.data.startPageNum;
+          this.startRow = resp.data.startRow;
+          this.endPageNum = resp.data.endPageNum;
+          this.endRow = resp.data.endRow;
+          this.pageNum = resp.data.pageNum;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.selected = resp.data.sort_num;
+          this.keyword = resp.data.keyword;
+
+          if (this.keyword !== null && this.keyword !== "") {
+            this.keyword = resp.data.keyword;
+          }
+        }.bind(this)
+      );
     },
   },
   computed: {
@@ -384,15 +409,6 @@ nav {
     }
 
     .list {
-      .empty-list {
-        height: 300px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        i {
-          margin-right: 8px;
-        }
-      }
       .t-row {
         display: table;
         table-layout: fixed;
