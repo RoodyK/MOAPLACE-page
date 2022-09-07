@@ -185,7 +185,7 @@ export default {
         date.getMonth() - 1,
         date.getDate()
       );
-      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
       this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
 
       this.getList();
@@ -275,13 +275,13 @@ export default {
       );
 
       if( this.period == '1month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
       } else if( this.period == '3month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date3month.getFullYear()+'-'+('0'+(date3month.getMonth()+1)).slice(-2)+'-'+('0'+date3month.getDate()).slice(-2);
       } else if( this.period == '6month' ) {
-        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+        this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
         this.startdate = date6month.getFullYear()+'-'+('0'+(date6month.getMonth()+1)).slice(-2)+'-'+('0'+date6month.getDate()).slice(-2);
       }
 
