@@ -22,9 +22,10 @@
               <div class="txt">
                 <div class="point">
                   <div>
-                    <span><input type="text" v-model="upoint" /> 원</span> /
+                    <span><input type="text" v-model="upo" /> 원</span>
+                    /
                     <span class="use">{{ formatPrice(userpoint) }}원</span>
-                    <button @click="use_point">전액사용</button>
+                    <button @click="use_point">사용</button>
                   </div>
                   <p>
                     {{ msg }}
@@ -143,6 +144,7 @@ export default {
       msg: "",
       userpoint: "", //멤버에서 받는 point
       upoint: 0, //사용자가 사용 할 포인트 금액(이 페이지 입력)
+      upo: 0,
       username: "",
       email: "",
       member_num: "",
@@ -150,23 +152,18 @@ export default {
       all_seat: [],
       b_seat: [],
       pay_method: "",
+      // tot: 0,
     };
   },
   created() {
     this.getmember();
+    // this.tot = this.total;
   },
 
   //실시간 계산
   computed: {
-    uupoint: function () {
-      if (this.upoint >= this.point) {
-        return this.point;
-      } else {
-        return this.upoint;
-      }
-    },
     tot: function () {
-      return this.total - this.uupoint;
+      return this.total - this.upoint;
     },
     booking() {
       //예약 정보 가져오기
@@ -249,7 +246,25 @@ export default {
       return n.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     },
     use_point() {
-      this.upoint = this.userpoint;
+      if (this.upo >= this.total) {
+        alert("적립금 사용시 결제금액을 넘을 수 없습니다.");
+        this.upoint = this.total - 1000;
+      } else if (this.upo > this.userpoint) {
+        this.msg = "사용 할 수 있는 적립금 금액을 초과하였습니다.";
+        this.upo = this.userpoint;
+        this.upoint = this.upo;
+      } else if (this.upo < 1000) {
+        this.msg = "적립금은 최소 1,000원 이상부터 사용가능합니다.";
+      } else if (this.upo % 10 != 0) {
+        this.msg = "적립금은 10원 단위로 사용 가능합니다.";
+        this.upo = this.upo - (this.upo % 10);
+        this.upoint = this.upo;
+      } else if (this.total - this.upo < 1000) {
+        this.msg = "최소 결제 금액은 1000원입니다";
+      } else {
+        this.msg = "";
+        this.upoint = this.upo;
+      }
     },
 
     buyticket: function () {
@@ -377,20 +392,26 @@ export default {
       }
     },
   },
-  watch: {
-    upoint: function (newVal) {
-      if (newVal >= this.point) {
-        this.msg = "사용 할 수 있는 적립금 금액을 초과하였습니다.";
-      } else if (newVal < 1000) {
-        this.msg = "적립금은 최소 1,000원 이상부터 사용가능합니다.";
-      } else if (newVal % 10 != 0) {
-        this.msg =
-          "적립금은 최소 1,000원 이상 보유 시 10원 단위로 사용 가능합니다.";
-      } else {
-        this.msg = "";
-      }
-    },
-  },
+  // watch: {
+  //   upo: function (newVal) {
+  //     if (newVal > this.userpoint) {
+  //       this.msg = "사용 할 수 있는 적립금 금액을 초과하였습니다.";
+  //       this.upo = this.userpoint;
+  //       this.upoint = this.upo;
+  //     } else if (newVal < 1000) {
+  //       this.msg = "적립금은 최소 1,000원 이상부터 사용가능합니다.";
+  //     } else if (newVal > 1000) {
+  //       this.msg = "";
+  //       this.upo = newVal;
+  //       this.upoint = this.upo;
+  //     } else if (newVal % 10 != 0) {
+  //       this.upo = newVal - (newVal % 10);
+  //       this.upoint = this.upo;
+  //       this.msg = "적립금은 10원 단위로 사용 가능합니다.";
+  //     }
+  //     // this.tot = this.total - this.upoint;
+  //   },
+  // },
 };
 </script>
 
