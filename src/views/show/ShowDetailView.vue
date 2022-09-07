@@ -30,9 +30,7 @@
           </div>
           <div>
             <span class="category">시간</span>
-            <span v-for="s, index in schedule" :key="index">
-              {{s.schedule_date.substring(5)}} {{s.schedule_time}} &nbsp;&nbsp;
-            </span>
+            <span>러닝타임 : {{detail.running_time}}분, 인터미션 : {{detail.intermission}}분</span> 
           </div>
           <div>
             <span class="category">연령</span> 
@@ -58,19 +56,13 @@
       </div>
     </div>
     <div id="nav">
-      <div class="tap_on" id="tap_1">
-        <RouterLink :to="`/moaplace.com/show/showdetail/${this.$route.params.show_num}`">상세보기</RouterLink>
-      </div>
-      <div class="tap_off" id="tap_2">
-        <RouterLink :to="`/moaplace.com/show/review/list/${this.$route.params.show_num}`">관람평</RouterLink>
-      </div>
-      <div class="tap_off" id="tap_3">
-        <RouterLink :to="`/moaplace.com/show/showrefund/${this.$route.params.show_num}`">취소 및 환불 안내</RouterLink>
-      </div>
+      <button id="tap_1" class="tap_on" @click="tap_1()">상세보기</button>
+      <button id="tap_2" class="tap_off" @click="tap_2()">관람평</button>
+      <button id="tap_3" class="tap_off" @click="tap_3()">취소 및 환불 안내</button>
     </div>
-    <div id="detail">
-      <img v-for="di, index in detailimg" :key="index" :src="di.show_detail_img">
-    </div>
+    <ShowDetailImg v-if="chk1"/>
+    <ShowReview v-if="chk2"/>
+    <ShowRefund v-if="chk3"/>
   </div>
   <AppFooter/>
   <div class="booking-Modal" v-if="isShow == true" :class="{active: isShow == true}">
@@ -83,6 +75,9 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import ShowDetailImg from '@/components/show/ShowDetailImg.vue'
+import ShowRefund from '@/components/show/ShowRefund.vue'
+import ShowReview from '@/components/show/ShowReview.vue'
 import axios from '@/axios/axios.js'
 
 export default {
@@ -90,7 +85,10 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    SideVisual
+    SideVisual,
+    ShowDetailImg,
+    ShowRefund,
+    ShowReview
   },
   data(){
     return{
@@ -111,7 +109,11 @@ export default {
       favorite_show:{
         show_num:0,
         member_num: 0
-      }
+      },
+
+      chk1: true,
+      chk2: false,
+      chk3: false
     }
   },
   created(){
@@ -182,21 +184,9 @@ export default {
 
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
+        console.log(data);
         let data = response.data;
-        // const info = {
-        //   num: data.member_num,
-        //   id: data.member_id,
-        //   pwd: data.member_pwd,
-        //   email: data.member_email,
-        //   name: data.member_name,
-        //   gender: data.member_gender,
-        //   phone: data.member_gender,
-        //   address: data.member_address,
-        //   point: data.member_point
-        // }
         this.favorite_show.member_num = data.member_num;
-        // console.log(data);
-        // console.log(info);
       })
       .catch(error => {
         console.log(error.message);
@@ -211,24 +201,24 @@ export default {
     },
 
     favorite(){
-      axios.post('/moaplace.com/show/inter/insert', JSON.stringify(this.favorite_show),{
-        headers: {'Content-Type' : 'application/json'}
-      })
-      .then(resp => {
-        if(resp.data!='fail'){ 
-          // console.log(resp.data);
-          if(confirm("관심공연으로 등록하시겠습니까?") == true) {
+      if(confirm("관심공연으로 등록하시겠습니까?") == true){
+        axios.post('/moaplace.com/show/inter/insert', JSON.stringify(this.favorite_show),{
+          headers: {'Content-Type' : 'application/json'}
+        })
+        .then(resp => {
+          if(resp.data!='fail'){ 
             alert('관심공연으로 등록되었습니다.');
+            return
           }else {
-            return;
+            alert('이미 등록된 공연입니다.');
+            return
           }
-        }else {
-          alert('이미 등록된 공연입니다.');
-          return
-        }
-      }).catch(error => {
-        console.log(error.message);
-      })
+        }).catch(error => {
+          console.log(error.message);
+        })
+      }else {
+        return
+      }
     },
     residualseats(){
       window.open(
@@ -237,7 +227,31 @@ export default {
         "width=1000, height=700",
         "_blank"
       );
-    }
+    },
+    tap_1() {
+      this.chk1 = true;
+      this.chk2 = false;
+      this.chk3 = false;
+      document.querySelector("#tap_1").className = "tap_on";
+      document.querySelector("#tap_2").className = "tap_off";
+      document.querySelector("#tap_3").className = "tap_off";
+    },
+    tap_2() {
+      this.chk1 = false;
+      this.chk2 = true;
+      this.chk3 = false;
+      document.querySelector("#tap_1").className = "tap_off";
+      document.querySelector("#tap_2").className = "tap_on";
+      document.querySelector("#tap_3").className = "tap_off";
+    },
+    tap_3() {
+      this.chk1 = false;
+      this.chk2 = false;
+      this.chk3 = true;
+      document.querySelector("#tap_1").className = "tap_off";
+      document.querySelector("#tap_2").className = "tap_off";
+      document.querySelector("#tap_3").className = "tap_on";
+    },
   }
 }
 </script>
@@ -268,35 +282,27 @@ export default {
     margin-top: 50px;
     text-align: center;
     justify-content: space-evenly;
-    a{
-      text-decoration: none;
+    button{
       font-size: 20px;
-    }
-    div{
       width: 100%;
       padding: 16px 0;
+      border: 1px solid $brown;
     }
     .tap_on{
       background-color: $brown;
-      a{
+      button{
         color: #fff;
       }
     }
     .tap_off{
       background-color: #fff;
-      border-top: 1px solid $brown;
-      border-bottom: 1px solid $brown;
-      border-right: 1px solid $brown;
-      a{
+      button{
         color: $brown;
       }
     }
-  }
-  #detail{
-    text-align: center;
-    img{
-      width: 100%;
-      margin-top: 50px;
+    #tap_2{
+      border-right: none;
+      border-left: none;
     }
   }
   .containers{
@@ -316,16 +322,16 @@ export default {
         }
       }
       h4{
-        font-size: 32px;
+        font-size: 40px;
         font-weight: bold;
         color: $black;
       }
       color: $black;
       font-size: 16px;
-      line-height: 52px;
+      line-height: 56px;
     }
     #mybtn{
-      margin-top: 40px;
+      margin-top: 52px;
       display: flex;
       justify-content: space-between;
       button{

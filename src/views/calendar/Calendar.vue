@@ -448,25 +448,28 @@ import axios from '@/axios/axios.js';
                                 height: 157px;
                                 border: 1px solid rgba($black,0.2);
                                 position: relative;
-                                table-layout: fixed;
+                                                              
                                 .dateBox{
                                   margin: 0;
                                   .day {
                                     font-weight: bold;
                                     width: 50px;
                                     font-weight: bold;
-                                  display: flex;
-                                  padding: 16px 0px 0px 16px; 
+                                    display: flex;
+                                    padding: 16px 0px 0px 16px; 
                                 }
                                 }
                                 .mt-3{
                                   margin:0px;
-                                  padding: 4px 16px 0px 16px;
+                                  padding: 8px 16px 12px 16px;
+                          
                                 }
                             }
                             ul {
                               list-style: none;
                               padding-left: 0;
+                              overflow: hidden;
+                              white-space: nowrap;
                               li{
                                 display: flex;
                                 justify-content: center;
