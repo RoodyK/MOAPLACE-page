@@ -269,6 +269,7 @@ export default {
     padding-top: 50px;
     img{
       width: 320px;
+      height: 100%;
       box-shadow: 3px 7px 21px rgb(0 0 0 / 13%);
     }
     button{
