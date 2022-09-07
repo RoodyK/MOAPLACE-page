@@ -24,36 +24,6 @@
                         </table>
                     </div>
                 </div>
-
-                <div class="info-box" v-if="faq_title!=''">
-                    <h3>수정하기</h3>
-                    <div>
-                        <table>
-                            <tr>
-                                <th>구분</th>
-                                <td>
-                                    <select v-model="sort_num">
-                                        <option :value="0"> 분류 선택 </option>
-                                        <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
-                                        {{sort.sort_name}} 문의
-                                        </option>
-                                    </select>                                    
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>제목</th>
-                                <td><input type="text" v-model="faq_title" maxlength="50"></td>
-                            </tr>
-                            <tr>
-                                <th>내용</th>
-                                <td><TextEditor height="300" 
-                                                v-model:content="faq_content" 
-                                                contentType="html"/>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
                 
                 <div class="btn-box">
                     <button @click="$router.push({name:'adminFaqList'})">목록으로</button>
