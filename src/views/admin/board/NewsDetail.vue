@@ -1,6 +1,6 @@
 <template>
   <div id="wrap">
-    <SideMenu largeCategory="게시판 관리" mediumCategory="새소식" />
+    <SideMenu largeCategory="게시판관리" mediumCategory="새소식" />
     <main id="main">
       <div class="inner">
         <h2 class="title">공지사항 - 자세히보기</h2>
