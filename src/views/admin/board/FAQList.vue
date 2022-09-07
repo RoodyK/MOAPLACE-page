@@ -32,7 +32,7 @@
             <p>번호</p>
             <p>구분</p>
             <p>제목</p>
-            <p>상세보기</p>
+            <p>수정</p>
             <p>삭제</p>
           </div>
           <div v-for="i in list" :key="i" class="t-row tbody" 
@@ -40,9 +40,9 @@
             <p>{{ i.rnum }}</p>
             <p>{{ i.sort_name }} 문의 </p>
             <p>{{ i.faq_title }}</p>
-            <p>
-              <button @click="$router.push({name:'adminFaqDetail', params: {faq_num: i.faq_num}})">
-                상세보기
+            <p @click.prevent="prevent($event)">
+              <button @click="$router.push('/moaplace.com/admin/faq/update/' + i.faq_num)">
+                수정
               </button>
             </p>
             <p @click.prevent="prevent($event)">

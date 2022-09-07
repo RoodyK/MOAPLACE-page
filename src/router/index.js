@@ -19,8 +19,6 @@ import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
 import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
-import reviewList from '@/views/show/ReviewListView.vue'
-import showRefund from '@/views/show/ShowRefundView.vue'
 import residualseats from '@/views/show/ResidualSeatsView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
@@ -50,6 +48,7 @@ import AdminShowScheduleUpdate from '@/views/admin/Hall/AdminShowScheduleUpdate.
 import AdminTicketList from '@/views/admin/Hall/AdminTicketList.vue'
 import AdminTicketDetail from '@/views/admin/Hall/AdminTicketDetail.vue'
 import AdminFAQListView from '@/views/admin/board/FAQList.vue'
+import AdminFAQUpdateView from '@/views/admin/board/FAQUpdate.vue'
 import AdminFAQDetailView from '@/views/admin/board/FAQDetail.vue'
 import AdminFAQInsertView from '@/views/admin/board/FAQInsert.vue'
 import AdminQNAListView from '@/views/admin/board/QNAList.vue'
@@ -181,16 +180,6 @@ const routes = [
     path: '/moaplace.com/show/showdetail/:show_num',
     name: 'showdetail',
     component: showDetail
-  },
-  {
-    path: '/moaplace.com/show/review/list/:show_num',
-    name: 'reviewlist',
-    component: reviewList
-  },
-  {
-    path: '/moaplace.com/show/showrefund/:show_num',
-    name: 'showrefund',
-    component: showRefund
   },
 
   // 잔여석
@@ -347,6 +336,11 @@ const routes = [
     path: '/moaplace.com/admin/faq/insert',
     name: 'adminFaqInsert',
     component: AdminFAQInsertView
+  },
+  {
+    path: '/moaplace.com/admin/faq/update/:faq_num',
+    name: 'adminFaqUpdate',
+    component: AdminFAQUpdateView
   },
   {
     path: '/moaplace.com/admin/qna/list',

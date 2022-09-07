@@ -107,7 +107,8 @@ export default {
                     '예약취소',
                     '사용완료'
                 ],  
-        pageNumbers : []
+        pageNumbers : [],
+        rememberWord: ''
       }
     },
     created(){
@@ -144,6 +145,7 @@ export default {
       searchList(){
         if(this.keyword !== null && this.keyword !== ""){
           this.isSearch = true;
+          this.rememberWord = this.keyword;
           axios
             .get(`/moaplace.com/admin/rental/list/${this.sort}/${this.keyword}`)
             .then(function(resp){
@@ -165,7 +167,7 @@ export default {
       movePage(pagenum){
 
         const url = this.isSearch
-          ? `/moaplace.com/admin/rental/list/${pagenum}/${this.sort}/${this.keyword}`
+          ? `/moaplace.com/admin/rental/list/${pagenum}/${this.sort}/${this.rememberWord}`
           : `/moaplace.com/admin/rental/list/${pagenum}`;
         axios
           .get( url )

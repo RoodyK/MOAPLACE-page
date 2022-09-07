@@ -3,7 +3,7 @@
     <SideMenu largeCategory="통계관리" mediumCategory="대관 매출통계"/>
     <main id="main">
       <div class="inner">
-        <h2 class="title">공연 매출차트</h2>
+        <h2 class="title">대관 매출차트</h2>
         
         <form action="">
           <div class="searches">
@@ -55,7 +55,13 @@ export default {
     axios.get(`/moaplace.com/admin/rental/chart/2000-02-02/2040-08-06`)
       .then(response => {
         this.chartDataUpdate(response.data);
-      })
+      });
+    const date = new Date();
+    const years = date.getFullYear();
+    const months = date.getMonth()+1;
+    const days = date.getDate();
+    this.fromDate = `${years}-${months < 10 ? `0${months}` : months}-${days < 10 ? `0${days}` : days}`;
+
   },
   data() {
     return {

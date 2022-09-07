@@ -92,12 +92,16 @@
       <div id="list" v-if="show_list.length!=0">
         <div class="show" v-for="show in show_list" :key="show.show_num">
           <div class="img">
-            <div class="pop" v-if="show.show_check=='Y'">
-              <RouterLink class="left" :to="`/moaplace.com/booking/select/${show.show_num}`">예매</RouterLink>
-              <RouterLink class="right" :to="`/moaplace.com/show/showdetail/${show.show_num}`">상세</RouterLink>
+            <div class="pop" v-if="show.show_check=='Y' && login_chk!=null && show.show_end >= new Date()">
+              <button class="left" @click="showModal(show.show_num)">예매</button>
+              <button class="right" @click="detail(show.show_num)">상세</button>
+            </div>
+            <div class="pop" v-else-if="show.show_check=='Y' && login_chk==null && show.show_end >= new Date()">
+              <button class="left" @click="log()">예매</button>
+              <button class="right" @click="detail(show.show_num)">상세</button>
             </div>
             <div class="pop" v-else>
-              <RouterLink class="right" :to="`/moaplace.com/show/showdetail/${show.show_num}`">상세</RouterLink>
+              <button class="right" @click="detail(show.show_num)">상세</button>
             </div>
             <img :src="show.show_thumbnail" >
           </div>
@@ -135,6 +139,9 @@
       </ul>
     </div>
     <AppFooter/>
+    <div class="booking-Modal" v-if="isShow == true" :class="{active: isShow == true}">
+      <iframe :src="`/moaplace.com/booking/select/${num}`" frameborder="0"></iframe>
+    </div>
   </div>
 </template>
 
@@ -170,11 +177,25 @@ export default {
       genre_chk:["all"],
 
       keyword:'',
-      isSearch : false
+      isSearch : false,
+
+      isShow: false,
+      num:0,
+
+      login_chk:null
     }
   },
   created(){
     this.list();
+    this.memberinfo();
+
+    //모달창 종료
+    window.addEventListener( 'message', (e) => {
+        if( e.data.functionName === 'closeShow' )
+          this.isShow = false;
+          let body = document.querySelector("body");
+          body.removeAttribute('style');
+    });
   },
   methods: {
     list(){
@@ -347,6 +368,36 @@ export default {
         this.list();
         return;
       }  
+    },
+    showModal(num){
+      this.num = num;
+      this.isShow = true;
+      let body = document.querySelector("body");
+      body.style.height = "100%";
+      body.style.overflow = "hidden";
+    },
+    memberinfo() {
+      let token = localStorage.getItem("access_token");
+      if(token == null) return;
+      this.login_chk = token;
+
+      axios.get("/moaplace.com/users/login/member/info")
+      .then(response => {
+        let data = response.data;
+        this.favorite_show.member_num = data.member_num;
+        this.review_insert.member_num = data.member_num;
+        this.review_edit.member_num = data.member_num;
+
+      })
+      .catch(error => {
+        console.log(error.message);
+      })
+    },
+    detail(num){
+      this.$router.push("/moaplace.com/show/showdetail/" + num);
+    },
+    log() {
+      this.$router.push("/moaplace.com/users/login");
     }
   }
 }
@@ -452,7 +503,7 @@ export default {
         background-color: rgba(black, 0.6);
         opacity: 0;
         transition: 0.3s;
-        a {
+        button {
           padding: 24px;
           border-radius: 50%;
           border: 1px solid #fff;
@@ -474,6 +525,7 @@ export default {
     }
     img{
         width: 100%;
+        height: 100%;
     }
   }
   .search{
@@ -608,6 +660,40 @@ export default {
     margin-bottom: 24px;
     h6{
       font-weight: bold;
+    }
+  }
+  .booking-Modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Roboto', 'Nanum Gothic', sans-serif;
+    background: rgba(#000, 0.7);
+    iframe{
+      width: 1000px;
+      height: 700px;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    &.active iframe{
+      animation-name: fadeIn;
+      animation-duration: 1s;
+    }
+    @keyframes fadeIn {
+      from {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+        visibility: visible;
+      }
     }
   }
 </style>

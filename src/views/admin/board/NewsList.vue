@@ -75,7 +75,11 @@
                   ><button type="button">수정</button></RouterLink
                 >
               </p>
-              <p><button type="button" @click="deletenews(i.notice_num)">삭제</button></p>
+              <p>
+                <button type="button" @click="deletenews(i.notice_num)">
+                  삭제
+                </button>
+              </p>
             </div>
             <ul class="paging">
               <li
@@ -149,7 +153,6 @@ export default {
       ],
       selected2: "total",
       keyword: "",
-      member_num: 1,
       list: [
         {
           notice_num: "",
@@ -170,6 +173,7 @@ export default {
       totalPageCount: "",
       isActive: false,
       isSearch: false,
+      rememberWord: ''
     };
   },
   created() {
@@ -178,51 +182,52 @@ export default {
 
   methods: {
     getList() {
+      axios.get(`/moaplace.com/admin/news/list/${this.selected}`).then(
+        function (resp) {
+          // console.log("멤버번호:", this.member_num);
+          // console.log(resp.data);
+          this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
+          this.startPageNum = resp.data.startPageNum;
+          this.endPageNum = resp.data.endPageNum;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.startRow = resp.data.startRow;
+          this.endRow = resp.data.endRow;
+          this.selected = resp.data.sort_num;
+          // console.log("리스트 불러오기 성공");
 
-      axios
-        .get(
-          `/moaplace.com/admin/news/list/${this.selected}/${this.member_num}/${this.pageNum}`
-        )
-        .then(
-          function (resp) {
-            // console.log("멤버번호:", this.member_num);
-            // console.log(resp.data);
-            this.list = resp.data.list;
-            this.startPageNum = resp.data.startPageNum;
-            this.endPageNum = resp.data.endPageNum;
-            this.totalPageCount = resp.data.totalPageCount;
-            this.totalRowCount = resp.data.totalRowCount;
-            this.startRow = resp.data.startRow;
-            this.endRow = resp.data.endRow;
-            // console.log("리스트 불러오기 성공");
-
-            // alert("this.endPageNum:" + this.endPageNum);
-            //alert("this.totalRowCount:" + this.totalPageCount);
-          }.bind(this)
-        );
+          // alert("this.endPageNum:" + this.endPageNum);
+          //alert("this.totalRowCount:" + this.totalPageCount);
+        }.bind(this)
+      );
     },
     //@change 했을 때 메소드 진행
     selectchange() {
       this.getList();
     },
     searchList() {
-      if (this.keyword == null || this.keyword == "") {
-        alert("검색어를 검색해주세요");
-      } else {
+      if (this.keyword !== null || this.keyword !== "") {
         this.isSearch = true;
+        this.rememberWord = this.keyword;
         axios
           .get(
-            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}/${this.member_num}/${this.pageNum}`
+            `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.keyword}`
           )
           .then(
             function (resp) {
               this.list = resp.data.list;
+              this.pageutil = resp.data.pageutil;
               this.startPageNum = resp.data.startPageNum;
               this.endPageNum = resp.data.endPageNum;
               this.totalPageCount = resp.data.totalPageCount;
               this.totalRowCount = resp.data.totalRowCount;
               this.startRow = resp.data.startRow;
               this.endRow = resp.data.endRow;
+              this.pageNum = resp.data.pageNum;
+              this.selected = resp.data.sort_num;
+              this.selected2 = resp.data.field;
+              this.keyword = resp.data.keyword;
               // console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
@@ -230,8 +235,9 @@ export default {
     },
     deletenews(notice_num) {
       // console.log("파일넘버:", notice_num);
-      axios.get(`/moaplace.com/admin/news/delete/${notice_num}`)
-      .then(resp => {
+      axios
+        .get(`/moaplace.com/admin/news/delete/${notice_num}`)
+        .then((resp) => {
           if (resp.data == 1) {
             alert("목록을 삭제하였습니다.");
             // this.$router.push({ name: "adminNewsList" });
@@ -262,11 +268,28 @@ export default {
     /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
     movePage(n) {
       this.pageNum = n;
-      if (this.keyword == null || this.keyword == "") {
-        this.getList();
-      } else {
-        this.searchList();
-      }
+      const url = this.isSearch
+        ? `/moaplace.com/admin/news/list/${this.selected}/${this.selected2}/${this.rememberWord}/${this.pageNum}`
+        : `/moaplace.com/admin/news/list/${this.selected}/${this.pageNum}`;
+      axios.get(url).then(
+        function (resp) {
+          this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
+          this.startPageNum = resp.data.startPageNum;
+          this.startRow = resp.data.startRow;
+          this.endPageNum = resp.data.endPageNum;
+          this.endRow = resp.data.endRow;
+          this.pageNum = resp.data.pageNum;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.selected = resp.data.sort_num;
+          this.keyword = resp.data.keyword;
+
+          if (this.keyword !== null && this.keyword !== "") {
+            this.keyword = resp.data.keyword;
+          }
+        }.bind(this)
+      );
     },
   },
   computed: {

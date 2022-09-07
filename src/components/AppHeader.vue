@@ -101,7 +101,7 @@ export default {
     if(roles == 'redm') {
       this.topMenu.push({
           name: 'ADMIN',
-          href: '/moaplace.com/admin/rental/list'
+          href: '/moaplace.com/admin/show/chart'
       });
     }
   },

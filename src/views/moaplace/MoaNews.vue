@@ -144,6 +144,7 @@ export default {
       totalPageCount: "",
       isActive: false,
       isSearch: false,
+      rememberWord: ''
     };
   },
   created() {
@@ -157,16 +158,18 @@ export default {
       // alert(this.selected);
       // alert(this.member_num);
       // console.log("키워드값:" + this.keyword);
-      axios.get(`/moaplace.com/moaplace/news/list/${this.pageNum}`).then(
+      axios.get(`/moaplace.com/moaplace/news/list`).then(
         function (resp) {
           // console.log(resp.data);
           this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
           this.startPageNum = resp.data.startPageNum;
-          this.endPageNum = resp.data.endPageNum;
-          this.totalPageCount = resp.data.totalPageCount;
-          this.totalRowCount = resp.data.totalRowCount;
           this.startRow = resp.data.startRow;
+          this.endPageNum = resp.data.endPageNum;
           this.endRow = resp.data.endRow;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.totalPageCount = resp.data.totalPageCount;
+
           // console.log("리스트 불러오기 성공");
         }.bind(this)
       );
@@ -176,28 +179,34 @@ export default {
     //   this.getList();
     // },
     searchList() {
-      if (this.keyword == "") {
-        this.isSearch = false;
-        this.getList();
-        alert("검색어를 검색해주세요");
-      } else {
+      if (this.keyword !== null && this.keyword !== "") {
         this.isSearch = true;
+        this.rememberWord = this.keyword;
         axios
           .get(
-            `/moaplace.com/moaplace/news/list/${this.selected2}/${this.keyword}/${this.pageNum}`
+            `/moaplace.com/moaplace/news/list/${this.selected2}/${this.keyword}`
           )
           .then(
             function (resp) {
               this.list = resp.data.list;
+              this.pageutil = resp.data.pageutil;
               this.startPageNum = resp.data.startPageNum;
-              this.endPageNum = resp.data.endPageNum;
-              this.totalPageCount = resp.data.totalPageCount;
-              this.totalRowCount = resp.data.totalRowCount;
               this.startRow = resp.data.startRow;
+              this.endPageNum = resp.data.endPageNum;
               this.endRow = resp.data.endRow;
+              this.totalRowCount = resp.data.totalRowCount;
+              this.totalPageCount = resp.data.totalPageCount;
+              this.pageNum = resp.data.pageNum;
+              this.selected2 = resp.data.field;
+              this.keyword = resp.data.keyword;
+
               // console.log("검색 리스트 불러오기 성공");
             }.bind(this)
           );
+      } else {
+        this.isSearch = false;
+        this.getList();
+        return;
       }
     },
     // class -> css 처리용 , prevPage -> alert
@@ -218,12 +227,24 @@ export default {
     /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
     movePage(n) {
       this.pageNum = n;
-      this.isSearch ? this.searchList() : this.getList();
-      // if (this.keyword == null || this.keyword == "") {
-      //   (this.isSearch = false), this.getList();
-      // } else {
-      //   this.searchList();
-      // }
+      const url = this.isSearch
+        ? `/moaplace.com/moaplace/news/list/${this.selected2}/${this.rememberWord}/${this.pageNum}`
+        : `/moaplace.com/moaplace/news/list/${this.pageNum}`;
+      axios.get(url).then(
+        function (resp) {
+          this.list = resp.data.list;
+          this.pageutil = resp.data.pageutil;
+          this.startPageNum = resp.data.startPageNum;
+          this.startRow = resp.data.startRow;
+          this.endPageNum = resp.data.endPageNum;
+          this.endRow = resp.data.endRow;
+          this.pageNum = resp.data.pageNum;
+          this.totalRowCount = resp.data.totalRowCount;
+          this.totalPageCount = resp.data.totalPageCount;
+          this.keyword = resp.data.keyword;
+
+        }.bind(this)
+      );
     },
   },
   computed: {
