@@ -44,6 +44,13 @@
                 <th>작성일</th>
                 <th>조회수</th>
               </tr>
+              <tr class="empty-list" v-if="list.length < 1">
+                <td colspan="5">
+                  <i class="material-symbols-outlined">info</i>
+                  <p>새소식 내역이 존재하지 않습니다.</p>
+                </td>
+              </tr>
+
               <tr class="important" v-for="(i, index) in list" :key="index">
                 <td class="num">{{ i.notice_num }}</td>
                 <td>{{ i.sort_name }}</td>
@@ -126,16 +133,7 @@ export default {
       ],
       selected2: "total",
       keyword: "",
-      list: [
-        {
-          notice_num: "",
-          sort_name: "",
-          sort_num: "",
-          notice_title: "",
-          notice_regdate: "",
-          notice_hit: "",
-        },
-      ],
+      list: [],
       pageNum: 1,
       // 확인
       startPageNum: "",
@@ -149,6 +147,7 @@ export default {
     };
   },
   created() {
+    console.log("리스트", this.list.length);
     this.getList();
   },
   methods: {
@@ -157,6 +156,7 @@ export default {
 
       // alert(this.selected);
       // alert(this.member_num);
+      // console.log("키워드값:" + this.keyword);
       axios.get(`/moaplace.com/moaplace/news/list/${this.pageNum}`).then(
         function (resp) {
           // console.log(resp.data);
@@ -172,11 +172,13 @@ export default {
       );
     },
     //@change 했을 때 메소드 진행
-    selectchange() {
-      this.getList();
-    },
+    // selectchange() {
+    //   this.getList();
+    // },
     searchList() {
-      if (this.keyword == null || this.keyword == "") {
+      if (this.keyword == "") {
+        this.isSearch = false;
+        this.getList();
         alert("검색어를 검색해주세요");
       } else {
         this.isSearch = true;
@@ -216,11 +218,12 @@ export default {
     /* 패이지 클릭했을 때 해당 메소드 각각 실행 -> 삼항연산자 이용도 고려 */
     movePage(n) {
       this.pageNum = n;
-      if (this.keyword == null || this.keyword == "") {
-        this.getList();
-      } else {
-        this.searchList();
-      }
+      this.isSearch ? this.searchList() : this.getList();
+      // if (this.keyword == null || this.keyword == "") {
+      //   (this.isSearch = false), this.getList();
+      // } else {
+      //   this.searchList();
+      // }
     },
   },
   computed: {
@@ -259,6 +262,7 @@ $brown: #826d5e;
   position: relative;
   width: 100%;
   box-sizing: border-box;
+
   .inner_wrap {
     justify-content: space-between;
     margin-top: 50px;
@@ -324,10 +328,12 @@ $brown: #826d5e;
       }
     }
   }
+
   .table {
     width: 100%;
     border-top: 2px solid $black;
     table-layout: fixed;
+
     a {
       text-decoration: none;
       color: $black;
@@ -348,7 +354,18 @@ $brown: #826d5e;
         text-overflow: ellipsis;
         padding: 0 16px;
       }
+      &.empty-list {
+        padding: 16px 0;
+        height: 300px;
+        td {
+          vertical-align: middle;
+        }
+        i {
+          margin-right: 8px;
+        }
+      }
     }
+
     tbody {
       vertical-align: middle;
     }

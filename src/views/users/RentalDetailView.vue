@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">기타 요청사항</th>
-                  <td class="desctd">{{ dto.rental_content }}</td>
+                  <td class="desctd mycontent">{{ dto.rental_content }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">진행상태</th>
@@ -94,8 +94,7 @@
             <span class="fs-5 fw-bold">답변</span>
           </div>
           <div class="titledesc">
-            <p class="desctxt fs-7" v-show="answer">
-              {{ dto.answer_content }}
+            <p class="desctxt fs-7" v-html="dto.answer_content" v-show="answer">
             </p>
             <p class="desctxt fs-7" v-show="!answer">
               관리자의 답변이 등록되지 않았습니다.
@@ -351,6 +350,9 @@ export default {
         }
       }
       .table {
+        .mycontent {
+          white-space: pre-line
+        }
         th.col {
           background-color: $brown;
           color: white;
@@ -400,6 +402,7 @@ export default {
         .descth {
           border: 1px solid #dbe2e8;
           background-color: rgb(249, 249, 249);
+          vertical-align: middle;
         }
         .desctd {
           border: 1px solid #dbe2e8;
