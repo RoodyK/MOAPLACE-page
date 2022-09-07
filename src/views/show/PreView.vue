@@ -478,6 +478,10 @@ export default {
       h5{
         font-size: 22px;
         font-weight: bold;
+        width: 226px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       h6{
         width: 70px;
