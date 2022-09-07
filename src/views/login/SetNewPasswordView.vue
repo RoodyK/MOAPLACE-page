@@ -63,7 +63,6 @@ export default {
     this.myId = this.$route.params.id;
   },
   mounted() {
-    document.querySelector('form').reset();
   },
   methods: {
     newPasswordCheck() {
