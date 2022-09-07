@@ -197,8 +197,10 @@
         },
 
         postInsert(){
-
-          axios.post(
+          if(this.rprice == '' || this.sPrice == '' || this.aPrice == '' || this.detailImgs.length == 0){
+            alert('공연정보를 모두 입력하세요')
+          }else{
+            axios.post(
             '/moaplace.com/admin/show/insert',
               JSON.stringify(
                 {
@@ -242,6 +244,7 @@
                 alert('공연정보를 모두 입력하세요')
               }
             })
+          }
       },
       goList(){
 
