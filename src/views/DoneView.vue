@@ -46,11 +46,15 @@
                     <span class="info_title">회차</span>
                     <span>{{rounds}}회차 {{info.schedule_time}}</span>
                   </div>
-                  <div>
-                    <span class="info_title">좌석</span>
-                    <p v-for="(seat, index) in seats" :key="index">
-                      {{seat}}
-                    </p>
+                  <div class="test">
+                    <div>
+                      <span class="info_title">좌석</span>
+                    </div>
+                    <div>
+                      <p v-for="(seat, index) in seats" :key="index">
+                        {{seat}}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -342,6 +346,15 @@ export default {
                     .info_title{
                       font-weight: bold;
                       margin-right: 16px;
+                    }
+                  }
+                  .test{
+                    display: flex;
+                    div{
+                      margin-top: 0px;
+                      p{
+                        margin-bottom: 3px;
+                      }
                     }
                   }
                 }
