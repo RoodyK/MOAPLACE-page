@@ -3,38 +3,42 @@
         <SideMenu largeCategory="게시판관리" mediumCategory="FAQ"/>
         <main id="main">
             <div class="inner">
-                <h2 class="title">FAQ 관리 > 등록 </h2>
+                <h2 class="title">FAQ 관리</h2>
 
                 <div class="info-box">
-                    <h3>등록하기</h3>
+                    <h3>수정하기</h3>
                     <div>
                         <table>
                             <tr>
                                 <th>구분</th>
                                 <td>
-                                    <select v-model="forms.sort_num">
-                                        <option value="0"> 구분 선택 </option>
+                                    <select v-model="sort_num">
+                                        <option :value="0"> 분류 선택 </option>
                                         <option v-for="sort in sort_list" :key="sort" :value="sort.sort_num">
                                         {{sort.sort_name}} 문의
                                         </option>
-                                    </select>
+                                    </select>                                    
                                 </td>
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="forms.faq_title" placeholder="등록할 자주 묻는 질문을 입력하세요." maxlength="50"></td>
+                                <td><input type="text" v-model="faq_title"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor height="300" v-model:content="forms.faq_content" contentType="html"
-                                                placeholder="자주 묻는 질문에 대한 내용을 작성하세요."/></td>
+                                <td><TextEditor height="300" 
+                                                v-model:content="faq_content" 
+                                                contentType="html"
+                                                v-if="faq_content!=''"/>
+                                </td>
                             </tr>
                         </table>
                     </div>
                 </div>
+                
                 <div class="btn-box">
                     <button @click="$router.push({name:'adminFaqList'})">목록으로</button>
-                    <button @click="checkForm()">등록하기</button>
+                    <button @click="updateFaq()">수정하기</button>
                 </div>
             </div>
         </main>
@@ -51,84 +55,67 @@ export default {
         SideMenu,
         TextEditor
     },
+    created() {
+        this.faq_num = this.$route.params.faq_num;
+        this.sortList();
+        this.faqDetail(); 
+    },
     data() {
         return {
             sort_list:[],
-            forms: {
-                    sort_num: 0,
-                    member_num: 0,
-                    faq_title: '',
-                    faq_content: ''
-            }
+            sort_num:0,
+            faq_title:'',
+            faq_content:''
         }
     },
-    created() {
-        this.pageLoad();
-    },
     methods: {
-        async pageLoad() { 
-            let token = localStorage.getItem("access_token");
-            if(token == null) return;
-        
-            const config = {
-                headers: {
-                "Authorization" : token
-                }
-            }
-            // 로그인 된 관리자 정보
-            await axios.get("/moaplace.com/users/login/member/info", config)
-                        .then(response => {
-                            let data = response.data;
-                            this.forms.member_num = data.member_num;
-                        })
-                        .catch(error => {
-                            console.log(error.message);
-                        })
-            // 구분목록
+        async sortList() {
             await axios.get('/moaplace.com/board/sort/list')
                         .then(resp => {
                             this.sort_list = resp.data;
                         })
                         .catch(error => {
                             console.log(error.message);
+                        })            
+        },           
+        async faqDetail() {
+            await axios.get("/moaplace.com/admin/faq/detail/"+this.faq_num)
+                        .then(resp => {
+                            this.sort_num = resp.data.detail.sort_num;
+                            this.faq_title = resp.data.detail.faq_title;
+                            this.faq_content = resp.data.detail.faq_content;
+                        })
+                        .catch (error => {
+                            console.log(error);
                         })
         },
-        checkForm() { 
-            // 입력 체크
-            if(this.forms.sort_num<1) {
-                alert("문의 구분을 선택하세요.");
-                return;
-            }
-            if(this.forms.faq_title==null || this.forms.faq_title==''){
-                alert("제목을 입력하세요.");
-                return;
-            }
-            if(this.forms.faq_content==null || this.forms.faq_content==''){
-                alert("내용을 입력하세요.");
-                return;
-            }
+        updateFaq() { // 수정하기
+            if(confirm('내용을 수정하시겠습니까?')){
+                let forms = {
+                    sort_num: this.sort_num,
+                    faq_num: this.faq_num,
+                    faq_title: this.faq_title,
+                    faq_content: this.faq_content
+                }
 
-            // 데이터 제출
-            this.faqInsert();
-        },
-        faqInsert(){ // 데이터 제출
-            axios.post('/moaplace.com/admin/faq/insert', JSON.stringify(this.forms),{
+                axios.post("/moaplace.com/admin/faq/update", JSON.stringify(forms),{
                     headers: {'Content-Type' : 'application/json'}
                 })
                 .then(resp => {
-                    if(resp.data!='fail'){ 
-                        alert('자주 묻는 질문이 등록되었습니다.');
+                    if(resp.data != 'fail') {
+                        alert('FAQ가 수정되었습니다.');
                         this.$router.push({name:'adminFaqList'});
 
                     } else {
-                        alert('자주 묻는 질문 등록에 실패하였습니다. 다시 시도해주세요.');
+                        alert('FAQ 수정에 실패하였습니다. 다시 시도해주세요.');
                         return
                     }
                 })
-                .catch(error => {
-                    console.log(error.message);
-                })
-        }
+                .catch (error => {
+                    console.log(error);
+                })                
+            } else return;
+        }    
     }
 }
 </script>
@@ -201,27 +188,36 @@ export default {
                         
                         select {
                             border: 1px solid rgba($black,0.3);
-                            padding: 5px 65px 5px 5px;
+                            padding: 4px 8px;
+                            width: 160px;
                         }
                         input {
                             border: 1px solid rgba($black,0.3);
-                            padding: 4px 8px;
+                            padding: 4px 12px;
                             width: 100%; 
                         }
+                        textarea {
+                            width:100%;
+                            border: 1px solid rgba($black,0.3);
+                            padding: 5px;
+                        }                        
 
                         tr {
                             td,
                             th {
+                                vertical-align: middle;
                                 padding: 8px 16px;
                                 border-bottom: 1px solid rgba($black, 0.3);
+                                white-space: pre-line;
                             }
                             th {
                                 width: 15%;
                                 background: #eee;
                                 text-align: center;
-                                vertical-align: middle;
                             }
-
+                            &:nth-child(3){
+                                height:250px;
+                            }
                         }
                     }
                 }
@@ -235,10 +231,10 @@ export default {
                     width: calc((100% - 16px) /2);
                     padding: 12px 0;
                     border: none;
-                    &:last-child {
-                        background-color: $brown;
+                    &:nth-child(2) {
+                        background-color: $black;
                         color: #fff;
-                    }
+                    }                    
                 }
             }
         }

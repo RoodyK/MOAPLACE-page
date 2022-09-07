@@ -42,7 +42,7 @@
                             </tr>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="faq_title"></td>
+                                <td><input type="text" v-model="faq_title" maxlength="50"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
@@ -57,7 +57,6 @@
                 
                 <div class="btn-box">
                     <button @click="$router.push({name:'adminFaqList'})">목록으로</button>
-                    <button @click="updateFaq()">수정하기</button>
                     <button @click="deleteFaq()">삭제하기</button>
                 </div>
             </div>
@@ -67,13 +66,11 @@
 
 <script>
 import SideMenu from '@/components/admin/SideMenu.vue'
-import TextEditor from '@/components/TextEditor.vue'
 import axios from '@/axios/axios.js'
 
 export default {
     components: {
-        SideMenu,
-        TextEditor
+        SideMenu
     },
     created() {
         this.faq_num = this.$route.params.faq_num;
@@ -83,10 +80,7 @@ export default {
     data() {
         return {
             sort_list:[],            
-            detail:[],
-            sort_num:0,
-            faq_title:'',
-            faq_content:''
+            detail:[]
         }
     },
     methods: {
@@ -103,41 +97,12 @@ export default {
             await axios.get("/moaplace.com/admin/faq/detail/"+this.faq_num)
                         .then(resp => {
                             this.detail = resp.data.detail;
-                            this.sort_num = resp.data.detail.sort_num;
-                            this.faq_title = resp.data.detail.faq_title;
-                            this.faq_content = resp.data.detail.faq_content;
-
                         })
                         .catch (error => {
                             console.log(error);
                         })
         },
-        updateFaq() { // 수정하기
-            if(confirm('내용을 수정하시겠습니까?')){
-                let forms = {
-                    sort_num: this.sort_num,
-                    faq_num: this.faq_num,
-                    faq_title: this.faq_title,
-                    faq_content: this.faq_content
-                }
 
-                axios.post("/moaplace.com/admin/faq/update", JSON.stringify(forms),{
-                    headers: {'Content-Type' : 'application/json'}
-                })
-                .then(resp => {
-                    if(resp.data != 'fail') {
-                        alert('FAQ가 수정되었습니다.')
-                        this.faqDetail();
-                    } else {
-                        alert('FAQ 수정에 실패하였습니다. 다시 시도해주세요.');
-                        return
-                    }
-                })
-                .catch (error => {
-                    console.log(error);
-                })                
-            } else return;
-        },
         deleteFaq(){ // faq 삭제
             if(confirm('해당 글을 삭제하시겠습니까?')){
                 axios.post("/moaplace.com/admin/faq/delete/"+this.faq_num)
@@ -268,14 +233,10 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 button {
-                    width: calc((100% - 16px) /3);
+                    width: calc((100% - 16px) /2);
                     padding: 12px 0;
                     border: none;
                     &:nth-child(2) {
-                        background-color: $brown;
-                        color: #fff;
-                    }
-                    &:nth-child(3) {
                         background-color: $black;
                         color: #fff;
                     }                    

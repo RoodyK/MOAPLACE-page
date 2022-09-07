@@ -68,13 +68,12 @@
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer_title">
+                                <td><input type="text" v-model="answer_title" maxlength="50">
                                 </td>
                             </tr>
                             <tr>
                                 <th>내용</th>
                                 <td><TextEditor height="300" v-model:content="answer_content" contentType="html"/></td>
-                                <!-- <td><textarea cols="120" rows="10" v-model="answer_content"></textarea></td> -->
                             </tr>
                             <tr>
                                 <th>답변메일</th>
@@ -82,24 +81,43 @@
                             </tr>
                             <tr>
                                 <th>답변일자</th>
-                                <td>{{curday()}}</td>
+                                <td>{{curday}}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
 
-                <div class="info-box" v-if="answer!=null">
+                <div class="info-box" v-else v-show="!isUpdate">
+                    <h3>답변내용</h3>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>제목</th>
+                                <td>{{answer.answer_title}}</td>
+                            </tr>
+                            <tr>
+                                <th class="content">내용</th>
+                                <td v-html="answer.answer_content"></td>
+                            </tr>
+                            <tr>
+                                <th>답변일</th>
+                                <td>{{answer.answer_regdate}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="info-box" v-if="answer!=null" v-show="isUpdate">
                     <h3>답변수정</h3>
                     <div>
                         <table>
                             <tr>
                                 <th>제목</th>
-                                <td><input type="text" v-model="answer.answer_title"></td>
+                                <td><input type="text" v-model="answer.answer_title" maxlength="50"></td>
                             </tr>
                             <tr>
                                 <th>내용</th>
-                                <td><TextEditor height="300" v-model:content="answer.answer_content" contentType="html"/></td>
-                                <!-- <td><textarea cols="120" rows="10" v-model="answer.answer_content"></textarea></td> -->
+                                <td><TextEditor height="300" v-model:content="answer.answer_content" contentType="html" v-if="answer.answer_content!=''"/></td>
                             </tr>
                             <tr>
                                 <th>답변일</th>
@@ -112,8 +130,10 @@
                 <div class="btn-box" >
                     <button @click="$router.push({name:'adminQnaList'})">목록으로</button>
                     <button @click="checkForm()" v-if="answer==null">답변등록</button>
-                    <button @click="updateAnswer()" v-if="answer!=null">답변수정</button>
-                    <button @click="deleteAnswer()">답변삭제</button>
+                    <button @click="showForm()" v-else v-show="!isUpdate">답변수정</button>
+                    <button @click="deleteAnswer()" v-show="!isUpdate">답변삭제</button>
+                    <button @click="showForm()" v-show="isUpdate">수정취소</button>
+                    <button @click="updateAnswer()" v-show="isUpdate">수정완료</button>
                     <button @click="deleteQna()">전체삭제</button>
                 </div> 
             </div>
@@ -138,22 +158,29 @@ export default {
                 '처리중',
                 '답변완료'
             ],
-            member: [],
-            detail: [],
-            answer: null,
+            member: '',
+            detail: '',
+            answer: {
+                answer_title:'',
+                answer_content:'',
+                answer_regdate:''
+            },
             answer_title:'',
             answer_content:'',
-            email:''
+            email:'',
+            isUpdate: false
         }
     },
     created() {
         this.qna_num = this.$route.params.qna_num;
         this.qnaDetail();
     },
-    methods: {
+    computed: {
         curday() { // 오늘날짜(=답변일)
             return new Date().toISOString().substring(0,10);
-        },
+        }
+    },
+    methods: {
         async qnaDetail() {
             await axios.get("/moaplace.com/admin/qna/detail/"+this.qna_num)
                         .then(resp => {
@@ -234,6 +261,13 @@ export default {
                                 console.log(error);
                             })
             } else return                           
+        },
+        showForm(){
+            if(this.isUpdate){
+                this.isUpdate = false;
+            } else {
+                this.isUpdate = true;
+            }
         },
         async updateAnswer(){ // 답변 수정
             if(confirm('답변을 수정하시겠습니까?')){
@@ -387,7 +421,7 @@ export default {
                                 vertical-align: middle;
                             }
                             .content {
-                                height: 300px;
+                                height: 360px;
                             }
                             td{
                                 vertical-align: middle;
@@ -422,16 +456,24 @@ export default {
                     width: calc((100% - 16px) /4);
                     padding: 12px 0;
                     border: none;
-                    &:nth-child(2) {
+                    &:nth-child(2) { // 답변등록 or 답변수정 (폼불러오기)
                         background-color: $brown;
                         color: #fff;
                     }
-                    &:nth-child(3) {
+                    &:nth-child(3) { // 답변삭제
                         background-color: rgba($black, 0.5);
                         color: #fff;
                     }
-                    &:nth-child(4) {
-                        background-color: $black;
+                    &:nth-child(4) { // 수정취소
+                        background-color: $brown;
+                        color: #fff;
+                    }
+                    &:nth-child(5) { // 수정완료
+                        background-color: rgba($black, 0.5);
+                        color: #fff;
+                    }
+                    &:nth-child(6) { // 전체삭제
+                        background-color: $black;   
                         color: #fff;
                     }
                 }

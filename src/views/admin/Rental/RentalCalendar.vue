@@ -349,10 +349,17 @@
                                     color: #2c88d9;
                                 }
                                 .round{
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    width: 24px;
+                                    height: 24px;
                                     padding: 4px;
                                     border-radius: 50%;
                                     background: rgba($black, 1);
                                     color: #fff;
+                                    font-size: 14px;
+                                    font-weight: 100;
                                 }
                                 ul{
                                   margin-top:8px;

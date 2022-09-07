@@ -257,13 +257,6 @@ export default {
         alert("결제 방법을 선택해주세요");
       } else {
         console.log(this.pay_method);
-        // console.log("===============버튼 클릭 시================");
-        // console.log("schedule_num:", this.schedule_num);
-        // console.log("booking_seat:", this.booking_seats);
-        // console.log("all_seats:", this.all_seats);
-        // console.log("tot_count", this.tot_count);
-        // console.log("ticket", this.tickets);
-        // console.log("==========================================");
         let booking = {
           booking_num: 0,
           member_num: this.member_num,
@@ -278,34 +271,30 @@ export default {
         let show_num = this.show_num;
         let member_num = this.member_num;
 
+
         localStorage.setItem("booking", JSON.stringify(booking));
         localStorage.setItem("ticket", JSON.stringify(ticket));
         localStorage.setItem("all_seat", JSON.stringify(all_seat));
         localStorage.setItem("show_num", JSON.stringify(show_num));
         localStorage.setItem("member_num", JSON.stringify(member_num));
 
-        IMP.init("imp49001285");
-        IMP.request_pay(
-          {
-            // param
-            pg: "html5_inicis",
-            pay_method: this.pay_method,
-            merchant_uid: "merchant_" + new Date().getTime(),
-            name: "모아플레이스",
-            buyer_name: this.username,
-            amount: "1000",
-            // amount: this.tot,
-            buyer_email: this.email,
-          },
-          function (resp) {
-            // callback
-            console.log(resp);
-            if (resp.success) {
-              // console.log("pay_method", resp.pay_method);
-              // console.log("merchant_uid", resp.merchant_uid);
-              // console.log("paid_amount", resp.paid_amount);
-              // console.log("apply_num", resp.apply_num);
-              // console.log("tot_count", resp.paid_amount);
+
+      IMP.init("imp49001285");
+      IMP.request_pay(
+        {
+          // param
+          pg: "html5_inicis",
+          pay_method: this.pay_method,
+          merchant_uid: "merchant_" + new Date().getTime(),
+          name: "모아플레이스",
+          buyer_name: this.username,
+          amount: this.tot,
+          buyer_email: this.email,
+        },
+        function (resp) {
+          // callback
+          console.log(resp);
+          if (resp.success) {
 
               var payment = {
                 imp_uid: resp.imp_uid,
@@ -319,27 +308,6 @@ export default {
               all_seat = JSON.parse(localStorage.getItem("all_seat"));
               show_num = JSON.parse(localStorage.getItem("show_num"));
               member_num = JSON.parse(localStorage.getItem("member_num"));
-              // booking = localStorage.getItem("booking");
-              // ticket = localStorage.getItem("ticket");
-              // all_seat = localStorage.getItem("all_seat");
-              // show_num = localStorage.getItem("show_num");
-              // member_num = localStorage.getItem("member_num");
-              // console.log("==========================================");
-              // console.log("ticket :", ticket);
-              // console.log("show_num:", show_num);
-              // console.log("member_num:", member_num);
-              // console.log("booking:", booking);
-              // console.log("payment:", payment);
-              // console.log("all_seat:", all_seat);
-              // console.log("===============결제 성공==============");
-
-              // let formData = new FormData();
-              // formData.append("booking", booking);
-              // formData.append("ticket", ticket);
-              // formData.append("payment", payment);
-              // formData.append("all_seat", all_seat);
-              // formData.append("member_num", member_num);
-              // formData.append("show_num", show_num);
 
               let data = {
                 booking: booking,
