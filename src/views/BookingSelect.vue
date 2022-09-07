@@ -181,7 +181,7 @@ export default {
     getTerm() {
       let termTo =
         new Date(this.endDate).getTime() - new Date().getTime();
-      return Math.ceil(termTo / 86400000); 
+      return Math.round(termTo / 86400000); 
     },
     
     //가져온 날짜 데이터 이용하여 요일, 날짜 배열에 저장
