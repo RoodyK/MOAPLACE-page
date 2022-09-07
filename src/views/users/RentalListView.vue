@@ -30,7 +30,7 @@
             </div>
             <div>
               <input type="date" class="mydate" name="startday" v-model="startdate"> - <input type="date" class="mydate" name="endday" v-model="enddate">
-              <button class="btn mybtn resultbtn" @click="getList()">조회</button>
+              <button class="btn mybtn resultbtn" @click="clickSelect()">조회</button>
             </div>
           </div>
           <!-- 내역 -->
@@ -291,7 +291,12 @@ export default {
       this.pageNum = move;
       // console.log(this.pageNum);
       this.getList();
-    }
+    },
+
+    clickSelect() {
+      this.pageNum = 1;
+      this.getList();
+    },
     
   }
 }
