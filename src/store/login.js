@@ -149,10 +149,10 @@ export default {
 
       commit('loginState');
     },
-    async logout({commit}) {
+    logout({commit}) {
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
-      await commit('logout');
+      commit('logout');
       router.push("/moaplace.com");
     },
     

@@ -496,7 +496,7 @@ router.beforeEach( (to, from, next) => {
   let role = localStorage.getItem('user');
 
   if(to.path.includes('mypage') || to.path.includes('booking') 
-    || to.path.includes('/board/qna') || to.path.includes('/rental/insert')) {
+    || to.path.includes('/board/qna') || to.path.includes('/rental/insert') || to.path.includes('/join')) {
     if(token == null) {
       alert('로그인 후 이용 가능합니다.');
       next('/moaplace.com/users/login');

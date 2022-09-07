@@ -53,7 +53,13 @@ export default {
     axios.get(`/moaplace.com/admin/show/chart/2000-02-02/2040-08-06`)
       .then(response => {
         this.chartDataUpdate(response.data);
-      })
+      });
+
+    const date = new Date();
+    const years = date.getFullYear();
+    const months = date.getMonth()+1;
+    const days = date.getDate();
+    this.fromDate = `${years}-${months < 10 ? `0${months}` : months}-${days < 10 ? `0${days}` : days}`;
   },
   data() {
     return {
@@ -127,8 +133,8 @@ export default {
     },
     callAxios() {
       const url = this.fromDate == '' || this.toDate == ''
-        ? `/moaplace.com/admin/rental/chart/2000-02-02/2040-08-06`
-        : `/moaplace.com/admin/rental/chart/${this.fromDate}/${this.toDate}`
+        ? `/moaplace.com/admin/show/chart/2000-02-02/2040-08-06`
+        : `/moaplace.com/admin/show/chart/${this.fromDate}/${this.toDate}`
 
       axios.get(url)
       .then(response => {

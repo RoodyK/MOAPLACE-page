@@ -1,6 +1,6 @@
 import axios from "axios"
 import router from "@/router/index.js"
-import store from "@/store/index.js"
+// import store from "@/store/index.js"
 
 const instance = axios.create({
   baseURL: "http://localhost:9090",
@@ -21,11 +21,13 @@ instance.interceptors.request.use(function(config) {
 instance.interceptors.response.use(function(response) {
   return response;
 
-}, function(error) {
+}, (error) => {
   if(error.response.status === 401) {
     alert('로그인 시간이 만료되었습니다.');
-    store.dispatch("login/logout");
-    router.push("/moaplace.com/users/login");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    
+    return router.push("/moaplace.com/users/login");
   }
   return Promise.reject(error);
 })
