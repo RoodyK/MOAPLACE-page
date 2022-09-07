@@ -174,7 +174,7 @@ export default {
       window.print();
     },
     cancle() {
-      this.$router.push("/moaplace.com/users/mypage/ticket/detail/" + this.booking_num);
+      this.$router.push("/moaplace.com/users/mypage");
     },
     //모달창 종료
     closeModal(){
