@@ -13,7 +13,7 @@
                   </div>
                     <div class="search-list">
                       <select v-model="selectField">
-                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field" @change="selectStatus">{{item.fieldName}}</option>
+                        <option v-for="(item,index) in fieldList" :key="index" :value="item.field">{{item.fieldName}}</option>
                       </select>
                       <input type="text" :value="search" placeholder="검색어를 입력하세요.">
                       <button @click="inputSearch($event)">
@@ -172,7 +172,6 @@
 
               updateDetail(num){
 
-                console.log("업데이트넘",num)
                 this.$router.push(
                   {
                     name:'adminHallUpdate',

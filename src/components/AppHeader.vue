@@ -98,7 +98,7 @@ export default {
       },
     ];
     let roles = localStorage.getItem("user");
-    if(roles == 'special') {
+    if(roles == 'redm') {
       this.topMenu.push({
           name: 'ADMIN',
           href: '/moaplace.com/admin/rental/list'

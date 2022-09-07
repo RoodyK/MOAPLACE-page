@@ -14,6 +14,11 @@
                         </div>
                     </div>
                     <div class="right-side">
+                        <ul class="loading" :class="{done : isLoading == false}">
+                            <li v-for="index in 3" :key="index">
+                                <div class="loader loader-5"></div>
+                            </li>
+                        </ul>
                         <div 
                             class="empty-list"
                             v-if="slideExist == false">
@@ -103,7 +108,8 @@
                 slide_width:0, //ul 전체 넓이
                 // 새소식
                 newsExist: false,
-                newsList:[]
+                newsList:[],
+                isLoading: true,
             }
         },
         created(){
@@ -201,6 +207,7 @@
                         }else{
                             this.slideExist = false;
                         }
+                        this.isLoading = false;
                     }
                     .bind(this)
                     );
@@ -304,7 +311,7 @@
                     .right-side{
                         height: 351px;
                         overflow: hidden;
-                        .slide-box{
+                        .slide-box, .loading{
                             height: 100%;
                             position: relative;
                             display: flex;
@@ -327,7 +334,74 @@
                                 }
                             }
                         }
-                    }
+                        .loading{
+                            opacity: 1;
+                            transition: all 0.5s;
+                            height: 100%;
+                            &.done{
+                                opacity: 0;
+                                visibility: hidden;
+                                height: 0;
+                            }
+                            li{
+                                width: 246px;
+                                position: unset;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                .loader {
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 50%;
+                                    margin: 3em;
+                                    display: inline-block;
+                                    position: relative;
+                                    vertical-align: middle;
+                                }
+                                .loader,
+                                .loader:before,
+                                .loader:after {
+                                    animation: 2s infinite ease-in-out;
+                                }
+                                .loader:before,
+                                .loader:after {
+                                    width: 100%; 
+                                    height: 100%;
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                }
+
+                                .loader-5 {
+                                    animation: loader6-1 1.5s infinite linear;
+                                }
+                                .loader-5:before,
+                                .loader-5:after {
+                                    content:'';
+                                    margin: -25px 0 0 -25px;
+                                    top: 50%;
+                                    left: 50%;
+                                    background-color: rgba(30,30,30,0.5);
+                                    animation-name: loader6-2;
+                                }
+                                .loader-5:after { animation-direction: reverse; }
+
+                                    @keyframes loader6-1 {
+                                        0% {   transform: rotate(0deg); }
+                                        100% { transform: rotate(360deg); }
+                                    }
+
+                                    @keyframes loader6-2 {
+                                        0%   { transform: scale(0.2); left:   0%; }
+                                        50%  { transform: scale(1.0); left:  50%; }
+                                        100% { transform: scale(0.2); left: 100%; }
+                                    }
+
+
+                            }
+                        }
+                    }    
                     
 
                 }

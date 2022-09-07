@@ -5,31 +5,55 @@
     <div id="wrap">
       <div id="main" class="containers">
         <div id="img">
-          <img src="../../assets/smile.jpg">
+          <img :src="detail.show_thumbnail">
         </div>
         <div class="info_box">
           <div id="info">
-            <h4>웃는남자</h4>
+            <h4>{{detail.show_name}}</h4>
             <div>
-              <span>기간</span> 2022.06.10 (금) ~ 2022.08.22 (월)
+              <span class="category">기간</span> 
+              <span>
+                {{start_date}} ~ {{end_date}}
+              </span>
+            </div>
+            <div v-if="detail.hall_num==1">
+              <span class="category">장소</span> 
+              <span>모던홀</span>
+            </div>
+            <div v-else-if="detail.hall_num==2">
+              <span class="category">장소</span> 
+              <span>오케스트라홀</span>
+            </div>
+            <div v-else-if="detail.hall_num==3">
+              <span class="category">장소</span> 
+              <span>아트홀</span>
             </div>
             <div>
-              <span>장소</span> 오케스트라홀
+              <span class="category">시간</span>
+              <span v-for="s, index in schedule" :key="index">
+                {{s.schedule_date.substring(5)}} {{s.schedule_time}} &nbsp;&nbsp;
+              </span>
             </div>
             <div>
-              <span>시간</span> 오케스트라홀
+              <span class="category">연령</span> 
+              <span>{{detail.show_age}}</span>
             </div>
             <div>
-              <span>연령</span> 전체연령가
-            </div>
-            <div>
-              <span>티켓</span> R석 150,000원 / S석 120,000원 / A석 100,000원
+              <span class="category">티켓</span>
+              <span v-for="g, index in grade" :key="index">
+                <span v-if="index!=0"> / </span>{{g.grade_seat}}석 {{g.grade_price}}원
+              </span>
             </div>
           </div>
-          <div id="mybtn">
-            <button>관심공연</button>
-            <button>잔여석정보</button>
-            <button>예매하기</button>
+          <div id="mybtn" v-if="login_chk==null">
+            <button @click="this.$router.push({path: '/moaplace.com/users/login'})">관심공연</button>
+            <button v-if="check" @click="residualseats">잔여석정보</button>
+            <button v-if="check" @click="this.$router.push({path: '/moaplace.com/users/login'})">예매하기</button>
+          </div>
+          <div id="mybtn" v-else>
+            <button @click="favorite">관심공연</button>
+            <button v-if="check" @click="residualseats">잔여석정보</button>
+            <button v-if="check" @click="this.$router.push({path: `/moaplace.com/booking/select/${detail.show_num}`})">예매하기</button>
           </div>
         </div>
       </div>
@@ -91,6 +115,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SideVisual from '@/components/SideVisual.vue'
+import axios from '@/axios/axios.js'
 
 export default {
   name:"ShowRefundView",
@@ -98,6 +123,133 @@ export default {
     AppHeader,
     AppFooter,
     SideVisual
+  },
+  data(){
+    return{
+      detail:[],
+      schedule:[],
+      grade:[],
+      detailimg:[],
+
+      start_date:'',
+      end_date:'',
+      
+      check:false,
+      login_chk:null,
+      
+      favorite_show:{
+        show_num:0,
+        member_num: 0
+      }
+    }
+  },
+  created(){
+    this.data();
+    this.memberinfo();
+  },
+  methods: {
+    data(){
+      let show_num=this.$route.params.show_num;
+      axios.get(`/moaplace.com/show/showdetail/${show_num}`)
+        .then((resp) => {
+          this.detail = resp.data.detail[0];
+          this.schedule = resp.data.schedule;
+          this.grade = resp.data.grade;
+          this.detailimg = resp.data.detailimg;
+
+          let show_start = new Date(resp.data.detail[0].show_start);
+          let show_end = new Date(resp.data.detail[0].show_end);
+
+          let days=["일", "월", "화", "수", "목", "금", "토"];
+
+          let show_day1 = new Date(show_start).getDay();
+          let show_day2 = new Date(show_end).getDay();
+          
+          let start_day=days[show_day1];
+          let end_day=days[show_day2];
+
+          this.start_date = `${show_start.getFullYear()}.
+            ${new Date(show_start).getMonth()+1 < 10 ? `0${new Date(show_start).getMonth()+1}` : new Date(show_start).getMonth()+1}
+            .${new Date(show_start).getDate() < 10 ? `0${new Date(show_start).getDate()}` : new Date(show_start).getDate()}
+            (${start_day})`;
+          
+          this.end_date = `${show_end.getFullYear()}.
+            ${new Date(show_end).getMonth()+1 < 10 ? `0${new Date(show_end).getMonth()+1}` : new Date(show_end).getMonth()+1}
+            .${new Date(show_end).getDate() < 10 ? `0${new Date(show_end).getDate()}` : new Date(show_end).getDate()}
+            (${end_day})`;
+
+          let price_comma=[];
+          for(let i=0; i<resp.data.grade.length; i++) {
+            price_comma[i] = this.numberWithCommas(resp.data.grade[i].grade_price);
+            this.grade[i].grade_price = price_comma[i];
+          }
+
+          if(resp.data.detail[0].show_check == "Y" && resp.data.detail[0].show_end >= new Date() && resp.data.schedule.length != 0) {
+            this.check = true;
+          }
+
+          this.favorite_show.show_num = resp.data.detail[0].show_num;
+        }
+      )
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    memberinfo() {
+      let token = localStorage.getItem("access_token");
+      if(token == null) return;
+      this.login_chk = token;
+
+      axios.get("/moaplace.com/users/login/member/info")
+      .then(response => {
+        let data = response.data;
+        // const info = {
+        //   num: data.member_num,
+        //   id: data.member_id,
+        //   pwd: data.member_pwd,
+        //   email: data.member_email,
+        //   name: data.member_name,
+        //   gender: data.member_gender,
+        //   phone: data.member_gender,
+        //   address: data.member_address,
+        //   point: data.member_point
+        // }
+        this.favorite_show.member_num = data.member_num;
+        // console.log(data);
+        // console.log(info);
+      })
+      .catch(error => {
+        console.log(error.message);
+      })
+    },
+    favorite(){
+      axios.post('/moaplace.com/show/inter/insert', JSON.stringify(this.favorite_show),{
+        headers: {'Content-Type' : 'application/json'}
+      })
+      .then(resp => {
+        if(resp.data!='fail'){ 
+          console.log(resp.data);
+          if(confirm("관심공연으로 등록하시겠습니까?") == true) {
+            alert('관심공연으로 등록되었습니다.');
+          }else {
+            return;
+          }
+        }else {
+          alert('이미 등록된 공연입니다.');
+          return
+        }
+      }).catch(error => {
+        console.log(error.message);
+      })
+    },
+    residualseats(){
+      window.open(
+        "/moaplace.com/show/residualseats/" + this.$route.params.show_num,
+        "잔여석 정보",
+        "width=1000, height=700",
+        "_blank"
+      );
+    }
   }
 }
 </script>
@@ -163,22 +315,22 @@ export default {
     #info{
       div{
         border-bottom: 1px solid rgba($black, 0.2);
-        span{
+        .category{
           font-weight: bold;
           margin-right: 16px;
         }
       }
       h4{
-        font-size: 40px;
+        font-size: 32px;
         font-weight: bold;
         color: $black;
       }
       color: $black;
-      font-size: 22px;
-      line-height: 60px;
+      font-size: 16px;
+      line-height: 52px;
     }
     #mybtn{
-      margin-top: 41px;
+      margin-top: 40px;
       display: flex;
       justify-content: space-between;
       button{

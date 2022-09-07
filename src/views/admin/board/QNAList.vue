@@ -124,9 +124,7 @@ export default {
         if(this.$route.params.keyword) {
             this.keyword = this.$route.params.keyword;
             this.field = this.$route.params.field;
-        }
-        console.log(this.pageNum, this.field, this.keyword);
-            
+        }            
         this.sortList(); 
         this.qnaList();
     },
@@ -180,18 +178,14 @@ export default {
             } 
             this.pageNum = 1;
             this.keyword = this.newKeyword; // 검색어 변경
-            console.log(this.field, this.keyword, this.sort_num);
             this.qnaList();
         },
         filterList(){
             this.pageNum = 1;
-            console.log(this.sort_num);
-
             this.faqList();
         },        
         movePage(move){
             this.pageNum = move;
-            console.log(this.pageNum);
             this.qnaList();
         },
         async changeState(change, num){

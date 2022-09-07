@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">기타 요청사항</th>
-                  <td class="desctd">{{ dto.rental_content }}</td>
+                  <td class="desctd mycontent">{{ dto.rental_content }}</td>
                 </tr>
                 <tr>
                   <th class="col-md-2 text-center descth">진행상태</th>
@@ -94,8 +94,7 @@
             <span class="fs-5 fw-bold">답변</span>
           </div>
           <div class="titledesc">
-            <p class="desctxt fs-7" v-show="answer">
-              {{ dto.answer_content }}
+            <p class="desctxt fs-7" v-html="dto.answer_content" v-show="answer">
             </p>
             <p class="desctxt fs-7" v-show="!answer">
               관리자의 답변이 등록되지 않았습니다.
@@ -174,7 +173,7 @@ export default {
       // console.log(info);
 
       this.member = info;
-      console.log("회원 정보 : ",this.member);
+      // console.log("회원 정보 : ",this.member);
 
       // 적립금 천단위 콤마형식으로 변환
       var point = this.member.point;
@@ -195,7 +194,7 @@ export default {
         await axios.get('/moaplace.com/users/mypage/rental/detail/'
           + this.rental_num
         ).then(function(resp){
-          console.log(resp);
+          // console.log(resp);
           if(resp.status == 200) {
 
             this.dto = resp.data.dto;
@@ -205,12 +204,12 @@ export default {
               this.answer = true;
             }
             // 대관취소 가능 여부 체크
-            console.log(this.dto.rental_state);
-            console.log("전",this.cancle);
+            // console.log(this.dto.rental_state);
+            // console.log("전",this.cancle);
             if(this.dto.rental_state != '예약취소' && this.dto.rental_state != '사용완료') {
               this.cancle = true;
             }
-            console.log("후",this.cancle);
+            // console.log("후",this.cancle);
 
             var regdate = new Date(this.dto.regdate);
             this.dto.regdate = regdate.getFullYear() + "-" + ("0" + (regdate.getMonth() + 1)).slice(-2) + "-" + ("0" + regdate.getDate()).slice(-2);
@@ -229,7 +228,7 @@ export default {
     },
 
     download(rental_num) {
-      console.log("대관예약번호 : ", rental_num);
+      // console.log("대관예약번호 : ", rental_num);
       window.location = `http://localhost:9090/moaplace.com/users/mypage/file/download/${rental_num}`;
     },
 
@@ -351,6 +350,9 @@ export default {
         }
       }
       .table {
+        .mycontent {
+          white-space: pre-line
+        }
         th.col {
           background-color: $brown;
           color: white;
@@ -400,6 +402,7 @@ export default {
         .descth {
           border: 1px solid #dbe2e8;
           background-color: rgb(249, 249, 249);
+          vertical-align: middle;
         }
         .desctd {
           border: 1px solid #dbe2e8;
