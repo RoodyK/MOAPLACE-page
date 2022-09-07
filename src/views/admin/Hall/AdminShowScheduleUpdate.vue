@@ -141,12 +141,33 @@
 
         methods:{
           addRow(){
+            let showTerm = this.runningTime+this.intermission;
+            let oldTime = new Date(this.showDate + " "+ this.timeInfo[this.timeInfo.length-1].dateTime).getTime()
+            let newTime = new Date(this.showDate + " "+ this.addTime).getTime()
             
-            this.addTimeInfo.push({
+            if(this.addTime < this.timeInfo[this.timeInfo.length-1].dateTime){
+              alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+              this.addTime = ''
+            }else if(newTime < oldTime+(showTerm*1000*60)){
+              alert("이전 공연이 진행중인 시간은 선택할 수 없습니다.")
+              this.addTime=""
+            }else if(this.addTimeInfo.length!=0 && this.addTime < this.addTimeInfo[this.addTimeInfo.length-1].dateTime){
+              alert('전 회차보다 빠른 시간은 선택할 수 없습니다')
+              this.addTime = ''
+            }else if(this.addTimeInfo.length!=0){
+              let newAddTime = new Date(this.showDate + " "+ this.addTimeInfo[this.addTimeInfo.length-1].dateTime).getTime()
+              if(newTime < newAddTime+(showTerm*1000*60)){
+                alert("이전 공연이 진행중인 시간은 선택할 수 없습니다.")
+                this.addTime= ''
+              }
+            }else{
+              this.addTimeInfo.push({
               dateTime : this.addTime,
               dateStatus : this.addStatus,
               timeRow : this.timeInfo.length+this.addTimeInfo.length+1,
               scheduleNum : 0})
+            }
+            
               this.addTime = '';
           },
           updateYN(i,e){
