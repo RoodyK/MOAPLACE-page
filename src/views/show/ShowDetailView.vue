@@ -117,8 +117,8 @@ export default {
     }
   },
   created(){
-    this.data();
     this.memberinfo();
+    this.data();
     this.show_num = this.$route.params.show_num;
 
     //모달창 종료
@@ -184,7 +184,6 @@ export default {
 
       axios.get("/moaplace.com/users/login/member/info")
       .then(response => {
-        console.log(data);
         let data = response.data;
         this.favorite_show.member_num = data.member_num;
       })
@@ -269,6 +268,7 @@ export default {
     padding-top: 50px;
     img{
       width: 320px;
+      height: 100%;
       box-shadow: 3px 7px 21px rgb(0 0 0 / 13%);
     }
     button{

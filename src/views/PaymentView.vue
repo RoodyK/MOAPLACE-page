@@ -271,31 +271,30 @@ export default {
         let show_num = this.show_num;
         let member_num = this.member_num;
 
-
         localStorage.setItem("booking", JSON.stringify(booking));
         localStorage.setItem("ticket", JSON.stringify(ticket));
         localStorage.setItem("all_seat", JSON.stringify(all_seat));
         localStorage.setItem("show_num", JSON.stringify(show_num));
         localStorage.setItem("member_num", JSON.stringify(member_num));
 
+        // let env = "" + process.env.VUE_APP_IMPORT_INIT;
 
-      IMP.init("imp49001285");
-      IMP.request_pay(
-        {
-          // param
-          pg: "html5_inicis",
-          pay_method: this.pay_method,
-          merchant_uid: "merchant_" + new Date().getTime(),
-          name: "모아플레이스",
-          buyer_name: this.username,
-          amount: this.tot,
-          buyer_email: this.email,
-        },
-        function (resp) {
-          // callback
-          console.log(resp);
-          if (resp.success) {
-
+        IMP.init(process.env.VUE_APP_IMPORT_INIT);
+        IMP.request_pay(
+          {
+            // param
+            pg: "html5_inicis",
+            pay_method: this.pay_method,
+            merchant_uid: "merchant_" + new Date().getTime(),
+            name: "모아플레이스",
+            buyer_name: this.username,
+            amount: this.tot,
+            buyer_email: this.email,
+          },
+          function (resp) {
+            // callback
+            console.log(resp);
+            if (resp.success) {
               var payment = {
                 imp_uid: resp.imp_uid,
                 merchant_uid: resp.merchant_uid,

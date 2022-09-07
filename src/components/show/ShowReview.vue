@@ -9,7 +9,7 @@
           <span class="star">
             ★★★★★
             <span>★★★★★</span>
-            <input type="range" @input="drawStar($event)" v-model="review_insert.review_grade" step="1" min="1" max="10">
+            <input type="range" @input="drawStar($event)" v-model="review_insert.review_grade" step="1" min="1" max="5">
           </span>
         </div>  
         <div class="write_text">
@@ -29,41 +29,21 @@
       <div class="list_score">
         <span class="star" v-if="rl.review_grade==1">
           ★★★★★
-          <span style="width: 10%">★★★★★</span>
+          <span style="width: 20%">★★★★★</span>
         </span>
         <span class="star" v-else-if="rl.review_grade==2">
           ★★★★★
-          <span style="width: 20%">★★★★★</span>
+          <span style="width: 40%">★★★★★</span>
         </span>
         <span class="star" v-else-if="rl.review_grade==3">
           ★★★★★
-          <span style="width: 30%">★★★★★</span>
+          <span style="width: 60%">★★★★★</span>
         </span>
         <span class="star" v-else-if="rl.review_grade==4">
           ★★★★★
-          <span style="width: 40%">★★★★★</span>
-        </span>
-        <span class="star" v-else-if="rl.review_grade==5">
-          ★★★★★
-          <span style="width: 50%">★★★★★</span>
-        </span>
-        <span class="star" v-else-if="rl.review_grade==6">
-          ★★★★★
-          <span style="width: 60%">★★★★★</span>
-        </span>
-        <span class="star" v-else-if="rl.review_grade==7">
-          ★★★★★
-          <span style="width: 70%">★★★★★</span>
-        </span>
-        <span class="star" v-else-if="rl.review_grade==8">
-          ★★★★★
           <span style="width: 80%">★★★★★</span>
         </span>
-        <span class="star" v-else-if="rl.review_grade==9">
-          ★★★★★
-          <span style="width: 90%">★★★★★</span>
-        </span>
-        <span class="star" v-else-if="rl.review_grade==10">
+        <span class="star" v-else-if="rl.review_grade==5">
           ★★★★★
           <span style="width: 100%">★★★★★</span>
         </span>
@@ -123,7 +103,7 @@
                   <span class="star">
                     ★★★★★
                     <span id="edit_star">★★★★★</span>
-                    <input type="range" @input="edit_drawStar($event)" v-model="review_edit.review_grade" step="1" min="1" max="10">
+                    <input type="range" @input="edit_drawStar($event)" v-model="review_edit.review_grade" step="1" min="1" max="5">
                   </span>
                 </div>  
                 <div class="write_text">
@@ -242,10 +222,10 @@
         })
       },
       drawStar(e) {
-        document.querySelector(`.star span`).style.width = `${e.target.value * 10}%`;
+        document.querySelector(`.star span`).style.width = `${e.target.value * 20}%`;
       },
       edit_drawStar(e) {
-        document.querySelector(`#edit_star`).style.width = `${e.target.value * 10}%`;
+        document.querySelector(`#edit_star`).style.width = `${e.target.value * 20}%`;
       },
       limit() {
         if(this.rbyte>1000){
@@ -345,7 +325,7 @@
         .then((resp) => {
             this.review_edit.review_content = resp.data.review_content;
             this.review_edit.review_grade = resp.data.review_grade;
-            document.querySelector(`#edit_star`).style.width = `${resp.data.review_grade * 10}%`;
+            document.querySelector(`#edit_star`).style.width = `${resp.data.review_grade * 20}%`;
           }
         )
       },
