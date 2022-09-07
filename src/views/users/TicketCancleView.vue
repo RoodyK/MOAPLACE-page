@@ -81,7 +81,7 @@
             <span>비밀번호 입력 :</span><input type="password" class="form-control" v-model="pwd">
           </div>
           <div class="text-center btnmargin">
-            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn">이전</button>
+            <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn" @click.prevent="revert()">이전</button>
             <button type="button" class="btn btn-outline-secondary fs-6 fw-bold mybtn2" @click.prevent="cancleOk()">예매취소</button>
           </div>
           <div class="desc">
@@ -278,7 +278,12 @@ export default {
         }
       });
 
-    }
+    },
+
+    // 이전 = 상세내역 페이지로 이동
+    revert() {
+      this.$router.push("/moaplace.com/users/mypage/ticket/detail/"+this.booking_num);
+    },
 
   }
 }
