@@ -8,7 +8,7 @@
           <RouterLink :to="`/moaplace.com/booking/done/${info.show_num}`">예매 다시하기</RouterLink>
         </button>
         <h1 class="title">예매완료</h1>
-        <button class="right">
+        <button type="button" class="right" @click="closeModal()">
           <span>창닫기</span>
           <i class="material-symbols-outlined">close</i>
         </button>
@@ -48,44 +48,9 @@
                   </div>
                   <div>
                     <span class="info_title">좌석</span>
-                    <span v-for="(seat, index) in seats" :key="index">
-                      <p v-if="info.hall_name == '아트홀'">
-                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B'">
-                          R석
-                        </span>
-                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E'">
-                          S석
-                        </span>
-                        <span v-if="seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H'">
-                          A석
-                        </span>
-                        {{seat}}
-                      </p>
-                      <p v-if="info.hall_name == '오케스트라홀'">
-                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B'">
-                          R석
-                        </span>
-                        <span v-if="seat.charAt() == 'C' || seat.charAt() == 'D' || seat.charAt() == 'E'">
-                          S석
-                        </span>
-                        <span v-if="seat.charAt() == 'F' || seat.charAt() == 'G' || seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J'">
-                          A석
-                        </span>
-                        {{seat}}
-                      </p>
-                      <p v-if="info.hall_name == '모던홀'">
-                        <span v-if="seat.charAt() == 'A' || seat.charAt() == 'B' || seat.charAt() == 'C'">
-                          R석
-                        </span>
-                        <span v-if="seat.charAt() == 'D' || seat.charAt() == 'E' || seat.charAt() == 'F' || seat.charAt() == 'G' ">
-                          S석
-                        </span>
-                        <span v-if="seat.charAt() == 'H' || seat.charAt() == 'I' || seat.charAt() == 'J' || seat.charAt() == 'K' || seat.charAt() == 'L'">
-                          A석
-                        </span>
-                        {{seat}}
-                      </p>
-                    </span>
+                    <p v-for="(seat, index) in seats" :key="index">
+                      {{seat}}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -235,7 +200,16 @@ export default {
           alert('비밀번호가 일치하지 않습니다.');
         }
       });
-
+    },
+    //모달창 종료
+    closeModal(){
+    // 자식창에서 부모창으로 함수 호출 ( 데이터 전달 )
+      window.parent.postMessage(
+      // 전달할 data (부모창에서 호출할 함수명)
+      { functionName : 'closeShow' }
+      // 부모창의 도메인
+      , 'http://localhost:8080/moaplace.com/'
+      );				
     }
   }
 }

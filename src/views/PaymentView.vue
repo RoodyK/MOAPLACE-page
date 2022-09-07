@@ -262,7 +262,7 @@ export default {
           member_num: this.member_num,
           schedule_num: this.schedule_num,
           booking_count: this.tot_count,
-          booking_price: this.tot,
+          booking_price: this.total,
           booking_seat: this.booking_seats,
           use_point: this.upoint,
         };

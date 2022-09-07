@@ -5,11 +5,6 @@
             <div class="inner">
                 <h2 class="title">일정정보 - 일정상세</h2>
 
-                <div class="btnUpBox">
-                  <button>삭제</button>
-                  <button @click="updateDetail(detailInfo.num,detailInfo.showDate)">수정</button>
-                </div>
-
                 <div class="titleBox">
                     <span>공연번호</span>
                     <input type="text" v-model="detailInfo.num" readonly>

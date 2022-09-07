@@ -86,7 +86,7 @@
 
 <script>
 import axios from "@/axios/axios.js"
-import orgAxios from "axios";
+import orgAxios from "axios"
 import JoinOrder from "@/components/join/JoinOrder.vue"
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'

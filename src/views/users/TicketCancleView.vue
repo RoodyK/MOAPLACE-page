@@ -222,10 +222,10 @@ export default {
                 var schedule_date = new Date(this.dto.schedule_date);
                 this.dto.schedule_date = schedule_date.getFullYear() + "-" + ("0" + (schedule_date.getMonth() + 1)).slice(-2) + "-" + ("0" + schedule_date.getDate()).slice(-2);
 
-                this.amount = this.dto.booking_price;
-                var price = this.dto.booking_price;
-                this.dto.booking_price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-              
+                let n = resp.data.dto.booking_price - resp.data.dto.use_point;
+                this.amount = n;
+                this.dto.booking_price = n.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+   
               } else {
                 alert('잘못된 접근입니다. (취소 불가능한 예매내역에 접근)');
                 this.$router.push('/moaplace.com/');

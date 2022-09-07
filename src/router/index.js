@@ -19,8 +19,6 @@ import moaplaceMoaDetail from '../views/moaplace/MoaDetail.vue'
 import moaCalender from '@/views/calendar/Calendar.vue'
 import preview from '@/views/show/PreView.vue'
 import showDetail from '@/views/show/ShowDetailView.vue'
-import reviewList from '@/views/show/ReviewListView.vue'
-import showRefund from '@/views/show/ShowRefundView.vue'
 import residualseats from '@/views/show/ResidualSeatsView.vue'
 import RentalInsertView from '../views/rental/RentalInsertView.vue'
 import RentalInfoView from '../views/rental/RentalInfoView.vue'
@@ -182,16 +180,6 @@ const routes = [
     path: '/moaplace.com/show/showdetail/:show_num',
     name: 'showdetail',
     component: showDetail
-  },
-  {
-    path: '/moaplace.com/show/review/list/:show_num',
-    name: 'reviewlist',
-    component: reviewList
-  },
-  {
-    path: '/moaplace.com/show/showrefund/:show_num',
-    name: 'showrefund',
-    component: showRefund
   },
 
   // 잔여석
@@ -502,7 +490,7 @@ router.beforeEach( (to, from, next) => {
   let role = localStorage.getItem('user');
 
   if(to.path.includes('mypage') || to.path.includes('booking') 
-    || to.path.includes('/board/qna') || to.path.includes('/rental/insert') || to.path.includes('/join')) {
+    || to.path.includes('/board/qna') || to.path.includes('/rental/insert')) {
     if(token == null) {
       alert('로그인 후 이용 가능합니다.');
       next('/moaplace.com/users/login');

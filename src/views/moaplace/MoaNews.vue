@@ -181,6 +181,7 @@ export default {
         this.getList();
         alert("검색어를 검색해주세요");
       } else {
+        
         this.isSearch = true;
         axios
           .get(

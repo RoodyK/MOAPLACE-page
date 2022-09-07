@@ -207,7 +207,7 @@ export default {
         date.getMonth() - 1,
         date.getDate()
       );
-      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2);
+      this.enddate = date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()+1)).slice(-2);
       this.startdate = date1month.getFullYear()+'-'+('0'+(date1month.getMonth()+1)).slice(-2)+'-'+('0'+date1month.getDate()).slice(-2);
 
       this.getList();

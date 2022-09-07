@@ -290,15 +290,11 @@ export default {
     }
     .tap_on{
       background-color: $brown;
-      button{
-        color: #fff;
-      }
+      color: #fff;
     }
     .tap_off{
       background-color: #fff;
-      button{
-        color: $brown;
-      }
+      color: $black;
     }
     #tap_2{
       border-right: none;
