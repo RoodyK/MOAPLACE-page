@@ -74,7 +74,7 @@
             <button class="left" @click="print">
               예매출력
             </button>
-            <button class="right" @click.prevent="cancleOk()">
+            <button class="right" @click="cancle">
               예매취소
             </button>
           </div>
@@ -128,7 +128,6 @@ export default {
         address: data.member_address,
         point: data.member_point
       }
-      // console.log(info);
 
       this.member = info;
       })
@@ -174,32 +173,8 @@ export default {
     print() {
       window.print();
     },
-    cancleOk() {
-      let pwd = prompt("패스워드를 입력하세요.");
-
-      const cancleData = {
-        booking_num : this.booking_num,
-        member_id : this.member.id,
-        member_pwd : pwd
-      }
-
-      axios.post('/moaplace.com/users/mypage/ticket/cancle', JSON.stringify(cancleData), {
-        headers: {
-          "Content-Type": `application/json`,
-        }
-      }).then((resp) => {
-
-        if(resp.data == "success") {
-
-          alert('예매취소가 완료되었습니다.');
-          this.$router.push('/moaplace.com');
-
-        } else if(resp.data == "failA") {
-          alert('비밀번호는 일치하지만 업데이트가 정상적으로 되지 않았습니다.');
-        } else if(resp.data == "failB") {
-          alert('비밀번호가 일치하지 않습니다.');
-        }
-      });
+    cancle() {
+      this.$router.push("/moaplace.com/users/mypage/ticket/detail/" + this.booking_num);
     },
     //모달창 종료
     closeModal(){
