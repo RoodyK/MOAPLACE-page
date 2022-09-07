@@ -182,7 +182,7 @@ export default {
         },
         filterList(){
             this.pageNum = 1;
-            this.faqList();
+            this.qnaList();
         },        
         movePage(move){
             this.pageNum = move;
