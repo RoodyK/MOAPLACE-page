@@ -294,7 +294,7 @@ export default {
 
         // let env = "" + process.env.VUE_APP_IMPORT_INIT;
 
-        IMP.init("imp49001285");
+        IMP.init(process.env.VUE_APP_IMPORT_API_KEY);
         IMP.request_pay(
           {
             // param
