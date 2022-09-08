@@ -37,21 +37,26 @@
 - 공지사항 및 문의관리
 
 
-## 사용 라이브러리
-[vue-quill](https://vueup.github.io/vue-quill/)
+## 사용 라이브러리 
+
+[vue-quill](https://vueup.github.io/vue-quill) <br/>
 - Vue.js에서 사용가능한 텍스트 에디터 <br/>
-[SASS](https://sass-lang.com/)
+
+[SASS](https://sass-lang.com) <br/>
 - css의 중복을 제거하고 변수를 선언하는 등 보다 편하게 사용하게 해주는 css 확장 라이브러리 <br/>
-[vue-google-charts](https://developers.google.com/chart)
-- 차트를 사용할 수 있게해주는 google-charts 라이브러리
-[jquery](https://jquery.com/)
-- import API를 사용하기 위한 jquery (그 외의 사용x)
+
+[vue-google-charts](https://developers.google.com/chart) <br/>
+- 차트를 사용할 수 있게해주는 google-charts 라이브러리 <br/>
+
+[jquery](https://jquery.com) <br/>
+- import API를 사용하기 위한 jquery (그 외의 사용x) <br/>
 
 ## 사용 API
-- [카카오 로그인 API, 카카오 MAP API](https://developers.kakao.com/)
-- [구글차트 API](https://developers.google.com/chart)
-- 다음postcode API (https://postcode.map.daum.net/guide)
-- [아임포트 API](https://www.iamport.kr/)
+
+- [카카오 로그인 API, 카카오 MAP API](https://developers.kakao.com) <br/>
+- [구글차트 API](https://developers.google.com/chart) <br/>
+- [다음postcode API](https://postcode.map.daum.net/guide) <br/>
+- [아임포트 API](https://www.iamport.kr/) <br/>
 
 ## 주요기능
 - 회원 기능은 JWT 토큰을 사용한 인증 처리
