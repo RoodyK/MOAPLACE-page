@@ -180,7 +180,7 @@ export default {
     //오늘부터 공연 마지막날까지 몇 일 남았는지 일수 계산
     getTerm() {
       let termTo =
-        new Date(this.endDate).getTime() - new Date().getTime();
+        new Date(this.endDate +" "+ "00:00").getTime() - new Date(this.year,this.month-1,this.today,0,0).getTime();
       return Math.round(termTo / 86400000); 
     },
     
