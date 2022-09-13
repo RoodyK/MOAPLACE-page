@@ -219,7 +219,6 @@
                 this.showStatus = resp.data.showStatus
                 this.timeInfo = resp.data.arrTime
                 this.showCount = resp.data.arrTime.length
-                console.log(resp.data.arrTime)
               }.bind(this)).
             catch(function(error){
               if(error.request){
@@ -241,7 +240,6 @@
               })
             },
             goUpdate(){
-              console.log(this.timeInfo)
               axios.post(
                 '/moaplace.com/admin/show/schedule/update',
                   JSON.stringify(
