@@ -45,10 +45,10 @@
                                 <th>공연회차별정보</th>
                                 <td>{{item.timeRow}}회차</td>
                                 <th>공연시간</th>
-                                <td><input type="time" :value='item.dateTime' @change="updateTime(index,$event.currentTarget)"></td>
+                                <td><input type="time" :value='item.dateTime' @change="updateTime(index,$event.currentTarget,item.scheduleNum)"></td>
                                 <th>공연상태</th>
                                 <td>
-                                  <select :value="item.dateStatus" @change="updateYN(index,$event.currentTarget)">
+                                  <select :value="item.dateStatus" @change="updateYN(index,$event.currentTarget,item.scheduleNum)">
                                     <option v-for="list in showStatusList" :key="list">{{list}}</option>
                                   </select>
                                 </td>
@@ -170,10 +170,11 @@
             
               this.addTime = '';
           },
-          updateYN(i,e){
+          updateYN(i,e,scheduleNum){
             this.timeInfo[i].dateStatus = e.value;
+            this.timeInfo[i].scheduleNum = scheduleNum;
           },
-          updateTime(i,e){
+          updateTime(i,e,scheduleNum){
             let showTerm = this.runningTime+this.intermission;
             let oldTime = new Date(this.showDate + " "+ this.timeInfo[i-1].dateTime).getTime()
             let newTime = new Date(this.showDate + " "+ e.value).getTime()
@@ -188,6 +189,7 @@
               e.value=""
             }else{
                 this.timeInfo[i].dateTime = e.value;
+                this.timeInfo[i].scheduleNum = scheduleNum;
             }
           },
             cntTime(e){
@@ -217,6 +219,7 @@
                 this.showStatus = resp.data.showStatus
                 this.timeInfo = resp.data.arrTime
                 this.showCount = resp.data.arrTime.length
+                console.log(resp.data.arrTime)
               }.bind(this)).
             catch(function(error){
               if(error.request){
@@ -238,7 +241,7 @@
               })
             },
             goUpdate(){
-
+              console.log(this.timeInfo)
               axios.post(
                 '/moaplace.com/admin/show/schedule/update',
                   JSON.stringify(
